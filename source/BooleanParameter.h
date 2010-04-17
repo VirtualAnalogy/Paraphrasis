@@ -10,21 +10,20 @@
 #ifndef __BooleanParameter_h__
 #define __BooleanParameter_h__
 
-#ifndef __PluginParameter_h__
-#include "PluginParameter.h"
+#ifndef __NamedParameter_h__
+#include "NamedParameter.h"
 #endif
 
 namespace teragon {
   namespace pluginParameters {
-    class BooleanParameter : public PluginParameter {
+    class BooleanParameter : public NamedParameter {
     public:
       BooleanParameter(ParameterString name);
       ~BooleanParameter();
-      
-      const ParameterString getName() const { return this->name; }
-      
+            
       const ParameterString getDisplayText() const;
       const ParameterValue getDisplayValue() const;
+      void setDisplayValue(const ParameterValue value);
       
       const ParameterValue getValue() const { return this->value; }
       void setValue(const ParameterValue value) { this->value = value; }

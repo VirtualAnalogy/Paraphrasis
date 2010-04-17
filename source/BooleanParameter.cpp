@@ -13,8 +13,7 @@
 
 namespace teragon {
   namespace pluginParameters {
-    BooleanParameter::BooleanParameter(ParameterString name) : PluginParameter() {
-      this->name = name;
+    BooleanParameter::BooleanParameter(ParameterString name) : NamedParameter(name) {
       this->value = false;
     }
     
@@ -27,6 +26,10 @@ namespace teragon {
     
     const ParameterValue BooleanParameter::getDisplayValue() const {
       return this->value ? 1.0 : 0.0;
+    }
+    
+    void BooleanParameter::setDisplayValue(const ParameterValue value) {
+      this->value = (value > 0.5);
     }
   }
 }

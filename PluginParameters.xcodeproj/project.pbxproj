@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		24E01445117A6446002086AC /* BooleanParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E01443117A6446002086AC /* BooleanParameter.h */; };
 		24E01446117A6446002086AC /* BooleanParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 24E01444117A6446002086AC /* BooleanParameter.cpp */; };
+		24E01460117A6908002086AC /* DecibelParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E0145E117A6908002086AC /* DecibelParameter.h */; };
+		24E01461117A6908002086AC /* DecibelParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 24E0145F117A6908002086AC /* DecibelParameter.cpp */; };
+		24E01493117A6D64002086AC /* NumericParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E01491117A6D64002086AC /* NumericParameter.h */; };
+		24E014D1117A7401002086AC /* NamedParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E014D0117A7401002086AC /* NamedParameter.h */; };
 		24FAB086117A2DEC00DEEB7D /* FloatingPointParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 24FAB081117A2DEC00DEEB7D /* FloatingPointParameter.h */; };
 		24FAB087117A2DEC00DEEB7D /* MapParameterSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 24FAB082117A2DEC00DEEB7D /* MapParameterSet.cpp */; };
 		24FAB088117A2DEC00DEEB7D /* MapParameterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 24FAB083117A2DEC00DEEB7D /* MapParameterSet.h */; };
@@ -20,6 +24,10 @@
 /* Begin PBXFileReference section */
 		24E01443117A6446002086AC /* BooleanParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BooleanParameter.h; path = source/BooleanParameter.h; sourceTree = "<group>"; };
 		24E01444117A6446002086AC /* BooleanParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BooleanParameter.cpp; path = source/BooleanParameter.cpp; sourceTree = "<group>"; };
+		24E0145E117A6908002086AC /* DecibelParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DecibelParameter.h; path = source/DecibelParameter.h; sourceTree = "<group>"; };
+		24E0145F117A6908002086AC /* DecibelParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DecibelParameter.cpp; path = source/DecibelParameter.cpp; sourceTree = "<group>"; };
+		24E01491117A6D64002086AC /* NumericParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NumericParameter.h; path = source/NumericParameter.h; sourceTree = "<group>"; };
+		24E014D0117A7401002086AC /* NamedParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NamedParameter.h; path = source/NamedParameter.h; sourceTree = "<group>"; };
 		24FAB081117A2DEC00DEEB7D /* FloatingPointParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FloatingPointParameter.h; path = source/FloatingPointParameter.h; sourceTree = "<group>"; };
 		24FAB082117A2DEC00DEEB7D /* MapParameterSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MapParameterSet.cpp; path = source/MapParameterSet.cpp; sourceTree = "<group>"; };
 		24FAB083117A2DEC00DEEB7D /* MapParameterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapParameterSet.h; path = source/MapParameterSet.h; sourceTree = "<group>"; };
@@ -53,11 +61,15 @@
 			isa = PBXGroup;
 			children = (
 				24E01444117A6446002086AC /* BooleanParameter.cpp */,
+				24E0145F117A6908002086AC /* DecibelParameter.cpp */,
 				24FAB0B1117A359900DEEB7D /* FloatingPointParameter.cpp */,
 				24FAB082117A2DEC00DEEB7D /* MapParameterSet.cpp */,
 				24E01443117A6446002086AC /* BooleanParameter.h */,
+				24E0145E117A6908002086AC /* DecibelParameter.h */,
 				24FAB081117A2DEC00DEEB7D /* FloatingPointParameter.h */,
 				24FAB083117A2DEC00DEEB7D /* MapParameterSet.h */,
+				24E014D0117A7401002086AC /* NamedParameter.h */,
+				24E01491117A6D64002086AC /* NumericParameter.h */,
 				24FAB084117A2DEC00DEEB7D /* PluginParameter.h */,
 				24FAB085117A2DEC00DEEB7D /* PluginParameterSet.h */,
 			);
@@ -84,6 +96,9 @@
 				24FAB089117A2DEC00DEEB7D /* PluginParameter.h in Headers */,
 				24FAB08A117A2DEC00DEEB7D /* PluginParameterSet.h in Headers */,
 				24E01445117A6446002086AC /* BooleanParameter.h in Headers */,
+				24E01460117A6908002086AC /* DecibelParameter.h in Headers */,
+				24E01493117A6D64002086AC /* NumericParameter.h in Headers */,
+				24E014D1117A7401002086AC /* NamedParameter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +147,7 @@
 				24FAB087117A2DEC00DEEB7D /* MapParameterSet.cpp in Sources */,
 				24FAB0B2117A359900DEEB7D /* FloatingPointParameter.cpp in Sources */,
 				24E01446117A6446002086AC /* BooleanParameter.cpp in Sources */,
+				24E01461117A6908002086AC /* DecibelParameter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

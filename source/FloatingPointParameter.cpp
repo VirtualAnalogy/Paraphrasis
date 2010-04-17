@@ -13,24 +13,21 @@
 
 namespace teragon {
   namespace pluginParameters {
-    FloatingPointParameter::FloatingPointParameter(ParameterString name, ParameterValue minValue, ParameterValue maxValue) : PluginParameter() {
-      this->name = name;
-      this->minValue = minValue;
-      this->maxValue = maxValue;
-      this->value = minValue;
+    FloatingPointParameter::FloatingPointParameter(ParameterString name, ParameterValue minValue, ParameterValue maxValue) :
+    NumericParameter(name, minValue, maxValue) {
     }
     
     FloatingPointParameter::~FloatingPointParameter() {
     }
     
-    const ParameterString FloatingPointParameter::getDisplayText() const {
-      std::stringstream numberFormatter;
-      numberFormatter << this->value;
-      return numberFormatter.str();
+    const ParameterValue FloatingPointParameter::getDisplayValue() const {
+      // XXX: Some of the values in this calculation could be cached
+      return (getValue() - getMinValue()) / (getMaxValue() - getMinValue());
     }
     
-    const ParameterValue FloatingPointParameter::getDisplayValue() const {
-      return (this->value - this->minValue) / (this->maxValue - this->minValue);
+    void FloatingPointParameter::setDisplayValue(const ParameterValue value) {
+      // XXX: Some of the values in this calculation could be cached
+      setValue(value * (getMaxValue() - getMinValue()) + getMinValue());
     }
   }
 }
