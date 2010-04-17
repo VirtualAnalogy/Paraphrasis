@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		24E01445117A6446002086AC /* BooleanParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E01443117A6446002086AC /* BooleanParameter.h */; };
+		24E01446117A6446002086AC /* BooleanParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 24E01444117A6446002086AC /* BooleanParameter.cpp */; };
 		24FAB086117A2DEC00DEEB7D /* FloatingPointParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 24FAB081117A2DEC00DEEB7D /* FloatingPointParameter.h */; };
 		24FAB087117A2DEC00DEEB7D /* MapParameterSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 24FAB082117A2DEC00DEEB7D /* MapParameterSet.cpp */; };
 		24FAB088117A2DEC00DEEB7D /* MapParameterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 24FAB083117A2DEC00DEEB7D /* MapParameterSet.h */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		24E01443117A6446002086AC /* BooleanParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BooleanParameter.h; path = source/BooleanParameter.h; sourceTree = "<group>"; };
+		24E01444117A6446002086AC /* BooleanParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BooleanParameter.cpp; path = source/BooleanParameter.cpp; sourceTree = "<group>"; };
 		24FAB081117A2DEC00DEEB7D /* FloatingPointParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FloatingPointParameter.h; path = source/FloatingPointParameter.h; sourceTree = "<group>"; };
 		24FAB082117A2DEC00DEEB7D /* MapParameterSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MapParameterSet.cpp; path = source/MapParameterSet.cpp; sourceTree = "<group>"; };
 		24FAB083117A2DEC00DEEB7D /* MapParameterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapParameterSet.h; path = source/MapParameterSet.h; sourceTree = "<group>"; };
@@ -48,8 +52,10 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				24E01444117A6446002086AC /* BooleanParameter.cpp */,
 				24FAB0B1117A359900DEEB7D /* FloatingPointParameter.cpp */,
 				24FAB082117A2DEC00DEEB7D /* MapParameterSet.cpp */,
+				24E01443117A6446002086AC /* BooleanParameter.h */,
 				24FAB081117A2DEC00DEEB7D /* FloatingPointParameter.h */,
 				24FAB083117A2DEC00DEEB7D /* MapParameterSet.h */,
 				24FAB084117A2DEC00DEEB7D /* PluginParameter.h */,
@@ -77,6 +83,7 @@
 				24FAB088117A2DEC00DEEB7D /* MapParameterSet.h in Headers */,
 				24FAB089117A2DEC00DEEB7D /* PluginParameter.h in Headers */,
 				24FAB08A117A2DEC00DEEB7D /* PluginParameterSet.h in Headers */,
+				24E01445117A6446002086AC /* BooleanParameter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,6 +131,7 @@
 			files = (
 				24FAB087117A2DEC00DEEB7D /* MapParameterSet.cpp in Sources */,
 				24FAB0B2117A359900DEEB7D /* FloatingPointParameter.cpp in Sources */,
+				24E01446117A6446002086AC /* BooleanParameter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
