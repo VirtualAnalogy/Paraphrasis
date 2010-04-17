@@ -12,6 +12,7 @@
 		24FAB088117A2DEC00DEEB7D /* MapParameterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 24FAB083117A2DEC00DEEB7D /* MapParameterSet.h */; };
 		24FAB089117A2DEC00DEEB7D /* PluginParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 24FAB084117A2DEC00DEEB7D /* PluginParameter.h */; };
 		24FAB08A117A2DEC00DEEB7D /* PluginParameterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 24FAB085117A2DEC00DEEB7D /* PluginParameterSet.h */; };
+		24FAB0B2117A359900DEEB7D /* FloatingPointParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 24FAB0B1117A359900DEEB7D /* FloatingPointParameter.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +21,7 @@
 		24FAB083117A2DEC00DEEB7D /* MapParameterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapParameterSet.h; path = source/MapParameterSet.h; sourceTree = "<group>"; };
 		24FAB084117A2DEC00DEEB7D /* PluginParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PluginParameter.h; path = source/PluginParameter.h; sourceTree = "<group>"; };
 		24FAB085117A2DEC00DEEB7D /* PluginParameterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PluginParameterSet.h; path = source/PluginParameterSet.h; sourceTree = "<group>"; };
+		24FAB0B1117A359900DEEB7D /* FloatingPointParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FloatingPointParameter.cpp; path = source/FloatingPointParameter.cpp; sourceTree = "<group>"; };
 		D2AAC046055464E500DB518D /* libPluginParameters.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPluginParameters.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -46,6 +48,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				24FAB0B1117A359900DEEB7D /* FloatingPointParameter.cpp */,
 				24FAB082117A2DEC00DEEB7D /* MapParameterSet.cpp */,
 				24FAB081117A2DEC00DEEB7D /* FloatingPointParameter.h */,
 				24FAB083117A2DEC00DEEB7D /* MapParameterSet.h */,
@@ -120,6 +123,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24FAB087117A2DEC00DEEB7D /* MapParameterSet.cpp in Sources */,
+				24FAB0B2117A359900DEEB7D /* FloatingPointParameter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

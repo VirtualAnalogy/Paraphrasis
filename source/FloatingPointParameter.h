@@ -11,25 +11,22 @@ namespace teragon {
   namespace pluginParameters {
     class FloatingPointParameter : public PluginParameter {
     public:
-      FloatingPointParameter(ParameterString name) : PluginParameter() {
-        this->name = name;
-        this->value = 0.0;
-      }
-      ~FloatingPointParameter() {}
+      FloatingPointParameter(ParameterString name, ParameterValue minValue, ParameterValue maxValue);
+      ~FloatingPointParameter();
 
       const ParameterString getName() const { return this->name; }
-      const ParameterString getDisplayValue() const {
-        std::stringstream numberFormatter;
-        numberFormatter << this->value;
-        return numberFormatter.str();
-      }
-
+      
+      const ParameterString getDisplayText() const;
+      const ParameterValue getDisplayValue() const;
+      
       const ParameterValue getValue() const { return this->value; }
       void setValue(const ParameterValue value) { this->value = value; }
 
     private:
       ParameterString name;
       ParameterValue value;
+      ParameterValue minValue;
+      ParameterValue maxValue;
     };
   }
 }
