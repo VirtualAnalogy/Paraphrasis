@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		24DF41CB117B15C800DCC246 /* libgtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 24DF41BA117B151900DCC246 /* libgtest.a */; };
+		24DF41CC117B15C800DCC246 /* libgtest_main.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 24DF41B9117B151900DCC246 /* libgtest_main.a */; };
+		24DF41CD117B15D000DCC246 /* BooleanParameterTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 24DF41B5117B14F100DCC246 /* BooleanParameterTest.cpp */; };
+		24DF41CE117B15D900DCC246 /* libPluginParameters.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libPluginParameters.a */; };
 		24E01445117A6446002086AC /* BooleanParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E01443117A6446002086AC /* BooleanParameter.h */; };
 		24E01446117A6446002086AC /* BooleanParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 24E01444117A6446002086AC /* BooleanParameter.cpp */; };
 		24E01460117A6908002086AC /* DecibelParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E0145E117A6908002086AC /* DecibelParameter.h */; };
@@ -21,7 +25,21 @@
 		24FAB0B2117A359900DEEB7D /* FloatingPointParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 24FAB0B1117A359900DEEB7D /* FloatingPointParameter.cpp */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		24DF41CF117B15DF00DCC246 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D /* PluginParameters */;
+			remoteInfo = PluginParameters;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		24DF41B5117B14F100DCC246 /* BooleanParameterTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BooleanParameterTest.cpp; path = test/BooleanParameterTest.cpp; sourceTree = "<group>"; };
+		24DF41B9117B151900DCC246 /* libgtest_main.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgtest_main.a; path = "third-party/gtest/lib/libgtest_main.a"; sourceTree = "<group>"; };
+		24DF41BA117B151900DCC246 /* libgtest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgtest.a; path = "third-party/gtest/lib/libgtest.a"; sourceTree = "<group>"; };
+		24DF41C7117B15BD00DCC246 /* PluginParametersTestSuite */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PluginParametersTestSuite; sourceTree = BUILT_PRODUCTS_DIR; };
 		24E01443117A6446002086AC /* BooleanParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BooleanParameter.h; path = source/BooleanParameter.h; sourceTree = "<group>"; };
 		24E01444117A6446002086AC /* BooleanParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BooleanParameter.cpp; path = source/BooleanParameter.cpp; sourceTree = "<group>"; };
 		24E0145E117A6908002086AC /* DecibelParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DecibelParameter.h; path = source/DecibelParameter.h; sourceTree = "<group>"; };
@@ -38,6 +56,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		24DF41C5117B15BD00DCC246 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24DF41CE117B15D900DCC246 /* libPluginParameters.a in Frameworks */,
+				24DF41CB117B15C800DCC246 /* libgtest.a in Frameworks */,
+				24DF41CC117B15C800DCC246 /* libgtest_main.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D289987405E68DCB004EDB86 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -51,8 +79,10 @@
 		08FB7794FE84155DC02AAC07 /* PluginParameters */ = {
 			isa = PBXGroup;
 			children = (
+				24DF41B8117B14F700DCC246 /* Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				08FB7795FE84155DC02AAC07 /* Source */,
+				24DF41B3117B14D000DCC246 /* Test */,
 			);
 			name = PluginParameters;
 			sourceTree = "<group>";
@@ -80,8 +110,26 @@
 			isa = PBXGroup;
 			children = (
 				D2AAC046055464E500DB518D /* libPluginParameters.a */,
+				24DF41C7117B15BD00DCC246 /* PluginParametersTestSuite */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		24DF41B3117B14D000DCC246 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				24DF41B5117B14F100DCC246 /* BooleanParameterTest.cpp */,
+			);
+			name = Test;
+			sourceTree = "<group>";
+		};
+		24DF41B8117B14F700DCC246 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				24DF41BA117B151900DCC246 /* libgtest.a */,
+				24DF41B9117B151900DCC246 /* libgtest_main.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -105,6 +153,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		24DF41C6117B15BD00DCC246 /* PluginParametersTestSuite */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24DF41D7117B15FF00DCC246 /* Build configuration list for PBXNativeTarget "PluginParametersTestSuite" */;
+			buildPhases = (
+				24DF41C4117B15BD00DCC246 /* Sources */,
+				24DF41C5117B15BD00DCC246 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				24DF41D0117B15DF00DCC246 /* PBXTargetDependency */,
+			);
+			name = PluginParametersTestSuite;
+			productName = PluginParametersTestSuite;
+			productReference = 24DF41C7117B15BD00DCC246 /* PluginParametersTestSuite */;
+			productType = "com.apple.product-type.tool";
+		};
 		D2AAC045055464E500DB518D /* PluginParameters */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "PluginParameters" */;
@@ -135,11 +200,20 @@
 			projectRoot = "";
 			targets = (
 				D2AAC045055464E500DB518D /* PluginParameters */,
+				24DF41C6117B15BD00DCC246 /* PluginParametersTestSuite */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		24DF41C4117B15BD00DCC246 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24DF41CD117B15D000DCC246 /* BooleanParameterTest.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC044055464E500DB518D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -153,6 +227,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		24DF41D0117B15DF00DCC246 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* PluginParameters */;
+			targetProxy = 24DF41CF117B15DF00DCC246 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		1DEB91EC08733DB70010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -164,6 +246,10 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/third-party/gtest/lib\"",
+				);
 				PRODUCT_NAME = PluginParameters;
 			};
 			name = Debug;
@@ -175,6 +261,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/third-party/gtest/lib\"",
+				);
 				PRODUCT_NAME = PluginParameters;
 			};
 			name = Release;
@@ -205,6 +295,56 @@
 			};
 			name = Release;
 		};
+		24DF41C9117B15BE00DCC246 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				HEADER_SEARCH_PATHS = (
+					.,
+					./source,
+					"./third-party/gtest/include",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/third-party/gtest/lib\"",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = PluginParametersTestSuite;
+			};
+			name = Debug;
+		};
+		24DF41CA117B15BE00DCC246 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				HEADER_SEARCH_PATHS = (
+					.,
+					./source,
+					"./third-party/gtest/include",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/third-party/gtest/lib\"",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = PluginParametersTestSuite;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -222,6 +362,15 @@
 			buildConfigurations = (
 				1DEB91F008733DB70010E9CD /* Debug */,
 				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		24DF41D7117B15FF00DCC246 /* Build configuration list for PBXNativeTarget "PluginParametersTestSuite" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24DF41C9117B15BE00DCC246 /* Debug */,
+				24DF41CA117B15BE00DCC246 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
