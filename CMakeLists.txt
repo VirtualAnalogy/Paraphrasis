@@ -1,0 +1,31 @@
+cmake_minimum_required(VERSION 2.6)
+project(PluginParameters)
+
+set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  add_definitions(-DLINUX=1)
+  set(CMAKE_C_FLAGS "-fmessage-length=0 -m32 -pipe -Wno-trigraphs -std=c99 -O3 -Wmissing-field-initializers -Wall -Wreturn-type -Wunused-variable -pedantic -Wshadow -Wsign-compare -D__cdecl=\"\" -D_POSIX_C_SOURCE=200809L")
+  set(CMAKE_CXX_FLAGS "-fmessage-length=0 -m32 -pipe -Wno-trigraphs -O3 -Wmissing-field-initializers -Wall -Wreturn-type -Wunused-variable -pedantic -Wshadow -Wsign-compare -D__cdecl=\"\"")
+  set(CMAKE_EXE_LINKER_FLAGS "-m32")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  add_definitions(-DMACOSX=1)
+  set(CMAKE_C_FLAGS "-arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -std=c99 -Wmissing-field-initializers -Wall -Wmissing-prototypes -Wreturn-type -Wunused-variable -pedantic -Wshadow -Wsign-compare -Wnewline-eof -Wshorten-64-to-32 -fasm-blocks -mmacosx-version-min=10.4")
+  set(CMAKE_CXX_FLAGS "-arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -Wmissing-field-initializers -Wall -Wmissing-prototypes -Wreturn-type -Wunused-variable -pedantic -Wshadow -Wsign-compare -Wnewline-eof -Wshorten-64-to-32 -fasm-blocks -mmacosx-version-min=10.4")
+  set(CMAKE_EXE_LINKER_FLAGS "-arch i386 -framework Carbon -framework CoreFoundation")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  set(CMAKE_C_FLAGS "")
+  set(CMAKE_CXX_FLAGS "")
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+  add_definitions("-O0")
+  add_definitions("-g")
+  add_definitions("-DDEBUG=1")
+else()
+  add_definitions("-O2")
+endif()
+
+add_subdirectory(test)
+
