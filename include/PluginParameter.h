@@ -53,7 +53,7 @@ public:
    * @param inName The parameter name
    */
   PluginParameter(ParameterString inName) :
-    name(inName), minValue(0.0), maxValue(1.0), value(0.0) {}
+    name(inName), minValue(0.0), maxValue(1.0), defaultValue(0.0), value(0.0) {}
   /**
     * Create a new floating point parameter. This is probably the most common
     * parameter type used in a plugin.
@@ -74,7 +74,8 @@ public:
     */
   PluginParameter(ParameterString inName, ParameterValue inMinValue,
   ParameterValue inMaxValue, ParameterValue inDefaultValue) :
-    name(inName), minValue(inMinValue), maxValue(inMaxValue), value(inDefaultValue) {}
+    name(inName), minValue(inMinValue), maxValue(inMaxValue), defaultValue(inDefaultValue),
+    value(inDefaultValue) {}
   virtual ~PluginParameter() {}
 
   /**
@@ -165,14 +166,25 @@ public:
     }
   }
 
-protected:
-  const ParameterValue getMinValue() const { return minValue; }
-  const ParameterValue getMaxValue() const { return maxValue; }
+  /**
+   * @return Get the parameter's minimum value
+   */
+  virtual const ParameterValue getMinValue() const { return minValue; }
+  /**
+   * @return Get the parameter's maximum value
+   */
+  virtual const ParameterValue getMaxValue() const { return maxValue; }
+  /**
+   * @return Get the parameter's initial default value. Useful for reset.
+   */
+  virtual const ParameterValue getDefaultValue() const { return defaultValue; }
+
 
 private:
   ParameterString name;
   const ParameterValue minValue;
   const ParameterValue maxValue;
+  const ParameterValue defaultValue;
   ParameterValue value;
   std::vector<const PluginParameterObserver*> observers;
 };
