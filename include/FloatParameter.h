@@ -32,10 +32,10 @@
 namespace teragon {
 class FloatParameter : public PluginParameter {
 public:
-  explicit FloatParameter(ParameterString name, ParameterValue minValue,
-  ParameterValue maxValue, ParameterValue defaultValue) :
-  PluginParameter(name, minValue, maxValue, defaultValue) {
-    range = maxValue - minValue;
+  explicit FloatParameter(ParameterString inName, ParameterValue inMinValue,
+  ParameterValue inMaxValue, ParameterValue inDefaultValue) :
+  PluginParameter(inName, inMinValue, inMaxValue, inDefaultValue) {
+    range = inMaxValue - inMinValue;
   }
   virtual ~FloatParameter() {}
 
@@ -48,8 +48,8 @@ public:
   virtual const ParameterValue getScaledValue() const {
     return (getValue() - getMinValue()) / range;
   }
-  virtual void setScaledValue(const ParameterValue value) {
-    setValue(value * range + getMinValue());
+  virtual void setScaledValue(const ParameterValue inValue) {
+    setValue(inValue * range + getMinValue());
   }
 
 private:

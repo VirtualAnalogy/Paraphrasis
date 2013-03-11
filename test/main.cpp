@@ -132,7 +132,7 @@ static bool testCreateFrequencyParameter() {
   ASSERT_EQUALS(10000.0, p.getValue());
   ASSERT_EQUALS(0.899657, p.getScaledValue());
   ASSERT_STRING("10000.0 Hz", p.getDisplayText());
-  return true;  
+  return true;
 }
 
 static bool testSetFrequencyParameter() {
@@ -143,7 +143,7 @@ static bool testSetFrequencyParameter() {
   p.setScaledValue(0.75);
   ASSERT_EQUALS(3556.559, p.getValue());
   ASSERT_EQUALS(0.75, p.getScaledValue());
-  return true;  
+  return true;
 }
 
 static bool testCreateIntegerParameter() {

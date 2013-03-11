@@ -32,9 +32,10 @@
 namespace teragon {
 class IntegerParameter : public FloatParameter {
 public:
-  explicit IntegerParameter(ParameterString name,
-  int minValue, int maxValue, int defaultValue) :
-  FloatParameter(name, (ParameterValue)minValue, (ParameterValue)maxValue, (ParameterValue)defaultValue) {}
+  explicit IntegerParameter(ParameterString inName,
+  int inMinValue, int inMaxValue, int inDefaultValue) :
+  FloatParameter(inName, (ParameterValue)inMinValue,
+    (ParameterValue)inMaxValue, (ParameterValue)inDefaultValue) {}
   virtual ~IntegerParameter() {}
 
   virtual const ParameterString getDisplayText() const {

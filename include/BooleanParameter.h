@@ -31,8 +31,8 @@
 namespace teragon {
 class BooleanParameter : public PluginParameter {
 public:
-  explicit BooleanParameter(ParameterString name, bool defaultValue = false) :
-  PluginParameter(name), value(defaultValue) {}
+  explicit BooleanParameter(ParameterString inName, bool defaultValue = false) :
+  PluginParameter(inName), value(defaultValue) {}
   virtual ~BooleanParameter() {}
 
   virtual const ParameterString getDisplayText() const { return value ? "true" : "false"; }

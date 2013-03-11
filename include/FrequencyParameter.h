@@ -33,11 +33,11 @@
 namespace teragon {
 class FrequencyParameter : public PluginParameter {
 public:
-  explicit FrequencyParameter(ParameterString name, ParameterValue minValue,
-  ParameterValue maxValue, ParameterValue defaultValue) :
-  PluginParameter(name, minValue, maxValue, defaultValue) {
-    logMinValue = log(minValue);
-    range = log(maxValue) - log(minValue);
+  explicit FrequencyParameter(ParameterString inName, ParameterValue inMinValue,
+  ParameterValue inMaxValue, ParameterValue inDefaultValue) :
+  PluginParameter(inName, inMinValue, inMaxValue, inDefaultValue) {
+    logMinValue = log(inMinValue);
+    range = log(inMaxValue) - log(inMinValue);
   }
   virtual ~FrequencyParameter() {}
 
@@ -50,8 +50,8 @@ public:
   virtual const ParameterValue getScaledValue() const {
     return (log(getValue()) - logMinValue) / range;
   }
-  virtual void setScaledValue(const ParameterValue value) {
-    setValue(exp(value * range + logMinValue));
+  virtual void setScaledValue(const ParameterValue inValue) {
+    setValue(exp(inValue * range + logMinValue));
   }
 
 private:
