@@ -23,14 +23,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __PLUGINPARAMETERS_H__
-#define	__PLUGINPARAMETERS_H__
+#ifndef __FrequencyParameter_h__
+#define __FrequencyParameter_h__
 
-#include "BooleanParameter.h"
-#include "DecibelParameter.h"
-#include "FloatParameter.h"
-#include "FrequencyParameter.h"
-#include "IntegerParameter.h"
-#include "PluginParameterSet.h"
+#include <sstream>
+#include <math.h>
+#include "PluginParameter.h"
+
+namespace teragon {
+class FrequencyParameter : public PluginParameter {
+public:
+  explicit FrequencyParameter(ParameterString name, ParameterValue minValue,
+  ParameterValue maxValue, ParameterValue defaultValue) :
+  PluginParameter(name, minValue, maxValue, defaultValue) {
+    logMinValue = log(minValue);
+    range = log(maxValue) - log(minValue);
+  }
+  virtual ~FrequencyParameter() {}
+
+  virtual const ParameterString getDisplayText() const {
+    std::stringstream numberFormatter;
+    numberFormatter.precision(1);
+    numberFormatter << std::fixed << getValue();
+    return numberFormatter.str() + " Hz";
+  }
+  virtual const ParameterValue getScaledValue() const {
+    return (log(getValue()) - logMinValue) / range;
+  }
+  virtual void setScaledValue(const ParameterValue value) {
+    setValue(exp(value * range + logMinValue));
+  }
+
+private:
+  double logMinValue;
+  double range;
+};
+}
 
 #endif

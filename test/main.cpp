@@ -88,21 +88,23 @@ static bool testSetBoolParameter() {
 }
 
 static bool testCreateDecibelParameter() {
-  DecibelParameter p("test", 20.0, 20000.0, 10000.0);
-  ASSERT_EQUALS(10000.0, p.getValue());
-  ASSERT_EQUALS(0.899657, p.getScaledValue());
-  ASSERT_STRING("10000.0 Hz", p.getDisplayText());
+  DecibelParameter p("test", -60.0, 3.0, 0.0);
+  ASSERT_EQUALS(333, p.getScaledValue());
+  ASSERT_EQUALS(0.0, p.getValue());
+  ASSERT_STRING("0 dB", p.getDisplayText());
   return true;
 }
 
 static bool testSetDecibelParameter() {
-  DecibelParameter p("test", 20.0, 20000.0, 10000.0);
-  p.setValue(666.0);
-  ASSERT_EQUALS(666.0, p.getValue());
-  ASSERT_EQUALS(0.5, p.getScaledValue());
-  p.setScaledValue(0.75);
-  ASSERT_EQUALS(3556.559, p.getValue());
-  ASSERT_EQUALS(0.75, p.getScaledValue());
+  DecibelParameter p("test", -60.0, 3.0, 0.0);
+  p.setValue(-10.0);
+  ASSERT_EQUALS(333, p.getScaledValue());
+  ASSERT_EQUALS(-10.0, p.getValue());
+  ASSERT_STRING("-10.0 dB", p.getDisplayText());
+  p.setValue(0.50);
+  ASSERT_EQUALS(333, p.getScaledValue());
+  ASSERT_EQUALS(-10.0, p.getValue());
+  ASSERT_STRING("-10.0 dB", p.getDisplayText());
   return true;
 }
 
@@ -123,6 +125,25 @@ static bool testSetFloatParameter() {
   ASSERT_EQUALS(15.0, p.getValue());
   ASSERT_EQUALS(0.25, p.getScaledValue());
   return true;
+}
+
+static bool testCreateFrequencyParameter() {
+  FrequencyParameter p("test", 20.0, 20000.0, 10000.0);
+  ASSERT_EQUALS(10000.0, p.getValue());
+  ASSERT_EQUALS(0.899657, p.getScaledValue());
+  ASSERT_STRING("10000.0 Hz", p.getDisplayText());
+  return true;  
+}
+
+static bool testSetFrequencyParameter() {
+  FrequencyParameter p("test", 20.0, 20000.0, 10000.0);
+  p.setValue(666.0);
+  ASSERT_EQUALS(666.0, p.getValue());
+  ASSERT_EQUALS(0.5, p.getScaledValue());
+  p.setScaledValue(0.75);
+  ASSERT_EQUALS(3556.559, p.getValue());
+  ASSERT_EQUALS(0.75, p.getScaledValue());
+  return true;  
 }
 
 static bool testCreateIntegerParameter() {
@@ -256,6 +277,8 @@ int main(int argc, char* argv[]) {
   ADD_TEST("SetDecibelParameter", testSetDecibelParameter());
   ADD_TEST("CreateFloatParameter", testCreateFloatParameter());
   ADD_TEST("SetFloatParameter", testSetFloatParameter());
+  ADD_TEST("CreateFrequencyParameter", testCreateFrequencyParameter());
+  ADD_TEST("SetFrequencyParameter", testSetFrequencyParameter());
   ADD_TEST("CreateIntegerParameter", testCreateIntegerParameter());
   ADD_TEST("SetIntegerParameter", testSetIntegerParameter());
   ADD_TEST("CreateParameterWithBadName", testCreateParameterWithBadName());

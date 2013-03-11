@@ -37,7 +37,7 @@ public:
   ParameterValue maxValue, ParameterValue defaultValue) :
   PluginParameter(name, minValue, maxValue, defaultValue) {
     logMinValue = log(minValue);
-    range = log(maxValue) - log(minValue);
+    range = log10(maxValue) - log10(minValue);
   }
   virtual ~DecibelParameter() {}
 
@@ -45,13 +45,14 @@ public:
     std::stringstream numberFormatter;
     numberFormatter.precision(1);
     numberFormatter << std::fixed << getValue();
-    return numberFormatter.str() + " Hz";
+    return numberFormatter.str() + " dB";
   }
   virtual const ParameterValue getScaledValue() const {
+    20. * log10
     return (log(getValue()) - logMinValue) / range;
   }
   virtual void setScaledValue(const ParameterValue value) {
-    setValue(exp(value * range + logMinValue));
+    setValue(pow(10, value * range + logMinValue));
   }
 
 private:
