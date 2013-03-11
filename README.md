@@ -25,6 +25,12 @@ Features
 * For all parameter types, you can get the raw value (ie, the thing you
   probably need in your code to do useful stuff), or a scaled value between
   0.0 - 1.0 for use in plugin wrappers.
+* The decibel parameter is represented internally as a linear value, which is
+  more convenient for most algorithms.
+* The frequency parameter uses logarithmic scaling for its value, so it is
+  easier to select higher frequencies. This is particularly convenient for
+  filters where one MIDI step would otherwise mean a difference of several
+  hundred hertz.
 * The integer parameters provide a minimum, maximum, and default value.
 * All parameter types also have a function to get the displayable value.
 * Lookup of parameters can be done either by index or by name, with either the
@@ -44,8 +50,8 @@ MyPlugin::MyPlugin() {
   // Assumes that there is a PluginParameterSet member named "parameters" in
   // the header file.
   this->parameters.add(new BooleanParameter("Awesomeness", true));
-  this->parameters.add(new DecibelParameter("Frequency", 20.0, 20000.0, 10000.0);
-  this->parameters.add(new FloatParameter("Ratio", 0.0, 10.0, 2.0));
+  this->parameters.add(new FrequencyParameter("Frequency", 20.0, 20000.0, 10000.0);
+  this->parameters.add(new DecibelParameter("Gain", -60.0, 3.0, 0.0));
 }
 ```
 
@@ -76,8 +82,8 @@ something like this:
 void MyPlugin::processReplacing (float** inputs, float** outputs, VstInt32 sampleFrames) {
   if(this->parameters["Awesomeness"]->getValue()) {
     for(int i = 0; i < sampleFrames; i++) {
-      float gain = this->parameters["Ratio"]->getValue();
-      *outputs[0][i] = *inputs[0][i] * gain;
+      *outputs[0][i] = *inputs[0][i] * this->parameters["Gain"]->getValue();
+      *outputs[1][i] = *inputs[1][i] * this->parameters["Gain"]->getValue();
     }
   }
 }

@@ -36,6 +36,15 @@ public:
   explicit PluginParameterSet() {}
   virtual ~PluginParameterSet() {}
 
+  /**
+   * Add a parameter to the set. Note that this class does *not* free the
+   * parameter's memory upon destruction, if this is important to you then
+   * you must free each parameter manually before your plugin is destructed.
+   *
+   * @param parameter Pointer to parameter instance
+   * @return True on success, false if the parameter was null or already exists
+   *         in the set.
+   */
   virtual bool add(PluginParameter* parameter) {
     if(parameter == NULL || get(parameter->getName()) != NULL) {
       return false;
@@ -45,14 +54,43 @@ public:
     return true;
   }
 
+  /**
+   * Lookup a parameter by index, for example: parameterSet[2]
+   *
+   * @param i Parameter index, must be less than the set's size or undefined
+   *          behavior will occur
+   * @return Reference to parameter
+   */
   virtual PluginParameter* operator[](const int i) const { return get(i); }
-  virtual PluginParameter* operator[](const ParameterString& name) const { return get(name); }
+  /**
+   * Lookup a parameter by index
+   *
+   * @param i Parameter index, must be less than the set's size or undefined
+   *          behavior will occur
+   * @return Reference to parameter
+   */
   virtual PluginParameter* get(const int index) const { return parameterList.at(index); }
+  /**
+   * Lookup a parameter by name, for example: parameterSet["foo"]
+   *
+   * @param name The parameter's name
+   * @return Reference to parameter, or NULL if not found
+   */
+  virtual PluginParameter* operator[](const ParameterString& name) const { return get(name); }
+  /**
+   * Lookup a parameter by name
+   *
+   * @param name The parameter's name
+   * @return Reference to parameter, or NULL if not found
+   */
   virtual PluginParameter* get(const ParameterString& name) const {
     ParameterMap::const_iterator iterator = parameterMap.find(PluginParameter::makeSafeName(name));
     return (iterator != parameterMap.end()) ? iterator->second : NULL;
   }
 
+  /**
+   * @return Number of parameters in the set
+   */
   virtual const int size() const { return parameterList.size(); }
 
 private:

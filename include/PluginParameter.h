@@ -34,15 +34,53 @@ typedef double ParameterValue;
 
 class PluginParameter {
 public:
+  /**
+   * Create a new parameter with defaults for the minimum and maximum values.
+   *
+   * @param inName The parameter name
+   */
   PluginParameter(ParameterString inName) :
     name(inName), minValue(0.0), maxValue(1.0), value(0.0) {}
+  /**
+    * Create a new floating point parameter. This is probably the most common
+    * parameter type used in a plugin.
+    *
+    * @param inName The parameter name
+    * @param inMinValue The parameter's minimum value
+    * @param inMaxValue The parameter's maximum value
+    * @param inDefaultValue The parameter's initial default value
+    *
+    * Note that there is *no* checking done for the parameter ranges, so you
+    * need to make sure that they are sane. If the range was otherwise invalid,
+    * an exception would need to be thrown, and that would therefore impose the
+    * requirement of exception handling on the plugin developer.
+    *
+    * Therefore this class has been intentionally kept rather minimal, and
+    * operates under the assumption that you are not insane and choose sensible
+    * values for the minimum, maximum, and default values.
+    */
   PluginParameter(ParameterString inName, ParameterValue inMinValue,
   ParameterValue inMaxValue, ParameterValue inDefaultValue) :
     name(inName), minValue(inMinValue), maxValue(inMaxValue), value(inDefaultValue) {}
   virtual ~PluginParameter() {}
 
+  /**
+   * @return The parameter's display name
+   */
   const ParameterString& getName() const { return name; }
+  /**
+   * Get the parameter's name for serialization operations. All characters which
+   * are not in the A-Z, a-z, 0-9 range are simply removed.
+   *
+   * @return A the parameter's name, safe for serialization operations
+   */
   const ParameterString getSafeName() const { return makeSafeName(name); }
+  /**
+   * Get the serialized version of a string
+   *
+   * @param string The string to convert
+   * @return A string safe for serialization operations
+   */
   static const ParameterString makeSafeName(const ParameterString& string) {
     ParameterString result;
     for(size_t i = 0; i < string.length(); ++i) {
@@ -55,11 +93,31 @@ public:
     return result;
   }
 
+  /**
+   * @return The display text for the parameter
+   */
   virtual const ParameterString getDisplayText() const = 0;
+  /**
+   * @return The parameter's value, scaled in the range {0.0 - 1.0}
+   */
   virtual const ParameterValue getScaledValue() const = 0;
+  /**
+   * Set the parameter's value, scaled in the range {0.0 - 1.0}
+   *
+   * @param value The parameter value, must be between {0.0 - 1.0}
+   */
   virtual void setScaledValue(const ParameterValue value) = 0;
 
+  /**
+   * Get the parameter's interval value, which will be between the minimum
+   * and maximum values set in the constructor.
+   */
   virtual const ParameterValue getValue() const { return value; }
+  /**
+   * Set the parameter's interval value directly.
+   *
+   * @param value Value, which must be between the minimum and maximum values
+   */
   virtual void setValue(const ParameterValue inValue) { value = inValue; }
 
 protected:

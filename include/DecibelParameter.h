@@ -33,6 +33,11 @@
 namespace teragon {
 class DecibelParameter : public FloatParameter {
 public:
+  /**
+   * Create a new parameter for a volume in decibels. Note that this parameter
+   * represents its value internally as a *linear* value. If you actually need
+   * this value in decibels, see the convertLinearToDecibels() method.
+   */
   explicit DecibelParameter(ParameterString inName, ParameterValue inMinValue,
   ParameterValue inMaxValue, ParameterValue inDefaultValue) :
   FloatParameter(inName, convertDecibelsToLinear(inMinValue),
@@ -48,7 +53,6 @@ public:
     return numberFormatter.str() + " dB";
   }
 
-private:
   static const ParameterValue convertDecibelsToLinear(const ParameterValue decibels) {
     return exp10(decibels / 20.0);
   }
