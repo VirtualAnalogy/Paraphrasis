@@ -24,6 +24,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "PluginParameters.h"
 
 using namespace teragon;
@@ -47,7 +48,7 @@ using namespace teragon;
 }
 
 #define ASSERT_EQUALS(expected, result) { \
-  if(abs(result - expected) > 0.001) { \
+  if(abs(abs(result) - abs(expected)) > 0.001) { \
     printf("Expected %f, got %f. ", expected, result); \
     return false; \
   } \
