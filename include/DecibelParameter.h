@@ -28,35 +28,36 @@
 
 #include <sstream>
 #include <math.h>
-#include "PluginParameter.h"
+#include "FloatParameter.h"
 
 namespace teragon {
-class DecibelParameter : public PluginParameter {
+class DecibelParameter : public FloatParameter {
 public:
-  explicit DecibelParameter(ParameterString name, ParameterValue minValue,
-  ParameterValue maxValue, ParameterValue defaultValue) :
-  PluginParameter(name, minValue, maxValue, defaultValue) {
-    logMinValue = log(minValue);
-    range = log10(maxValue) - log10(minValue);
+  explicit DecibelParameter(ParameterString inName, ParameterValue inMinValue,
+  ParameterValue inMaxValue, ParameterValue inDefaultValue) :
+  FloatParameter(inName, convertDecibelsToLinear(inMinValue),
+   convertDecibelsToLinear(inMaxValue), convertDecibelsToLinear(inDefaultValue)) {
+    range = getMaxValue() - getMinValue();
   }
   virtual ~DecibelParameter() {}
 
   virtual const ParameterString getDisplayText() const {
     std::stringstream numberFormatter;
     numberFormatter.precision(1);
-    numberFormatter << std::fixed << getValue();
+    numberFormatter << std::fixed << convertLinearToDecibels(getValue());
     return numberFormatter.str() + " dB";
-  }
-  virtual const ParameterValue getScaledValue() const {
-    20. * log10
-    return (log(getValue()) - logMinValue) / range;
-  }
-  virtual void setScaledValue(const ParameterValue value) {
-    setValue(pow(10, value * range + logMinValue));
   }
 
 private:
-  double logMinValue;
+  static const ParameterValue convertDecibelsToLinear(const ParameterValue decibels) {
+    return exp10(decibels / 20.0);
+  }
+
+  static const ParameterValue convertLinearToDecibels(const ParameterValue linear) {
+    return 20.0 * log10(linear);
+  }
+
+private:
   double range;
 };
 }
