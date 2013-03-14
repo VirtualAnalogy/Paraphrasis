@@ -272,6 +272,37 @@ static bool testGetSafeName() {
   return true;
 }
 
+class TestObserver : public PluginParameterObserver {
+public:
+  TestObserver(bool &inB) : b(inB) {}
+  void onParameterUpdated(const PluginParameter* parameter) const {
+    b = true;
+  }
+private:
+  bool& b;
+};
+
+static bool testAddObserver() {
+  bool b = false;
+  BooleanParameter p("test");
+  TestObserver t(b);
+  p.addObserver(&t);
+  p.setValue(1.0);
+  ASSERT(b);
+  return true;
+}
+
+static bool testRemoveObserver() {
+  bool b = false;
+  BooleanParameter p("test");
+  TestObserver t(b);
+  p.addObserver(&t);
+  p.removeObserver(&t);
+  p.setValue(1.0);
+  ASSERT_FALSE(b);
+  return true;
+}
+
 int main(int argc, char* argv[]) {
   ADD_TEST("CreateBoolParameter", testCreateBoolParameter());
   ADD_TEST("SetBoolParameter", testSetBoolParameter());
@@ -294,5 +325,7 @@ int main(int argc, char* argv[]) {
   ADD_TEST("GetParameterByNameOperator", testGetParameterByNameOperator());
   ADD_TEST("GetParameterByIndexOperator", testGetParameterByIndexOperator());
   ADD_TEST("GetSafeName", testGetSafeName());
+  ADD_TEST("AddObserver", testAddObserver());
+  ADD_TEST("RemoveObserver", testRemoveObserver());
   return 0;
 }

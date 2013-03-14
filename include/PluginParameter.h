@@ -27,10 +27,23 @@
 #define __PluginParameter_h__
 
 #include <string>
+#include <vector>
 
 namespace teragon {
 typedef std::string ParameterString;
 typedef double ParameterValue;
+
+class PluginParameter;
+class PluginParameterObserver {
+public:
+  PluginParameterObserver() {}
+  virtual ~PluginParameterObserver() {}
+
+  /**
+   * Method to be called when a parameter's value has been updated.
+   */
+  virtual void onParameterUpdated(const PluginParameter* parameter) const = 0;
+};
 
 class PluginParameter {
 public:
@@ -118,7 +131,39 @@ public:
    *
    * @param value Value, which must be between the minimum and maximum values
    */
-  virtual void setValue(const ParameterValue inValue) { value = inValue; }
+  virtual void setValue(const ParameterValue inValue) {
+    value = inValue;
+    std::vector<const PluginParameterObserver*>::iterator iterator = observers.begin();
+    while(iterator != observers.end()) {
+      (*iterator)->onParameterUpdated(this);
+      ++iterator;
+    }
+  }
+
+  /**
+   * Add an observer to be alerted any time this parameter is set to a new value.
+   *
+   * @param observer Pointer to observing instance
+   */
+  virtual void addObserver(const PluginParameterObserver* observer) {
+    observers.push_back(observer);
+  }
+
+  /**
+   * Remove an observer from the list of observers for this parameter. If you do not call
+   * this method before your observer goes out of scope, future calls to this parameter's
+   * setValue() method may result in segfaults.
+   *
+   * @param observer Instance to remove
+   */
+  virtual void removeObserver(const PluginParameterObserver* observer) {
+    std::vector<const PluginParameterObserver*>::iterator iterator = observers.begin();
+    while(iterator != observers.end()) {
+      if(*iterator == observer) {
+        observers.erase(iterator);
+      }
+    }
+  }
 
 protected:
   const ParameterValue getMinValue() const { return minValue; }
@@ -129,6 +174,7 @@ private:
   const ParameterValue minValue;
   const ParameterValue maxValue;
   ParameterValue value;
+  std::vector<const PluginParameterObserver*> observers;
 };
 }
 
