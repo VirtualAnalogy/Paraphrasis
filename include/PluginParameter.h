@@ -179,7 +179,6 @@ public:
    */
   virtual const ParameterValue getDefaultValue() const { return defaultValue; }
 
-
 private:
   ParameterString name;
   const ParameterValue minValue;
