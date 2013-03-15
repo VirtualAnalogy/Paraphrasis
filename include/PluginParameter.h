@@ -44,6 +44,7 @@ public:
    */
   virtual void onParameterUpdated(const PluginParameter* parameter) = 0;
 };
+typedef std::vector<PluginParameterObserver*> ParameterObserverMap;
 
 class PluginParameter {
 public:
@@ -134,10 +135,8 @@ public:
    */
   virtual void setValue(const ParameterValue inValue) {
     value = inValue;
-    std::vector<PluginParameterObserver*>::iterator iterator = observers.begin();
-    while(iterator != observers.end()) {
+    for(ParameterObserverMap::iterator iterator = observers.begin(); iterator != observers.end(); ++iterator) {
       (*iterator)->onParameterUpdated(this);
-      ++iterator;
     }
   }
 
@@ -202,7 +201,7 @@ private:
   ParameterValue value;
   unsigned int type;
 
-  std::vector<PluginParameterObserver*> observers;
+  ParameterObserverMap observers;
 };
 }
 
