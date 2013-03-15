@@ -142,6 +142,19 @@ public:
   }
 
   /**
+   * @return Get the parameter's minimum value
+   */
+  virtual const ParameterValue getMinValue() const { return minValue; }
+  /**
+   * @return Get the parameter's maximum value
+   */
+  virtual const ParameterValue getMaxValue() const { return maxValue; }
+  /**
+   * @return Get the parameter's initial default value. Useful for reset.
+   */
+  virtual const ParameterValue getDefaultValue() const { return defaultValue; }
+
+  /**
    * Add an observer to be alerted any time this parameter is set to a new value.
    *
    * @param observer Pointer to observing instance
@@ -165,19 +178,6 @@ public:
       }
     }
   }
-
-  /**
-   * @return Get the parameter's minimum value
-   */
-  virtual const ParameterValue getMinValue() const { return minValue; }
-  /**
-   * @return Get the parameter's maximum value
-   */
-  virtual const ParameterValue getMaxValue() const { return maxValue; }
-  /**
-   * @return Get the parameter's initial default value. Useful for reset.
-   */
-  virtual const ParameterValue getDefaultValue() const { return defaultValue; }
 
 private:
   ParameterString name;

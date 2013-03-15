@@ -303,6 +303,24 @@ static bool testRemoveObserver() {
   return true;
 }
 
+static bool testGetMinValue() {
+  FloatParameter p("test", 0.123, 1.23, 1.00);
+  ASSERT_EQUALS(0.123, p.getMinValue());
+  return true;
+}
+
+static bool testGetMaxValue() {
+  FloatParameter p("test", 0.123, 1.23, 1.00);
+  ASSERT_EQUALS(1.23, p.getMaxValue());
+  return true;
+}
+
+static bool testGetDefaultValue() {
+  FloatParameter p("test", 0.123, 1.23, 1.00);
+  ASSERT_EQUALS(1.0, p.getDefaultValue());
+  return true;
+}
+
 int main(int argc, char* argv[]) {
   ADD_TEST("CreateBoolParameter", testCreateBoolParameter());
   ADD_TEST("SetBoolParameter", testSetBoolParameter());
@@ -327,5 +345,9 @@ int main(int argc, char* argv[]) {
   ADD_TEST("GetSafeName", testGetSafeName());
   ADD_TEST("AddObserver", testAddObserver());
   ADD_TEST("RemoveObserver", testRemoveObserver());
+  ADD_TEST("ParameterType", testParameterType());
+  ADD_TEST("GetMinValue", testGetMinValue());
+  ADD_TEST("GetMaxValue", testGetMaxValue());
+  ADD_TEST("GetDefaultValue", testGetDefaultValue());
   return 0;
 }
