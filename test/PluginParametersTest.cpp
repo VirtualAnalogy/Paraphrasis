@@ -275,7 +275,7 @@ static bool testGetSafeName() {
 class TestObserver : public PluginParameterObserver {
 public:
   TestObserver(bool &inB) : b(inB) {}
-  void onParameterUpdated(const PluginParameter* parameter) const {
+  void onParameterUpdated(const PluginParameter* parameter) {
     b = true;
   }
 private:

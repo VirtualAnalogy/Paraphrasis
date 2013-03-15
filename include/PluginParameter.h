@@ -42,7 +42,7 @@ public:
   /**
    * Method to be called when a parameter's value has been updated.
    */
-  virtual void onParameterUpdated(const PluginParameter* parameter) const = 0;
+  virtual void onParameterUpdated(const PluginParameter* parameter) = 0;
 };
 
 class PluginParameter {
@@ -134,7 +134,7 @@ public:
    */
   virtual void setValue(const ParameterValue inValue) {
     value = inValue;
-    std::vector<const PluginParameterObserver*>::iterator iterator = observers.begin();
+    std::vector<PluginParameterObserver*>::iterator iterator = observers.begin();
     while(iterator != observers.end()) {
       (*iterator)->onParameterUpdated(this);
       ++iterator;
@@ -146,7 +146,7 @@ public:
    *
    * @param observer Pointer to observing instance
    */
-  virtual void addObserver(const PluginParameterObserver* observer) {
+  virtual void addObserver(PluginParameterObserver* observer) {
     observers.push_back(observer);
   }
 
@@ -157,8 +157,8 @@ public:
    *
    * @param observer Instance to remove
    */
-  virtual void removeObserver(const PluginParameterObserver* observer) {
-    std::vector<const PluginParameterObserver*>::iterator iterator = observers.begin();
+  virtual void removeObserver(PluginParameterObserver* observer) {
+    std::vector<PluginParameterObserver*>::iterator iterator = observers.begin();
     while(iterator != observers.end()) {
       if(*iterator == observer) {
         observers.erase(iterator);
@@ -185,7 +185,7 @@ private:
   const ParameterValue maxValue;
   const ParameterValue defaultValue;
   ParameterValue value;
-  std::vector<const PluginParameterObserver*> observers;
+  std::vector<PluginParameterObserver*> observers;
 };
 }
 
