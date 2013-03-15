@@ -185,10 +185,13 @@ public:
    * @param observer Instance to remove
    */
   virtual void removeObserver(PluginParameterObserver* observer) {
-    std::vector<PluginParameterObserver*>::iterator iterator = observers.begin();
-    while(iterator != observers.end()) {
+    ParameterObserverMap::iterator iterator = observers.begin();
+    while(iterator != observers.end() && observers.size() > 0) {
       if(*iterator == observer) {
-        observers.erase(iterator);
+        observers.erase(iterator++);
+      }
+      else {
+        ++iterator;
       }
     }
   }
