@@ -39,7 +39,8 @@ public:
   /**
    * Add a parameter to the set. Note that this class does *not* free the
    * parameter's memory upon destruction, if this is important to you then
-   * you must free each parameter manually before your plugin is destructed.
+   * you must call the clear() method yourself before destroying this set
+   * instance.
    *
    * @param parameter Pointer to parameter instance
    * @return True on success, false if the parameter was null or already exists
@@ -52,6 +53,14 @@ public:
     parameterMap.insert(std::make_pair(parameter->getSafeName(), parameter));
     parameterList.push_back(parameter);
     return true;
+  }
+
+  virtual void clear() {
+    for(ParameterList::iterator iterator = parameterList.begin(); iterator != parameterList.end(); ++iterator) {
+      delete *iterator;
+    }
+    parameterList.clear();
+    parameterMap.clear();
   }
 
   /**

@@ -220,6 +220,18 @@ static bool testAddDuplicateSafeNameParameterToSet() {
   return true;
 }
 
+static bool testClearParameterSet() {
+  BooleanParameter *p1 = new BooleanParameter("Parameter1");
+  BooleanParameter *p2 = new BooleanParameter("Parameter2");
+  PluginParameterSet s;
+  ASSERT(s.add(p1));
+  ASSERT(s.add(p2));
+  ASSERT_INT_EQUALS(2, s.size());
+  s.clear();
+  ASSERT_INT_EQUALS(0, s.size());
+  return true;
+}
+
 static bool testGetParameterByName() {
   BooleanParameter p1("Parameter 1");
   BooleanParameter p2("Parameter 2");
@@ -346,6 +358,7 @@ int main(int argc, char* argv[]) {
   ADD_TEST("AddNullParameterToSet", testAddNullParameterToSet());
   ADD_TEST("AddDuplicateParameterToSet", testAddDuplicateParameterToSet());
   ADD_TEST("AddDuplicateSafeNameParameterToSet", testAddDuplicateSafeNameParameterToSet());
+  ADD_TEST("ClearParameterSet", testClearParameterSet());
   ADD_TEST("GetParameterByName", testGetParameterByName());
   ADD_TEST("GetParameterByIndex", testGetParameterByIndex());
   ADD_TEST("GetParameterByNameOperator", testGetParameterByNameOperator());
