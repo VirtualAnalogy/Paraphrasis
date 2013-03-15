@@ -53,7 +53,7 @@ public:
    * @param inName The parameter name
    */
   PluginParameter(ParameterString inName) :
-    name(inName), minValue(0.0), maxValue(1.0), defaultValue(0.0), value(0.0) {}
+    name(inName), minValue(0.0), maxValue(1.0), defaultValue(0.0), value(0.0), type(0) {}
   /**
     * Create a new floating point parameter. This is probably the most common
     * parameter type used in a plugin.
@@ -75,7 +75,7 @@ public:
   PluginParameter(ParameterString inName, ParameterValue inMinValue,
   ParameterValue inMaxValue, ParameterValue inDefaultValue) :
     name(inName), minValue(inMinValue), maxValue(inMaxValue), defaultValue(inDefaultValue),
-    value(inDefaultValue) {}
+    value(inDefaultValue), type(0) {}
   virtual ~PluginParameter() {}
 
   /**
@@ -155,6 +155,21 @@ public:
   virtual const ParameterValue getDefaultValue() const { return defaultValue; }
 
   /**
+   * @parameter Get the parameter's user-defined type
+   */
+  virtual const unsigned int getType() const { return type; }
+  /**
+   * Set the parameter's user-defined type. The type can be useful for treating
+   * groups of parameters in a given way, such as parameters which require a GUI
+   * update or a set which is common to a single oscillator in a multi-oscillator
+   * synthesizer. By default, the type is 0. This field is unsigned to make it
+   * easier use with bitfields.
+   *
+   * @param inType Type to set
+   */
+  virtual void setType(unsigned int inType) { this->type = inType; }
+
+  /**
    * Add an observer to be alerted any time this parameter is set to a new value.
    *
    * @param observer Pointer to observing instance
@@ -185,6 +200,8 @@ private:
   const ParameterValue maxValue;
   const ParameterValue defaultValue;
   ParameterValue value;
+  unsigned int type;
+
   std::vector<PluginParameterObserver*> observers;
 };
 }
