@@ -42,10 +42,18 @@ public:
   virtual ~FrequencyParameter() {}
 
   virtual const ParameterString getDisplayText() const {
-    std::stringstream numberFormatter;
-    numberFormatter.precision(1);
-    numberFormatter << std::fixed << getValue();
-    return numberFormatter.str() + " Hz";
+    if(getValue() >= 1000.0) {
+      std::stringstream numberFormatter;
+      numberFormatter.precision(1);
+      numberFormatter << std::fixed << getValue() / 1000.0;
+      return numberFormatter.str() + " kHz";
+    }
+    else {
+      std::stringstream numberFormatter;
+      numberFormatter.precision(1);
+      numberFormatter << std::fixed << getValue();
+      return numberFormatter.str() + " Hz";
+    }
   }
   virtual const ParameterValue getScaledValue() const {
     return (log(getValue()) - logMinValue) / range;

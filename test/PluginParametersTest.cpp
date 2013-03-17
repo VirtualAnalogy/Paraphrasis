@@ -133,7 +133,7 @@ static bool testCreateFrequencyParameter() {
   FrequencyParameter p("test", 20.0, 20000.0, 10000.0);
   ASSERT_EQUALS(10000.0, p.getValue());
   ASSERT_EQUALS(0.899657, p.getScaledValue());
-  ASSERT_STRING("10000.0 Hz", p.getDisplayText());
+  ASSERT_STRING("10.0 kHz", p.getDisplayText());
   return true;
 }
 
