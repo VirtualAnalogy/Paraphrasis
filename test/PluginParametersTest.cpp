@@ -341,6 +341,14 @@ static bool testGetDefaultValue() {
   return true;
 }
 
+static bool testSetParameterUnit() {
+  FloatParameter p("test", 0.0, 1.0, 0.0);
+  ASSERT_STRING("0.0", p.getDisplayText());
+  p.setUnit("foo");
+  ASSERT_STRING("0.0 foo", p.getDisplayText());
+  return true;
+}
+
 int main(int argc, char* argv[]) {
   ADD_TEST("CreateBoolParameter", testCreateBoolParameter());
   ADD_TEST("SetBoolParameter", testSetBoolParameter());
@@ -370,5 +378,6 @@ int main(int argc, char* argv[]) {
   ADD_TEST("GetMinValue", testGetMinValue());
   ADD_TEST("GetMaxValue", testGetMaxValue());
   ADD_TEST("GetDefaultValue", testGetDefaultValue());
+  ADD_TEST("SetParameterUnit", testSetParameterUnit());
   return 0;
 }

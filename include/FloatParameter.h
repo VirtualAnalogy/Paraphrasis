@@ -43,7 +43,11 @@ public:
     std::stringstream numberFormatter;
     numberFormatter.precision(1);
     numberFormatter << std::fixed << getValue();
-    return numberFormatter.str();
+    std::string result = numberFormatter.str();
+    if(getUnit().length() > 0) {
+      result.append(" ").append(getUnit());
+    }
+    return result;
   }
   virtual const ParameterValue getScaledValue() const {
     return (getValue() - getMinValue()) / range;

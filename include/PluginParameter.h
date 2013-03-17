@@ -167,6 +167,13 @@ public:
    * @param inType Type to set
    */
   virtual void setType(unsigned int inType) { this->type = inType; }
+  /**
+   * Set a display unit (such as "ms" for milliseconds) to be shown in the
+   * parameter's getDisplayText() string.
+   *
+   * @param inUnit Unit string to display
+   */
+  virtual void setUnit(const ParameterString& inUnit) { this->unit = inUnit; }
 
   /**
    * Add an observer to be alerted any time this parameter is set to a new value.
@@ -196,8 +203,12 @@ public:
     }
   }
 
+protected:
+  const ParameterString& getUnit() const { return unit; }
+
 private:
   ParameterString name;
+  ParameterString unit;
   const ParameterValue minValue;
   const ParameterValue maxValue;
   const ParameterValue defaultValue;
