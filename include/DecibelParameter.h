@@ -54,7 +54,7 @@ public:
   }
 
   static const ParameterValue convertDecibelsToLinear(const ParameterValue decibels) {
-    return exp10(decibels / 20.0);
+    return pow(10.0, decibels / 20.0);
   }
 
   static const ParameterValue convertLinearToDecibels(const ParameterValue linear) {
