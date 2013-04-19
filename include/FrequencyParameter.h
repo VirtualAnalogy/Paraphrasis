@@ -44,13 +44,13 @@ public:
   virtual const ParameterString getDisplayText() const {
     if(getValue() >= 1000.0) {
       std::stringstream numberFormatter;
-      numberFormatter.precision(1);
+      numberFormatter.precision(getDisplayPrecision());
       numberFormatter << std::fixed << getValue() / 1000.0;
       return numberFormatter.str() + " kHz";
     }
     else {
       std::stringstream numberFormatter;
-      numberFormatter.precision(1);
+      numberFormatter.precision(getDisplayPrecision());
       numberFormatter << std::fixed << getValue();
       return numberFormatter.str() + " Hz";
     }

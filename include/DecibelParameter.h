@@ -48,7 +48,7 @@ public:
 
   virtual const ParameterString getDisplayText() const {
     std::stringstream numberFormatter;
-    numberFormatter.precision(1);
+    numberFormatter.precision(getDisplayPrecision());
     numberFormatter << std::fixed << convertLinearToDecibels(getValue());
     return numberFormatter.str() + " dB";
   }

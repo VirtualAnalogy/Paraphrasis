@@ -349,6 +349,17 @@ static bool testSetParameterUnit() {
   return true;
 }
 
+static bool testSetPrecision() {
+  FloatParameter p("test", 0.0, 1.0, 0.123456);
+  ASSERT_STRING("0.1", p.getDisplayText());
+  p.setDisplayPrecision(3);
+  ASSERT_STRING("0.123", p.getDisplayText());
+  // Rounding!
+  p.setDisplayPrecision(5);
+  ASSERT_STRING("0.12346", p.getDisplayText());
+  return true;
+}
+
 int main(int argc, char* argv[]) {
   ADD_TEST("CreateBoolParameter", testCreateBoolParameter());
   ADD_TEST("SetBoolParameter", testSetBoolParameter());
@@ -379,5 +390,6 @@ int main(int argc, char* argv[]) {
   ADD_TEST("GetMaxValue", testGetMaxValue());
   ADD_TEST("GetDefaultValue", testGetDefaultValue());
   ADD_TEST("SetParameterUnit", testSetParameterUnit());
+  ADD_TEST("SetPrecision", testSetPrecision());
   return 0;
 }

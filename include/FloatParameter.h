@@ -41,7 +41,7 @@ public:
 
   virtual const ParameterString getDisplayText() const {
     std::stringstream numberFormatter;
-    numberFormatter.precision(1);
+    numberFormatter.precision(getDisplayPrecision());
     numberFormatter << std::fixed << getValue();
     std::string result = numberFormatter.str();
     if(getUnit().length() > 0) {

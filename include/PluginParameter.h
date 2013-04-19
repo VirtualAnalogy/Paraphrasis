@@ -33,6 +33,8 @@ namespace teragon {
 typedef std::string ParameterString;
 typedef double ParameterValue;
 
+static const int kDefaultDisplayPrecision = 1;
+
 class PluginParameter;
 class PluginParameterObserver {
 public:
@@ -54,7 +56,9 @@ public:
    * @param inName The parameter name
    */
   PluginParameter(ParameterString inName) :
-    name(inName), minValue(0.0), maxValue(1.0), defaultValue(0.0), value(0.0), type(0) {}
+    name(inName), minValue(0.0), maxValue(1.0), defaultValue(0.0), value(0.0),
+    type(0), precision(kDefaultDisplayPrecision) {}
+
   /**
     * Create a new floating point parameter. This is probably the most common
     * parameter type used in a plugin.
@@ -76,7 +80,7 @@ public:
   PluginParameter(ParameterString inName, ParameterValue inMinValue,
   ParameterValue inMaxValue, ParameterValue inDefaultValue) :
     name(inName), minValue(inMinValue), maxValue(inMaxValue), defaultValue(inDefaultValue),
-    value(inDefaultValue), type(0) {}
+    value(inDefaultValue), type(0), precision(kDefaultDisplayPrecision) {}
   virtual ~PluginParameter() {}
 
   /**
@@ -167,6 +171,15 @@ public:
    * @param inType Type to set
    */
   virtual void setType(unsigned int inType) { this->type = inType; }
+
+  /**
+   * Number of floating point digits to be displayed, for parameters which
+   * support display precision.
+   *
+   * @param inPrecision Number of decimal digits to display
+   */
+  virtual void setDisplayPrecision(unsigned int inPrecision) { this->precision = inPrecision; }
+
   /**
    * Set a display unit (such as "ms" for milliseconds) to be shown in the
    * parameter's getDisplayText() string.
@@ -205,6 +218,7 @@ public:
 
 protected:
   const ParameterString& getUnit() const { return unit; }
+  const int getDisplayPrecision() const { return precision; }
 
 private:
   ParameterString name;
@@ -214,6 +228,7 @@ private:
   const ParameterValue defaultValue;
   ParameterValue value;
   unsigned int type;
+  unsigned int precision;
 
   ParameterObserverMap observers;
 };
