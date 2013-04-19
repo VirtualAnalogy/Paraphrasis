@@ -87,13 +87,16 @@ public:
    * @return The parameter's display name
    */
   const ParameterString& getName() const { return name; }
+
   /**
    * Get the parameter's name for serialization operations. All characters which
    * are not in the A-Z, a-z, 0-9 range are simply removed.
    *
    * @return A the parameter's name, safe for serialization operations
    */
+
   const ParameterString getSafeName() const { return makeSafeName(name); }
+
   /**
    * Get the serialized version of a string
    *
@@ -116,10 +119,12 @@ public:
    * @return The display text for the parameter
    */
   virtual const ParameterString getDisplayText() const = 0;
+
   /**
    * @return The parameter's value, scaled in the range {0.0 - 1.0}
    */
   virtual const ParameterValue getScaledValue() const = 0;
+
   /**
    * Set the parameter's value, scaled in the range {0.0 - 1.0}
    *
@@ -132,6 +137,7 @@ public:
    * and maximum values set in the constructor.
    */
   virtual const ParameterValue getValue() const { return value; }
+
   /**
    * Set the parameter's interval value directly.
    *
@@ -148,10 +154,12 @@ public:
    * @return Get the parameter's minimum value
    */
   virtual const ParameterValue getMinValue() const { return minValue; }
+
   /**
    * @return Get the parameter's maximum value
    */
   virtual const ParameterValue getMaxValue() const { return maxValue; }
+
   /**
    * @return Get the parameter's initial default value. Useful for reset.
    */
@@ -161,6 +169,7 @@ public:
    * @parameter Get the parameter's user-defined type
    */
   virtual const unsigned int getType() const { return type; }
+
   /**
    * Set the parameter's user-defined type. The type can be useful for treating
    * groups of parameters in a given way, such as parameters which require a GUI
