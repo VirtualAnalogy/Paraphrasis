@@ -48,7 +48,7 @@ using namespace teragon;
 }
 
 #define ASSERT_EQUALS(expected, result) { \
-  if(abs(abs(result) - abs(expected)) > 0.001) { \
+  if(abs(fabs(result) - fabs(expected)) > 0.001) { \
     printf("Expected %f, got %f. ", expected, result); \
     return false; \
   } \
