@@ -360,6 +360,22 @@ static bool testSetPrecision() {
   return true;
 }
 
+static bool testCreateStringParameter() {
+  StringParameter p("test", "whatever");
+  ASSERT_EQUALS(0.0, p.getValue());
+  ASSERT_STRING("whatever", p.getDisplayText());
+  return true;
+}
+
+static bool testSetStringParameter() {
+  StringParameter p("test", "whatever");
+  ASSERT_EQUALS(0.0, p.getValue());
+  ASSERT_STRING("whatever", p.getDisplayText());
+  p.setValue("something");
+  ASSERT_STRING("something", p.getDisplayText());
+  return true;
+}
+
 int main(int argc, char* argv[]) {
   ADD_TEST("CreateBoolParameter", testCreateBoolParameter());
   ADD_TEST("SetBoolParameter", testSetBoolParameter());
@@ -391,5 +407,7 @@ int main(int argc, char* argv[]) {
   ADD_TEST("GetDefaultValue", testGetDefaultValue());
   ADD_TEST("SetParameterUnit", testSetParameterUnit());
   ADD_TEST("SetPrecision", testSetPrecision());
+  ADD_TEST("CreateStringParameter", testCreateStringParameter());
+  ADD_TEST("SetStringParameter", testSetStringParameter());
   return 0;
 }

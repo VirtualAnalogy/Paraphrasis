@@ -23,15 +23,31 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __PLUGINPARAMETERS_H__
-#define	__PLUGINPARAMETERS_H__
+#ifndef __StringParameter_h__
+#define __StringParameter_h__
 
-#include "BooleanParameter.h"
-#include "DecibelParameter.h"
-#include "FloatParameter.h"
-#include "FrequencyParameter.h"
-#include "IntegerParameter.h"
-#include "StringParameter.h"
-#include "PluginParameterSet.h"
+#include "PluginParameter.h"
+
+namespace teragon {
+class StringParameter : public PluginParameter {
+public:
+  explicit StringParameter(ParameterString inName, ParameterString inDefaultValue = "") :
+  PluginParameter(inName), value(inDefaultValue) {}
+  virtual ~StringParameter() {}
+
+  virtual const ParameterString getDisplayText() const { return value; }
+  virtual const ParameterValue getDisplayValue() const { return getValue(); }
+  virtual void setDisplayValue(const ParameterValue inValue) { setValue(inValue); }
+
+  virtual const ParameterValue getScaledValue() const { return getValue(); }
+  virtual void setScaledValue(const ParameterValue inValue) { setValue(inValue); }
+  virtual const ParameterValue getValue() const { return 0.0; }
+  virtual void setValue(const ParameterValue inValue) { PluginParameter::setValue(inValue); }
+  virtual void setValue(const ParameterString inValue) { value = inValue; }
+
+private:
+  ParameterString value;
+};
+}
 
 #endif
