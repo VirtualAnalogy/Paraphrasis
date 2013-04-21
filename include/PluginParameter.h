@@ -217,7 +217,7 @@ public:
     ParameterObserverMap::iterator iterator = observers.begin();
     while(iterator != observers.end() && observers.size() > 0) {
       if(*iterator == observer) {
-        observers.erase(iterator++);
+        iterator = observers.erase(iterator);
       }
       else {
         ++iterator;
