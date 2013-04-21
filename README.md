@@ -94,8 +94,25 @@ implementation. It's just to give you a general idea as to how the library
 should be used.
 
 
+Testing
+-------
+
+PluginParameters comes with a small test suite which is used to develop the
+library as well as fix bugs. If you think you've found a bug in
+PluginParameters, then please build the test suite and run it before reporting
+a bug for your platform.
+
+PluginParameters is built with [CMake][1] and should compile cleanly out of
+the box. Building on unix platforms (including Mac OSX) is simply a matter of
+running `cmake . ; make`. On Windows, one can run `cmake.exe -G "Visual Studio
+11"` to generate a Visual Studio project file which can build the project.
+
+
 License
 -------
 
 PluginParameters is licensed under the BSD licnese. See the file `LICENSE.txt`
 provided with the source code for more details.
+
+
+[1]: http://www.cmake.org
