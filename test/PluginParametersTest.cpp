@@ -141,7 +141,7 @@ static bool testSetFrequencyParameter() {
   FrequencyParameter p("test", 20.0, 20000.0, 10000.0);
   p.setValue(666.0);
   ASSERT_EQUALS(666.0, p.getValue());
-  ASSERT_EQUALS(0.5, p.getScaledValue());
+  ASSERT_EQUALS(0.507481, p.getScaledValue());
   p.setScaledValue(0.75);
   ASSERT_EQUALS(3556.559, p.getValue());
   ASSERT_EQUALS(0.75, p.getScaledValue());
