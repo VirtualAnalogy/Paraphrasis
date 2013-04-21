@@ -3,9 +3,11 @@
 *~
 *.o
 *.so
+*.obj
 
 # Build products
 test/pluginparameterstest
+pluginparameterstest.exe
 
 # Test output
 test/out/*
@@ -18,6 +20,15 @@ test/out/*
 *.opensdf
 *.suo
 nbproject/*
+*.log
+*.tlog
+*.lastbuildstate
+*.sln
+*.vcxproj
+*.filters
+*.pdb
+*.ilk
+*.cache
 
 # Vim helpers
 tags
