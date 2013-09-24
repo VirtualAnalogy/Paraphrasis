@@ -12,10 +12,14 @@
 #include "Sizes.h"
 
 namespace teragon {
-    
-ThinButton::ThinButton(const ThinButton::Gravity gravity) :
+
+ThinButton::ThinButton(const char* pressedImage, const int pressedImageSize,
+        const char* normalImage, const int normalImageSize,
+        const ThinButton::Gravity gravity) :
     ImageButton(String::empty), gravity(gravity)
 {
+    setImages(ImageCache::getFromMemory(pressedImage, pressedImageSize),
+              ImageCache::getFromMemory(normalImage, normalImageSize));
 }
 
 void ThinButton::paint(Graphics &g) {
@@ -23,12 +27,12 @@ void ThinButton::paint(Graphics &g) {
     const Image buttonStateImage = getImageForButtonState();
     int buttonY;
     if(gravity == kGravityTop) {
-        buttonY = kThinButtonPadding;
+        buttonY = 0;
     }
     else if(gravity == kGravityBottom) {
-        buttonY = getHeight() - buttonStateImage.getHeight() - kThinButtonPadding;
+        buttonY = getHeight() - buttonStateImage.getHeight();
     }
-    g.drawImage(buttonStateImage, 0, buttonY, kThinButtonWidth, kThinButtonHeight,
+    g.drawImage(buttonStateImage, 0, buttonY, buttonStateImage.getWidth(), buttonStateImage.getHeight(),
         0, 0, buttonStateImage.getWidth(), buttonStateImage.getHeight());
 }
 

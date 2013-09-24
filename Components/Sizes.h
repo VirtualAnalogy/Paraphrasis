@@ -17,10 +17,4 @@ const int kImageKnobLargeSize = 72;
 const int kImageSliderHandleWidth = 40;
 const int kImageSliderHandleHeight = 24;
 
-const int kThinButtonPadding = 0;
-const int kThinButtonWidth = 64;
-const int kThinButtonHeight = 12;
-
-
-
 #endif  // __SIZES_H_6704A0A__

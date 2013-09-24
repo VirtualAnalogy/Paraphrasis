@@ -17,7 +17,10 @@ namespace teragon {
 
 class PushButton : public ThinButton {
 public:
-    PushButton(const ThinButton::Gravity gravity = kGravityDefault) : ThinButton(gravity) {}
+    PushButton(const char* pressedImage, const int pressedImageSize,
+        const char* normalImage, const int normalImageSize,
+        const ThinButton::Gravity gravity = kGravityDefault) :
+        ThinButton(pressedImage, pressedImageSize, normalImage, normalImageSize, gravity) {}
     virtual ~PushButton() {}
 
     const Image getImageForButtonState() {

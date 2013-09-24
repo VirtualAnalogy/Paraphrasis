@@ -65,6 +65,7 @@ public:
                                         Colours::lightgrey,
                                         DocumentWindow::allButtons)
         {
+            setContentOwned (new MainComponent(), true);
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
         }

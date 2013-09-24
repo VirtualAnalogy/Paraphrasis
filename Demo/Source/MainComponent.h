@@ -57,6 +57,18 @@ public:
     // Binary resources:
     static const char* texture_png;
     static const int texture_pngSize;
+    static const char* push_button_normal_png;
+    static const int push_button_normal_pngSize;
+    static const char* push_button_pressed_png;
+    static const int push_button_pressed_pngSize;
+    static const char* indicator_light_active_png;
+    static const int indicator_light_active_pngSize;
+    static const char* indicator_light_inactive_png;
+    static const int indicator_light_inactive_pngSize;
+    static const char* slider_thumb_png;
+    static const int slider_thumb_pngSize;
+    static const char* slider_well_png;
+    static const int slider_well_pngSize;
 
 
 private:
@@ -65,6 +77,7 @@ private:
 
     //==============================================================================
     ScopedPointer<teragon::PushButton> pushButton;
+    ScopedPointer<Label> pushButtonLabel;
     Image cachedImage_texture_png;
 
 
