@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="W5chp0" name="ComponentDemo" projectType="guiapp" version="1.0.0"
+              bundleIdentifier="com.teragonaudio.ComponentDemo" includeBinaryInAppConfig="1"
+              jucerVersion="3.1.0" companyName="Teragon Audio">
+  <MAINGROUP id="qYaJjs" name="ComponentDemo">
+    <GROUP id="{08B3F7AA-BD19-0DE8-C8BE-79CDEB3F6DE5}" name="Components">
+      <FILE id="QWOQHX" name="ImageKnob.cpp" compile="1" resource="0" file="../Components/ImageKnob.cpp"/>
+      <FILE id="vvBIXL" name="ImageKnob.h" compile="0" resource="0" file="../Components/ImageKnob.h"/>
+      <FILE id="ehdnDA" name="ImageSlider.cpp" compile="1" resource="0" file="../Components/ImageSlider.cpp"/>
+      <FILE id="tKLjWq" name="ImageSlider.h" compile="0" resource="0" file="../Components/ImageSlider.h"/>
+      <FILE id="NPFknL" name="IndicatorLight.cpp" compile="1" resource="0"
+            file="../Components/IndicatorLight.cpp"/>
+      <FILE id="vhJdDM" name="IndicatorLight.h" compile="0" resource="0"
+            file="../Components/IndicatorLight.h"/>
+      <FILE id="zIiXfd" name="PushButton.h" compile="0" resource="0" file="../Components/PushButton.h"/>
+      <FILE id="Gbw5ar" name="Sizes.h" compile="0" resource="0" file="../Components/Sizes.h"/>
+      <FILE id="eZiGey" name="ThinButton.cpp" compile="1" resource="0" file="../Components/ThinButton.cpp"/>
+      <FILE id="qYltJR" name="ThinButton.h" compile="0" resource="0" file="../Components/ThinButton.h"/>
+      <FILE id="bF9bwf" name="ToggleButton.h" compile="0" resource="0" file="../Components/ToggleButton.h"/>
+    </GROUP>
+    <GROUP id="{13E73132-5C03-0A9B-8CCB-8D2002B834C6}" name="Source">
+      <FILE id="MNx6Lt" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="k3hrhP" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="C2q2Sk" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_gui_audio" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1"/>
+  </MODULES>
+  <EXPORTFORMATS>
+    <LINUX_MAKE targetFolder="Builds/Linux" juceFolder="../../../sdk/juce-src/modules"
+                extraCompilerFlags="-I../../../Components">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
+                       targetName="ComponentDemo"/>
+        <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
+                       targetName="ComponentDemo"/>
+      </CONFIGURATIONS>
+    </LINUX_MAKE>
+  </EXPORTFORMATS>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>
