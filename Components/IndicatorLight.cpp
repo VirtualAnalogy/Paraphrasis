@@ -12,14 +12,18 @@
 
 namespace teragon {
 
-IndicatorLight::IndicatorLight() : Component(String::empty), enabled(false) {
-    
+IndicatorLight::IndicatorLight(const char* enabledImage, const int enabledImageSize,
+                               const char* disabledImage, const int disabledImageSize) :
+    Component(String::empty), enabled(false) {
+    setImages(ImageCache::getFromMemory(enabledImage, enabledImageSize),
+              ImageCache::getFromMemory(disabledImage, disabledImageSize));
 }
 
 void IndicatorLight::paint(juce::Graphics &g) {
     g.drawImage(disabledImage, 0, 0, getWidth(), getHeight(),
                 0, 0, disabledImage.getWidth(), disabledImage.getHeight());
-    if(enabledOpacity > 0.0f) {
+
+   if(enabledOpacity > 0.0f) {
         if(enabledOpacity >= 1.0f) {
             enabledOpacity = 1.0f;
         }
@@ -45,9 +49,9 @@ void IndicatorLight::timerCallback() {
 
 void IndicatorLight::setEnabled(bool enabled) {
     if(this->enabled != enabled) {
-        this->enabled = enabled;
-        this->enabledOpacity = enabled ? 0.0f : 1.0f;
-        this->stepRate = (enabled ? 1.0f : -1.0f) * 0.25f;
+       this->enabled = enabled;
+       this->enabledOpacity = enabled ? 0.0f : 1.0f;
+       this->stepRate = (enabled ? 1.0f : -1.0f) * 0.25f;
         startTimer(33); // ~30fps
     }
 }

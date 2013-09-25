@@ -86,16 +86,17 @@ private:
 
     //==============================================================================
     ScopedPointer<Label> newLabel;
-    ScopedPointer<Label> label;
-    ScopedPointer<Label> label2;
+    ScopedPointer<Label> pushButtonLabel;
+    ScopedPointer<Label> faderLabel;
     ScopedPointer<Label> label3;
     ScopedPointer<Label> label4;
     ScopedPointer<Label> label5;
-    ScopedPointer<teragon::PushButton> pushButton;
     ScopedPointer<teragon::ToggleButton> toggleButton;
+    ScopedPointer<teragon::PushButton> pushButton;
     ScopedPointer<teragon::ImageKnob> smallKnob;
     ScopedPointer<teragon::ImageKnob> largeKnob;
-    ScopedPointer<Component> component;
+    ScopedPointer<teragon::ImageSlider> fader;
+    ScopedPointer<teragon::IndicatorLight> indicatorLight;
     Image cachedImage_texture_png;
 
 

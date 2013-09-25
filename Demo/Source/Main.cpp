@@ -61,7 +61,7 @@ public:
     class MainWindow    : public DocumentWindow
     {
     public:
-        MainWindow()  : DocumentWindow ("MainWindow",
+        MainWindow()  : DocumentWindow ("GUI Demo",
                                         Colours::lightgrey,
                                         DocumentWindow::allButtons)
         {

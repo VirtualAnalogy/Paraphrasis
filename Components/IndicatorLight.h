@@ -17,7 +17,8 @@ namespace teragon {
 
 class IndicatorLight : public Component, public Timer {
 public:
-    IndicatorLight();
+    IndicatorLight(const char* enabledImage, const int enabledImageSize,
+        const char* disabledImage, const int disabledImageSize);
     virtual ~IndicatorLight() {}
 
     void paint(Graphics &g);

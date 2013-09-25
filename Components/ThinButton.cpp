@@ -9,7 +9,6 @@
 */
 
 #include "ThinButton.h"
-#include "Sizes.h"
 
 namespace teragon {
 

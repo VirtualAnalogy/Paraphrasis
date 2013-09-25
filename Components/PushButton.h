@@ -17,8 +17,8 @@ namespace teragon {
 
 class PushButton : public ThinButton {
 public:
-    PushButton(const char* pressedImage, const int pressedImageSize,
-        const char* normalImage, const int normalImageSize,
+    PushButton(const char* normalImage, const int normalImageSize,
+        const char* pressedImage, const int pressedImageSize,
         const ThinButton::Gravity gravity = kGravityDefault) :
         ThinButton(normalImage, normalImageSize, pressedImage, pressedImageSize, gravity) {
         setClickingTogglesState(true);

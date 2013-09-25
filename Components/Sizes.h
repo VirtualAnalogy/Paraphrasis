@@ -11,10 +11,4 @@
 #ifndef __SIZES_H_6704A0A__
 #define __SIZES_H_6704A0A__
 
-const int kImageKnobSmallSize = 48;
-const int kImageKnobLargeSize = 72;
-
-const int kImageSliderHandleWidth = 40;
-const int kImageSliderHandleHeight = 24;
-
 #endif  // __SIZES_H_6704A0A__

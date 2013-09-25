@@ -9,7 +9,6 @@
 */
 
 #include "ImageKnob.h"
-#include "Sizes.h"
 
 namespace teragon {
 

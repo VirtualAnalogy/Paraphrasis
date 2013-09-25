@@ -17,18 +17,17 @@ namespace teragon {
 
 class ImageSlider : public juce::Slider {
 public:
-  ImageSlider();
-  ImageSlider(const String &componentName);
-  virtual ~ImageSlider();
+    ImageSlider(const char* handleImage, const int handleImageSize,
+        const char* wellImage, const int wellImageSize);
+    ImageSlider(const String &componentName);
+    virtual ~ImageSlider();
 
-  void paint(Graphics &g);
-  void setImages(const Image& handleImage, const Image& backgroundImage);
+    void paint(Graphics &g);
+    void setImages(const Image& handleImage, const Image& wellImage);
 
 private:
-  void initialize();
-
-  Image handleImage;
-  Image backgroundImage;
+    Image handleImage;
+    Image wellImage;
 };
 
 } // namespace teragon

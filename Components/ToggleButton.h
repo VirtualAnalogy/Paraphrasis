@@ -21,6 +21,7 @@ public:
         const char* pressedImage, const int pressedImageSize,
         const ThinButton::Gravity gravity = kGravityDefault) :
         ThinButton(normalImage, normalImageSize, pressedImage, pressedImageSize, gravity) {
+        setClickingTogglesState(false);
     }
     virtual ~ToggleButton() {}
 
