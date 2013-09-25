@@ -51,5 +51,5 @@ for i in $(seq 0 $skipFrames $totalNumImages) ; do
 done
 
 outputFile=out.png
-montage -tile 1x$numImages -background transparent "$workDir/*.png" "$outputFile"
+montage -tile 1x$numImages -background transparent -geometry 113x113+1+1 "$workDir/*.png" "$outputFile"
 printf "Processed %d images to %s\n" "$numImages" "$outputFile"
