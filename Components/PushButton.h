@@ -20,11 +20,13 @@ public:
     PushButton(const char* pressedImage, const int pressedImageSize,
         const char* normalImage, const int normalImageSize,
         const ThinButton::Gravity gravity = kGravityDefault) :
-        ThinButton(pressedImage, pressedImageSize, normalImage, normalImageSize, gravity) {}
+        ThinButton(normalImage, normalImageSize, pressedImage, pressedImageSize, gravity) {
+        setClickingTogglesState(true);
+    }
     virtual ~PushButton() {}
 
     const Image getImageForButtonState() {
-        return isDown() ? getDownImage() : getNormalImage();
+        return getToggleState() ? getDownImage() : getNormalImage();
     }
 };
 

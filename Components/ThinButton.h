@@ -25,8 +25,8 @@ public:
     } Gravity;
 
 public:
-    ThinButton(const char* pressedImage, const int pressedImageSize,
-        const char* normalImage, const int normalImageSize,
+    ThinButton(const char* normalImage, const int normalImageSize,
+        const char* pressedImage, const int pressedImageSize,
         const ThinButton::Gravity gravity = kGravityDefault);
     virtual ~ThinButton() {}
 

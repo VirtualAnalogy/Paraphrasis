@@ -17,16 +17,15 @@
   ==============================================================================
 */
 
-#ifndef __JUCE_HEADER_9002020A4DD09B20__
-#define __JUCE_HEADER_9002020A4DD09B20__
+#ifndef __JUCE_HEADER_CB87035FA43504BB__
+#define __JUCE_HEADER_CB87035FA43504BB__
 
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
+#include "IndicatorLight.h"
 #include "ImageKnob.h"
 #include "ImageSlider.h"
-#include "IndicatorLight.h"
 #include "PushButton.h"
-#include "ThinButton.h"
 #include "ToggleButton.h"
 //[/Headers]
 
@@ -35,40 +34,50 @@
 //==============================================================================
 /**
                                                                     //[Comments]
-    An auto-generated component, created by the Introjucer.
+    An auto-generated component, created by the Jucer.
 
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class MainComponent  : public Component
+class MainContentComponent  : public Component,
+                              public ButtonListener
 {
 public:
     //==============================================================================
-    MainComponent ();
-    ~MainComponent();
+    MainContentComponent ();
+    ~MainContentComponent();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void buttonClicked(Button *button);
     //[/UserMethods]
 
     void paint (Graphics& g);
     void resized();
 
     // Binary resources:
-    static const char* texture_png;
-    static const int texture_pngSize;
-    static const char* push_button_normal_png;
-    static const int push_button_normal_pngSize;
-    static const char* push_button_pressed_png;
-    static const int push_button_pressed_pngSize;
     static const char* indicator_light_active_png;
     static const int indicator_light_active_pngSize;
     static const char* indicator_light_inactive_png;
     static const int indicator_light_inactive_pngSize;
+    static const char* push_button_normal_png;
+    static const int push_button_normal_pngSize;
+    static const char* push_button_pressed_png;
+    static const int push_button_pressed_pngSize;
     static const char* slider_thumb_png;
     static const int slider_thumb_pngSize;
     static const char* slider_well_png;
     static const int slider_well_pngSize;
+    static const char* texture_png;
+    static const int texture_pngSize;
+    static const char* toggle_button_normal_png;
+    static const int toggle_button_normal_pngSize;
+    static const char* toggle_button_pressed_png;
+    static const int toggle_button_pressed_pngSize;
+    static const char* largeknob270frames_png;
+    static const int largeknob270frames_pngSize;
+    static const char* smallknob270frames_png;
+    static const int smallknob270frames_pngSize;
 
 
 private:
@@ -76,16 +85,25 @@ private:
     //[/UserVariables]
 
     //==============================================================================
+    ScopedPointer<Label> newLabel;
+    ScopedPointer<Label> label;
+    ScopedPointer<Label> label2;
+    ScopedPointer<Label> label3;
+    ScopedPointer<Label> label4;
+    ScopedPointer<Label> label5;
     ScopedPointer<teragon::PushButton> pushButton;
-    ScopedPointer<Label> pushButtonLabel;
+    ScopedPointer<teragon::ToggleButton> toggleButton;
+    ScopedPointer<teragon::ImageKnob> smallKnob;
+    ScopedPointer<teragon::ImageKnob> largeKnob;
+    ScopedPointer<Component> component;
     Image cachedImage_texture_png;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
 
-#endif   // __JUCE_HEADER_9002020A4DD09B20__
+#endif   // __JUCE_HEADER_CB87035FA43504BB__

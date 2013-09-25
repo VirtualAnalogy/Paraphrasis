@@ -17,19 +17,14 @@ namespace teragon {
 
 class ImageKnob : public juce::Slider {
 public:
-  ImageKnob();
-  ImageKnob(const String &componentName);
+  ImageKnob(const char* knobImage, const int knobImageSize);
   virtual ~ImageKnob();
 
   void paint(Graphics &g);
   void setImages(const Image& knobImage);
-    void setUseSmallKnobs(bool useSmallKnobs);
 
 private:
-  void initialize();
-
   Image knobImage;
-  bool useSmallKnobs;
 };
 
 } // namespace teragon

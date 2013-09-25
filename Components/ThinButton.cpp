@@ -13,8 +13,8 @@
 
 namespace teragon {
 
-ThinButton::ThinButton(const char* pressedImage, const int pressedImageSize,
-        const char* normalImage, const int normalImageSize,
+ThinButton::ThinButton(const char* normalImage, const int normalImageSize,
+        const char* pressedImage, const int pressedImageSize,
         const ThinButton::Gravity gravity) :
     ImageButton(String::empty), gravity(gravity)
 {
