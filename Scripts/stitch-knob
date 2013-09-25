@@ -1,0 +1,55 @@
+#!/bin/bash
+# stitch-knob -- a basic script for making animated knob filmstrips
+# This script assumes that you have a directory of individual images
+# which are numbered sequentially, for example:
+# knob/image_00000.png
+# knob/image_00001.png
+# knob/image_00002.png
+# knob/image_00003.png
+# ...and so on. The resulting filmstrip is dumped to the current
+# directory as a PNG file.
+
+knobDirectory="$1"
+skipFrames="$2"
+if [ -z "$2" ] ; then
+  skipFrames=1
+fi
+
+function print_usage() {
+  printf "Usage: %s <knob directory> (skip frames)\n" $(basename $0)
+  printf "<knob directory> is a path to a directory containing numbered knob images\n"
+  printf "(skip frames) will skip N frames, producing a smaller output image\n"
+  exit 1
+}
+
+if ! [ -e "$knobDirectory" ] ; then
+  printf "ERROR: '%s' is not a valid directory\n" "$knobDirectory"
+  print_usage
+fi
+
+numberRegex='^[0-9]+$'
+case $skipFrames in
+  ''|*[!0-9]*)
+    printf "ERROR: '%s' is not a valid value for skip frames\n" "$skipFrames"
+    print_usage
+    ;;
+  *) ;;
+esac
+
+workDir=/tmp/stitch-knob
+rm -rf $workDir
+mkdir $workDir
+
+numImages=0
+totalNumImages=$(($(ls -1 "$knobDirectory" | wc -l) - 1))
+imageBasename=$(ls -1 "$knobDirectory" | head -1 | cut -d '0' -f 1)
+for i in $(seq 0 $skipFrames $totalNumImages) ; do
+  # TODO: This assumes that each image uses 5 digits for sequence numbering
+  printf -v imageFilename "%s%05d.png" "$imageBasename" "$i"
+  cp "$knobDirectory/$imageFilename" "$workDir"
+  numImages=$(($numImages + 1))
+done
+
+outputFile=out.png
+montage -tile 1x$numImages -background transparent "$workDir/*.png" "$outputFile"
+printf "Processed %d images to %s\n" "$numImages" "$outputFile"
