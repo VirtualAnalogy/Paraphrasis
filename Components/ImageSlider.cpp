@@ -31,15 +31,17 @@ void ImageSlider::setImages(const Image& handleImage, const Image& wellImage) {
 void ImageSlider::paint(Graphics &g) {
   int handleX = (getWidth() - handleImage.getWidth()) / 2;
   int wellX = (getWidth() - wellImage.getWidth()) / 2;
-  int yRange = getHeight() - handleImage.getHeight() - 1;
+  int yRange = getHeight() - handleImage.getHeight() / 2;
+  // Mysterious logic... o_O Not sure why this handle is so tough to position, even
+  // at position == 0, it is ~20px below the top of the well. Not sure why this is,
+  // but this arithmetic seems to put it in the right position.
   int position = yRange - (yRange * (getValue() / getMaximum() - getMinimum())) + 1;
+  int offset = handleImage.getHeight() / 4 + 1;
 
   // g.fillCheckerBoard(getLocalBounds(), 10, 10, juce::Colours::white, juce::Colours::grey);
 
-  g.drawImage(wellImage, wellX, 0, wellImage.getWidth(), getHeight(),
-              0, 0, wellImage.getWidth(), wellImage.getHeight());
-  g.drawImage(handleImage, handleX, position, handleImage.getWidth(), handleImage.getHeight(),
-              0, 0, handleImage.getWidth(), handleImage.getHeight());
+  g.drawImageAt(wellImage, 0, 0);
+  g.drawImageAt(handleImage, handleX, position - offset);
 }
 
 }
