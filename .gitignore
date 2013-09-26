@@ -1,2 +1,6 @@
 Demo/Builds/Linux/build/*
 Demo/Builds/Linux/nbproject/*
+workspace.xml
+local.properties
+LCDMaker/gen/*
+LCDMaker/out/*
