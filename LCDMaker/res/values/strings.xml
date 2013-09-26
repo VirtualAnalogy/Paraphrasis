@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LCDMaker</string>
+    <string name="button_text_set_width">Set Width</string>
+    <string name="button_text_set_height">Set Height</string>
+</resources>
