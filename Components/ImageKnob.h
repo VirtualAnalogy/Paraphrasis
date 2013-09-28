@@ -13,19 +13,19 @@
 
 #include "JuceHeader.h"
 #include "PluginParameters.h"
+#include "ResourceCache.h"
 
 namespace teragon {
 
 class ImageKnob : public juce::Slider, public PluginParameterObserver {
 public:
-    ImageKnob(PluginParameter *parameter, const char* knobImage, const int knobImageSize);
+    ImageKnob(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates);
     virtual ~ImageKnob();
 
     void onParameterUpdated(const PluginParameter* parameter);
     void valueChanged();
 
     void paint(Graphics &g);
-    void setImages(const Image& knobImage);
 
 private:
     Image knobImage;

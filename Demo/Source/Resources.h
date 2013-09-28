@@ -22,6 +22,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
+#include "ResourceCache.h"
 //[/Headers]
 
 
@@ -43,6 +44,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    static teragon::ResourceCache* getCache();
     //[/UserMethods]
 
     void paint (Graphics& g);
@@ -61,8 +63,6 @@ public:
     static const int slider_thumb_pngSize;
     static const char* slider_well_png;
     static const int slider_well_pngSize;
-    static const char* texture_png;
-    static const int texture_pngSize;
     static const char* toggle_button_normal_png;
     static const int toggle_button_normal_pngSize;
     static const char* toggle_button_pressed_png;

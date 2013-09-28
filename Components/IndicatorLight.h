@@ -13,14 +13,13 @@
 
 #include "JuceHeader.h"
 #include "PluginParameters.h"
+#include "ResourceCache.h"
 
 namespace teragon {
 
 class IndicatorLight : public Component, public Timer, public PluginParameterObserver {
 public:
-    IndicatorLight(PluginParameter *parameter,
-                   const char* enabledImage, const int enabledImageSize,
-                   const char* disabledImage, const int disabledImageSize);
+    IndicatorLight(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates);
     virtual ~IndicatorLight();
 
     void onParameterUpdated(const PluginParameter* parameter);
@@ -29,7 +28,6 @@ public:
     void timerCallback();
 
     void setEnabled(bool enabled);
-    void setImages(Image enabledImage, Image disabledImage);
 
 private:
     Image enabledImage;

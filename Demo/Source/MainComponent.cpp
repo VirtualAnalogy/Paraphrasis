@@ -28,17 +28,18 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-MainContentComponent::MainContentComponent (teragon::PluginParameterSet &parameters)
-    : parameters(parameters)
+MainContentComponent::MainContentComponent (teragon::PluginParameterSet &parameters, teragon::ResourceCache *resourceCache)
+    : parameters(parameters),
+      resourceCache(resourceCache)
 {
-    addAndMakeVisible (newLabel = new Label ("new label",
-                                             "Toggle Button"));
-    newLabel->setFont (Font (15.00f, Font::plain));
-    newLabel->setJustificationType (Justification::centredLeft);
-    newLabel->setEditable (false, false, false);
-    newLabel->setColour (Label::textColourId, Colours::white);
-    newLabel->setColour (TextEditor::textColourId, Colours::black);
-    newLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible (toggleButtonLabel = new Label ("toggle button label",
+                                                      "Toggle Button"));
+    toggleButtonLabel->setFont (Font (15.00f, Font::plain));
+    toggleButtonLabel->setJustificationType (Justification::centredLeft);
+    toggleButtonLabel->setEditable (false, false, false);
+    toggleButtonLabel->setColour (Label::textColourId, Colours::white);
+    toggleButtonLabel->setColour (TextEditor::textColourId, Colours::black);
+    toggleButtonLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (pushButtonLabel = new Label ("push button label",
                                                     "Push Button"));
@@ -58,72 +59,57 @@ MainContentComponent::MainContentComponent (teragon::PluginParameterSet &paramet
     faderLabel->setColour (TextEditor::textColourId, Colours::black);
     faderLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (label3 = new Label ("new label",
-                                           "Indicator Light"));
-    label3->setFont (Font (15.00f, Font::plain));
-    label3->setJustificationType (Justification::centredLeft);
-    label3->setEditable (false, false, false);
-    label3->setColour (Label::textColourId, Colours::white);
-    label3->setColour (TextEditor::textColourId, Colours::black);
-    label3->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible (indicatorLightLabel = new Label ("indicator light label",
+                                                        "Indicator Light"));
+    indicatorLightLabel->setFont (Font (15.00f, Font::plain));
+    indicatorLightLabel->setJustificationType (Justification::centredLeft);
+    indicatorLightLabel->setEditable (false, false, false);
+    indicatorLightLabel->setColour (Label::textColourId, Colours::white);
+    indicatorLightLabel->setColour (TextEditor::textColourId, Colours::black);
+    indicatorLightLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (label4 = new Label ("new label",
-                                           "Large Knob"));
-    label4->setFont (Font (15.00f, Font::plain));
-    label4->setJustificationType (Justification::centredLeft);
-    label4->setEditable (false, false, false);
-    label4->setColour (Label::textColourId, Colours::white);
-    label4->setColour (TextEditor::textColourId, Colours::black);
-    label4->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible (largeKnobLabel = new Label ("large knob label",
+                                                   "Large Knob"));
+    largeKnobLabel->setFont (Font (15.00f, Font::plain));
+    largeKnobLabel->setJustificationType (Justification::centredLeft);
+    largeKnobLabel->setEditable (false, false, false);
+    largeKnobLabel->setColour (Label::textColourId, Colours::white);
+    largeKnobLabel->setColour (TextEditor::textColourId, Colours::black);
+    largeKnobLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (label5 = new Label ("new label",
-                                           "Small knob"));
-    label5->setFont (Font (15.00f, Font::plain));
-    label5->setJustificationType (Justification::centredLeft);
-    label5->setEditable (false, false, false);
-    label5->setColour (Label::textColourId, Colours::white);
-    label5->setColour (TextEditor::textColourId, Colours::black);
-    label5->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible (smallKnobLabel = new Label ("small knob label",
+                                                   "Small knob"));
+    smallKnobLabel->setFont (Font (15.00f, Font::plain));
+    smallKnobLabel->setJustificationType (Justification::centredLeft);
+    smallKnobLabel->setEditable (false, false, false);
+    smallKnobLabel->setColour (Label::textColourId, Colours::white);
+    smallKnobLabel->setColour (TextEditor::textColourId, Colours::black);
+    smallKnobLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (toggleButton = new teragon::ToggleButton (parameters["button"],
-                                                                 Resources::toggle_button_normal_png,
-                                                                 Resources::toggle_button_normal_pngSize,
-                                                                 Resources::toggle_button_pressed_png,
-                                                                 Resources::toggle_button_pressed_pngSize));
+                                                                 resourceCache->get("toggle_button")));
     toggleButton->setName ("toggle button");
 
     addAndMakeVisible (pushButton = new teragon::PushButton (parameters["indicator"],
-                                                             Resources::push_button_normal_png,
-                                                             Resources::push_button_normal_pngSize,
-                                                             Resources::push_button_pressed_png,
-                                                             Resources::push_button_pressed_pngSize));
+                                                             resourceCache->get("push_button")));
     pushButton->setName ("push button");
 
     addAndMakeVisible (smallKnob = new teragon::ImageKnob (parameters["knob"],
-                                                           Resources::smallknob270frames_png,
-                                                           Resources::smallknob270frames_pngSize));
+                                                           resourceCache->get("small_knob")));
     smallKnob->setName ("small knob");
 
     addAndMakeVisible (largeKnob = new teragon::ImageKnob (parameters["knob"],
-                                                           Resources::largeknob270frames_png,
-                                                           Resources::largeknob270frames_pngSize));
+                                                           resourceCache->get("large_knob")));
     largeKnob->setName ("large knob");
 
     addAndMakeVisible (fader = new teragon::ImageSlider (parameters["knob"],
-                                                         Resources::slider_thumb_png,
-                                                         Resources::slider_thumb_pngSize,
-                                                         Resources::slider_well_png,
-                                                         Resources::slider_well_pngSize));
+                                                         resourceCache->get("slider")));
     fader->setName ("fader");
 
     addAndMakeVisible (indicatorLight = new teragon::IndicatorLight (parameters["indicator"],
-                                                                     Resources::indicator_light_active_png,
-                                                                     Resources::indicator_light_active_pngSize,
-                                                                     Resources::indicator_light_inactive_png,
-                                                                     Resources::indicator_light_inactive_pngSize));
+                                                                     resourceCache->get("indicator_light")));
     indicatorLight->setName ("indicator light");
 
-    drawable1 = Drawable::createFromImageData (Resources::texture_png, Resources::texture_pngSize);
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -140,19 +126,18 @@ MainContentComponent::~MainContentComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    newLabel = nullptr;
+    toggleButtonLabel = nullptr;
     pushButtonLabel = nullptr;
     faderLabel = nullptr;
-    label3 = nullptr;
-    label4 = nullptr;
-    label5 = nullptr;
+    indicatorLightLabel = nullptr;
+    largeKnobLabel = nullptr;
+    smallKnobLabel = nullptr;
     toggleButton = nullptr;
     pushButton = nullptr;
     smallKnob = nullptr;
     largeKnob = nullptr;
     fader = nullptr;
     indicatorLight = nullptr;
-    drawable1 = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -165,13 +150,7 @@ void MainContentComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colours::white);
-
-    g.setColour (Colours::black);
-    jassert (drawable1 != 0);
-    if (drawable1 != 0)
-        drawable1->drawWithin (g, Rectangle<float> (-3, -4, 512, 512),
-                               RectanglePlacement::stretchToFit, 1.000f);
+    g.fillAll (Colours::black);
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -179,12 +158,12 @@ void MainContentComponent::paint (Graphics& g)
 
 void MainContentComponent::resized()
 {
-    newLabel->setBounds (14, 32, 96, 24);
+    toggleButtonLabel->setBounds (14, 32, 96, 24);
     pushButtonLabel->setBounds (16, 88, 94, 24);
     faderLabel->setBounds (32, 282, 48, 24);
-    label3->setBounds (136, 40, 96, 24);
-    label4->setBounds (136, 285, 80, 24);
-    label5->setBounds (144, 136, 80, 24);
+    indicatorLightLabel->setBounds (136, 40, 96, 24);
+    largeKnobLabel->setBounds (136, 285, 80, 24);
+    smallKnobLabel->setBounds (144, 136, 80, 24);
     toggleButton->setBounds (24, 16, 72, 40);
     pushButton->setBounds (24, 72, 70, 40);
     smallKnob->setBounds (152, 72, 66, 66);
@@ -211,14 +190,14 @@ void MainContentComponent::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainContentComponent" componentName=""
-                 parentClasses="public Component, public ButtonListener" constructorParams="teragon::PluginParameterSet &amp;parameters"
-                 variableInitialisers="parameters(parameters)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.660" fixedSize="1"
-                 initialWidth="250" initialHeight="320">
-  <BACKGROUND backgroundColour="ffffffff">
-    <IMAGE pos="-3 -4 512 512" resource="texture_png" opacity="1" mode="0"/>
+                 parentClasses="public Component" constructorParams="teragon::PluginParameterSet &amp;parameters, teragon::ResourceCache *resourceCache"
+                 variableInitialisers="parameters(parameters),&#10;resourceCache(resourceCache)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.660"
+                 fixedSize="1" initialWidth="250" initialHeight="320">
+  <BACKGROUND backgroundColour="ff000000">
+    <IMAGE pos="0 0 250 320" resource="" opacity="1" mode="0"/>
   </BACKGROUND>
-  <LABEL name="new label" id="38208308bb309b1a" memberName="newLabel"
+  <LABEL name="toggle button label" id="38208308bb309b1a" memberName="toggleButtonLabel"
          virtualName="" explicitFocusOrder="0" pos="14 32 96 24" textCol="ffffffff"
          edTextCol="ff000000" edBkgCol="0" labelText="Toggle Button" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
@@ -233,39 +212,39 @@ BEGIN_JUCER_METADATA
          edTextCol="ff000000" edBkgCol="0" labelText="Fader" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="36"/>
-  <LABEL name="new label" id="75da6a91515ddd5d" memberName="label3" virtualName=""
-         explicitFocusOrder="0" pos="136 40 96 24" textCol="ffffffff"
+  <LABEL name="indicator light label" id="75da6a91515ddd5d" memberName="indicatorLightLabel"
+         virtualName="" explicitFocusOrder="0" pos="136 40 96 24" textCol="ffffffff"
          edTextCol="ff000000" edBkgCol="0" labelText="Indicator Light"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="15" bold="0" italic="0" justification="33"/>
-  <LABEL name="new label" id="ef0fde9d17b48a9b" memberName="label4" virtualName=""
-         explicitFocusOrder="0" pos="136 285 80 24" textCol="ffffffff"
+  <LABEL name="large knob label" id="ef0fde9d17b48a9b" memberName="largeKnobLabel"
+         virtualName="" explicitFocusOrder="0" pos="136 285 80 24" textCol="ffffffff"
          edTextCol="ff000000" edBkgCol="0" labelText="Large Knob" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
-  <LABEL name="new label" id="4730cafd631f5fb9" memberName="label5" virtualName=""
-         explicitFocusOrder="0" pos="144 136 80 24" textCol="ffffffff"
+  <LABEL name="small knob label" id="4730cafd631f5fb9" memberName="smallKnobLabel"
+         virtualName="" explicitFocusOrder="0" pos="144 136 80 24" textCol="ffffffff"
          edTextCol="ff000000" edBkgCol="0" labelText="Small knob" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="toggle button" id="ca1a005aea565e73" memberName="toggleButton"
                     virtualName="teragon::ToggleButton" explicitFocusOrder="0" pos="24 16 72 40"
-                    class="Component" params="toggle_button_normal_png,&#10;toggle_button_normal_pngSize,&#10;toggle_button_pressed_png,&#10;toggle_button_pressed_pngSize"/>
+                    class="Component" params="parameters[&quot;button&quot;],&#10;resourceCache-&gt;get(&quot;toggle_button&quot;)"/>
   <GENERICCOMPONENT name="push button" id="95812891ea323314" memberName="pushButton"
                     virtualName="teragon::PushButton" explicitFocusOrder="0" pos="24 72 70 40"
-                    class="Component" params="push_button_normal_png,&#10;push_button_normal_pngSize,&#10;push_button_pressed_png,&#10;push_button_pressed_pngSize"/>
+                    class="Component" params="parameters[&quot;indicator&quot;],&#10;resourceCache-&gt;get(&quot;push_button&quot;)"/>
   <GENERICCOMPONENT name="small knob" id="cbdd78d09251ea34" memberName="smallKnob"
                     virtualName="teragon::ImageKnob" explicitFocusOrder="0" pos="152 72 66 66"
-                    class="Component" params="smallknob270frames_png,&#10;smallknob270frames_pngSize"/>
+                    class="Component" params="parameters[&quot;knob&quot;],&#10;resourceCache-&gt;get(&quot;small_knob&quot;)"/>
   <GENERICCOMPONENT name="large knob" id="1ebc5ac437f1ae39" memberName="largeKnob"
                     virtualName="teragon::ImageKnob" explicitFocusOrder="0" pos="120 170 113 113"
-                    class="Component" params="largeknob270frames_png,&#10;largeknob270frames_pngSize"/>
+                    class="Component" params="parameters[&quot;knob&quot;],&#10;resourceCache-&gt;get(&quot;large_knob&quot;)"/>
   <GENERICCOMPONENT name="fader" id="8f5f5e73140aff67" memberName="fader" virtualName="teragon::ImageSlider"
                     explicitFocusOrder="0" pos="24 144 62 134" class="Component"
-                    params="slider_thumb_png,&#10;slider_thumb_pngSize,&#10;slider_well_png,&#10;slider_well_pngSize"/>
+                    params="parameters[&quot;knob&quot;],&#10;resourceCache-&gt;get(&quot;slider&quot;)"/>
   <GENERICCOMPONENT name="indicator light" id="fca1b7e8ed89a244" memberName="indicatorLight"
                     virtualName="teragon::IndicatorLight" explicitFocusOrder="0"
-                    pos="168 16 24 24" class="Component" params="indicator_light_active_png,&#10;indicator_light_active_pngSize,&#10;indicator_light_inactive_png,&#10;indicator_light_inactive_pngSize"/>
+                    pos="168 16 24 24" class="Component" params="parameters[&quot;indicator&quot;],&#10;resourceCache-&gt;get(&quot;indicator_light&quot;)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

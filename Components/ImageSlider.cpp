@@ -14,14 +14,11 @@
 namespace teragon {
 
 ImageSlider::ImageSlider(PluginParameter *parameter,
-                         const char* handleImage, const int handleImageSize,
-                         const char* wellImage, const int wellImageSize) :
+                         const ResourceCache::ImageStates *imageStates) :
 Slider(juce::Slider::LinearVertical, juce::Slider::NoTextBox),
 PluginParameterObserver(),
-parameter(parameter), handleImage(), wellImage() {
+parameter(parameter), handleImage(imageStates->normal), wellImage(imageStates->background) {
     parameter->addObserver(this);
-    setImages(ImageCache::getFromMemory(handleImage, handleImageSize),
-            ImageCache::getFromMemory(wellImage, wellImageSize));
     setRange(parameter->getMinValue(), parameter->getMaxValue());
     setValue(parameter->getValue());
 }
@@ -36,11 +33,6 @@ void ImageSlider::valueChanged() {
 
 void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {
     setValue(parameter->getValue());
-}
-
-void ImageSlider::setImages(const Image& handleImage, const Image& wellImage) {
-    this->handleImage = handleImage;
-    this->wellImage = wellImage;
 }
 
 void ImageSlider::paint(Graphics &g) {

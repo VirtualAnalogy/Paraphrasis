@@ -13,6 +13,7 @@
 
 #include "JuceHeader.h"
 #include "PluginParameters.h"
+#include "ResourceCache.h"
 
 namespace teragon {
 
@@ -26,9 +27,7 @@ public:
     } Gravity;
 
 public:
-    ThinButton(PluginParameter *parameter,
-               const char* normalImage, const int normalImageSize,
-               const char* pressedImage, const int pressedImageSize,
+    ThinButton(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates,
                const ThinButton::Gravity gravity = kGravityDefault);
     virtual ~ThinButton();
 
@@ -38,13 +37,12 @@ public:
     void paint(Graphics &g);
 
     virtual const Image getImageForButtonState() = 0;
-    void setImages(const Image &buttonDown, const Image &buttonUp);
 
 private:
-      Image buttonDown;
-      Image buttonUp;
-      PluginParameter *parameter;
-      Gravity gravity;
+    void setImages(Image downImage, Image upImage);
+
+    PluginParameter *parameter;
+    Gravity gravity;
 };
 
 } // namespace teragon

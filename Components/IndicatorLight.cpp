@@ -13,15 +13,12 @@
 namespace teragon {
 
 IndicatorLight::IndicatorLight(PluginParameter *parameter,
-                               const char* enabledImage, const int enabledImageSize,
-                               const char* disabledImage, const int disabledImageSize) :
+                               const ResourceCache::ImageStates *imageStates) :
 Component(String::empty),
 PluginParameterObserver(),
-parameter(parameter), enabled(false)
-{
+parameter(parameter), enabledImage(imageStates->alternate),
+disabledImage(imageStates->normal), enabled(false) {
     parameter->addObserver(this);
-    setImages(ImageCache::getFromMemory(enabledImage, enabledImageSize),
-              ImageCache::getFromMemory(disabledImage, disabledImageSize));
     setEnabled(parameter->getValue());
 }
 
@@ -69,10 +66,5 @@ void IndicatorLight::setEnabled(bool enabled) {
         this->stepRate = (enabled ? 1.0f : -1.0f) * 0.325f;
         startTimer(33); // ~30fps
     }
-}
-
-void IndicatorLight::setImages(Image enabledImage, Image disabledImage) {
-    this->enabledImage = enabledImage;
-    this->disabledImage = disabledImage;
 }
 }

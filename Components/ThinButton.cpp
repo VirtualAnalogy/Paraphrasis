@@ -12,17 +12,14 @@
 
 namespace teragon {
 
-ThinButton::ThinButton(PluginParameter *parameter,
-                       const char* normalImage, const int normalImageSize,
-                       const char* pressedImage, const int pressedImageSize,
+ThinButton::ThinButton(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates,
                        const ThinButton::Gravity gravity) :
 ImageButton(String::empty),
 PluginParameterObserver(),
-parameter(parameter), gravity(gravity)
+parameter(parameter),  gravity(gravity)
 {
     parameter->addObserver(this);
-    setImages(ImageCache::getFromMemory(pressedImage, pressedImageSize),
-              ImageCache::getFromMemory(normalImage, normalImageSize));
+    setImages(imageStates->alternate, imageStates->normal);
     setState(parameter->getValue() ? Button::buttonDown : Button::buttonNormal);
 }
 
@@ -51,12 +48,10 @@ void ThinButton::paint(Graphics &g) {
                 0, 0, buttonStateImage.getWidth(), buttonStateImage.getHeight());
 }
 
-void ThinButton::setImages(const Image &buttonDown, const Image &buttonUp) {
+void ThinButton::setImages(Image buttonDown, Image buttonUp) {
     juce::ImageButton::setImages(false, false, true,
                                  buttonUp, 1.0f, Colour(0x0),
-                                 Image(), 1.0f, Colour(0x0),
+                                 Image::null, 1.0f, Colour(0x0),
                                  buttonDown, 1.0, Colour(0x0));
-    this->buttonDown = buttonDown;
-    this->buttonUp = buttonUp;
 }
 } // namespace teragon

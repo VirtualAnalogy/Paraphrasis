@@ -11,6 +11,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../PluginParameters/include/PluginParameters.h"
 #include "MainComponent.h"
+#include "Resources.h"
 
 
 namespace teragon {
@@ -67,7 +68,7 @@ public:
             DocumentWindow ("GUI Demo", Colours::lightgrey, DocumentWindow::allButtons),
             parameters(parameters)
        {
-            setContentOwned (new MainContentComponent(parameters), true);
+            setContentOwned (new MainContentComponent(parameters, Resources::getCache()), true);
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
         }

@@ -52,6 +52,7 @@ OBJECTS := \
   $(OBJDIR)/ImageKnob_f87e293c.o \
   $(OBJDIR)/ImageSlider_a470a5e7.o \
   $(OBJDIR)/IndicatorLight_c6babca6.o \
+  $(OBJDIR)/ResourceCache_cb4a725f.o \
   $(OBJDIR)/ThinButton_f1a0228a.o \
   $(OBJDIR)/Resources_c562b906.o \
   $(OBJDIR)/MainComponent_a6ffb4a5.o \
@@ -95,6 +96,11 @@ $(OBJDIR)/ImageSlider_a470a5e7.o: ../../../Components/ImageSlider.cpp
 $(OBJDIR)/IndicatorLight_c6babca6.o: ../../../Components/IndicatorLight.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling IndicatorLight.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+
+$(OBJDIR)/ResourceCache_cb4a725f.o: ../../../Components/ResourceCache.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling ResourceCache.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 $(OBJDIR)/ThinButton_f1a0228a.o: ../../../Components/ThinButton.cpp

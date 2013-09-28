@@ -14,6 +14,9 @@
       <FILE id="vhJdDM" name="IndicatorLight.h" compile="0" resource="0"
             file="../Components/IndicatorLight.h"/>
       <FILE id="zIiXfd" name="PushButton.h" compile="0" resource="0" file="../Components/PushButton.h"/>
+      <FILE id="NzQAm4" name="ResourceCache.cpp" compile="1" resource="0"
+            file="../Components/ResourceCache.cpp"/>
+      <FILE id="DuFu4V" name="ResourceCache.h" compile="0" resource="0" file="../Components/ResourceCache.h"/>
       <FILE id="eZiGey" name="ThinButton.cpp" compile="1" resource="0" file="../Components/ThinButton.cpp"/>
       <FILE id="qYltJR" name="ThinButton.h" compile="0" resource="0" file="../Components/ThinButton.h"/>
       <FILE id="bF9bwf" name="ToggleButton.h" compile="0" resource="0" file="../Components/ToggleButton.h"/>

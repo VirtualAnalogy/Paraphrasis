@@ -28,6 +28,7 @@
 #include "ImageKnob.h"
 #include "ImageSlider.h"
 #include "PushButton.h"
+#include "ResourceCache.h"
 #include "ToggleButton.h"
 //[/Headers]
 
@@ -45,7 +46,7 @@ class MainContentComponent  : public Component
 {
 public:
     //==============================================================================
-    MainContentComponent (teragon::PluginParameterSet &parameters);
+    MainContentComponent (teragon::PluginParameterSet &parameters, teragon::ResourceCache *resourceCache);
     ~MainContentComponent();
 
     //==============================================================================
@@ -60,22 +61,22 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     teragon::PluginParameterSet parameters;
+    teragon::ResourceCache *resourceCache;
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<Label> newLabel;
+    ScopedPointer<Label> toggleButtonLabel;
     ScopedPointer<Label> pushButtonLabel;
     ScopedPointer<Label> faderLabel;
-    ScopedPointer<Label> label3;
-    ScopedPointer<Label> label4;
-    ScopedPointer<Label> label5;
+    ScopedPointer<Label> indicatorLightLabel;
+    ScopedPointer<Label> largeKnobLabel;
+    ScopedPointer<Label> smallKnobLabel;
     ScopedPointer<teragon::ToggleButton> toggleButton;
     ScopedPointer<teragon::PushButton> pushButton;
     ScopedPointer<teragon::ImageKnob> smallKnob;
     ScopedPointer<teragon::ImageKnob> largeKnob;
     ScopedPointer<teragon::ImageSlider> fader;
     ScopedPointer<teragon::IndicatorLight> indicatorLight;
-    ScopedPointer<Drawable> drawable1;
 
 
     //==============================================================================

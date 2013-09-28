@@ -13,14 +13,13 @@
 
 #include "JuceHeader.h"
 #include "PluginParameters.h"
+#include "ResourceCache.h"
 
 namespace teragon {
 
 class ImageSlider : public juce::Slider, public PluginParameterObserver {
 public:
-    ImageSlider(PluginParameter *parameter,
-                const char* handleImage, const int handleImageSize,
-                const char* wellImage, const int wellImageSize);
+    ImageSlider(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates);
 
     virtual ~ImageSlider();
 
@@ -28,8 +27,6 @@ public:
     void onParameterUpdated(const PluginParameter* parameter);
 
     void paint(Graphics &g);
-
-    void setImages(const Image& handleImage, const Image& wellImage);
 
 private:
     Image handleImage;
