@@ -23,6 +23,11 @@ parameter(parameter), gravity(gravity)
     parameter->addObserver(this);
     setImages(ImageCache::getFromMemory(pressedImage, pressedImageSize),
               ImageCache::getFromMemory(normalImage, normalImageSize));
+    setState(parameter->getValue() ? Button::buttonDown : Button::buttonNormal);
+}
+
+ThinButton::~ThinButton() {
+    parameter->removeObserver(this);
 }
 
 void ThinButton::clicked() {

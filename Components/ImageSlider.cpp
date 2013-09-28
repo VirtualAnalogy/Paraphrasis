@@ -23,9 +23,11 @@ parameter(parameter), handleImage(), wellImage() {
     setImages(ImageCache::getFromMemory(handleImage, handleImageSize),
             ImageCache::getFromMemory(wellImage, wellImageSize));
     setRange(parameter->getMinValue(), parameter->getMaxValue());
+    setValue(parameter->getValue());
 }
 
 ImageSlider::~ImageSlider() {
+    parameter->removeObserver(this);
 }
 
 void ImageSlider::valueChanged() {

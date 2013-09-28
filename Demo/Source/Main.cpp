@@ -28,9 +28,9 @@ public:
     //==============================================================================
     void initialise (const String& commandLine)
     {
-        parameters.add(new FloatParameter("knob", 0, 100, 0));
+        parameters.add(new FloatParameter("knob", 0, 100, 20));
         parameters.add(new FloatParameter("slider", 0, 100, 0));
-        parameters.add(new BooleanParameter("indicator"));
+        parameters.add(new BooleanParameter("indicator", true));
         parameters.add(new BooleanParameter("button"));
         mainWindow = new MainWindow(parameters);
     }

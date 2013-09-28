@@ -19,9 +19,11 @@ parameter(parameter), knobImage() {
     parameter->addObserver(this);
     setRange(parameter->getMinValue(), parameter->getMaxValue());
     setImages(ImageCache::getFromMemory(knobImage, knobImageSize));
+    setValue(parameter->getValue());
 }
 
 ImageKnob::~ImageKnob() {
+    parameter->removeObserver(this);
 }
 
 void ImageKnob::setImages(const Image& knobImage) {

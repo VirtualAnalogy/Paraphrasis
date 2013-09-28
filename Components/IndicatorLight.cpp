@@ -17,10 +17,16 @@ IndicatorLight::IndicatorLight(PluginParameter *parameter,
                                const char* disabledImage, const int disabledImageSize) :
 Component(String::empty),
 PluginParameterObserver(),
-enabled(false) {
+parameter(parameter), enabled(false)
+{
     parameter->addObserver(this);
     setImages(ImageCache::getFromMemory(enabledImage, enabledImageSize),
               ImageCache::getFromMemory(disabledImage, disabledImageSize));
+    setEnabled(parameter->getValue());
+}
+
+IndicatorLight::~IndicatorLight() {
+    parameter->removeObserver(this);
 }
 
 void IndicatorLight::onParameterUpdated(const PluginParameter* parameter) {

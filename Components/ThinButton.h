@@ -30,7 +30,7 @@ public:
                const char* normalImage, const int normalImageSize,
                const char* pressedImage, const int pressedImageSize,
                const ThinButton::Gravity gravity = kGravityDefault);
-    virtual ~ThinButton() {}
+    virtual ~ThinButton();
 
     void clicked();
     void onParameterUpdated(const PluginParameter* parameter);
