@@ -43,8 +43,8 @@ public:
   virtual void setScaledValue(const ParameterValue inValue) { setValue(inValue); }
   virtual const ParameterValue getValue() const { return value ? 1.0 : 0.0; }
   virtual void setValue(const ParameterValue inValue) {
-    PluginParameter::setValue(inValue);
     value = inValue > 0.5 ? true : false;
+    PluginParameter::setValue(inValue);
   }
 
 private:

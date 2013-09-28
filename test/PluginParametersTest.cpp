@@ -88,6 +88,25 @@ static bool testSetBoolParameter() {
   return true;
 }
 
+class BooleanParameterListener : public PluginParameterObserver {
+public:
+  BooleanParameterListener() : PluginParameterObserver(), myValue(false) {}
+  virtual ~BooleanParameterListener() {}
+  bool myValue;
+  void onParameterUpdated(const PluginParameter *parameter) {
+    myValue = parameter->getValue();
+  }
+};
+
+static bool testSetBoolParameterWithListener() {
+  BooleanParameter p("test");
+  BooleanParameterListener l;
+  p.addObserver(&l);
+  p.setValue(true);
+  ASSERT(l.myValue);
+  return true;
+}
+
 static bool testCreateDecibelParameter() {
   DecibelParameter p("test", -60.0, 3.0, 0.0);
   ASSERT_EQUALS(0.707739, p.getScaledValue());
@@ -379,6 +398,7 @@ static bool testSetStringParameter() {
 int main(int argc, char* argv[]) {
   ADD_TEST("CreateBoolParameter", testCreateBoolParameter());
   ADD_TEST("SetBoolParameter", testSetBoolParameter());
+  ADD_TEST("SetBoolParameterWithListener", testSetBoolParameterWithListener());
   ADD_TEST("CreateDecibelParameter", testCreateDecibelParameter());
   ADD_TEST("SetDecibelParameter", testSetDecibelParameter());
   ADD_TEST("CreateFloatParameter", testCreateFloatParameter());
