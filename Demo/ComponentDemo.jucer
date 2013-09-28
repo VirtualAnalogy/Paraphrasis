@@ -14,7 +14,6 @@
       <FILE id="vhJdDM" name="IndicatorLight.h" compile="0" resource="0"
             file="../Components/IndicatorLight.h"/>
       <FILE id="zIiXfd" name="PushButton.h" compile="0" resource="0" file="../Components/PushButton.h"/>
-      <FILE id="Gbw5ar" name="Sizes.h" compile="0" resource="0" file="../Components/Sizes.h"/>
       <FILE id="eZiGey" name="ThinButton.cpp" compile="1" resource="0" file="../Components/ThinButton.cpp"/>
       <FILE id="qYltJR" name="ThinButton.h" compile="0" resource="0" file="../Components/ThinButton.h"/>
       <FILE id="bF9bwf" name="ToggleButton.h" compile="0" resource="0" file="../Components/ToggleButton.h"/>
@@ -39,7 +38,7 @@
   </MODULES>
   <EXPORTFORMATS>
     <LINUX_MAKE targetFolder="Builds/Linux" juceFolder="../../../sdk/juce/modules"
-                extraCompilerFlags="-I../../../Components">
+                extraCompilerFlags="-I../../../Components -I../../PluginParameters/include">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="ComponentDemo"/>

@@ -28,7 +28,10 @@ public:
     //==============================================================================
     void initialise (const String& commandLine)
     {
-        parameters.add(new FloatParameter("test", 0, 100, 0));
+        parameters.add(new FloatParameter("knob", 0, 100, 0));
+        parameters.add(new FloatParameter("slider", 0, 100, 0));
+        parameters.add(new BooleanParameter("indicator"));
+        parameters.add(new BooleanParameter("button"));
         mainWindow = new MainWindow(parameters);
     }
 
@@ -64,9 +67,7 @@ public:
             DocumentWindow ("GUI Demo", Colours::lightgrey, DocumentWindow::allButtons),
             parameters(parameters)
        {
-            MainContentComponent* mainContentComponent = new MainContentComponent();
-            mainContentComponent->setParameters(parameters);
-            setContentOwned (mainContentComponent, true);
+            setContentOwned (new MainContentComponent(parameters), true);
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
         }

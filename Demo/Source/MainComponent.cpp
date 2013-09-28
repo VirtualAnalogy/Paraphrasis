@@ -28,7 +28,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-MainContentComponent::MainContentComponent ()
+MainContentComponent::MainContentComponent (teragon::PluginParameterSet &parameters)
+    : parameters(parameters)
 {
     addAndMakeVisible (newLabel = new Label ("new label",
                                              "Toggle Button"));
@@ -84,33 +85,39 @@ MainContentComponent::MainContentComponent ()
     label5->setColour (TextEditor::textColourId, Colours::black);
     label5->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (toggleButton = new teragon::ToggleButton (Resources::toggle_button_normal_png,
+    addAndMakeVisible (toggleButton = new teragon::ToggleButton (parameters["button"],
+                                                                 Resources::toggle_button_normal_png,
                                                                  Resources::toggle_button_normal_pngSize,
                                                                  Resources::toggle_button_pressed_png,
                                                                  Resources::toggle_button_pressed_pngSize));
     toggleButton->setName ("toggle button");
 
-    addAndMakeVisible (pushButton = new teragon::PushButton (Resources::push_button_normal_png,
+    addAndMakeVisible (pushButton = new teragon::PushButton (parameters["indicator"],
+                                                             Resources::push_button_normal_png,
                                                              Resources::push_button_normal_pngSize,
                                                              Resources::push_button_pressed_png,
                                                              Resources::push_button_pressed_pngSize));
     pushButton->setName ("push button");
 
-    addAndMakeVisible (smallKnob = new teragon::ImageKnob (Resources::smallknob270frames_png,
+    addAndMakeVisible (smallKnob = new teragon::ImageKnob (parameters["knob"],
+                                                           Resources::smallknob270frames_png,
                                                            Resources::smallknob270frames_pngSize));
     smallKnob->setName ("small knob");
 
-    addAndMakeVisible (largeKnob = new teragon::ImageKnob (Resources::largeknob270frames_png,
+    addAndMakeVisible (largeKnob = new teragon::ImageKnob (parameters["knob"],
+                                                           Resources::largeknob270frames_png,
                                                            Resources::largeknob270frames_pngSize));
     largeKnob->setName ("large knob");
 
-    addAndMakeVisible (fader = new teragon::ImageSlider (Resources::slider_thumb_png,
+    addAndMakeVisible (fader = new teragon::ImageSlider (parameters["knob"],
+                                                         Resources::slider_thumb_png,
                                                          Resources::slider_thumb_pngSize,
                                                          Resources::slider_well_png,
                                                          Resources::slider_well_pngSize));
     fader->setName ("fader");
 
-    addAndMakeVisible (indicatorLight = new teragon::IndicatorLight (Resources::indicator_light_active_png,
+    addAndMakeVisible (indicatorLight = new teragon::IndicatorLight (parameters["indicator"],
+                                                                     Resources::indicator_light_active_png,
                                                                      Resources::indicator_light_active_pngSize,
                                                                      Resources::indicator_light_inactive_png,
                                                                      Resources::indicator_light_inactive_pngSize));
@@ -119,7 +126,6 @@ MainContentComponent::MainContentComponent ()
     drawable1 = Drawable::createFromImageData (Resources::texture_png, Resources::texture_pngSize);
 
     //[UserPreSize]
-    pushButton->addListener(this);
     //[/UserPreSize]
 
     setSize (250, 320);
@@ -192,16 +198,6 @@ void MainContentComponent::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void MainContentComponent::setParameters(teragon::PluginParameterSet &parameters)
-{
-    this->parameters = parameters;
-}
-
-void MainContentComponent::buttonClicked(Button *button) {
-    if (button == pushButton) {
-        indicatorLight->setEnabled(pushButton->getToggleState());
-    }
-}
 //[/MiscUserCode]
 
 
@@ -215,9 +211,10 @@ void MainContentComponent::buttonClicked(Button *button) {
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainContentComponent" componentName=""
-                 parentClasses="public Component, public ButtonListener" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.660" fixedSize="1" initialWidth="250" initialHeight="320">
+                 parentClasses="public Component, public ButtonListener" constructorParams="teragon::PluginParameterSet &amp;parameters"
+                 variableInitialisers="parameters(parameters)" snapPixels="8"
+                 snapActive="1" snapShown="1" overlayOpacity="0.660" fixedSize="1"
+                 initialWidth="250" initialHeight="320">
   <BACKGROUND backgroundColour="ffffffff">
     <IMAGE pos="-3 -4 512 512" resource="texture_png" opacity="1" mode="0"/>
   </BACKGROUND>

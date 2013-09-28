@@ -22,7 +22,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
-#include "../PluginParameters/include/PluginParameters.h"
+#include "PluginParameters.h"
 
 #include "IndicatorLight.h"
 #include "ImageKnob.h"
@@ -41,18 +41,15 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class MainContentComponent  : public Component,
-                              public ButtonListener
+class MainContentComponent  : public Component
 {
 public:
     //==============================================================================
-    MainContentComponent ();
+    MainContentComponent (teragon::PluginParameterSet &parameters);
     ~MainContentComponent();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void setParameters(teragon::PluginParameterSet &parameters);
-    void buttonClicked(Button *button);
     //[/UserMethods]
 
     void paint (Graphics& g);
