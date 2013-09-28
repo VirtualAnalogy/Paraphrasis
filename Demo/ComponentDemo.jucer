@@ -20,6 +20,8 @@
       <FILE id="bF9bwf" name="ToggleButton.h" compile="0" resource="0" file="../Components/ToggleButton.h"/>
     </GROUP>
     <GROUP id="{13E73132-5C03-0A9B-8CCB-8D2002B834C6}" name="Source">
+      <FILE id="bM2aCN" name="Resources.cpp" compile="1" resource="0" file="Source/Resources.cpp"/>
+      <FILE id="aCrFdN" name="Resources.h" compile="0" resource="0" file="Source/Resources.h"/>
       <FILE id="MNx6Lt" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="k3hrhP" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
@@ -36,7 +38,7 @@
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1"/>
   </MODULES>
   <EXPORTFORMATS>
-    <LINUX_MAKE targetFolder="Builds/Linux" juceFolder="../../../sdk/juce-src/modules"
+    <LINUX_MAKE targetFolder="Builds/Linux" juceFolder="../../../sdk/juce/modules"
                 extraCompilerFlags="-I../../../Components">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
