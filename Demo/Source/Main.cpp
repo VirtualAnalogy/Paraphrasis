@@ -9,9 +9,11 @@
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "../PluginParameters/include/PluginParameters.h"
 #include "MainComponent.h"
 
 
+namespace teragon {
 //==============================================================================
 class ComponentDemoApplication  : public JUCEApplication
 {
@@ -26,15 +28,12 @@ public:
     //==============================================================================
     void initialise (const String& commandLine)
     {
-        // This method is where you should put your application's initialisation code..
-
-        mainWindow = new MainWindow();
+        parameters.add(new FloatParameter("test", 0, 100, 0));
+        mainWindow = new MainWindow(parameters);
     }
 
     void shutdown()
     {
-        // Add your application's shutdown code here..
-
         mainWindow = nullptr; // (deletes our window)
     }
 
@@ -61,11 +60,13 @@ public:
     class MainWindow    : public DocumentWindow
     {
     public:
-        MainWindow()  : DocumentWindow ("GUI Demo",
-                                        Colours::lightgrey,
-                                        DocumentWindow::allButtons)
-        {
-            setContentOwned (new MainContentComponent(), true);
+        MainWindow(teragon::PluginParameterSet &parameters) :
+            DocumentWindow ("GUI Demo", Colours::lightgrey, DocumentWindow::allButtons),
+            parameters(parameters)
+       {
+            MainContentComponent* mainContentComponent = new MainContentComponent();
+            mainContentComponent->setParameters(parameters);
+            setContentOwned (mainContentComponent, true);
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
         }
@@ -87,12 +88,15 @@ public:
 
     private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
+        const PluginParameterSet &parameters;
     };
 
 private:
     ScopedPointer<MainWindow> mainWindow;
+    PluginParameterSet parameters;
 };
+}
 
 //==============================================================================
 // This macro generates the main() routine that launches the app.
-START_JUCE_APPLICATION (ComponentDemoApplication)
+START_JUCE_APPLICATION (teragon::ComponentDemoApplication)
