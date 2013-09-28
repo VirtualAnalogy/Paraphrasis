@@ -12,10 +12,11 @@
 #define __THINBUTTON_H_2C648127__
 
 #include "JuceHeader.h"
+#include "PluginParameters.h"
 
 namespace teragon {
 
-class ThinButton : public juce::ImageButton {
+class ThinButton : public juce::ImageButton, public PluginParameterObserver {
 public:
     typedef enum {
         kGravityTop,
@@ -25,19 +26,25 @@ public:
     } Gravity;
 
 public:
-    ThinButton(const char* normalImage, const int normalImageSize,
-        const char* pressedImage, const int pressedImageSize,
-        const ThinButton::Gravity gravity = kGravityDefault);
+    ThinButton(PluginParameter *parameter,
+               const char* normalImage, const int normalImageSize,
+               const char* pressedImage, const int pressedImageSize,
+               const ThinButton::Gravity gravity = kGravityDefault);
     virtual ~ThinButton() {}
 
+    void clicked();
+    void onParameterUpdated(const PluginParameter* parameter);
+
     void paint(Graphics &g);
+
     virtual const Image getImageForButtonState() = 0;
     void setImages(const Image &buttonDown, const Image &buttonUp);
 
 private:
-      Gravity gravity;
       Image buttonDown;
       Image buttonUp;
+      PluginParameter *parameter;
+      Gravity gravity;
 };
 
 } // namespace teragon

@@ -12,14 +12,18 @@
 #define __INDICATORLIGHT_H_DAF02643__
 
 #include "JuceHeader.h"
+#include "PluginParameters.h"
 
 namespace teragon {
 
-class IndicatorLight : public Component, public Timer {
+class IndicatorLight : public Component, public Timer, public PluginParameterObserver {
 public:
-    IndicatorLight(const char* enabledImage, const int enabledImageSize,
-        const char* disabledImage, const int disabledImageSize);
+    IndicatorLight(PluginParameter *parameter,
+                   const char* enabledImage, const int enabledImageSize,
+                   const char* disabledImage, const int disabledImageSize);
     virtual ~IndicatorLight() {}
+
+    void onParameterUpdated(const PluginParameter* parameter);
 
     void paint(Graphics &g);
     void timerCallback();
@@ -28,11 +32,12 @@ public:
     void setImages(Image enabledImage, Image disabledImage);
 
 private:
+    Image enabledImage;
+    Image disabledImage;
+
     bool enabled;
     float enabledOpacity;
     float stepRate;
-    Image enabledImage;
-    Image disabledImage;
 };
 
 }

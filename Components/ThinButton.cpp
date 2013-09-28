@@ -12,17 +12,28 @@
 
 namespace teragon {
 
-ThinButton::ThinButton(const char* normalImage, const int normalImageSize,
-        const char* pressedImage, const int pressedImageSize,
-        const ThinButton::Gravity gravity) :
-    ImageButton(String::empty), gravity(gravity)
+ThinButton::ThinButton(PluginParameter *parameter,
+                       const char* normalImage, const int normalImageSize,
+                       const char* pressedImage, const int pressedImageSize,
+                       const ThinButton::Gravity gravity) :
+ImageButton(String::empty),
+PluginParameterObserver(),
+parameter(parameter), gravity(gravity)
 {
+    parameter->addObserver(this);
     setImages(ImageCache::getFromMemory(pressedImage, pressedImageSize),
               ImageCache::getFromMemory(normalImage, normalImageSize));
 }
 
+void ThinButton::clicked() {
+    parameter->setValue(getToggleState());
+}
+
+void ThinButton::onParameterUpdated(const PluginParameter* parameter) {
+    setState(parameter->getValue() ? Button::buttonDown : Button::buttonNormal);
+}
+
 void ThinButton::paint(Graphics &g) {
-    //g.fillCheckerBoard(getLocalBounds(), 10, 10, juce::Colours::white, juce::Colours::grey);
     const Image buttonStateImage = getImageForButtonState();
     int buttonY;
     if(gravity == kGravityTop) {
@@ -32,7 +43,7 @@ void ThinButton::paint(Graphics &g) {
         buttonY = getHeight() - buttonStateImage.getHeight();
     }
     g.drawImage(buttonStateImage, 0, buttonY, buttonStateImage.getWidth(), buttonStateImage.getHeight(),
-        0, 0, buttonStateImage.getWidth(), buttonStateImage.getHeight());
+                0, 0, buttonStateImage.getWidth(), buttonStateImage.getHeight());
 }
 
 void ThinButton::setImages(const Image &buttonDown, const Image &buttonUp) {
@@ -43,5 +54,4 @@ void ThinButton::setImages(const Image &buttonDown, const Image &buttonUp) {
     this->buttonDown = buttonDown;
     this->buttonUp = buttonUp;
 }
-
 } // namespace teragon

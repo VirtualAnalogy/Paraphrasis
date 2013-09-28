@@ -6,25 +6,30 @@
     Author:  Nik Reiman
 
   ==============================================================================
-*/
+ */
 
 #ifndef __IMAGEKNOB_H_4804529__
 #define __IMAGEKNOB_H_4804529__
 
 #include "JuceHeader.h"
+#include "PluginParameters.h"
 
 namespace teragon {
 
-class ImageKnob : public juce::Slider {
+class ImageKnob : public juce::Slider, public PluginParameterObserver {
 public:
-  ImageKnob(const char* knobImage, const int knobImageSize);
-  virtual ~ImageKnob();
+    ImageKnob(PluginParameter *parameter, const char* knobImage, const int knobImageSize);
+    virtual ~ImageKnob();
 
-  void paint(Graphics &g);
-  void setImages(const Image& knobImage);
+    void onParameterUpdated(const PluginParameter* parameter);
+    void valueChanged();
+
+    void paint(Graphics &g);
+    void setImages(const Image& knobImage);
 
 private:
-  Image knobImage;
+    Image knobImage;
+    PluginParameter *parameter;
 };
 
 } // namespace teragon

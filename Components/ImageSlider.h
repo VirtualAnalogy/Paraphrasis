@@ -12,22 +12,29 @@
 #define __IMAGESLIDER_H_B0B8D694__
 
 #include "JuceHeader.h"
+#include "PluginParameters.h"
 
 namespace teragon {
 
-class ImageSlider : public juce::Slider {
+class ImageSlider : public juce::Slider, public PluginParameterObserver {
 public:
-    ImageSlider(const char* handleImage, const int handleImageSize,
-        const char* wellImage, const int wellImageSize);
-    ImageSlider(const String &componentName);
+    ImageSlider(PluginParameter *parameter,
+                const char* handleImage, const int handleImageSize,
+                const char* wellImage, const int wellImageSize);
+
     virtual ~ImageSlider();
 
+    void valueChanged();
+    void onParameterUpdated(const PluginParameter* parameter);
+
     void paint(Graphics &g);
+
     void setImages(const Image& handleImage, const Image& wellImage);
 
 private:
     Image handleImage;
     Image wellImage;
+    PluginParameter *parameter;
 };
 
 } // namespace teragon
