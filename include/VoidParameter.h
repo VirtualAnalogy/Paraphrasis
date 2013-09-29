@@ -23,16 +23,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __PLUGINPARAMETERS_H__
-#define	__PLUGINPARAMETERS_H__
+#ifndef __VOIDPARAMETER_H_
+#define __VOIDPARAMETER_H_
 
-#include "BooleanParameter.h"
-#include "DecibelParameter.h"
-#include "FloatParameter.h"
-#include "FrequencyParameter.h"
-#include "IntegerParameter.h"
-#include "StringParameter.h"
-#include "PluginParameterSet.h"
-#include "VoidParameter.h"
+namespace teragon {
+/**
+ * Parameter which does not hold a real value. This parameter's value is
+ * always 0, regardless of whether setValue() is called.
+ * This parameter type is mostly useful to send events between observers.
+ */
+class VoidParameter : public PluginParameter {
+public:
+  explicit VoidParameter(ParameterString inName) : PluginParameter(inName) {}
+  virtual ~VoidParameter() {}
 
+  virtual const ParameterString getDisplayText() const { return getName(); }
+  virtual const ParameterValue getDisplayValue() const { return getValue(); }
+  virtual void setDisplayValue(const ParameterValue inValue) { setValue(inValue); }
+
+  virtual const ParameterValue getScaledValue() const { return getValue(); }
+  virtual void setScaledValue(const ParameterValue inValue) { setValue(inValue); }
+  virtual const ParameterValue getValue() const { return 0.0; }
+  virtual void setValue(const ParameterValue inValue = 0.0) {
+    notifyObservers();
+  }
+
+private:
+  bool value;
+};
+}
 #endif
+

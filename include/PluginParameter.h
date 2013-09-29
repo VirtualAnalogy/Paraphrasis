@@ -226,6 +226,12 @@ public:
   }
 
 protected:
+  void notifyObservers() const {
+    for(ParameterObserverMap::const_iterator iterator = observers.begin(); iterator != observers.end(); ++iterator) {
+      (*iterator)->onParameterUpdated(this);
+    }
+  }
+
   const ParameterString& getUnit() const { return unit; }
   const int getDisplayPrecision() const { return precision; }
 

@@ -69,6 +69,51 @@ using namespace teragon;
   } \
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Observers
+////////////////////////////////////////////////////////////////////////////////
+
+class TestObserver : public PluginParameterObserver {
+public:
+  TestObserver(bool &inB) : b(inB) {}
+  void onParameterUpdated(const PluginParameter* parameter) {
+    b = true;
+  }
+private:
+  bool& b;
+};
+
+class TestCounterObserver : public PluginParameterObserver {
+public:
+  TestCounterObserver() : count(0) {}
+  void onParameterUpdated(const PluginParameter* parameter) {
+    count++;
+  }
+  int count;
+};
+
+class BooleanParameterListener : public PluginParameterObserver {
+public:
+  BooleanParameterListener() : PluginParameterObserver(), myValue(false) {}
+  virtual ~BooleanParameterListener() {}
+  bool myValue;
+  void onParameterUpdated(const PluginParameter *parameter) {
+    myValue = parameter->getValue();
+  }
+};
+
+class StringParameterListener : public PluginParameterObserver {
+public:
+  ParameterString myValue;
+  void onParameterUpdated(const PluginParameter* parameter) {
+    myValue = parameter->getDisplayText();
+  }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Tests
+////////////////////////////////////////////////////////////////////////////////
+
 static bool testCreateBoolParameter() {
   BooleanParameter p("test");
   ASSERT_FALSE(p.getValue());
@@ -87,16 +132,6 @@ static bool testSetBoolParameter() {
   ASSERT(p.getValue());
   return true;
 }
-
-class BooleanParameterListener : public PluginParameterObserver {
-public:
-  BooleanParameterListener() : PluginParameterObserver(), myValue(false) {}
-  virtual ~BooleanParameterListener() {}
-  bool myValue;
-  void onParameterUpdated(const PluginParameter *parameter) {
-    myValue = parameter->getValue();
-  }
-};
 
 static bool testSetBoolParameterWithListener() {
   BooleanParameter p("test");
@@ -183,6 +218,16 @@ static bool testSetIntegerParameter() {
   p.setScaledValue(0.75);
   ASSERT_EQUALS(45.0, p.getValue());
   ASSERT_EQUALS(0.75, p.getScaledValue());
+  return true;
+}
+
+static bool testCreateVoidParameter() {
+  VoidParameter p("test");
+  ASSERT_EQUALS(0.0, p.getValue());
+  TestCounterObserver l;
+  p.addObserver(&l);
+  p.setValue();
+  ASSERT_INT_EQUALS(1, l.count);
   return true;
 }
 
@@ -303,16 +348,6 @@ static bool testGetSafeName() {
   return true;
 }
 
-class TestObserver : public PluginParameterObserver {
-public:
-  TestObserver(bool &inB) : b(inB) {}
-  void onParameterUpdated(const PluginParameter* parameter) {
-    b = true;
-  }
-private:
-  bool& b;
-};
-
 static bool testAddObserver() {
   bool b = false;
   BooleanParameter p("test");
@@ -407,6 +442,7 @@ int main(int argc, char* argv[]) {
   ADD_TEST("SetFrequencyParameter", testSetFrequencyParameter());
   ADD_TEST("CreateIntegerParameter", testCreateIntegerParameter());
   ADD_TEST("SetIntegerParameter", testSetIntegerParameter());
+  ADD_TEST("CreateVoidParameter", testCreateVoidParameter());
   ADD_TEST("CreateParameterWithBadName", testCreateParameterWithBadName());
   ADD_TEST("CreateParameterWithBadRange", testCreateParameterWithBadRange());
   ADD_TEST("AddParameterToSet", testAddParameterToSet());
@@ -429,5 +465,6 @@ int main(int argc, char* argv[]) {
   ADD_TEST("SetPrecision", testSetPrecision());
   ADD_TEST("CreateStringParameter", testCreateStringParameter());
   ADD_TEST("SetStringParameter", testSetStringParameter());
+
   return 0;
 }
