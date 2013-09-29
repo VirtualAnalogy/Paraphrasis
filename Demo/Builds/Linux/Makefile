@@ -53,8 +53,8 @@ OBJECTS := \
   $(OBJDIR)/ImageSlider_a470a5e7.o \
   $(OBJDIR)/IndicatorLight_c6babca6.o \
   $(OBJDIR)/ResourceCache_cb4a725f.o \
+  $(OBJDIR)/Resources_f97ba6f0.o \
   $(OBJDIR)/ThinButton_f1a0228a.o \
-  $(OBJDIR)/Resources_c562b906.o \
   $(OBJDIR)/MainComponent_a6ffb4a5.o \
   $(OBJDIR)/Main_90ebc5c2.o \
   $(OBJDIR)/juce_core_aff681cc.o \
@@ -103,14 +103,14 @@ $(OBJDIR)/ResourceCache_cb4a725f.o: ../../../Components/ResourceCache.cpp
 	@echo "Compiling ResourceCache.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
+$(OBJDIR)/Resources_f97ba6f0.o: ../../../Components/Resources.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling Resources.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+
 $(OBJDIR)/ThinButton_f1a0228a.o: ../../../Components/ThinButton.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling ThinButton.cpp"
-	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-
-$(OBJDIR)/Resources_c562b906.o: ../../Source/Resources.cpp
-	-@mkdir -p $(OBJDIR)
-	@echo "Compiling Resources.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 $(OBJDIR)/MainComponent_a6ffb4a5.o: ../../Source/MainComponent.cpp

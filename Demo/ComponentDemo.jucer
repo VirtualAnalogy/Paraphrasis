@@ -17,13 +17,13 @@
       <FILE id="NzQAm4" name="ResourceCache.cpp" compile="1" resource="0"
             file="../Components/ResourceCache.cpp"/>
       <FILE id="DuFu4V" name="ResourceCache.h" compile="0" resource="0" file="../Components/ResourceCache.h"/>
+      <FILE id="f33DyT" name="Resources.cpp" compile="1" resource="0" file="../Components/Resources.cpp"/>
+      <FILE id="mPaj1b" name="Resources.h" compile="0" resource="0" file="../Components/Resources.h"/>
       <FILE id="eZiGey" name="ThinButton.cpp" compile="1" resource="0" file="../Components/ThinButton.cpp"/>
       <FILE id="qYltJR" name="ThinButton.h" compile="0" resource="0" file="../Components/ThinButton.h"/>
       <FILE id="bF9bwf" name="ToggleButton.h" compile="0" resource="0" file="../Components/ToggleButton.h"/>
     </GROUP>
     <GROUP id="{13E73132-5C03-0A9B-8CCB-8D2002B834C6}" name="Source">
-      <FILE id="bM2aCN" name="Resources.cpp" compile="1" resource="0" file="Source/Resources.cpp"/>
-      <FILE id="aCrFdN" name="Resources.h" compile="0" resource="0" file="Source/Resources.h"/>
       <FILE id="MNx6Lt" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="k3hrhP" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
