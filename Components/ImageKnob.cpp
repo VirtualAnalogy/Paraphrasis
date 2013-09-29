@@ -17,8 +17,8 @@ Slider(juce::Slider::RotaryVerticalDrag, juce::Slider::NoTextBox),
 PluginParameterObserver(),
 parameter(parameter), knobImage(imageStates->normal) {
     parameter->addObserver(this);
-    setRange(parameter->getMinValue(), parameter->getMaxValue());
-    setValue(parameter->getValue());
+    setRange(0.0, 1.0);
+    setValue(parameter->getScaledValue());
 }
 
 ImageKnob::~ImageKnob() {
@@ -26,21 +26,17 @@ ImageKnob::~ImageKnob() {
 }
 
 void ImageKnob::onParameterUpdated(const PluginParameter* parameter) {
-    setValue(parameter->getValue());
+    setValue(parameter->getScaledValue());
 }
 
 void ImageKnob::valueChanged() {
-    parameter->setValue(getValue());
+    parameter->setScaledValue(getValue());
 }
 
 void ImageKnob::paint(Graphics &g) {
-    double valueScaled = getValue() / (getMaximum() - getMinimum()) + getMinimum();
     const int knobWidth = knobImage.getWidth();
     double filmstripImageCount = knobImage.getHeight() / knobWidth - 1;
-    int imageIndex = (int) (filmstripImageCount * valueScaled) * knobWidth;
-
-    // Useful for debugging to see background area
-    // g.fillCheckerBoard(getLocalBounds(), 10, 10, juce::Colours::white, juce::Colours::grey);
+    int imageIndex = (int) (filmstripImageCount * getValue()) * knobWidth;
 
     Rectangle<int> knobArea(0, imageIndex, knobWidth, knobWidth);
     Image knobFrame = knobImage.getClippedImage(knobArea);

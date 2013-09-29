@@ -28,8 +28,8 @@ public:
     void paint(Graphics &g);
 
 private:
-    Image knobImage;
     PluginParameter *parameter;
+    Image knobImage;
 };
 
 } // namespace teragon
