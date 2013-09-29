@@ -29,6 +29,10 @@
 
 using namespace teragon;
 
+////////////////////////////////////////////////////////////////////////////////
+// Test suite macros
+////////////////////////////////////////////////////////////////////////////////
+
 #define ADD_TEST(name, func) { \
   printf("Test %s: ", name); \
   if(func) printf("success\n"); \
@@ -218,6 +222,22 @@ static bool testSetIntegerParameter() {
   p.setScaledValue(0.75);
   ASSERT_EQUALS(45.0, p.getValue());
   ASSERT_EQUALS(0.75, p.getScaledValue());
+  return true;
+}
+
+static bool testCreateStringParameter() {
+  StringParameter p("test", "whatever");
+  ASSERT_EQUALS(0.0, p.getValue());
+  ASSERT_STRING("whatever", p.getDisplayText());
+  return true;
+}
+
+static bool testSetStringParameter() {
+  StringParameter p("test", "whatever");
+  ASSERT_EQUALS(0.0, p.getValue());
+  ASSERT_STRING("whatever", p.getDisplayText());
+  p.setValue("something");
+  ASSERT_STRING("something", p.getDisplayText());
   return true;
 }
 
@@ -414,37 +434,35 @@ static bool testSetPrecision() {
   return true;
 }
 
-static bool testCreateStringParameter() {
-  StringParameter p("test", "whatever");
-  ASSERT_EQUALS(0.0, p.getValue());
-  ASSERT_STRING("whatever", p.getDisplayText());
-  return true;
-}
-
-static bool testSetStringParameter() {
-  StringParameter p("test", "whatever");
-  ASSERT_EQUALS(0.0, p.getValue());
-  ASSERT_STRING("whatever", p.getDisplayText());
-  p.setValue("something");
-  ASSERT_STRING("something", p.getDisplayText());
-  return true;
-}
+////////////////////////////////////////////////////////////////////////////////
+// Run test suite
+////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
   ADD_TEST("CreateBoolParameter", testCreateBoolParameter());
   ADD_TEST("SetBoolParameter", testSetBoolParameter());
   ADD_TEST("SetBoolParameterWithListener", testSetBoolParameterWithListener());
+
   ADD_TEST("CreateDecibelParameter", testCreateDecibelParameter());
   ADD_TEST("SetDecibelParameter", testSetDecibelParameter());
+
   ADD_TEST("CreateFloatParameter", testCreateFloatParameter());
   ADD_TEST("SetFloatParameter", testSetFloatParameter());
+
   ADD_TEST("CreateFrequencyParameter", testCreateFrequencyParameter());
   ADD_TEST("SetFrequencyParameter", testSetFrequencyParameter());
+
   ADD_TEST("CreateIntegerParameter", testCreateIntegerParameter());
   ADD_TEST("SetIntegerParameter", testSetIntegerParameter());
+
+  ADD_TEST("CreateStringParameter", testCreateStringParameter());
+  ADD_TEST("SetStringParameter", testSetStringParameter());
+
   ADD_TEST("CreateVoidParameter", testCreateVoidParameter());
+
   ADD_TEST("CreateParameterWithBadName", testCreateParameterWithBadName());
   ADD_TEST("CreateParameterWithBadRange", testCreateParameterWithBadRange());
+
   ADD_TEST("AddParameterToSet", testAddParameterToSet());
   ADD_TEST("AddNullParameterToSet", testAddNullParameterToSet());
   ADD_TEST("AddDuplicateParameterToSet", testAddDuplicateParameterToSet());
@@ -454,17 +472,17 @@ int main(int argc, char* argv[]) {
   ADD_TEST("GetParameterByIndex", testGetParameterByIndex());
   ADD_TEST("GetParameterByNameOperator", testGetParameterByNameOperator());
   ADD_TEST("GetParameterByIndexOperator", testGetParameterByIndexOperator());
+
   ADD_TEST("GetSafeName", testGetSafeName());
   ADD_TEST("AddObserver", testAddObserver());
   ADD_TEST("RemoveObserver", testRemoveObserver());
+
   ADD_TEST("ParameterType", testParameterType());
   ADD_TEST("GetMinValue", testGetMinValue());
   ADD_TEST("GetMaxValue", testGetMaxValue());
   ADD_TEST("GetDefaultValue", testGetDefaultValue());
   ADD_TEST("SetParameterUnit", testSetParameterUnit());
   ADD_TEST("SetPrecision", testSetPrecision());
-  ADD_TEST("CreateStringParameter", testCreateStringParameter());
-  ADD_TEST("SetStringParameter", testSetStringParameter());
 
   return 0;
 }
