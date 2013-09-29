@@ -30,9 +30,9 @@ public:
     void setEnabled(bool enabled);
 
 private:
+    PluginParameter *parameter;
     Image enabledImage;
     Image disabledImage;
-    PluginParameter *parameter;
 
     bool enabled;
     float enabledOpacity;

@@ -37,7 +37,6 @@ void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {
 
 void ImageSlider::paint(Graphics &g) {
     int handleX = (getWidth() - handleImage.getWidth()) / 2;
-    int wellX = (getWidth() - wellImage.getWidth()) / 2;
     int yRange = getHeight() - handleImage.getHeight() / 2;
     // Mysterious logic... o_O Not sure why this handle is so tough to position, even
     // at position == 0, it is ~20px below the top of the well. Not sure why this is,

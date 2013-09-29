@@ -29,9 +29,9 @@ public:
     void paint(Graphics &g);
 
 private:
+    PluginParameter *parameter;
     Image handleImage;
     Image wellImage;
-    PluginParameter *parameter;
 };
 
 } // namespace teragon
