@@ -241,6 +241,15 @@ static bool testSetStringParameter() {
   return true;
 }
 
+static bool testSetStringParameterWithListener() {
+  StringParameter p("test", "whatever");
+  StringParameterListener l;
+  p.addObserver(&l);
+  p.setValue("something");
+  ASSERT_STRING("something", l.myValue);
+  return true;
+}
+
 static bool testCreateVoidParameter() {
   VoidParameter p("test");
   ASSERT_EQUALS(0.0, p.getValue());
@@ -389,6 +398,15 @@ static bool testRemoveObserver() {
   return true;
 }
 
+static bool testShouldNotNotifyForSameValue() {
+  BooleanParameter p("test", false);
+  TestCounterObserver l;
+  p.addObserver(&l);
+  p.setValue(p.getValue());
+  ASSERT_INT_EQUALS(0, l.count);
+  return true;
+}
+
 static bool testParameterType() {
   BooleanParameter p("test");
   ASSERT_INT_EQUALS(0, p.getType());
@@ -457,6 +475,7 @@ int main(int argc, char* argv[]) {
 
   ADD_TEST("CreateStringParameter", testCreateStringParameter());
   ADD_TEST("SetStringParameter", testSetStringParameter());
+  ADD_TEST("SetStringParameterWithListener", testSetStringParameterWithListener());
 
   ADD_TEST("CreateVoidParameter", testCreateVoidParameter());
 
@@ -476,6 +495,7 @@ int main(int argc, char* argv[]) {
   ADD_TEST("GetSafeName", testGetSafeName());
   ADD_TEST("AddObserver", testAddObserver());
   ADD_TEST("RemoveObserver", testRemoveObserver());
+  ADD_TEST("ShouldNotNotifyForSameValue", testShouldNotNotifyForSameValue());
 
   ADD_TEST("ParameterType", testParameterType());
   ADD_TEST("GetMinValue", testGetMinValue());

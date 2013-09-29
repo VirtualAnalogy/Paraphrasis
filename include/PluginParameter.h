@@ -144,9 +144,9 @@ public:
    * @param value Value, which must be between the minimum and maximum values
    */
   virtual void setValue(const ParameterValue inValue) {
-    value = inValue;
-    for(ParameterObserverMap::iterator iterator = observers.begin(); iterator != observers.end(); ++iterator) {
-      (*iterator)->onParameterUpdated(this);
+    if(value != inValue) {
+      value = inValue;
+      notifyObservers();
     }
   }
 
