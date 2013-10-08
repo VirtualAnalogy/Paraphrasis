@@ -12,7 +12,6 @@
 #define IMAGECACHE_H_INCLUDED
 
 #include "JuceHeader.h"
-#include <map>
 
 namespace teragon {
 
@@ -20,11 +19,12 @@ class ResourceCache {
 public:
     class ImageStates {
     public:
-        ImageStates(Image normal, Image alternate = Image::null,
+        ImageStates(Image normal = Image::null, Image alternate = Image::null,
                     Image background = Image::null) :
-        normal(normal), alternate(alternate), background(background) {}
+            normal(normal), alternate(alternate), background(background) {}
         virtual ~ImageStates() {}
 
+    public:
         Image normal;
         Image alternate;
         Image background;
@@ -37,11 +37,11 @@ public:
                      const char* alternateImage = nullptr, const int alternateImageSize = 0,
                      const char* backgroundImage = nullptr, const int backgroundImageSize = 0);
 
-    virtual ImageStates* get(const String &name) const;
-    virtual ImageStates* operator[](const String &name) const { return get(name); }
+    virtual ImageStates get(const String &name) const;
+    virtual ImageStates operator[](const String &name) const { return get(name); }
 
 private:
-    typedef std::map<String, ImageStates*> ResourceMap;
+    typedef juce::HashMap<String, ImageStates> ResourceMap;
     ResourceMap resources;
 };
 

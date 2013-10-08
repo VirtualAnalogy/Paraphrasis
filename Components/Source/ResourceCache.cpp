@@ -25,21 +25,18 @@ void ResourceCache::add(String name, const char* normalImage, const int normalIm
     if(backgroundImage != nullptr && backgroundImageSize != 0) {
         backgroundImageCached = ImageCache::getFromMemory(backgroundImage, backgroundImageSize);
     }
-    ImageStates *imageStates = new ImageStates(normalImageCached,
-                                               alternateImageCached,
-                                               backgroundImageCached);
+    ImageStates imageStates(normalImageCached, alternateImageCached, backgroundImageCached);
     String keyName = PluginParameter::makeSafeName(name.toStdString());
-    resources.insert(std::make_pair<String, ImageStates*>(keyName, imageStates));
+    resources.set(keyName, imageStates);
 }
 
 ResourceCache::~ResourceCache() {
     resources.clear();
+    juce::ImageCache::releaseUnusedImages();
 }
 
-ResourceCache::ImageStates* ResourceCache::get(const String& name) const {
-    String keyName = PluginParameter::makeSafeName(name.toStdString());
-    ResourceMap::const_iterator iterator = resources.find(keyName);
-    return (iterator != resources.end()) ? iterator->second : NULL;
+ResourceCache::ImageStates ResourceCache::get(const String& name) const {
+    return resources[name];
 }
 
 } // namespace teragon
