@@ -5,23 +5,25 @@
               jucerVersion="3.1.0" companyName="Teragon Audio">
   <MAINGROUP id="qYaJjs" name="ComponentDemo">
     <GROUP id="{08B3F7AA-BD19-0DE8-C8BE-79CDEB3F6DE5}" name="Components">
-      <FILE id="QWOQHX" name="ImageKnob.cpp" compile="1" resource="0" file="../Components/ImageKnob.cpp"/>
-      <FILE id="vvBIXL" name="ImageKnob.h" compile="0" resource="0" file="../Components/ImageKnob.h"/>
-      <FILE id="ehdnDA" name="ImageSlider.cpp" compile="1" resource="0" file="../Components/ImageSlider.cpp"/>
-      <FILE id="tKLjWq" name="ImageSlider.h" compile="0" resource="0" file="../Components/ImageSlider.h"/>
-      <FILE id="NPFknL" name="IndicatorLight.cpp" compile="1" resource="0"
-            file="../Components/IndicatorLight.cpp"/>
-      <FILE id="vhJdDM" name="IndicatorLight.h" compile="0" resource="0"
-            file="../Components/IndicatorLight.h"/>
-      <FILE id="zIiXfd" name="PushButton.h" compile="0" resource="0" file="../Components/PushButton.h"/>
-      <FILE id="NzQAm4" name="ResourceCache.cpp" compile="1" resource="0"
-            file="../Components/ResourceCache.cpp"/>
-      <FILE id="DuFu4V" name="ResourceCache.h" compile="0" resource="0" file="../Components/ResourceCache.h"/>
-      <FILE id="f33DyT" name="Resources.cpp" compile="1" resource="0" file="../Components/Resources.cpp"/>
-      <FILE id="mPaj1b" name="Resources.h" compile="0" resource="0" file="../Components/Resources.h"/>
-      <FILE id="eZiGey" name="ThinButton.cpp" compile="1" resource="0" file="../Components/ThinButton.cpp"/>
-      <FILE id="qYltJR" name="ThinButton.h" compile="0" resource="0" file="../Components/ThinButton.h"/>
-      <FILE id="bF9bwf" name="ToggleButton.h" compile="0" resource="0" file="../Components/ToggleButton.h"/>
+      <FILE id="SezmTl" name="ImageKnob.cpp" compile="1" resource="0" file="../Components/Source/ImageKnob.cpp"/>
+      <FILE id="VsoKTl" name="ImageKnob.h" compile="0" resource="0" file="../Components/Source/ImageKnob.h"/>
+      <FILE id="Ecwe0o" name="ImageSlider.cpp" compile="1" resource="0" file="../Components/Source/ImageSlider.cpp"/>
+      <FILE id="wODINO" name="ImageSlider.h" compile="0" resource="0" file="../Components/Source/ImageSlider.h"/>
+      <FILE id="dxJ4hD" name="IndicatorLight.cpp" compile="1" resource="0"
+            file="../Components/Source/IndicatorLight.cpp"/>
+      <FILE id="uqAcdr" name="IndicatorLight.h" compile="0" resource="0"
+            file="../Components/Source/IndicatorLight.h"/>
+      <FILE id="iICW6f" name="PushButton.h" compile="0" resource="0" file="../Components/Source/PushButton.h"/>
+      <FILE id="qstIpY" name="ResourceCache.cpp" compile="1" resource="0"
+            file="../Components/Source/ResourceCache.cpp"/>
+      <FILE id="RBtnEa" name="ResourceCache.h" compile="0" resource="0" file="../Components/Source/ResourceCache.h"/>
+      <FILE id="IU9rC8" name="Resources.cpp" compile="1" resource="0" file="../Components/Source/Resources.cpp"/>
+      <FILE id="HKXzJf" name="Resources.h" compile="0" resource="0" file="../Components/Source/Resources.h"/>
+      <FILE id="SAKKCm" name="TeragonGuiComponents.h" compile="0" resource="0"
+            file="../Components/Source/TeragonGuiComponents.h"/>
+      <FILE id="fw50rv" name="ThinButton.cpp" compile="1" resource="0" file="../Components/Source/ThinButton.cpp"/>
+      <FILE id="wmzTJQ" name="ThinButton.h" compile="0" resource="0" file="../Components/Source/ThinButton.h"/>
+      <FILE id="QRxYDb" name="ToggleButton.h" compile="0" resource="0" file="../Components/Source/ToggleButton.h"/>
     </GROUP>
     <GROUP id="{13E73132-5C03-0A9B-8CCB-8D2002B834C6}" name="Source">
       <FILE id="MNx6Lt" name="MainComponent.cpp" compile="1" resource="0"

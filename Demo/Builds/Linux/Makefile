@@ -49,12 +49,12 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS := \
-  $(OBJDIR)/ImageKnob_f87e293c.o \
-  $(OBJDIR)/ImageSlider_a470a5e7.o \
-  $(OBJDIR)/IndicatorLight_c6babca6.o \
-  $(OBJDIR)/ResourceCache_cb4a725f.o \
-  $(OBJDIR)/Resources_f97ba6f0.o \
-  $(OBJDIR)/ThinButton_f1a0228a.o \
+  $(OBJDIR)/ImageKnob_4bdd143c.o \
+  $(OBJDIR)/ImageSlider_9bc0d0e7.o \
+  $(OBJDIR)/IndicatorLight_e0f6b1a6.o \
+  $(OBJDIR)/ResourceCache_2f3bdd5f.o \
+  $(OBJDIR)/Resources_4cda91f0.o \
+  $(OBJDIR)/ThinButton_a1e978a.o \
   $(OBJDIR)/MainComponent_a6ffb4a5.o \
   $(OBJDIR)/Main_90ebc5c2.o \
   $(OBJDIR)/juce_core_aff681cc.o \
@@ -83,32 +83,32 @@ strip:
 	@echo Stripping ComponentDemo
 	-@strip --strip-unneeded $(OUTDIR)/$(TARGET)
 
-$(OBJDIR)/ImageKnob_f87e293c.o: ../../../Components/ImageKnob.cpp
+$(OBJDIR)/ImageKnob_4bdd143c.o: ../../../Components/Source/ImageKnob.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling ImageKnob.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/ImageSlider_a470a5e7.o: ../../../Components/ImageSlider.cpp
+$(OBJDIR)/ImageSlider_9bc0d0e7.o: ../../../Components/Source/ImageSlider.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling ImageSlider.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/IndicatorLight_c6babca6.o: ../../../Components/IndicatorLight.cpp
+$(OBJDIR)/IndicatorLight_e0f6b1a6.o: ../../../Components/Source/IndicatorLight.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling IndicatorLight.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/ResourceCache_cb4a725f.o: ../../../Components/ResourceCache.cpp
+$(OBJDIR)/ResourceCache_2f3bdd5f.o: ../../../Components/Source/ResourceCache.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling ResourceCache.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/Resources_f97ba6f0.o: ../../../Components/Resources.cpp
+$(OBJDIR)/Resources_4cda91f0.o: ../../../Components/Source/Resources.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling Resources.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/ThinButton_f1a0228a.o: ../../../Components/ThinButton.cpp
+$(OBJDIR)/ThinButton_a1e978a.o: ../../../Components/Source/ThinButton.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling ThinButton.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
