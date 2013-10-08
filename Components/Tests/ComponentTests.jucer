@@ -61,6 +61,22 @@
         <MODULEPATH id="juce_gui_basics" path="../../Demo/JuceLibraryCode/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
+    <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-I../../JuceLibraryCode -I../../../../Demo/PluginParameters/include -I../../../Source">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="1" optimisation="1" targetName="ComponentTests"/>
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="0" optimisation="2" targetName="ComponentTests"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../Demo/JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../Demo/JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_events" path="../../Demo/JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../Demo/JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../Demo/JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../Demo/JuceLibraryCode/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
   </EXPORTFORMATS>
   <JUCEOPTIONS/>
 </JUCERPROJECT>
