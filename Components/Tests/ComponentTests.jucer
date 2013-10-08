@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="Avt2Sk" name="ComponentTests" projectType="consoleapp" version="1.0.0"
+              bundleIdentifier="com.teragonaudio.ComponentTests" includeBinaryInAppConfig="1"
+              jucerVersion="3.1.0">
+  <MAINGROUP id="AAf4rF" name="ComponentTests">
+    <GROUP id="{C62C22B5-FAEE-6414-6D70-081195FEF3CD}" name="Components">
+      <FILE id="tqfSb8" name="ImageKnob.cpp" compile="1" resource="0" file="../Source/ImageKnob.cpp"/>
+      <FILE id="zTrKBH" name="ImageKnob.h" compile="0" resource="0" file="../Source/ImageKnob.h"/>
+      <FILE id="PRrd55" name="ImageSlider.cpp" compile="1" resource="0" file="../Source/ImageSlider.cpp"/>
+      <FILE id="uxvQVq" name="ImageSlider.h" compile="0" resource="0" file="../Source/ImageSlider.h"/>
+      <FILE id="f2AHfq" name="IndicatorLight.cpp" compile="1" resource="0"
+            file="../Source/IndicatorLight.cpp"/>
+      <FILE id="HXCzDa" name="IndicatorLight.h" compile="0" resource="0"
+            file="../Source/IndicatorLight.h"/>
+      <FILE id="FLn90R" name="PushButton.h" compile="0" resource="0" file="../Source/PushButton.h"/>
+      <FILE id="Gw3vxW" name="ResourceCache.cpp" compile="1" resource="0"
+            file="../Source/ResourceCache.cpp"/>
+      <FILE id="oonwmu" name="ResourceCache.h" compile="0" resource="0" file="../Source/ResourceCache.h"/>
+      <FILE id="YwjnAa" name="Resources.cpp" compile="1" resource="0" file="../Source/Resources.cpp"/>
+      <FILE id="CHXQ1Z" name="Resources.h" compile="0" resource="0" file="../Source/Resources.h"/>
+      <FILE id="GBxruf" name="TeragonGuiComponents.h" compile="0" resource="0"
+            file="../Source/TeragonGuiComponents.h"/>
+      <FILE id="v1xQkq" name="ThinButton.cpp" compile="1" resource="0" file="../Source/ThinButton.cpp"/>
+      <FILE id="IzX4iT" name="ThinButton.h" compile="0" resource="0" file="../Source/ThinButton.h"/>
+      <FILE id="as1F8a" name="ToggleButton.h" compile="0" resource="0" file="../Source/ToggleButton.h"/>
+    </GROUP>
+    <GROUP id="{A32498BE-79D8-F338-31CD-54CBBA41D5FF}" name="Source">
+      <FILE id="VfhSQT" name="ResourceCacheTest.cpp" compile="1" resource="0"
+            file="ResourceCacheTest.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULES id="juce_core" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_events" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <EXPORTFORMATS>
+    <LINUX_MAKE targetFolder="Builds/Linux" extraCompilerFlags="-I../../JuceLibraryCode -I../../../../Demo/PluginParameters/include -I../../../Source">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
+                       targetName="ComponentTests"/>
+        <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
+                       targetName="ComponentTests"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_opengl" path="JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../Demo/JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_gui_audio" path="JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../Demo/JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../Demo/JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_audio_devices"/>
+        <MODULEPATH id="juce_audio_formats"/>
+        <MODULEPATH id="juce_core" path="../../Demo/JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_events" path="../../Demo/JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../Demo/JuceLibraryCode/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
+  </EXPORTFORMATS>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>
