@@ -42,7 +42,8 @@ ResourceCache::~ResourceCache() {
 }
 
 ResourceCache::ImageStates* ResourceCache::get(const String& name) const {
-    return resources[name];
+    String safeName = PluginParameter::makeSafeName(name.toStdString());
+    return resources.contains(safeName) ? resources[safeName] : nullptr;
 }
 
 } // namespace teragon
