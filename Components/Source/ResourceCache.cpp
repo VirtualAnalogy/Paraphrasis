@@ -25,17 +25,23 @@ void ResourceCache::add(String name, const char* normalImage, const int normalIm
     if(backgroundImage != nullptr && backgroundImageSize != 0) {
         backgroundImageCached = ImageCache::getFromMemory(backgroundImage, backgroundImageSize);
     }
-    ImageStates imageStates(normalImageCached, alternateImageCached, backgroundImageCached);
+    ImageStates *imageStates = new ImageStates(normalImageCached,
+                                               alternateImageCached,
+                                               backgroundImageCached);
     String keyName = PluginParameter::makeSafeName(name.toStdString());
     resources.set(keyName, imageStates);
 }
 
 ResourceCache::~ResourceCache() {
+    ResourceMap::Iterator i(resources);
+    while(i.next()) {
+        delete i.getValue();
+    }
     resources.clear();
     juce::ImageCache::releaseUnusedImages();
 }
 
-ResourceCache::ImageStates ResourceCache::get(const String& name) const {
+ResourceCache::ImageStates* ResourceCache::get(const String& name) const {
     return resources[name];
 }
 
