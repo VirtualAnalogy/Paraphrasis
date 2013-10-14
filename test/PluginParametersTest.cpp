@@ -43,6 +43,10 @@ using namespace teragon;
   if(!result) return false; \
 }
 
+#define ASSERT_IS_NULL(result) { \
+  if(result != NULL) return false; \
+}
+
 #define ASSERT_NOT_NULL(result) { \
   if(result == NULL) return false; \
 }
@@ -291,17 +295,24 @@ static bool testAddParameterToSet() {
   BooleanParameter p1("Parameter 1");
   BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT(s.add(&p1));
-  ASSERT(s.add(&p2));
+  PluginParameter* _p1;
+  PluginParameter* _p2;
+
+  _p1 = s.add(&p1);
+  ASSERT_NOT_NULL(_p1);
+  _p2 = s.add(&p2);
+  ASSERT_NOT_NULL(_p2);
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 1", s.get(0)->getName());
+  ASSERT_STRING("Parameter 1", _p1->getName());
   ASSERT_STRING("Parameter 2", s.get(1)->getName());
+  ASSERT_STRING("Parameter 2", _p2->getName());
   return true;
 }
 
 static bool testAddNullParameterToSet() {
   PluginParameterSet s;
-  ASSERT_FALSE(s.add(NULL));
+  ASSERT_IS_NULL(s.add(NULL));
   ASSERT_INT_EQUALS(0, s.size());
   return true;
 }
@@ -309,8 +320,8 @@ static bool testAddNullParameterToSet() {
 static bool testAddDuplicateParameterToSet() {
   BooleanParameter p("test");
   PluginParameterSet s;
-  ASSERT(s.add(&p));
-  ASSERT_FALSE(s.add(&p));
+  ASSERT_NOT_NULL(s.add(&p));
+  ASSERT_IS_NULL(s.add(&p));
   ASSERT_INT_EQUALS(1, s.size());
   return true;
 }
@@ -319,8 +330,8 @@ static bool testAddDuplicateSafeNameParameterToSet() {
   BooleanParameter p1("Parameter1");
   BooleanParameter p2("Parameter 1");
   PluginParameterSet s;
-  ASSERT(s.add(&p1));
-  ASSERT_FALSE(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(&p1));
+  ASSERT_IS_NULL(s.add(&p2));
   ASSERT_INT_EQUALS(1, s.size());
   return true;
 }
@@ -329,8 +340,8 @@ static bool testClearParameterSet() {
   BooleanParameter *p1 = new BooleanParameter("Parameter1");
   BooleanParameter *p2 = new BooleanParameter("Parameter2");
   PluginParameterSet s;
-  ASSERT(s.add(p1));
-  ASSERT(s.add(p2));
+  ASSERT_NOT_NULL(s.add(p1));
+  ASSERT_NOT_NULL(s.add(p2));
   ASSERT_INT_EQUALS(2, s.size());
   s.clear();
   ASSERT_INT_EQUALS(0, s.size());
@@ -341,8 +352,8 @@ static bool testGetParameterByName() {
   BooleanParameter p1("Parameter 1");
   BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT(s.add(&p1));
-  ASSERT(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(&p1));
+  ASSERT_NOT_NULL(s.add(&p2));
   ASSERT_INT_EQUALS(2, s.size());
   PluginParameter *pe = s.get("Parameter 2");
   ASSERT_NOT_NULL(pe);
@@ -354,8 +365,8 @@ static bool testGetParameterByIndex() {
   BooleanParameter p1("Parameter 1");
   BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT(s.add(&p1));
-  ASSERT(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(&p1));
+  ASSERT_NOT_NULL(s.add(&p2));
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 2", s.get(1)->getName());
   return true;
@@ -365,8 +376,8 @@ static bool testGetParameterByNameOperator() {
   BooleanParameter p1("Parameter 1");
   BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT(s.add(&p1));
-  ASSERT(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(&p1));
+  ASSERT_NOT_NULL(s.add(&p2));
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 2", s["Parameter 2"]->getName());
   return true;
@@ -376,8 +387,8 @@ static bool testGetParameterByIndexOperator() {
   BooleanParameter p1("Parameter 1");
   BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT(s.add(&p1));
-  ASSERT(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(&p1));
+  ASSERT_NOT_NULL(s.add(&p2));
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 2", s[1]->getName());
   return true;
@@ -498,6 +509,7 @@ int main(int argc, char* argv[]) {
   ADD_TEST("AddNullParameterToSet", testAddNullParameterToSet());
   ADD_TEST("AddDuplicateParameterToSet", testAddDuplicateParameterToSet());
   ADD_TEST("AddDuplicateSafeNameParameterToSet", testAddDuplicateSafeNameParameterToSet());
+
   ADD_TEST("ClearParameterSet", testClearParameterSet());
   ADD_TEST("GetParameterByName", testGetParameterByName());
   ADD_TEST("GetParameterByIndex", testGetParameterByIndex());

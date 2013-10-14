@@ -71,16 +71,16 @@ public:
    * instance.
    *
    * @param parameter Pointer to parameter instance
-   * @return True on success, false if the parameter was null or already exists
-   *         in the set.
+   * @return parameter which was added if successful, NULL otherwise. Note that
+   *         adding a parameter to a set twice is considered failing behavior.
    */
-  virtual bool add(PluginParameter* parameter) {
+  virtual PluginParameter* add(PluginParameter* parameter) {
     if(parameter == NULL || get(parameter->getName()) != NULL) {
-      return false;
+      return NULL;
     }
     parameterMap.insert(std::make_pair(parameter->getSafeName(), parameter));
     parameterList.push_back(parameter);
-    return true;
+    return parameter;
   }
 
   virtual void clear() {
