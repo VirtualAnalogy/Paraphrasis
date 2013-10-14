@@ -1,0 +1,3 @@
+[submodule "include/readerwriterqueue"]
+	path = include/readerwriterqueue
+	url = git@github.com:teragonaudio/readerwriterqueue.git
