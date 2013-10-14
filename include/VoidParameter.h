@@ -47,9 +47,6 @@ public:
   virtual void setValue(const ParameterValue inValue = 0.0) {
     notifyObservers();
   }
-
-private:
-  bool value;
 };
 }
 #endif
