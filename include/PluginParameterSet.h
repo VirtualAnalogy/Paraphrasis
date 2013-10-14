@@ -29,11 +29,39 @@
 #include <map>
 #include <vector>
 #include "PluginParameter.h"
+#if ENABLE_MULTITHREADED
+#include "EventDispatcher.h"
+#endif
 
 namespace teragon {
-class PluginParameterSet {
+
+#if ENABLE_MULTITHREADED
+void asyncDispatcherCallback(void *arg) {
+  EventDispatcher* dispatcher = reinterpret_cast<EventDispatcher*>(arg);
+  while(!dispatcher->isKilled()) {
+    dispatcher->wait();
+    dispatcher->process();
+  }
+}
+#endif
+
+class PluginParameterSet
+#if ENABLE_MULTITHREADED
+  : public EventScheduler
+#endif
+{
 public:
-  explicit PluginParameterSet() {}
+  explicit PluginParameterSet()
+#if ENABLE_MULTITHREADED
+  : asyncDispatcherThread(asyncDispatcherCallback, &asyncDispatcher),
+    asyncDispatcher(this, false),
+    realtimeDispatcher(this, true)
+#endif
+  {
+#if ENABLE_MULTITHREADED
+    asyncDispatcherThread.detach();
+#endif
+  }
   virtual ~PluginParameterSet() {}
 
   /**
@@ -102,12 +130,28 @@ public:
    */
   virtual const int size() const { return parameterList.size(); }
 
+#if ENABLE_MULTITHREADED
+  virtual void scheduleEvent(Event* event) {
+    if(event->isRealtime) {
+      realtimeDispatcher.add(event);
+    }
+    else {
+      asyncDispatcher.add(event);
+    }
+  }
+#endif
+
 private:
   typedef std::map<ParameterString, PluginParameter*> ParameterMap;
   typedef std::vector<PluginParameter*> ParameterList;
 
   ParameterMap parameterMap;
   ParameterList parameterList;
+#if ENABLE_MULTITHREADED
+  EventDispatcherThread asyncDispatcherThread;
+  EventDispatcher asyncDispatcher;
+  EventDispatcher realtimeDispatcher;
+#endif
 };
 }
 

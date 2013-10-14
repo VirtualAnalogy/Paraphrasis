@@ -23,23 +23,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __PLUGINPARAMETERS_H__
-#define	__PLUGINPARAMETERS_H__
+#ifndef __EVENT_H__
+#define	__EVENT_H__
 
-#ifndef ENABLE_MULTITHREADED
-#define ENABLE_MULTITHREADED 1
-#endif
-
-#include "BooleanParameter.h"
-#include "DecibelParameter.h"
 #if ENABLE_MULTITHREADED
-#include "EventDispatcher.h"
-#endif
-#include "FloatParameter.h"
-#include "FrequencyParameter.h"
-#include "IntegerParameter.h"
-#include "StringParameter.h"
-#include "PluginParameterSet.h"
-#include "VoidParameter.h"
+#include "PluginParameter.h"
+
+namespace teragon {
+
+class Event {
+public:
+  Event(PluginParameter* p, ParameterValue v, bool realtime, PluginParameterObserver* s = nullptr) :
+    parameter(p), value(v), isRealtime(realtime), observersNotified(false), sender(s) {}
+  virtual ~Event() {}
+
+  PluginParameter* parameter;
+  const ParameterValue value;
+  bool isRealtime;
+  bool observersNotified;
+  const PluginParameterObserver* sender;
+};
+} // namespace teragon
 
 #endif
+
+#endif // __EVENT_H__
+

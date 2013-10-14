@@ -41,6 +41,10 @@ public:
   PluginParameterObserver() {}
   virtual ~PluginParameterObserver() {}
 
+#if ENABLE_MULTITHREADED
+  virtual bool isRealtimePriority() const = 0;
+#endif
+
   /**
    * Method to be called when a parameter's value has been updated.
    */
@@ -144,6 +148,7 @@ public:
    * @param value Value, which must be between the minimum and maximum values
    */
   virtual void setValue(const ParameterValue inValue) {
+    // TODO: Possible ABA problem here
     if(value != inValue) {
       value = inValue;
       notifyObservers();
@@ -206,6 +211,12 @@ public:
     observers.push_back(observer);
   }
 
+  virtual PluginParameterObserver* getObserver(const unsigned int index) const {
+    return index < observers.size() ? observers.at(index) : nullptr;
+  }
+
+  virtual int getNumObservers() const { return observers.size(); }
+
   /**
    * Remove an observer from the list of observers for this parameter. If you do not call
    * this method before your observer goes out of scope, future calls to this parameter's
@@ -226,10 +237,18 @@ public:
   }
 
 protected:
+  /**
+   * Notify all observers that a parameter has been updated. If PluginParameters
+   * is built with ENABLE_MULTITHREADED=1, this method has no effect, since it
+   * will be called synchronously, and observer updates are instead executed
+   * from the EventDispatcher in that case.
+   */
   void notifyObservers() const {
+#if ! ENABLE_MULTITHREADED
     for(ParameterObserverMap::const_iterator iterator = observers.begin(); iterator != observers.end(); ++iterator) {
       (*iterator)->onParameterUpdated(this);
     }
+#endif
   }
 
   const ParameterString& getUnit() const { return unit; }

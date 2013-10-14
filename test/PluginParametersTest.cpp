@@ -80,6 +80,9 @@ using namespace teragon;
 class TestObserver : public PluginParameterObserver {
 public:
   TestObserver(bool &inB) : b(inB) {}
+#if ENABLE_MULTITHREADED
+  bool isRealtimePriority() const { return true; }
+#endif
   void onParameterUpdated(const PluginParameter* parameter) {
     b = true;
   }
@@ -90,6 +93,9 @@ private:
 class TestCounterObserver : public PluginParameterObserver {
 public:
   TestCounterObserver() : count(0) {}
+#if ENABLE_MULTITHREADED
+  bool isRealtimePriority() const { return true; }
+#endif
   void onParameterUpdated(const PluginParameter* parameter) {
     count++;
   }
@@ -101,6 +107,9 @@ public:
   BooleanParameterListener() : PluginParameterObserver(), myValue(false) {}
   virtual ~BooleanParameterListener() {}
   bool myValue;
+#if ENABLE_MULTITHREADED
+  bool isRealtimePriority() const { return true; }
+#endif
   void onParameterUpdated(const PluginParameter *parameter) {
     myValue = parameter->getValue();
   }
@@ -109,6 +118,9 @@ public:
 class StringParameterListener : public PluginParameterObserver {
 public:
   ParameterString myValue;
+#if ENABLE_MULTITHREADED
+  bool isRealtimePriority() const { return true; }
+#endif
   void onParameterUpdated(const PluginParameter* parameter) {
     myValue = parameter->getDisplayText();
   }
