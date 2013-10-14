@@ -3,6 +3,8 @@ project(PluginParameters)
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include/tinythread)
+include_directories(${CMAKE_SOURCE_DIR}/include/readerwriterqueue)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   add_definitions(-DLINUX=1)
