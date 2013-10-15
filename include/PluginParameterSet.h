@@ -85,6 +85,12 @@ public:
     return parameter;
   }
 
+  /**
+   * @return Number of parameters in the set
+   */
+  virtual const int size() const { return parameterList.size(); }
+
+
   virtual void clear() {
     for(ParameterList::iterator iterator = parameterList.begin(); iterator != parameterList.end(); ++iterator) {
       delete *iterator;
@@ -126,11 +132,6 @@ public:
     ParameterMap::const_iterator iterator = parameterMap.find(PluginParameter::makeSafeName(name));
     return (iterator != parameterMap.end()) ? iterator->second : NULL;
   }
-
-  /**
-   * @return Number of parameters in the set
-   */
-  virtual const int size() const { return parameterList.size(); }
 
 #if ENABLE_MULTITHREADED
   virtual void set(const ParameterString& name, const ParameterValue value,
