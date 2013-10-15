@@ -260,7 +260,7 @@ protected:
    * will be called synchronously, and observer updates are instead executed
    * from the EventDispatcher in that case.
    */
-  void notifyObservers() const {
+  virtual void notifyObservers() const {
 #if ! ENABLE_MULTITHREADED
     for(ParameterObserverMap::const_iterator iterator = observers.begin(); iterator != observers.end(); ++iterator) {
       (*iterator)->onParameterUpdated(this);
@@ -268,8 +268,8 @@ protected:
 #endif
   }
 
-  const ParameterString& getUnit() const { return unit; }
-  const int getDisplayPrecision() const { return precision; }
+  virtual const ParameterString& getUnit() const { return unit; }
+  virtual const int getDisplayPrecision() const { return precision; }
 
 private:
   ParameterString name;
