@@ -284,21 +284,17 @@ static bool testAddDuplicateParameterToSet() {
 }
 
 static bool testAddDuplicateSafeNameParameterToSet() {
-  BooleanParameter p1("Parameter1");
-  BooleanParameter p2("Parameter 1");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p1));
-  ASSERT_IS_NULL(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter1")));
+  ASSERT_IS_NULL(s.add(new BooleanParameter("Parameter 1")));
   ASSERT_INT_EQUALS(1, s.size());
   return true;
 }
 
 static bool testClearParameterSet() {
-  BooleanParameter *p1 = new BooleanParameter("Parameter1");
-  BooleanParameter *p2 = new BooleanParameter("Parameter2");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(p1));
-  ASSERT_NOT_NULL(s.add(p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter1")));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter2")));
   ASSERT_INT_EQUALS(2, s.size());
   s.clear();
   ASSERT_INT_EQUALS(0, s.size());
