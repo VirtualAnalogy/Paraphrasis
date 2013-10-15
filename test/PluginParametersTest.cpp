@@ -435,6 +435,8 @@ static bool testSetPrecision() {
 ////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
+  gNumFailedTests = 0;
+
   ADD_TEST("CreateBoolParameter", testCreateBoolParameter());
   ADD_TEST("SetBoolParameter", testSetBoolParameter());
   ADD_TEST("SetBoolParameterWithListener", testSetBoolParameterWithListener());
@@ -483,5 +485,7 @@ int main(int argc, char* argv[]) {
   ADD_TEST("SetParameterUnit", testSetParameterUnit());
   ADD_TEST("SetPrecision", testSetPrecision());
 
-  return 0;
+  gNumFailedTests += runMultithreadedTests();
+
+  return gNumFailedTests;
 }
