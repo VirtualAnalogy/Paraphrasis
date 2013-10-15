@@ -25,57 +25,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "TestRunner.h"
 #include "PluginParameters.h"
 
+extern int runMultithreadedTests();
+
 using namespace teragon;
-
-////////////////////////////////////////////////////////////////////////////////
-// Test suite macros
-////////////////////////////////////////////////////////////////////////////////
-
-#define ADD_TEST(name, func) { \
-  printf("Test %s: ", name); \
-  if(func) printf("success\n"); \
-  else printf("FAIL\n"); \
-}
-
-#define ASSERT(result) { \
-  if(!result) return false; \
-}
-
-#define ASSERT_IS_NULL(result) { \
-  if(result != NULL) return false; \
-}
-
-#define ASSERT_NOT_NULL(result) { \
-  if(result == NULL) return false; \
-}
-
-#define ASSERT_FALSE(result) { \
-  if(result) return false; \
-}
-
-#define ASSERT_EQUALS(expected, result) { \
-  if(fabs(fabs(result) - fabs(expected)) > 0.001) { \
-    printf("Expected %f, got %f. ", expected, result); \
-    return false; \
-  } \
-}
-
-#define ASSERT_INT_EQUALS(expected, result) { \
-  if(result != expected) { \
-    printf("Expected %d, got %d. ", expected, result); \
-    return false; \
-  } \
-}
-
-#define ASSERT_STRING(expected, result) { \
-  std::string e(expected); \
-  if(e.compare(result) != 0) { \
-    printf("Expected '%s', got '%s'. ", expected, result.c_str()); \
-    return false; \
-  } \
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Observers
