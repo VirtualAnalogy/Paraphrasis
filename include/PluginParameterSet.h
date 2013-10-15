@@ -36,7 +36,7 @@
 namespace teragon {
 
 #if ENABLE_MULTITHREADED
-void asyncDispatcherCallback(void *arg) {
+static void asyncDispatcherCallback(void *arg) {
   EventDispatcher* dispatcher = reinterpret_cast<EventDispatcher*>(arg);
   while(!dispatcher->isKilled()) {
     dispatcher->wait();
