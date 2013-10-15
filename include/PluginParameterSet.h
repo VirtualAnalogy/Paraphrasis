@@ -62,7 +62,9 @@ public:
     asyncDispatcherThread.detach();
 #endif
   }
-  virtual ~PluginParameterSet() {}
+  virtual ~PluginParameterSet() {
+    asyncDispatcherThread.join();
+  }
 
   /**
    * Add a parameter to the set. Note that this class does *not* free the
