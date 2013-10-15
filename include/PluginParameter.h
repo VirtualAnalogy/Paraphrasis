@@ -130,18 +130,24 @@ public:
   virtual const ParameterValue getScaledValue() const = 0;
 
   /**
-   * Set the parameter's value, scaled in the range {0.0 - 1.0}
-   *
-   * @param value The parameter value, must be between {0.0 - 1.0}
-   */
-  virtual void setScaledValue(const ParameterValue value) = 0;
-
-  /**
    * Get the parameter's interval value, which will be between the minimum
    * and maximum values set in the constructor.
    */
   virtual const ParameterValue getValue() const { return value; }
 
+#if ENABLE_MULTITHREADED
+  friend class EventDispatcher;
+  friend class PluginParametersTests;
+
+  // The multithreaded version shouldn't allow parameters to have their value
+  // be directly set in this manner. Instead, all parameter setting must be
+  // done by the owning parameter set, as it can dispatch the operation on
+  // the correct thread. Allowing this function to remain public might tempt
+  // misuse when caching parameters to directly get/set their value, as this
+  // would not notify all observers on both threads (not to mention other
+  // potential concurrency problems).
+protected:
+#endif
   /**
    * Set the parameter's interval value directly.
    *
@@ -154,6 +160,17 @@ public:
       notifyObservers();
     }
   }
+
+  /**
+   * Set the parameter's value, scaled in the range {0.0 - 1.0}
+   *
+   * @param value The parameter value, must be between {0.0 - 1.0}
+   */
+  virtual void setScaledValue(const ParameterValue value) = 0;
+
+#if ENABLE_MULTITHREADED
+public:
+#endif
 
   /**
    * @return Get the parameter's minimum value

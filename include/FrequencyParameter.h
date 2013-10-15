@@ -58,6 +58,12 @@ public:
   virtual const ParameterValue getScaledValue() const {
     return (log(getValue()) - logMinValue) / range;
   }
+
+#if ENABLE_MULTITHREADED
+  friend class PluginParametersTests;
+protected:
+#endif
+
   virtual void setScaledValue(const ParameterValue inValue) {
     setValue(exp(inValue * range + logMinValue));
   }

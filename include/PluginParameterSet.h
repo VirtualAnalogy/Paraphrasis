@@ -131,6 +131,25 @@ public:
   virtual const int size() const { return parameterList.size(); }
 
 #if ENABLE_MULTITHREADED
+  virtual void set(const ParameterString& name, const ParameterValue value,
+    const bool realtime = false, PluginParameterObserver* sender = NULL) {
+    PluginParameter* parameter = get(name);
+    if(parameter != NULL) {
+      set(parameter, value, realtime, sender);
+    }
+  }
+
+  virtual void set(const int index, const ParameterValue value,
+    bool realtime = false, PluginParameterObserver* sender = NULL) {
+    return set(parameterList.at(index), value, realtime, sender);
+  }
+
+  virtual void set(PluginParameter* parameter, const ParameterValue value,
+    bool realtime = false, PluginParameterObserver* sender = NULL) {
+    scheduleEvent(new Event(parameter, value, realtime, sender));
+  }
+
+protected:
   virtual void scheduleEvent(Event* event) {
     if(event->isRealtime) {
       realtimeDispatcher.add(event);

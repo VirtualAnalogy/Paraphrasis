@@ -40,14 +40,18 @@ public:
   virtual void setDisplayValue(const ParameterValue inValue) { setValue(inValue); }
 
   virtual const ParameterValue getScaledValue() const { return getValue(); }
-  virtual void setScaledValue(const ParameterValue inValue) { setValue(inValue); }
   virtual const ParameterValue getValue() const { return 0.0; }
+
+#if ENABLE_MULTITHREADED
+  friend class PluginParametersTests;
+protected:
+#endif
+  virtual void setScaledValue(const ParameterValue inValue) { setValue(inValue); }
   virtual void setValue(const ParameterValue inValue) { PluginParameter::setValue(inValue); }
   virtual void setValue(const ParameterString inValue) {
     value = inValue;
     notifyObservers();
   }
-
 
 private:
   ParameterString value;
