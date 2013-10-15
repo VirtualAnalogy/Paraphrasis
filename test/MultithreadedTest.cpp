@@ -26,30 +26,57 @@
 #include "TestRunner.h"
 #include "PluginParameters.h"
 
+#if ENABLE_MULTITHREADED
+
 using namespace teragon;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Observers
 ////////////////////////////////////////////////////////////////////////////////
 
-class TestAsyncObserver : public PluginParameterObserver {
+class TestCounterObserver : public PluginParameterObserver {
 public:
-  TestAsyncObserver() {}
-#if ENABLE_MULTITHREADED
-  bool isRealtimePriority() const { return true; }
-#endif
+  TestCounterObserver(bool isRealtime) : PluginParameterObserver(),
+    realtime(isRealtime), count(0) {}
+  virtual ~TestCounterObserver() {}
+  int getCount() const { return count; }
+  virtual bool isRealtimePriority() const { return realtime; }
   void onParameterUpdated(const PluginParameter* parameter) {
+    count++;
   }
 private:
+  const bool realtime;
+  int count;
 };
 
+class TestAsyncObserver : public TestCounterObserver {
+public:
+  TestAsyncObserver() : TestCounterObserver(false) {}
+  virtual ~TestAsyncObserver() {}
+};
+
+class TestRealtimeObserver : public TestCounterObserver {
+public:
+  TestRealtimeObserver() : TestCounterObserver(true) {}
+  virtual ~TestRealtimeObserver() {}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Tests
+////////////////////////////////////////////////////////////////////////////////
+
 static bool testUpdatesReceivedOnBothThreads() {
+  PluginParameterSet p;
   return true;
 }
 
-int runMultithreadedTests();
-int runMultithreadedTests() {
-  ADD_TEST("UpdatesReceivedOnBothThreads", testUpdatesReceivedOnBothThreads());
+////////////////////////////////////////////////////////////////////////////////
+// Run test suite
+////////////////////////////////////////////////////////////////////////////////
 
-  return 0;
+void runMultithreadedTests();
+void runMultithreadedTests() {
+  ADD_TEST("UpdatesReceivedOnBothThreads", testUpdatesReceivedOnBothThreads());
 }
+
+#endif // #if ENABLE_MULTITHREADED
