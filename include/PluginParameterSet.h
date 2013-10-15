@@ -53,9 +53,9 @@ class PluginParameterSet
 public:
   explicit PluginParameterSet()
 #if ENABLE_MULTITHREADED
-  : asyncDispatcherThread(asyncDispatcherCallback, &asyncDispatcher),
-    asyncDispatcher(this, false),
-    realtimeDispatcher(this, true)
+  : asyncDispatcher(this, false),
+    realtimeDispatcher(this, true),
+    asyncDispatcherThread(asyncDispatcherCallback, &asyncDispatcher)
 #endif
   {
 #if ENABLE_MULTITHREADED
@@ -167,9 +167,9 @@ private:
   ParameterMap parameterMap;
   ParameterList parameterList;
 #if ENABLE_MULTITHREADED
-  EventDispatcherThread asyncDispatcherThread;
   EventDispatcher asyncDispatcher;
   EventDispatcher realtimeDispatcher;
+  EventDispatcherThread asyncDispatcherThread;
 #endif
 };
 }
