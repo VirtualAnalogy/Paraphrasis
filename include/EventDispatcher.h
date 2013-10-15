@@ -53,7 +53,7 @@ public:
   void process() {
     Event* event;
     if(eventQueue.try_dequeue(event)) {
-      if(event != nullptr) {
+      if(event != NULL) {
         // If the event is for the realtime thread, and this is the realtime
         // thread, then execute the parameter change
         if(event->isRealtime == isRealtime && isRealtime) {

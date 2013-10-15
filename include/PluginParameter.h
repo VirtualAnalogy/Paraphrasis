@@ -229,7 +229,7 @@ public:
   }
 
   virtual PluginParameterObserver* getObserver(const unsigned int index) const {
-    return index < observers.size() ? observers.at(index) : nullptr;
+    return index < observers.size() ? observers.at(index) : NULL;
   }
 
   virtual int getNumObservers() const { return observers.size(); }

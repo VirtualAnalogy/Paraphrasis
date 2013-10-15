@@ -33,7 +33,7 @@ namespace teragon {
 
 class Event {
 public:
-  Event(PluginParameter* p, ParameterValue v, bool realtime, PluginParameterObserver* s = nullptr) :
+  Event(PluginParameter* p, ParameterValue v, bool realtime, PluginParameterObserver* s = NULL) :
     parameter(p), value(v), isRealtime(realtime), observersNotified(false), sender(s) {}
   virtual ~Event() {}
 
