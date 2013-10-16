@@ -28,6 +28,7 @@
 
 #if ENABLE_MULTITHREADED
 #include "PluginParameter.h"
+#include "StringParameter.h"
 
 namespace teragon {
 
@@ -45,9 +46,20 @@ public:
   bool observersNotified;
   const PluginParameterObserver* sender;
 };
+
+class StringEvent : public Event {
+public:
+  StringEvent(StringParameter* p, ParameterString value,
+    bool realtime = false, PluginParameterObserver* s = NULL) :
+  Event(dynamic_cast<PluginParameter*>(p), 0, realtime, s),
+    stringParameter(p), stringValue(value) {}
+  virtual ~StringEvent() {}
+
+
+  StringParameter* stringParameter;
+  const ParameterString stringValue;
+};
 } // namespace teragon
 
-#endif
-
+#endif // ENABLE_MULTITHREADED
 #endif // __EVENT_H__
-

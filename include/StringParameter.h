@@ -43,6 +43,7 @@ public:
   virtual const ParameterValue getValue() const { return 0.0; }
 
 #if ENABLE_MULTITHREADED
+  friend class StringEvent;
   friend class PluginParametersTests;
 protected:
 #endif
