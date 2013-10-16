@@ -147,6 +147,14 @@ public:
   }
 
 #if ENABLE_MULTITHREADED
+  /**
+   * Process events on the realtime dispatcher. This method should be called
+   * in the plugin's process() function.
+   */
+  virtual void processRealtimeEvents() {
+    realtimeDispatcher.process();
+  }
+
   virtual void set(const ParameterString& name, const ParameterValue value,
     const bool realtime = false, PluginParameterObserver* sender = NULL) {
     PluginParameter* parameter = get(name);
