@@ -40,6 +40,8 @@ public:
     sender(s) {}
   virtual ~Event() {}
 
+  virtual void apply() { parameter->setValue(value); }
+
   PluginParameter* parameter;
   const ParameterValue value;
   bool isRealtime;
@@ -55,6 +57,7 @@ public:
     stringParameter(p), stringValue(value) {}
   virtual ~StringEvent() {}
 
+  virtual void apply() { stringParameter->setValue(stringValue); }
 
   StringParameter* stringParameter;
   const ParameterString stringValue;

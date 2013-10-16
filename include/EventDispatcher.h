@@ -57,7 +57,7 @@ public:
         // If the event is for the realtime thread, and this is the realtime
         // thread, then execute the parameter change
         if(event->isRealtime == isRealtime && isRealtime) {
-          event->parameter->setValue(event->value);
+          event->apply();
         }
 
         // Notify all observers of the same type

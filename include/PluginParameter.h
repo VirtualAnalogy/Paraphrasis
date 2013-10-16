@@ -136,7 +136,7 @@ public:
   virtual const ParameterValue getValue() const { return value; }
 
 #if ENABLE_MULTITHREADED
-  friend class EventDispatcher;
+  friend class Event;
   friend class PluginParametersTests;
 
   // The multithreaded version shouldn't allow parameters to have their value
