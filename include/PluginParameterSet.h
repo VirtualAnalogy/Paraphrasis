@@ -202,6 +202,7 @@ protected:
     }
     else {
       asyncDispatcher.add(event);
+      asyncDispatcher.notify();
     }
   }
 #endif
