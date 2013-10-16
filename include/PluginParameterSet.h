@@ -173,6 +173,28 @@ public:
     scheduleEvent(new Event(parameter, value, realtime, sender));
   }
 
+  // TODO: Should disappear with templated version of PluginParameter
+  virtual void set(const ParameterString& name, const ParameterString value,
+    const bool realtime = false, PluginParameterObserver* sender = NULL) {
+    PluginParameter* parameter = get(name);
+    if(parameter != NULL) {
+      set(parameter, value, realtime, sender);
+    }
+  }
+
+  virtual void set(const int index, const ParameterString value,
+    bool realtime = false, PluginParameterObserver* sender = NULL) {
+    return set(parameterList.at(index), value, realtime, sender);
+  }
+
+  virtual void set(PluginParameter* parameter, const ParameterString value,
+    bool realtime = false, PluginParameterObserver* sender = NULL) {
+    StringParameter* stringParameter = dynamic_cast<StringParameter*>(parameter);
+    if(stringParameter != NULL) {
+      scheduleEvent(new StringEvent(stringParameter, value, realtime, sender));
+    }
+  }
+
 protected:
   virtual void scheduleEvent(Event* event) {
     if(event->isRealtime) {
