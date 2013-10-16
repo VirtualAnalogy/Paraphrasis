@@ -38,9 +38,15 @@ namespace teragon {
 #if ENABLE_MULTITHREADED
 static void asyncDispatcherCallback(void *arg) {
   EventDispatcher* dispatcher = reinterpret_cast<EventDispatcher*>(arg);
+  EventDispatcherLockGuard guard(dispatcher->getMutex());
   while(!dispatcher->isKilled()) {
     dispatcher->wait();
-    dispatcher->process();
+    // This thread can be notified both in case of an event callback or when the
+    // thread should join and exit. In the second case, we should not attempt to
+    // run process(), as bad things may happen.
+    if(!dispatcher->isKilled()) {
+      dispatcher->process();
+    }
   }
 }
 #endif
@@ -64,6 +70,7 @@ public:
   }
 
   virtual ~PluginParameterSet() {
+    asyncDispatcher.kill();
     asyncDispatcherThread.join();
 
     // Delete all parameters added to the set

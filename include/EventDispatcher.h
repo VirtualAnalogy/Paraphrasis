@@ -88,23 +88,27 @@ public:
     }
   }
 
-  void kill() { killed = true; }
   bool isKilled() const { return killed; }
+  void kill() {
+    EventDispatcherLockGuard guard(mutex);
+    killed = true;
+    notify();
+  }
 
+  void notify() { waitLock.notify_all(); }
   void wait() { waitLock.wait(mutex); }
+  EventDispatcherMutex& getMutex() { return mutex; }
 
 private:
   tthread::condition_variable waitLock;
-  tthread::mutex mutex;
+  EventDispatcherMutex mutex;
   moodycamel::ReaderWriterQueue<Event*> eventQueue;
 
   EventScheduler* scheduler;
   const bool isRealtime;
   bool killed;
 };
-
-typedef tthread::thread EventDispatcherThread;
 } // namespace teragon
-#endif
 
+#endif // ENABLE_MULTITHREADED
 #endif // __EVENTDISPATCHER_H__
