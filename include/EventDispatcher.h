@@ -34,6 +34,10 @@
 
 namespace teragon {
 
+typedef tthread::thread EventDispatcherThread;
+typedef tthread::lock_guard<tthread::mutex> EventDispatcherLockGuard;
+typedef tthread::mutex EventDispatcherMutex;
+
 class EventScheduler {
 public:
   EventScheduler() {}
