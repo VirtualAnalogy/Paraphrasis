@@ -249,15 +249,13 @@ static bool testCreateParameterWithBadRange() {
 }
 
 static bool testAddParameterToSet() {
-  BooleanParameter p1("Parameter 1");
-  BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
   PluginParameter* _p1;
   PluginParameter* _p2;
 
-  _p1 = s.add(&p1);
+  _p1 = s.add(new BooleanParameter("Parameter 1"));
   ASSERT_NOT_NULL(_p1);
-  _p2 = s.add(&p2);
+  _p2 = s.add(new BooleanParameter("Parameter 2"));
   ASSERT_NOT_NULL(_p2);
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 1", s.get(0)->getName());
@@ -275,10 +273,10 @@ static bool testAddNullParameterToSet() {
 }
 
 static bool testAddDuplicateParameterToSet() {
-  BooleanParameter p("test");
+  BooleanParameter *p = new BooleanParameter("test");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p));
-  ASSERT_IS_NULL(s.add(&p));
+  ASSERT_NOT_NULL(s.add(p));
+  ASSERT_IS_NULL(s.add(p));
   ASSERT_INT_EQUALS(1, s.size());
   return true;
 }
@@ -302,11 +300,9 @@ static bool testClearParameterSet() {
 }
 
 static bool testGetParameterByName() {
-  BooleanParameter p1("Parameter 1");
-  BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p1));
-  ASSERT_NOT_NULL(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 1")));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 2")));
   ASSERT_INT_EQUALS(2, s.size());
   PluginParameter *pe = s.get("Parameter 2");
   ASSERT_NOT_NULL(pe);
@@ -315,33 +311,27 @@ static bool testGetParameterByName() {
 }
 
 static bool testGetParameterByIndex() {
-  BooleanParameter p1("Parameter 1");
-  BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p1));
-  ASSERT_NOT_NULL(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 1")));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 2")));
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 2", s.get(1)->getName());
   return true;
 }
 
 static bool testGetParameterByNameOperator() {
-  BooleanParameter p1("Parameter 1");
-  BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p1));
-  ASSERT_NOT_NULL(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 1")));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 2")));
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 2", s["Parameter 2"]->getName());
   return true;
 }
 
 static bool testGetParameterByIndexOperator() {
-  BooleanParameter p1("Parameter 1");
-  BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p1));
-  ASSERT_NOT_NULL(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 1")));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 2")));
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 2", s[1]->getName());
   return true;

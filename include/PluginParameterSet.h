@@ -62,8 +62,14 @@ public:
     asyncDispatcherThread.detach();
 #endif
   }
+
   virtual ~PluginParameterSet() {
     asyncDispatcherThread.join();
+
+    // Delete all parameters added to the set
+    for(int i = 0; i < size(); i++) {
+      delete parameterList.at(i);
+    }
   }
 
   /**
