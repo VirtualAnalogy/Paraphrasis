@@ -111,11 +111,20 @@ static bool testSetBoolParameter() {
 }
 
 static bool testSetBoolParameterWithListener() {
-  BooleanParameter p("test");
+  BooleanParameter *p = new BooleanParameter("test");
   BooleanParameterListener l;
-  p.addObserver(&l);
-  p.setValue(true);
+  p->addObserver(&l);
+#if ENABLE_MULTITHREADED
+  PluginParameterSet s;
+  ASSERT_NOT_NULL(s.add(p));
+  s.set(p, true, l.isRealtimePriority());
+  s.processRealtimeEvents();
   ASSERT(l.myValue);
+#else
+  p->setValue(true);
+  ASSERT(l.myValue);
+  delete p;
+#endif
   return true;
 }
 
@@ -215,21 +224,39 @@ static bool testSetStringParameter() {
 }
 
 static bool testSetStringParameterWithListener() {
-  StringParameter p("test", "whatever");
+  StringParameter *p = new StringParameter("test", "whatever");
   StringParameterListener l;
-  p.addObserver(&l);
-  p.setValue("something");
+  p->addObserver(&l);
+#if ENABLE_MULTITHREADED
+  PluginParameterSet s;
+  ASSERT_NOT_NULL(s.add(p));
+  s.set(p, "something", l.isRealtimePriority());
+  s.processRealtimeEvents();
   ASSERT_STRING("something", l.myValue);
+#else
+  p->setValue("something");
+  ASSERT_STRING("something", l.myValue);
+  delete p;
+#endif
   return true;
 }
 
 static bool testCreateVoidParameter() {
-  VoidParameter p("test");
-  ASSERT_EQUALS(0.0, p.getValue());
+  VoidParameter *p = new VoidParameter("test");
+  ASSERT_EQUALS(0.0, p->getValue());
   TestCounterObserver l;
-  p.addObserver(&l);
-  p.setValue();
+  p->addObserver(&l);
+#if ENABLE_MULTITHREADED
+  PluginParameterSet s;
+  ASSERT_NOT_NULL(s.add(p));
+  s.set(p, 0, l.isRealtimePriority());
+  s.processRealtimeEvents();
   ASSERT_INT_EQUALS(1, l.count);
+#else
+  p->setValue();
+  ASSERT_INT_EQUALS(1, l.count);
+  delete p;
+#endif
   return true;
 }
 
@@ -345,11 +372,20 @@ static bool testGetSafeName() {
 
 static bool testAddObserver() {
   bool b = false;
-  BooleanParameter p("test");
+  BooleanParameter *p = new BooleanParameter("test");
   TestObserver t(b);
-  p.addObserver(&t);
-  p.setValue(1.0);
+  p->addObserver(&t);
+#if ENABLE_MULTITHREADED
+  PluginParameterSet s;
+  ASSERT_NOT_NULL(s.add(p));
+  s.set(p, 1.0, t.isRealtimePriority());
+  s.processRealtimeEvents();
   ASSERT(b);
+#else
+  p->setValue(1.0);
+  ASSERT(b);
+  delete p;
+#endif
   return true;
 }
 
