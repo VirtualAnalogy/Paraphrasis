@@ -379,7 +379,7 @@ class lock_guard {
 };
 
 /// Condition variable class.
-/// This is a signalling object for synchronizing the execution flow for
+/// This is a signaling object for synchronizing the execution flow for
 /// several threads. Example usage:
 /// @code
 /// // Shared data and associated mutex and condition variable objects
@@ -538,7 +538,7 @@ enum memory_order {
 #define ATOMIC_FLAG_INIT 0
 
 /// Atomic flag class.
-/// This is an atomic boolean object that provides methods for atmically
+/// This is an atomic boolean object that provides methods for atomically
 /// testing, setting and clearing the state of the object. It can be used
 /// for implementing user space spin-locks, for instance.
 class atomic_flag {
@@ -552,7 +552,7 @@ class atomic_flag {
     }
 
     /// Atomically test and set the value.
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     /// @return The value held before this operation.
     inline bool test_and_set(memory_order order = memory_order_seq_cst)
     {
@@ -603,7 +603,7 @@ class atomic_flag {
     }
 
     /// Atomically changes the state to cleared (false).
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     inline void clear(memory_order order = memory_order_seq_cst)
     {
 #if defined(_TTHREAD_HAS_ATOMIC_BUILTINS_)
@@ -673,7 +673,7 @@ struct atomic {
 
     /// Atomically replaces the current value.
     /// @param desired The new value.
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     inline void store(T desired, memory_order order = memory_order_seq_cst)
     {
 #ifdef _TTHREAD_HAS_ATOMIC_BUILTINS_
@@ -686,7 +686,7 @@ struct atomic {
     }
 
     /// Atomically loads the current value.
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     inline T load(memory_order order = memory_order_seq_cst) const
     {
 #ifdef _TTHREAD_HAS_ATOMIC_BUILTINS_
@@ -703,7 +703,7 @@ struct atomic {
     /// addition of the value and arg. The operation is a read-modify-write
     /// operation.
     /// @param arg The value to be added to the current value.
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     inline T fetch_add(T arg, memory_order order = memory_order_seq_cst)
     {
 #ifdef _TTHREAD_HAS_ATOMIC_BUILTINS_
@@ -721,7 +721,7 @@ struct atomic {
     /// subtraction of the value and arg. The operation is a read-modify-write
     /// operation.
     /// @param arg The value to be subtracted from the current value.
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     inline T fetch_sub(T arg, memory_order order = memory_order_seq_cst)
     {
 #ifdef _TTHREAD_HAS_ATOMIC_BUILTINS_
