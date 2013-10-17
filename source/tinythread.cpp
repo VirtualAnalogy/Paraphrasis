@@ -341,6 +341,34 @@ void thread::set_low_priority()
 #endif
 }
 
+void thread::set_name(const char* name)
+{
+#if defined(_TTHREAD_WIN32_)
+    THREADNAME_INFO info;
+    info.dwType = 0x1000;
+    info.szName = (LPCSTR)name;
+    info.dwThreadID = mWin32ThreadID;
+    info.dwFlags = 0;
+
+    __try
+    {
+        RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info);
+    }
+    __except (EXCEPTION_CONTINUE_EXECUTION)
+    {
+    }
+#elif defined(_TTHREAD_POSIX_)
+    // Setting the thread name varies a bit on different POSIX platforms
+#if defined(__APPLE__)
+    pthread_setname_np(name);
+#elif __linux
+    pthread_setname_np(mHandle, name);
+#else
+    pthread_set_name_np(mHandle, name);
+#endif
+#endif
+}
+
 unsigned thread::hardware_concurrency()
 {
 #if defined(_TTHREAD_WIN32_)

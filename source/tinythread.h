@@ -805,6 +805,19 @@ typedef atomic<unsigned long>      atomic_ulong;  ///< Specialized atomic for ty
 typedef atomic<long long>          atomic_llong;  ///< Specialized atomic for type long long.
 typedef atomic<unsigned long long> atomic_ullong; ///< Specialized atomic for type unsigned long long.
 
+#if defined(_TTHREAD_WIN32_)
+#define MS_VC_EXCEPTION 0x406d1388
+#pragma warning(disable: 6312)
+#pragma warning(disable: 6322)
+typedef struct
+{
+    DWORD dwType;        // must be 0x1000
+    LPCSTR szName;       // pointer to name (in same addr space)
+    DWORD dwThreadID;    // thread ID (-1 caller thread)
+    DWORD dwFlags;       // reserved for future use, most be zero
+} THREADNAME_INFO;
+#endif
+
 /// Thread class.
 class thread {
   public:
@@ -875,6 +888,11 @@ class thread {
     /// it usually requires root permissions on POSIX systems, or may otherwise
     /// be ignored by the OS.
     void set_low_priority();
+
+    /// Set the human-readable name for the thread. This is mostly useful while
+    /// debugging.
+    /// @param[in] name Name of the thread
+    void set_name(const char* name);
 
     /// Determine the number of threads which can possibly execute concurrently.
     /// This function is useful for determining the optimal number of threads to
