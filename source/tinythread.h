@@ -535,7 +535,9 @@ enum memory_order {
 /// \code{.cpp}
 /// tthread::atomic_flag myFlag(ATOMIC_FLAG_INIT);
 /// \endcode
+#ifndef ATOMIC_FLAG_INIT
 #define ATOMIC_FLAG_INIT 0
+#endif
 
 /// Atomic flag class.
 /// This is an atomic boolean object that provides methods for atomically
