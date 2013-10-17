@@ -316,6 +316,31 @@ thread::id thread::get_id() const
 #endif
 }
 
+void thread::set_low_priority()
+{
+#if defined(_TTHREAD_WIN32_)
+    SetThreadPriority(mHandle, THREAD_PRIORITY_LOWEST);
+#elif defined(_TTHREAD_POSIX_)
+    pthread_attr_t thread_attr;
+    int policy = 0;
+    int priority = 0;
+
+    pthread_attr_init(&thread_attr);
+    pthread_attr_getschedpolicy(&thread_attr, &policy);
+    priority = sched_get_priority_min(policy);
+
+#if __APPLE__
+    struct sched_param param;
+    memset(&param, 0, sizeof(param));
+    param.sched_priority = priority;
+    pthread_setschedparam(mHandle, SCHED_OTHER, &param);
+#else
+    pthread_setschedprio(mHandle, priority);
+#endif
+    pthread_attr_destroy(&thread_attr);
+#endif
+}
+
 unsigned thread::hardware_concurrency()
 {
 #if defined(_TTHREAD_WIN32_)

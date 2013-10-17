@@ -869,6 +869,13 @@ class thread {
       return mHandle;
     }
 
+    /// Tell the operating system to schedule this thread with lower priority.
+    /// @note This call may or may not effect the thread's performance, this is
+    /// why the class only allows one to decrease the priority, since increasing
+    /// it usually requires root permissions on POSIX systems, or may otherwise
+    /// be ignored by the OS.
+    void set_low_priority();
+
     /// Determine the number of threads which can possibly execute concurrently.
     /// This function is useful for determining the optimal number of threads to
     /// use for a task.
