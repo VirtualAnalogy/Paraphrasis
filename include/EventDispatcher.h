@@ -49,7 +49,7 @@ public:
 class EventDispatcher {
 public:
   EventDispatcher(EventScheduler* s, bool realtime) :
-    scheduler(s), isRealtime(realtime), killed(false) {}
+    eventQueue(), scheduler(s), isRealtime(realtime), killed(false) {}
   virtual ~EventDispatcher() {}
 
   void add(Event* event) { eventQueue.enqueue(event); }
