@@ -51,10 +51,10 @@ public:
 
 class StringEvent : public Event {
 public:
-  StringEvent(StringParameter* p, ParameterString value,
+  StringEvent(StringParameter* p, ParameterString v,
     bool realtime = false, PluginParameterObserver* s = NULL) :
   Event(dynamic_cast<PluginParameter*>(p), 0, realtime, s),
-    stringParameter(p), stringValue(value) {}
+    stringParameter(p), stringValue(v) {}
   virtual ~StringEvent() {}
 
   virtual void apply() { stringParameter->setValue(stringValue); }
