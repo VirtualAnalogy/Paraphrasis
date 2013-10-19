@@ -36,16 +36,35 @@
 namespace teragon {
 
 #if ENABLE_MULTITHREADED
+class AsyncDispatcherCallbackData {
+public:
+  EventDispatcher& dispatcher;
+  EventDispatcherConditionVariable asyncInitCond;
+  EventDispatcherMutex asyncInitMutex;
+  volatile bool initFinished;
+
+  AsyncDispatcherCallbackData(EventDispatcher& d) : dispatcher(d), initFinished(false) {}
+  virtual ~AsyncDispatcherCallbackData() {}
+};
+
 static void asyncDispatcherCallback(void *arg) {
-  EventDispatcher* dispatcher = reinterpret_cast<EventDispatcher*>(arg);
-  EventDispatcherLockGuard guard(dispatcher->getMutex());
-  while(!dispatcher->isKilled()) {
-    dispatcher->wait();
+  AsyncDispatcherCallbackData* data = reinterpret_cast<AsyncDispatcherCallbackData*>(arg);
+
+  // Notify the main thread that it can return. At this point, we are ready to
+  // process data. Sent from either thread.
+  EventDispatcherLockGuard initGuard(data->asyncInitMutex);
+  data->initFinished = true;
+  data->asyncInitMutex.unlock();
+  data->asyncInitCond.notify_all();
+
+  EventDispatcherLockGuard guard(data->dispatcher.getMutex());
+  while(!data->dispatcher.isKilled()) {
+    data->dispatcher.wait();
     // This thread can be notified both in case of an event callback or when the
     // thread should join and exit. In the second case, we should not attempt to
     // run process(), as bad things may happen.
-    if(!dispatcher->isKilled()) {
-      dispatcher->process();
+    if(!data->dispatcher.isKilled()) {
+      data->dispatcher.process();
     }
   }
 }
@@ -61,11 +80,29 @@ public:
 #if ENABLE_MULTITHREADED
   : asyncDispatcher(this, false),
     realtimeDispatcher(this, true),
-    asyncDispatcherThread(asyncDispatcherCallback, &asyncDispatcher)
+    asyncCallbackData(asyncDispatcher),
+    asyncDispatcherThread(asyncDispatcherCallback, &asyncCallbackData)
 #endif
   {
 #if ENABLE_MULTITHREADED
+    // This looks a bit strange, but it's necessary in case the main thread is
+    // very short lived. This can occur during unit tests or if a plugin is
+    // opened and then closed directly afterwards. This means that the main
+    // thread can actually exit before the async thread is even started, causing
+    // all sorts of havoc during destruction.
+    //
+    // Likewise, if the main thread's process() method is called before the
+    // async thread is started, some observers may not be notified of parameter
+    // changes scheduled immediately after initialization.
+    //
+    // Therefore the constructor must initialize itself synchronously by waiting
+    // until the async thread is completely started before returning.
+    EventDispatcherLockGuard initLockGuard(asyncCallbackData.asyncInitMutex);
     asyncDispatcherThread.detach();
+    asyncDispatcherThread.set_low_priority();
+    while(!asyncCallbackData.initFinished) {
+      asyncCallbackData.asyncInitCond.wait(asyncCallbackData.asyncInitMutex);
+    }
 #endif
   }
 
@@ -216,6 +253,7 @@ private:
 #if ENABLE_MULTITHREADED
   EventDispatcher asyncDispatcher;
   EventDispatcher realtimeDispatcher;
+  AsyncDispatcherCallbackData asyncCallbackData;
   EventDispatcherThread asyncDispatcherThread;
 #endif
 };
