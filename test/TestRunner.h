@@ -47,7 +47,7 @@ static int gNumFailedTests = 0;
 }
 
 #define ASSERT_IS_NULL(result) { \
-  if(result == NULL) return true; \
+  if(result != NULL) return false; \
 }
 
 #define ASSERT_NOT_NULL(result) { \
