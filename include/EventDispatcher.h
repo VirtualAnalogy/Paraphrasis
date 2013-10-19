@@ -56,8 +56,8 @@ public:
   void add(Event* event) { eventQueue.enqueue(event); }
 
   void process() {
-    Event* event;
-    if(eventQueue.try_dequeue(event)) {
+    Event* event = NULL;
+    while(eventQueue.try_dequeue(event)) {
       if(event != NULL) {
         // If the event is for the realtime thread, and this is the realtime
         // thread, then execute the parameter change
@@ -86,6 +86,7 @@ public:
           delete event;
         }
       }
+      event = NULL;
     }
   }
 
