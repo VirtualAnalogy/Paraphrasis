@@ -28,8 +28,6 @@
 #include "TestRunner.h"
 #include "PluginParameters.h"
 
-extern int runMultithreadedTests();
-
 namespace teragon {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -512,8 +510,6 @@ int main(int argc, char* argv[]) {
   ADD_TEST("GetDefaultValue", PluginParametersTests::testGetDefaultValue());
   ADD_TEST("SetParameterUnit", PluginParametersTests::testSetParameterUnit());
   ADD_TEST("SetPrecision", PluginParametersTests::testSetPrecision());
-
-  runMultithreadedTests();
 
   if(gNumFailedTests > 0) {
     printf("\nFAILED %d tests\n", gNumFailedTests);
