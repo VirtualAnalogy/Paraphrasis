@@ -83,7 +83,7 @@ public:
 // Tests
 ////////////////////////////////////////////////////////////////////////////////
 
-class PluginParametersTests {
+class _Tests {
 public:
 static bool testCreateBoolParameter() {
   BooleanParameter p("test");
@@ -431,55 +431,54 @@ using namespace teragon;
 
 int main(int argc, char* argv[]) {
   gNumFailedTests = 0;
+  ADD_TEST(_Tests::testCreateBoolParameter());
+  ADD_TEST(_Tests::testSetBoolParameter());
+  ADD_TEST(_Tests::testSetBoolParameterWithListener());
 
-  ADD_TEST("CreateBoolParameter", PluginParametersTests::testCreateBoolParameter());
-  ADD_TEST("SetBoolParameter", PluginParametersTests::testSetBoolParameter());
-  ADD_TEST("SetBoolParameterWithListener", PluginParametersTests::testSetBoolParameterWithListener());
+  ADD_TEST(_Tests::testCreateDecibelParameter());
+  ADD_TEST(_Tests::testSetDecibelParameter());
 
-  ADD_TEST("CreateDecibelParameter", PluginParametersTests::testCreateDecibelParameter());
-  ADD_TEST("SetDecibelParameter", PluginParametersTests::testSetDecibelParameter());
+  ADD_TEST(_Tests::testCreateFloatParameter());
+  ADD_TEST(_Tests::testSetFloatParameter());
 
-  ADD_TEST("CreateFloatParameter", PluginParametersTests::testCreateFloatParameter());
-  ADD_TEST("SetFloatParameter", PluginParametersTests::testSetFloatParameter());
+  ADD_TEST(_Tests::testCreateFrequencyParameter());
+  ADD_TEST(_Tests::testSetFrequencyParameter());
 
-  ADD_TEST("CreateFrequencyParameter", PluginParametersTests::testCreateFrequencyParameter());
-  ADD_TEST("SetFrequencyParameter", PluginParametersTests::testSetFrequencyParameter());
+  ADD_TEST(_Tests::testCreateIntegerParameter());
+  ADD_TEST(_Tests::testSetIntegerParameter());
 
-  ADD_TEST("CreateIntegerParameter", PluginParametersTests::testCreateIntegerParameter());
-  ADD_TEST("SetIntegerParameter", PluginParametersTests::testSetIntegerParameter());
+  ADD_TEST(_Tests::testCreateStringParameter());
+  ADD_TEST(_Tests::testSetStringParameter());
+  ADD_TEST(_Tests::testSetStringParameterWithListener());
 
-  ADD_TEST("CreateStringParameter", PluginParametersTests::testCreateStringParameter());
-  ADD_TEST("SetStringParameter", PluginParametersTests::testSetStringParameter());
-  ADD_TEST("SetStringParameterWithListener", PluginParametersTests::testSetStringParameterWithListener());
+  ADD_TEST(_Tests::testCreateVoidParameter());
 
-  ADD_TEST("CreateVoidParameter", PluginParametersTests::testCreateVoidParameter());
+  ADD_TEST(_Tests::testCreateParameterWithBadName());
+  ADD_TEST(_Tests::testCreateParameterWithBadRange());
 
-  ADD_TEST("CreateParameterWithBadName", PluginParametersTests::testCreateParameterWithBadName());
-  ADD_TEST("CreateParameterWithBadRange", PluginParametersTests::testCreateParameterWithBadRange());
+  ADD_TEST(_Tests::testCreateParameterSet());
+  ADD_TEST(_Tests::testAddParameterToSet());
+  ADD_TEST(_Tests::testAddNullParameterToSet());
+  ADD_TEST(_Tests::testAddDuplicateParameterToSet());
+  ADD_TEST(_Tests::testAddDuplicateSafeNameParameterToSet());
 
-  ADD_TEST("CreateParameterSet", PluginParametersTests::testCreateParameterSet());
-  ADD_TEST("AddParameterToSet", PluginParametersTests::testAddParameterToSet());
-  ADD_TEST("AddNullParameterToSet", PluginParametersTests::testAddNullParameterToSet());
-  ADD_TEST("AddDuplicateParameterToSet", PluginParametersTests::testAddDuplicateParameterToSet());
-  ADD_TEST("AddDuplicateSafeNameParameterToSet", PluginParametersTests::testAddDuplicateSafeNameParameterToSet());
+  ADD_TEST(_Tests::testClearParameterSet());
+  ADD_TEST(_Tests::testGetParameterByName());
+  ADD_TEST(_Tests::testGetParameterByIndex());
+  ADD_TEST(_Tests::testGetParameterByNameOperator());
+  ADD_TEST(_Tests::testGetParameterByIndexOperator());
 
-  ADD_TEST("ClearParameterSet", PluginParametersTests::testClearParameterSet());
-  ADD_TEST("GetParameterByName", PluginParametersTests::testGetParameterByName());
-  ADD_TEST("GetParameterByIndex", PluginParametersTests::testGetParameterByIndex());
-  ADD_TEST("GetParameterByNameOperator", PluginParametersTests::testGetParameterByNameOperator());
-  ADD_TEST("GetParameterByIndexOperator", PluginParametersTests::testGetParameterByIndexOperator());
+  ADD_TEST(_Tests::testGetSafeName());
+  ADD_TEST(_Tests::testAddObserver());
+  ADD_TEST(_Tests::testRemoveObserver());
+  ADD_TEST(_Tests::testShouldNotNotifyForSameValue());
 
-  ADD_TEST("GetSafeName", PluginParametersTests::testGetSafeName());
-  ADD_TEST("AddObserver", PluginParametersTests::testAddObserver());
-  ADD_TEST("RemoveObserver", PluginParametersTests::testRemoveObserver());
-  ADD_TEST("ShouldNotNotifyForSameValue", PluginParametersTests::testShouldNotNotifyForSameValue());
-
-  ADD_TEST("ParameterType", PluginParametersTests::testParameterType());
-  ADD_TEST("GetMinValue", PluginParametersTests::testGetMinValue());
-  ADD_TEST("GetMaxValue", PluginParametersTests::testGetMaxValue());
-  ADD_TEST("GetDefaultValue", PluginParametersTests::testGetDefaultValue());
-  ADD_TEST("SetParameterUnit", PluginParametersTests::testSetParameterUnit());
-  ADD_TEST("SetPrecision", PluginParametersTests::testSetPrecision());
+  ADD_TEST(_Tests::testParameterType());
+  ADD_TEST(_Tests::testGetMinValue());
+  ADD_TEST(_Tests::testGetMaxValue());
+  ADD_TEST(_Tests::testGetDefaultValue());
+  ADD_TEST(_Tests::testSetParameterUnit());
+  ADD_TEST(_Tests::testSetPrecision());
 
   if(gNumFailedTests > 0) {
     printf("\nFAILED %d tests\n", gNumFailedTests);

@@ -60,7 +60,9 @@ public:
   }
 
 #if ENABLE_MULTITHREADED
-  friend class PluginParametersTests;
+#if HAVE_TESTRUNNER
+  friend class _Tests;
+#endif
 protected:
 #endif
 

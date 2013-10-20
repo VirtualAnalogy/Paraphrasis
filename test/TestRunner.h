@@ -28,6 +28,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#define HAVE_TESTRUNNER 1
 #include "PluginParameters.h"
 
 // From http://stackoverflow.com/a/240370/14302
@@ -40,8 +42,9 @@
 
 static int gNumFailedTests = 0;
 
-#define ADD_TEST(name, func) { \
-  printf("Test %s: ", name); \
+#define ADD_TEST(func) { \
+  printf("Running %s: ", TOSTRING(func)); \
+  fflush(stdout); \
   if(func) printf("success\n"); \
   else { printf("*** FAIL ***\n"); gNumFailedTests++; } \
 }

@@ -45,7 +45,9 @@ public:
   virtual const ParameterValue getValue() const { return 0.0; }
 
 #if ENABLE_MULTITHREADED
-  friend class PluginParametersTests;
+#if HAVE_TESTRUNNER
+  friend class _Tests;
+#endif
 protected:
 #endif
   virtual void setScaledValue(const ParameterValue inValue) { setValue(inValue); }
