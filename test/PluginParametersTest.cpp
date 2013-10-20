@@ -28,6 +28,16 @@
 #include "TestRunner.h"
 #include "PluginParameters.h"
 
+#if ENABLE_MULTITHREADED
+// Simulate a realtime audio system by sleeping a bit after processing events.
+// Here we assume 11ms sleep per block, which is approximately the amount of
+// time needed to process 512 samples at 44100Hz sample rate.
+// Several blocks may be processed before async changes are received, but here
+// we only want to ensure that the event was routed from async->realtime.
+#define SLEEP_TIME_PER_BLOCK_MS 11
+#define TEST_NUM_BLOCKS_TO_PROCESS 10
+#endif
+
 namespace teragon {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -420,7 +430,112 @@ static bool testSetPrecision() {
   ASSERT_STRING("0.12346", p.getDisplayText());
   return true;
 }
+
+#if ENABLE_MULTITHREADED
+static bool testCreateThreadsafeParameterSet() {
+  ThreadsafePluginParameterSet s;
+  ASSERT_INT_EQUALS(0, s.size());
+  return true;
+}
+
+static bool testCreateManyThreadsafeParameterSets() {
+  // Attempt to reveal bugs caused by fast-exiting threads
+  for(int i = 0; i < 100; i++) {
+    ThreadsafePluginParameterSet *s = new ThreadsafePluginParameterSet();
+    ASSERT_INT_EQUALS(0, s->size());
+    delete s;
+  }
+  return true;
+}
+
+static bool testThreadsafeSetParameterRealtime() {
+  ThreadsafePluginParameterSet s;
+  PluginParameter *p = s.add(new BooleanParameter("test"));
+  ASSERT_NOT_NULL(p);
+  ASSERT_FALSE(p->getValue());
+  s.set(p, true, true);
+  s.processRealtimeEvents();
+  ASSERT(p->getValue());
+  return true;
+}
+
+static bool testThreadsafeSetParameterAsync() {
+  ThreadsafePluginParameterSet s;
+  PluginParameter *p = s.add(new BooleanParameter("test"));
+  ASSERT_NOT_NULL(p);
+  ASSERT_FALSE(p->getValue());
+  s.set(p, true, false);
+  while(!p->getValue()) {
+    s.processRealtimeEvents();
+    usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
+  }
+  ASSERT(p->getValue());
+  return true;
+}
+
+static bool testThreadsafeSetParameterBothThreadsFromAsync() {
+  ThreadsafePluginParameterSet s;
+  TestCounterObserver realtimeObserver(true);
+  TestCounterObserver asyncObserver(false);
+  PluginParameter *p = s.add(new BooleanParameter("test"));
+  ASSERT_NOT_NULL(p);
+  p->addObserver(&realtimeObserver);
+  p->addObserver(&asyncObserver);
+  ASSERT_FALSE(p->getValue());
+  s.set(p, true, false);
+  for(int i = 0; i < TEST_NUM_BLOCKS_TO_PROCESS; i++) {
+    s.processRealtimeEvents();
+    usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
+  }
+  ASSERT(p->getValue());
+  ASSERT_INT_EQUALS(1, realtimeObserver.count);
+  ASSERT_INT_EQUALS(1, asyncObserver.count);
+  return true;
+}
+
+static bool testThreadsafeSetParameterBothThreadsFromRealtime() {
+  ThreadsafePluginParameterSet s;
+  TestCounterObserver realtimeObserver(true);
+  TestCounterObserver asyncObserver(false);
+  PluginParameter *p = s.add(new BooleanParameter("test"));
+  ASSERT_NOT_NULL(p);
+  p->addObserver(&realtimeObserver);
+  p->addObserver(&asyncObserver);
+  ASSERT_FALSE(p->getValue());
+  s.set(p, true, true);
+  for(int i = 0; i < TEST_NUM_BLOCKS_TO_PROCESS; i++) {
+    s.processRealtimeEvents();
+    usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
+  }
+  ASSERT(p->getValue());
+  ASSERT_INT_EQUALS(1, realtimeObserver.count);
+  ASSERT_INT_EQUALS(1, asyncObserver.count);
+  return true;
+}
+
+static bool testThreadsafeSetParameterWithSender() {
+  ThreadsafePluginParameterSet s;
+  TestCounterObserver realtimeObserver(true);
+  TestCounterObserver asyncObserver(false);
+  PluginParameter *p = s.add(new BooleanParameter("test"));
+  ASSERT_NOT_NULL(p);
+  p->addObserver(&realtimeObserver);
+  p->addObserver(&asyncObserver);
+  ASSERT_FALSE(p->getValue());
+  s.set(p, true, false, &asyncObserver);
+  for(int i = 0; i < TEST_NUM_BLOCKS_TO_PROCESS; i++) {
+    s.processRealtimeEvents();
+    usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
+  }
+  ASSERT(p->getValue());
+  ASSERT_INT_EQUALS(1, realtimeObserver.count);
+  // The sender should NOT be called for its own events
+  ASSERT_INT_EQUALS(0, asyncObserver.count);
+  return true;
+}
 };
+#endif
+
 } // namespace teragon
 
 using namespace teragon;
@@ -479,6 +594,16 @@ int main(int argc, char* argv[]) {
   ADD_TEST(_Tests::testGetDefaultValue());
   ADD_TEST(_Tests::testSetParameterUnit());
   ADD_TEST(_Tests::testSetPrecision());
+  
+#if ENABLE_MULTITHREADED
+  ADD_TEST(_Tests::testThreadsafeSetParameterAsync());
+  ADD_TEST(_Tests::testCreateThreadsafeParameterSet());
+  ADD_TEST(_Tests::testCreateManyThreadsafeParameterSets());
+  ADD_TEST(_Tests::testThreadsafeSetParameterRealtime());
+  ADD_TEST(_Tests::testThreadsafeSetParameterBothThreadsFromAsync());
+  ADD_TEST(_Tests::testThreadsafeSetParameterBothThreadsFromRealtime());
+  ADD_TEST(_Tests::testThreadsafeSetParameterWithSender());
+#endif
 
   if(gNumFailedTests > 0) {
     printf("\nFAILED %d tests\n", gNumFailedTests);
