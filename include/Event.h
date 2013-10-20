@@ -47,6 +47,16 @@ public:
   const PluginParameterObserver* sender;
 };
 
+class ScaledEvent : public Event {
+public:
+  ScaledEvent(PluginParameter* p, ParameterValue v,
+    bool realtime = false, PluginParameterObserver* s = NULL) :
+  Event(p, v, realtime, s) {}
+  virtual ~ScaledEvent() {}
+
+  virtual void apply() { parameter->setScaledValue(value); }
+};
+
 class StringEvent : public Event {
 public:
   StringEvent(StringParameter* p, ParameterString v,

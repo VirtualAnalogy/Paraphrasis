@@ -137,6 +137,7 @@ public:
 
 #if ENABLE_MULTITHREADED
   friend class Event;
+  friend class ScaledEvent;
 #if HAVE_TESTRUNNER
   friend class _Tests;
 #endif

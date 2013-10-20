@@ -168,6 +168,66 @@ public:
     scheduleEvent(new Event(parameter, value, true, sender));
   }
 
+  /**
+   * Set a parameter's value. When ENABLE_MULTITHREADED is set, then this method
+   * must be used rather than PluginParameter::set(). The actual operation will
+   * be redispatched to the main thread and executed there, and any async
+   * observers will be notified afterwards. This means that there can be some
+   * small delay before other async observers receive their notifications.
+   *
+   * @param name Parameter name
+   * @param value New value
+   * @param sender Sending object (can be NULL). If non-NULL, then this object
+   *               will *not* receive notifications on the observer callback,
+   *               since presumably this object is pushing state to other
+   *               observers.
+   */
+  virtual void setScaled(const ParameterString& name, const ParameterValue value,
+    PluginParameterObserver* sender = NULL) {
+    PluginParameter* parameter = get(name);
+    if(parameter != NULL) {
+      setScaled(parameter, value, sender);
+    }
+  }
+
+  /**
+   * Set a parameter's value. When ENABLE_MULTITHREADED is set, then this method
+   * must be used rather than PluginParameter::set(). The actual operation will
+   * be redispatched to the main thread and executed there, and any async
+   * observers will be notified afterwards. This means that there can be some
+   * small delay before other async observers receive their notifications.
+   *
+   * @param index Parameter index
+   * @param value New value
+   * @param sender Sending object (can be NULL). If non-NULL, then this object
+   *               will *not* receive notifications on the observer callback,
+   *               since presumably this object is pushing state to other
+   *               observers.
+   */
+  virtual void setScaled(const int index, const ParameterValue value,
+    PluginParameterObserver* sender = NULL) {
+    return setScaled(parameterList.at(index), value, sender);
+  }
+
+  /**
+   * Set a parameter's value. When ENABLE_MULTITHREADED is set, then this method
+   * must be used rather than PluginParameter::set(). The actual operation will
+   * be redispatched to the main thread and executed there, and any async
+   * observers will be notified afterwards. This means that there can be some
+   * small delay before other async observers receive their notifications.
+   *
+   * @param parameter Parameter
+   * @param value New value
+   * @param sender Sending object (can be NULL). If non-NULL, then this object
+   *               will *not* receive notifications on the observer callback,
+   *               since presumably this object is pushing state to other
+   *               observers.
+   */
+  virtual void setScaled(PluginParameter* parameter, const ParameterValue value,
+    PluginParameterObserver* sender = NULL) {
+    scheduleEvent(new ScaledEvent(parameter, value, true, sender));
+  }
+
   // TODO: Should disappear with templated version of PluginParameter
   /**
    * Set a parameter's value. When ENABLE_MULTITHREADED is set, then this method
