@@ -24,7 +24,7 @@
  */
 
 #ifndef __ThreadsafePluginParameterSet_h__
-#define	__ThreadsafePluginParameterSet_h__
+#define __ThreadsafePluginParameterSet_h__
 
 #if ENABLE_MULTITHREADED
 #include "PluginParameterSet.h"
