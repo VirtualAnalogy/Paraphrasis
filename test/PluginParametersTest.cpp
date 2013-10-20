@@ -107,10 +107,15 @@ static bool testCreateBoolParameter() {
 }
 
 static bool testSetBoolParameter() {
+  // This test only works in the single-threaded version of PluginParameters,
+  // in the multithreaded version setting a parameter value will not directly
+  // notify the observers.
+#if ! ENABLE_MULTITHREADED
   BooleanParameter p("test");
   ASSERT_FALSE(p.getValue());
   p.setValue(1.0);
   ASSERT(p.getValue());
+#endif
   return true;
 }
 
@@ -439,7 +444,7 @@ static bool testCreateThreadsafeParameterSet() {
 }
 
 static bool testCreateManyThreadsafeParameterSets() {
-  // Attempt to reveal bugs caused by fast-exiting threads
+  // Attempt to expose bugs caused by fast-exiting threads
   for(int i = 0; i < 100; i++) {
     ThreadsafePluginParameterSet *s = new ThreadsafePluginParameterSet();
     ASSERT_INT_EQUALS(0, s->size());
