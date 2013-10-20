@@ -30,6 +30,10 @@
 #include <stdlib.h>
 #include "PluginParameters.h"
 
+// From http://stackoverflow.com/a/240370/14302
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 ////////////////////////////////////////////////////////////////////////////////
 // Test suite macros
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,19 +47,19 @@ static int gNumFailedTests = 0;
 }
 
 #define ASSERT(result) { \
-  if(!result) return false; \
-}
-
-#define ASSERT_IS_NULL(result) { \
-  if(result != NULL) return false; \
-}
-
-#define ASSERT_NOT_NULL(result) { \
-  if(result == NULL) return false; \
+  if(!result) { printf("%s was false. ", TOSTRING(result)); return false; } \
 }
 
 #define ASSERT_FALSE(result) { \
-  if(result) return false; \
+  if(result) { printf("%s was true. ", TOSTRING(result)); return false; } \
+}
+
+#define ASSERT_IS_NULL(result) { \
+  if(result != NULL) { printf("%s was not null. ", TOSTRING(result)); return false; } \
+}
+
+#define ASSERT_NOT_NULL(result) { \
+  if(result == NULL) { printf("%s was null. ", TOSTRING(result)); return false; } \
 }
 
 #define ASSERT_EQUALS(expected, result) { \

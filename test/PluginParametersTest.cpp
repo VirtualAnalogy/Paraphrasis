@@ -36,51 +36,47 @@ namespace teragon {
 
 class TestObserver : public PluginParameterObserver {
 public:
-  TestObserver(bool &inB) : b(inB) {}
-#if ENABLE_MULTITHREADED
+  TestObserver() : PluginParameterObserver(), notified(false) {}
   bool isRealtimePriority() const { return true; }
-#endif
   void onParameterUpdated(const PluginParameter* parameter) {
-    b = true;
+    notified = true;
   }
-private:
-  bool& b;
+  bool notified;
 };
 
 class TestCounterObserver : public PluginParameterObserver {
 public:
-  TestCounterObserver() : count(0) {}
-#if ENABLE_MULTITHREADED
-  bool isRealtimePriority() const { return true; }
-#endif
+  TestCounterObserver(bool isRealtime = true) : PluginParameterObserver(),
+    realtime(isRealtime), count(0) {}
+  virtual ~TestCounterObserver() {}
+  bool isRealtimePriority() const { return realtime; }
   void onParameterUpdated(const PluginParameter* parameter) {
     count++;
   }
+  const bool realtime;
   int count;
 };
 
-class BooleanParameterListener : public PluginParameterObserver {
+class BooleanParameterObserver : public PluginParameterObserver {
 public:
-  BooleanParameterListener() : PluginParameterObserver(), myValue(false) {}
-  virtual ~BooleanParameterListener() {}
-  bool myValue;
-#if ENABLE_MULTITHREADED
+  BooleanParameterObserver() : PluginParameterObserver(), value(false) {}
+  virtual ~BooleanParameterObserver() {}
   bool isRealtimePriority() const { return true; }
-#endif
   void onParameterUpdated(const PluginParameter *parameter) {
-    myValue = parameter->getValue();
+    value = parameter->getValue();
   }
+  bool value;
 };
 
-class StringParameterListener : public PluginParameterObserver {
+class StringParameterObserver : public PluginParameterObserver {
 public:
-  ParameterString myValue;
-#if ENABLE_MULTITHREADED
+  StringParameterObserver() : PluginParameterObserver(), value("") {}
+  virtual ~StringParameterObserver() {}
   bool isRealtimePriority() const { return true; }
-#endif
   void onParameterUpdated(const PluginParameter* parameter) {
-    myValue = parameter->getDisplayText();
+    value = parameter->getDisplayText();
   }
+  ParameterString value;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -110,19 +106,11 @@ static bool testSetBoolParameter() {
 
 static bool testSetBoolParameterWithListener() {
   BooleanParameter *p = new BooleanParameter("test");
-  BooleanParameterListener l;
+  BooleanParameterObserver l;
   p->addObserver(&l);
-#if ENABLE_MULTITHREADED
-  PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(p));
-  s.set(p, true, l.isRealtimePriority());
-  s.processRealtimeEvents();
-  ASSERT(l.myValue);
-#else
   p->setValue(true);
-  ASSERT(l.myValue);
+  ASSERT(l.value);
   delete p;
-#endif
   return true;
 }
 
@@ -223,19 +211,11 @@ static bool testSetStringParameter() {
 
 static bool testSetStringParameterWithListener() {
   StringParameter *p = new StringParameter("test", "whatever");
-  StringParameterListener l;
+  StringParameterObserver l;
   p->addObserver(&l);
-#if ENABLE_MULTITHREADED
-  PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(p));
-  s.set(p, "something", l.isRealtimePriority());
-  s.processRealtimeEvents();
-  ASSERT_STRING("something", l.myValue);
-#else
   p->setValue("something");
-  ASSERT_STRING("something", l.myValue);
+  ASSERT_STRING("something", l.value);
   delete p;
-#endif
   return true;
 }
 
@@ -244,17 +224,9 @@ static bool testCreateVoidParameter() {
   ASSERT_EQUALS(0.0, p->getValue());
   TestCounterObserver l;
   p->addObserver(&l);
-#if ENABLE_MULTITHREADED
-  PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(p));
-  s.set(p, 0, l.isRealtimePriority());
-  s.processRealtimeEvents();
-  ASSERT_INT_EQUALS(1, l.count);
-#else
   p->setValue();
   ASSERT_INT_EQUALS(1, l.count);
   delete p;
-#endif
   return true;
 }
 
@@ -270,6 +242,13 @@ static bool testCreateParameterWithBadRange() {
   // NOTE: This test will also succeed, PluginParameters doesn't check for bad ranges
   // Just be aware of this behavior rather than trying to abuse the library.
   IntegerParameter p("bad", 100.0, 0.0, 300.0);
+  return true;
+}
+
+static bool testCreateParameterSet() {
+  PluginParameterSet s;
+  // Really just a basic sanity check
+  ASSERT_INT_EQUALS(0, s.size());
   return true;
 }
 
@@ -369,32 +348,22 @@ static bool testGetSafeName() {
 }
 
 static bool testAddObserver() {
-  bool b = false;
   BooleanParameter *p = new BooleanParameter("test");
-  TestObserver t(b);
+  TestObserver t;
   p->addObserver(&t);
-#if ENABLE_MULTITHREADED
-  PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(p));
-  s.set(p, 1.0, t.isRealtimePriority());
-  s.processRealtimeEvents();
-  ASSERT(b);
-#else
   p->setValue(1.0);
-  ASSERT(b);
+  ASSERT(t.notified);
   delete p;
-#endif
   return true;
 }
 
 static bool testRemoveObserver() {
-  bool b = false;
   BooleanParameter p("test");
-  TestObserver t(b);
+  TestObserver t;
   p.addObserver(&t);
   p.removeObserver(&t);
   p.setValue(1.0);
-  ASSERT_FALSE(b);
+  ASSERT_FALSE(t.notified);
   return true;
 }
 
@@ -488,6 +457,7 @@ int main(int argc, char* argv[]) {
   ADD_TEST("CreateParameterWithBadName", PluginParametersTests::testCreateParameterWithBadName());
   ADD_TEST("CreateParameterWithBadRange", PluginParametersTests::testCreateParameterWithBadRange());
 
+  ADD_TEST("CreateParameterSet", PluginParametersTests::testCreateParameterSet());
   ADD_TEST("AddParameterToSet", PluginParametersTests::testAddParameterToSet());
   ADD_TEST("AddNullParameterToSet", PluginParametersTests::testAddNullParameterToSet());
   ADD_TEST("AddDuplicateParameterToSet", PluginParametersTests::testAddDuplicateParameterToSet());
