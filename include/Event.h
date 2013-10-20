@@ -36,8 +36,7 @@ class Event {
 public:
   Event(PluginParameter* p, ParameterValue v,
     bool realtime = false, PluginParameterObserver* s = NULL) :
-    parameter(p), value(v), isRealtime(realtime), observersNotified(false),
-    sender(s) {}
+    parameter(p), value(v), isRealtime(realtime), sender(s) {}
   virtual ~Event() {}
 
   virtual void apply() { parameter->setValue(value); }
@@ -45,7 +44,6 @@ public:
   PluginParameter* parameter;
   const ParameterValue value;
   bool isRealtime;
-  bool observersNotified;
   const PluginParameterObserver* sender;
 };
 

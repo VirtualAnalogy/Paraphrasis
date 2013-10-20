@@ -59,9 +59,8 @@ public:
     Event* event = NULL;
     while(eventQueue.try_dequeue(event)) {
       if(event != NULL) {
-        // If the event is for the realtime thread, and this is the realtime
-        // thread, then execute the parameter change
-        if(event->isRealtime == isRealtime && isRealtime) {
+        // Only execute parameter changes on the realtime thread
+        if(isRealtime) {
           event->apply();
         }
 
@@ -75,14 +74,14 @@ public:
           }
         }
 
-        if(!event->observersNotified) {
-          // Invert the priority and re-dispatch the event to the other thread
-          event->isRealtime = !event->isRealtime;
-          event->observersNotified = true;
+        if(isRealtime) {
+          // Re-dispatch the event to the async thread
+          event->isRealtime = false;
           scheduler->scheduleEvent(event);
         }
         else {
-          // Both sets of observers have been notified, the event can be deleted
+          // If this is the async thread, then all observers know about the
+          // parameter change and this event can be deleted.
           delete event;
         }
       }

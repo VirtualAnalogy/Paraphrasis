@@ -60,11 +60,22 @@ public:
     realtime(isRealtime), count(0) {}
   virtual ~TestCounterObserver() {}
   bool isRealtimePriority() const { return realtime; }
-  void onParameterUpdated(const PluginParameter* parameter) {
+  virtual void onParameterUpdated(const PluginParameter* parameter) {
     count++;
   }
   const bool realtime;
   int count;
+};
+
+class TestCacheValueObserver : public TestCounterObserver {
+public:
+  TestCacheValueObserver(bool isRealtime = true) : TestCounterObserver(isRealtime), value(0) {}
+  virtual ~TestCacheValueObserver() {}
+  virtual void onParameterUpdated(const PluginParameter* parameter) {
+    TestCounterObserver::onParameterUpdated(parameter);
+    value = parameter->getValue();
+  }
+  ParameterValue value;
 };
 
 class BooleanParameterObserver : public PluginParameterObserver {
@@ -458,7 +469,7 @@ static bool testThreadsafeSetParameterRealtime() {
   PluginParameter *p = s.add(new BooleanParameter("test"));
   ASSERT_NOT_NULL(p);
   ASSERT_FALSE(p->getValue());
-  s.set(p, true, true);
+  s.set(p, true);
   s.processRealtimeEvents();
   ASSERT(p->getValue());
   return true;
@@ -469,7 +480,7 @@ static bool testThreadsafeSetParameterAsync() {
   PluginParameter *p = s.add(new BooleanParameter("test"));
   ASSERT_NOT_NULL(p);
   ASSERT_FALSE(p->getValue());
-  s.set(p, true, false);
+  s.set(p, true);
   while(!p->getValue()) {
     s.processRealtimeEvents();
     usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
@@ -480,21 +491,23 @@ static bool testThreadsafeSetParameterAsync() {
 
 static bool testThreadsafeSetParameterBothThreadsFromAsync() {
   ThreadsafePluginParameterSet s;
-  TestCounterObserver realtimeObserver(true);
-  TestCounterObserver asyncObserver(false);
+  TestCacheValueObserver realtimeObserver(true);
+  TestCacheValueObserver asyncObserver(false);
   PluginParameter *p = s.add(new BooleanParameter("test"));
   ASSERT_NOT_NULL(p);
   p->addObserver(&realtimeObserver);
   p->addObserver(&asyncObserver);
   ASSERT_FALSE(p->getValue());
-  s.set(p, true, false);
+  s.set(p, true);
   for(int i = 0; i < TEST_NUM_BLOCKS_TO_PROCESS; i++) {
     s.processRealtimeEvents();
     usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
   }
   ASSERT(p->getValue());
   ASSERT_INT_EQUALS(1, realtimeObserver.count);
+  ASSERT_INT_EQUALS(1, (int)realtimeObserver.value);
   ASSERT_INT_EQUALS(1, asyncObserver.count);
+  ASSERT_INT_EQUALS(1, (int)asyncObserver.value);
   return true;
 }
 
@@ -507,7 +520,7 @@ static bool testThreadsafeSetParameterBothThreadsFromRealtime() {
   p->addObserver(&realtimeObserver);
   p->addObserver(&asyncObserver);
   ASSERT_FALSE(p->getValue());
-  s.set(p, true, true);
+  s.set(p, true);
   for(int i = 0; i < TEST_NUM_BLOCKS_TO_PROCESS; i++) {
     s.processRealtimeEvents();
     usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
@@ -527,7 +540,7 @@ static bool testThreadsafeSetParameterWithSender() {
   p->addObserver(&realtimeObserver);
   p->addObserver(&asyncObserver);
   ASSERT_FALSE(p->getValue());
-  s.set(p, true, false, &asyncObserver);
+  s.set(p, true, &asyncObserver);
   for(int i = 0; i < TEST_NUM_BLOCKS_TO_PROCESS; i++) {
     s.processRealtimeEvents();
     usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);

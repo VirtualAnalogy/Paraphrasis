@@ -108,43 +108,129 @@ public:
     realtimeDispatcher.process();
   }
 
+  /**
+   * Set a parameter's value. When ENABLE_MULTITHREADED is set, then this method
+   * must be used rather than PluginParameter::set(). The actual operation will
+   * be redispatched to the main thread and executed there, and any async
+   * observers will be notified afterwards. This means that there can be some
+   * small delay before other async observers receive their notifications.
+   *
+   * @param name Parameter name
+   * @param value New value
+   * @param sender Sending object (can be NULL). If non-NULL, then this object
+   *               will *not* receive notifications on the observer callback,
+   *               since presumably this object is pushing state to other
+   *               observers.
+   */
   virtual void set(const ParameterString& name, const ParameterValue value,
-    const bool realtime = false, PluginParameterObserver* sender = NULL) {
+    PluginParameterObserver* sender = NULL) {
     PluginParameter* parameter = get(name);
     if(parameter != NULL) {
-      set(parameter, value, realtime, sender);
+      set(parameter, value, sender);
     }
   }
 
+  /**
+   * Set a parameter's value. When ENABLE_MULTITHREADED is set, then this method
+   * must be used rather than PluginParameter::set(). The actual operation will
+   * be redispatched to the main thread and executed there, and any async
+   * observers will be notified afterwards. This means that there can be some
+   * small delay before other async observers receive their notifications.
+   *
+   * @param index Parameter index
+   * @param value New value
+   * @param sender Sending object (can be NULL). If non-NULL, then this object
+   *               will *not* receive notifications on the observer callback,
+   *               since presumably this object is pushing state to other
+   *               observers.
+   */
   virtual void set(const int index, const ParameterValue value,
-    bool realtime = false, PluginParameterObserver* sender = NULL) {
-    return set(parameterList.at(index), value, realtime, sender);
+    PluginParameterObserver* sender = NULL) {
+    return set(parameterList.at(index), value, sender);
   }
 
+  /**
+   * Set a parameter's value. When ENABLE_MULTITHREADED is set, then this method
+   * must be used rather than PluginParameter::set(). The actual operation will
+   * be redispatched to the main thread and executed there, and any async
+   * observers will be notified afterwards. This means that there can be some
+   * small delay before other async observers receive their notifications.
+   *
+   * @param parameter Parameter
+   * @param value New value
+   * @param sender Sending object (can be NULL). If non-NULL, then this object
+   *               will *not* receive notifications on the observer callback,
+   *               since presumably this object is pushing state to other
+   *               observers.
+   */
   virtual void set(PluginParameter* parameter, const ParameterValue value,
-    bool realtime = false, PluginParameterObserver* sender = NULL) {
-    scheduleEvent(new Event(parameter, value, realtime, sender));
+    PluginParameterObserver* sender = NULL) {
+    scheduleEvent(new Event(parameter, value, true, sender));
   }
 
   // TODO: Should disappear with templated version of PluginParameter
+  /**
+   * Set a parameter's value. When ENABLE_MULTITHREADED is set, then this method
+   * must be used rather than PluginParameter::set(). The actual operation will
+   * be redispatched to the main thread and executed there, and any async
+   * observers will be notified afterwards. This means that there can be some
+   * small delay before other async observers receive their notifications.
+   *
+   * @param name Parameter name
+   * @param value New string value
+   * @param sender Sending object (can be NULL). If non-NULL, then this object
+   *               will *not* receive notifications on the observer callback,
+   *               since presumably this object is pushing state to other
+   *               observers.
+   */
   virtual void set(const ParameterString& name, const ParameterString value,
-    const bool realtime = false, PluginParameterObserver* sender = NULL) {
+    PluginParameterObserver* sender = NULL) {
     PluginParameter* parameter = get(name);
     if(parameter != NULL) {
-      set(parameter, value, realtime, sender);
+      set(parameter, value, sender);
     }
   }
 
+  // TODO: Should disappear with templated version of PluginParameter
+  /**
+   * Set a parameter's value. When ENABLE_MULTITHREADED is set, then this method
+   * must be used rather than PluginParameter::set(). The actual operation will
+   * be redispatched to the main thread and executed there, and any async
+   * observers will be notified afterwards. This means that there can be some
+   * small delay before other async observers receive their notifications.
+   *
+   * @param index Parameter index
+   * @param value New string value
+   * @param sender Sending object (can be NULL). If non-NULL, then this object
+   *               will *not* receive notifications on the observer callback,
+   *               since presumably this object is pushing state to other
+   *               observers.
+   */
   virtual void set(const int index, const ParameterString value,
-    bool realtime = false, PluginParameterObserver* sender = NULL) {
-    return set(parameterList.at(index), value, realtime, sender);
+    PluginParameterObserver* sender = NULL) {
+    return set(parameterList.at(index), value, sender);
   }
 
+  // TODO: Should disappear with templated version of PluginParameter
+  /**
+   * Set a parameter's value. When ENABLE_MULTITHREADED is set, then this method
+   * must be used rather than PluginParameter::set(). The actual operation will
+   * be redispatched to the main thread and executed there, and any async
+   * observers will be notified afterwards. This means that there can be some
+   * small delay before other async observers receive their notifications.
+   *
+   * @param parameter Parameter
+   * @param value New string value
+   * @param sender Sending object (can be NULL). If non-NULL, then this object
+   *               will *not* receive notifications on the observer callback,
+   *               since presumably this object is pushing state to other
+   *               observers.
+   */
   virtual void set(PluginParameter* parameter, const ParameterString value,
-    bool realtime = false, PluginParameterObserver* sender = NULL) {
+    PluginParameterObserver* sender = NULL) {
     StringParameter* stringParameter = dynamic_cast<StringParameter*>(parameter);
     if(stringParameter != NULL) {
-      scheduleEvent(new StringEvent(stringParameter, value, realtime, sender));
+      scheduleEvent(new StringEvent(stringParameter, value, true, sender));
     }
   }
 
