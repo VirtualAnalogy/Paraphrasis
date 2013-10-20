@@ -38,6 +38,9 @@ Features
 * Threadsafe! PluginParameters can be built to run in a multi-threaded
   environment ideal for audio plugins, with one high-priority audio thread and
   multiple low-priority threads for background tasks or GUI.
+* The multithreaded implementation is based on lock-free queues. Although
+  condition variables are used to communicate between the asynchronous and
+  realtime threads, no mutex locks are made inside the audio thread.
 
 
 Usage (Single-Threaded)
@@ -235,7 +238,15 @@ License
 -------
 
 PluginParameters is licensed under the BSD licnese. See the file `LICENSE.txt`
-provided with the source code for more details.
+provided with the source code for more details. If built with
+`ENABLE_MULTITHREADED`, then code from [TinyThread++][2] and
+[readerwriterqueue][3] is used. Please see the respective license files for
+each of these libraries, which can be found in the `include` directory.
+
+Finally, a big thanks to the authors of TinyThread++ and readerwriterqueue for
+making this library possible. Multithreaded code is hard!
 
 
 [1]: http://www.cmake.org
+[2]: http://tinythreadpp.bitsnbites.eu
+[3]: https://github.com/cameron314/readerwriterqueue
