@@ -31,67 +31,67 @@
 #include "PluginParameters.h"
 #include "EventDispatcher.h"
 
+#if HAVE_TESTRUNNER
+#define SLEEP_AFTER_CREATION_MS 100
+#endif
+
+#ifndef SLEEP_AFTER_CREATION_MS
+#define SLEEP_AFTER_CREATION_MS 0
+#endif
+
 namespace teragon {
 
-class AsyncDispatcherCallbackData {
-public:
-  EventDispatcher& dispatcher;
-  EventDispatcherConditionVariable asyncInitCond;
-  EventDispatcherMutex asyncInitMutex;
-  volatile bool initFinished;
-
-  AsyncDispatcherCallbackData(EventDispatcher& d) : dispatcher(d), initFinished(false) {}
-  virtual ~AsyncDispatcherCallbackData() {}
-};
-
 static void asyncDispatcherCallback(void *arg) {
-  AsyncDispatcherCallbackData* data = reinterpret_cast<AsyncDispatcherCallbackData*>(arg);
-
-  {
-    // Notify the main thread that it can return. At this point, we are ready to
-    // process data. Sent from either thread.
-    EventDispatcherLockGuard initGuard(data->asyncInitMutex);
-    data->initFinished = true;
-    data->asyncInitMutex.unlock();
-    data->asyncInitCond.notify_all();
-  }
-
-  EventDispatcherLockGuard guard(data->dispatcher.getMutex());
-  while(!data->dispatcher.isKilled()) {
-    data->dispatcher.wait();
+  EventDispatcher* dispatcher = reinterpret_cast<EventDispatcher*>(arg);
+  EventDispatcherLockGuard guard(dispatcher->getMutex());
+  while(!dispatcher->isKilled()) {
+    dispatcher->wait();
     // This thread can be notified both in case of an event callback or when the
     // thread should join and exit. In the second case, we should not attempt to
     // run process(), as bad things may happen.
-    if(!data->dispatcher.isKilled()) {
-      data->dispatcher.process();
+    if(!dispatcher->isKilled()) {
+      dispatcher->process();
     }
   }
 }
 
 class ThreadsafePluginParameterSet : public PluginParameterSet, public EventScheduler {
 public:
+  /**
+   * Create a new parameter set which can be used by multiple threads. This
+   * assumes that there is one high-priority thread which is executed from a
+   * runloop, and one or more low-priority threads for background tasks or GUI.
+   *
+   * Simply using this class in place of PluginParameterSet does not guarantee
+   * thread-safe code. See the top-level README for information and examples
+   * regarding correct usage of this class.
+   */
   explicit ThreadsafePluginParameterSet() : PluginParameterSet(), EventScheduler(),
     asyncDispatcher(this, false), realtimeDispatcher(this, true),
-    asyncCallbackData(asyncDispatcher),
-    asyncDispatcherThread(asyncDispatcherCallback, &asyncCallbackData) {
-    // This looks a bit strange, but it's necessary in case the main thread is
-    // very short lived. This can occur during unit tests or if a plugin is
-    // opened and then closed directly afterwards. This means that the main
-    // thread can actually exit before the async thread is even started, causing
-    // all sorts of havoc during destruction.
-    //
-    // Likewise, if the main thread's process() method is called before the
-    // async thread is started, some observers may not be notified of parameter
-    // changes scheduled immediately after initialization.
-    //
-    // Therefore the constructor must initialize itself synchronously by waiting
-    // until the async thread is completely started before returning.
-    EventDispatcherLockGuard initLockGuard(asyncCallbackData.asyncInitMutex);
+    asyncDispatcherThread(asyncDispatcherCallback, &asyncDispatcher) {
     asyncDispatcherThread.set_name("PluginParameterSetScheduler");
     asyncDispatcherThread.detach();
     asyncDispatcherThread.set_low_priority();
-    while(!asyncCallbackData.initFinished) {
-      asyncCallbackData.asyncInitCond.wait(asyncCallbackData.asyncInitMutex);
+
+    /*
+     * It is very difficult to guarantee that the async callback thread will be
+     * ready and waiting on the condition variable by the time this constructor
+     * exits, at least without forcing scheduleEvent() to have a mutex.
+     *
+     * Therefore scheduling parameter changes from the async thread immediately
+     * after constructing the set may result in these events not being applied.
+     * This effectively means that sending such events after construction is NOT
+     * recommended. However if you absolutely need this (and do you, really?),
+     * then you can define SLEEP_AFTER_CREATION_MS to some non-zero value to
+     * allow time for the async thread to finish initializing.
+     *
+     * However, is is always the case with sleeping code, this is NOT guaranteed
+     * to allow one to schedule async events right away, it just reduces the
+     * likelihood of that event occurring. Thus, the recommended behavior is to
+     * not schedule parameter changes directly after constructing the set.
+     */
+    if(SLEEP_AFTER_CREATION_MS > 0) {
+      usleep(SLEEP_AFTER_CREATION_MS * 1000);
     }
   }
 
@@ -162,7 +162,6 @@ protected:
 private:
   EventDispatcher asyncDispatcher;
   EventDispatcher realtimeDispatcher;
-  AsyncDispatcherCallbackData asyncCallbackData;
   EventDispatcherThread asyncDispatcherThread;
 };
 } // namespace teragon
