@@ -27,7 +27,7 @@
 #define	__PLUGINPARAMETERS_H__
 
 #ifndef ENABLE_MULTITHREADED
-#define ENABLE_MULTITHREADED 1
+#define ENABLE_MULTITHREADED 0
 #endif
 
 #include "BooleanParameter.h"
