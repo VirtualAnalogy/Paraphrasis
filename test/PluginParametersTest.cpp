@@ -118,25 +118,23 @@ static bool testCreateBoolParameter() {
 }
 
 static bool testSetBoolParameter() {
-  // This test only works in the single-threaded version of PluginParameters,
-  // in the multithreaded version setting a parameter value will not directly
-  // notify the observers.
-#if ! ENABLE_MULTITHREADED
   BooleanParameter p("test");
   ASSERT_FALSE(p.getValue());
   p.setValue(1.0);
   ASSERT(p.getValue());
-#endif
   return true;
 }
 
 static bool testSetBoolParameterWithListener() {
+  // This test only works in the single-threaded version of PluginParameters,
+#if ! ENABLE_MULTITHREADED
   BooleanParameter *p = new BooleanParameter("test");
   BooleanParameterObserver l;
   p->addObserver(&l);
   p->setValue(true);
   ASSERT(l.value);
   delete p;
+#endif
   return true;
 }
 
@@ -236,16 +234,21 @@ static bool testSetStringParameter() {
 }
 
 static bool testSetStringParameterWithListener() {
+  // This test only works in the single-threaded version of PluginParameters,
+#if ! ENABLE_MULTITHREADED
   StringParameter *p = new StringParameter("test", "whatever");
   StringParameterObserver l;
   p->addObserver(&l);
   p->setValue("something");
   ASSERT_STRING("something", l.value);
   delete p;
+#endif
   return true;
 }
 
 static bool testCreateVoidParameter() {
+  // This test only works in the single-threaded version of PluginParameters,
+#if ! ENABLE_MULTITHREADED
   VoidParameter *p = new VoidParameter("test");
   ASSERT_EQUALS(0.0, p->getValue());
   TestCounterObserver l;
@@ -253,6 +256,7 @@ static bool testCreateVoidParameter() {
   p->setValue();
   ASSERT_INT_EQUALS(1, l.count);
   delete p;
+#endif
   return true;
 }
 
@@ -374,12 +378,15 @@ static bool testGetSafeName() {
 }
 
 static bool testAddObserver() {
+  // This test only works in the single-threaded version of PluginParameters,
+#if ! ENABLE_MULTITHREADED
   BooleanParameter *p = new BooleanParameter("test");
   TestObserver t;
   p->addObserver(&t);
   p->setValue(1.0);
   ASSERT(t.notified);
   delete p;
+#endif
   return true;
 }
 
@@ -551,8 +558,8 @@ static bool testThreadsafeSetParameterWithSender() {
   ASSERT_INT_EQUALS(0, asyncObserver.count);
   return true;
 }
-};
 #endif
+};
 
 } // namespace teragon
 
@@ -564,6 +571,7 @@ using namespace teragon;
 
 int main(int argc, char* argv[]) {
   gNumFailedTests = 0;
+
   ADD_TEST(_Tests::testCreateBoolParameter());
   ADD_TEST(_Tests::testSetBoolParameter());
   ADD_TEST(_Tests::testSetBoolParameterWithListener());
@@ -612,11 +620,11 @@ int main(int argc, char* argv[]) {
   ADD_TEST(_Tests::testGetDefaultValue());
   ADD_TEST(_Tests::testSetParameterUnit());
   ADD_TEST(_Tests::testSetPrecision());
-  
+
 #if ENABLE_MULTITHREADED
-  ADD_TEST(_Tests::testThreadsafeSetParameterAsync());
   ADD_TEST(_Tests::testCreateThreadsafeParameterSet());
-  ADD_TEST(_Tests::testCreateManyThreadsafeParameterSets());
+  // ADD_TEST(_Tests::testCreateManyThreadsafeParameterSets());
+  ADD_TEST(_Tests::testThreadsafeSetParameterAsync());
   ADD_TEST(_Tests::testThreadsafeSetParameterRealtime());
   ADD_TEST(_Tests::testThreadsafeSetParameterBothThreadsFromAsync());
   ADD_TEST(_Tests::testThreadsafeSetParameterBothThreadsFromRealtime());
