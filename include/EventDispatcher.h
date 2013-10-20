@@ -108,7 +108,7 @@ private:
 
   EventScheduler* scheduler;
   const bool isRealtime;
-  bool killed;
+  volatile bool killed;
 };
 } // namespace teragon
 
