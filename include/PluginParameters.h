@@ -32,14 +32,16 @@
 
 #include "BooleanParameter.h"
 #include "DecibelParameter.h"
-#if ENABLE_MULTITHREADED
-#include "EventDispatcher.h"
-#endif
 #include "FloatParameter.h"
 #include "FrequencyParameter.h"
 #include "IntegerParameter.h"
 #include "StringParameter.h"
 #include "PluginParameterSet.h"
 #include "VoidParameter.h"
+
+#if ENABLE_MULTITHREADED
+#include "EventDispatcher.h"
+#include "ThreadsafePluginParameterSet.h"
+#endif
 
 #endif
