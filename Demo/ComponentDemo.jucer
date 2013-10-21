@@ -4,6 +4,9 @@
               bundleIdentifier="com.teragonaudio.ComponentDemo" includeBinaryInAppConfig="1"
               jucerVersion="3.1.0" companyName="Teragon Audio">
   <MAINGROUP id="qYaJjs" name="ComponentDemo">
+    <GROUP id="{E04A37AC-9529-254B-4E46-C1FC485B5238}" name="Tinythread">
+      <FILE id="xdkZQ2" name="tinythread.cpp" compile="1" resource="0" file="PluginParameters/include/tinythread/source/tinythread.cpp"/>
+    </GROUP>
     <GROUP id="{08B3F7AA-BD19-0DE8-C8BE-79CDEB3F6DE5}" name="Components">
       <FILE id="SezmTl" name="ImageKnob.cpp" compile="1" resource="0" file="../Components/Source/ImageKnob.cpp"/>
       <FILE id="VsoKTl" name="ImageKnob.h" compile="0" resource="0" file="../Components/Source/ImageKnob.h"/>
@@ -33,23 +36,31 @@
     </GROUP>
   </MAINGROUP>
   <MODULES>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1"/>
     <MODULE id="juce_gui_audio" showAllCode="1" useLocalCopy="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1"/>
-    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1"/>
-    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1"/>
-    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1"/>
   </MODULES>
   <EXPORTFORMATS>
-    <LINUX_MAKE targetFolder="Builds/Linux" juceFolder="../../../sdk/juce/modules"
-                extraCompilerFlags="-I../../../Components -I../../PluginParameters/include">
+    <LINUX_MAKE targetFolder="Builds/Linux" extraCompilerFlags="-I../../../Components/Source -I../../PluginParameters/include -std=c++11 -DENABLE_MULTITHREADED=1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="ComponentDemo"/>
         <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
                        targetName="ComponentDemo"/>
       </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_gui_audio" path="JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_graphics" path="JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_events" path="JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_data_structures" path="JuceLibraryCode/modules"/>
+        <MODULEPATH id="juce_core" path="JuceLibraryCode/modules"/>
+      </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
   <JUCEOPTIONS/>
