@@ -22,6 +22,7 @@ public:
     ImageKnob(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates);
     virtual ~ImageKnob();
 
+    bool isRealtimePriority() const { return false; }
     void onParameterUpdated(const PluginParameter* parameter);
     void valueChanged();
 

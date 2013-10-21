@@ -14,10 +14,8 @@ namespace teragon {
 
 ThinButton::ThinButton(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates,
                        const ThinButton::Gravity gravity) :
-ImageButton(String::empty),
-PluginParameterObserver(),
-parameter(parameter),  gravity(gravity)
-{
+                       ImageButton(String::empty), PluginParameterObserver(),
+                       parameter(parameter), gravity(gravity) {
     parameter->addObserver(this);
     setImages(imageStates->alternate, imageStates->normal);
     setState(parameter->getValue() ? Button::buttonDown : Button::buttonNormal);

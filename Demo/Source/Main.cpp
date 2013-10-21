@@ -64,7 +64,7 @@ public:
     class MainWindow    : public DocumentWindow
     {
     public:
-        MainWindow(teragon::PluginParameterSet &parameters) :
+        MainWindow(teragon::ThreadsafePluginParameterSet &parameters) :
             DocumentWindow ("GUI Demo", Colours::lightgrey, DocumentWindow::allButtons),
             parameters(parameters)
        {
@@ -90,12 +90,12 @@ public:
 
     private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
-        const PluginParameterSet &parameters;
+        const ThreadsafePluginParameterSet &parameters;
     };
 
 private:
     ScopedPointer<MainWindow> mainWindow;
-    PluginParameterSet parameters;
+    ThreadsafePluginParameterSet parameters;
 };
 }
 

@@ -32,6 +32,7 @@ public:
     virtual ~ThinButton();
 
     void clicked();
+    bool isRealtimePriority() const { return false; }
     void onParameterUpdated(const PluginParameter* parameter);
 
     void paint(Graphics &g);

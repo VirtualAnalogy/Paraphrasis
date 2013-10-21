@@ -24,6 +24,7 @@ public:
     virtual ~ImageSlider();
 
     void valueChanged();
+    bool isRealtimePriority() const { return false; }
     void onParameterUpdated(const PluginParameter* parameter);
 
     void paint(Graphics &g);

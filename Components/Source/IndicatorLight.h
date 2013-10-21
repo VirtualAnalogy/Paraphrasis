@@ -22,6 +22,7 @@ public:
     IndicatorLight(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates);
     virtual ~IndicatorLight();
 
+    bool isRealtimePriority() const { return false; }
     void onParameterUpdated(const PluginParameter* parameter);
 
     void paint(Graphics &g);
