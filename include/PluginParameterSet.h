@@ -31,10 +31,17 @@
 #include "PluginParameter.h"
 
 namespace teragon {
+
 class PluginParameterSet {
 public:
   explicit PluginParameterSet() {}
-  virtual ~PluginParameterSet() {}
+
+  virtual ~PluginParameterSet() {
+    // Delete all parameters added to the set
+    for(int i = 0; i < size(); i++) {
+      delete parameterList.at(i);
+    }
+  }
 
   /**
    * Add a parameter to the set. Note that this class does *not* free the
@@ -54,6 +61,12 @@ public:
     parameterList.push_back(parameter);
     return parameter;
   }
+
+  /**
+   * @return Number of parameters in the set
+   */
+  virtual const int size() const { return parameterList.size(); }
+
 
   virtual void clear() {
     for(ParameterList::iterator iterator = parameterList.begin(); iterator != parameterList.end(); ++iterator) {
@@ -97,12 +110,7 @@ public:
     return (iterator != parameterMap.end()) ? iterator->second : NULL;
   }
 
-  /**
-   * @return Number of parameters in the set
-   */
-  virtual const int size() const { return parameterList.size(); }
-
-private:
+protected:
   typedef std::map<ParameterString, PluginParameter*> ParameterMap;
   typedef std::vector<PluginParameter*> ParameterList;
 

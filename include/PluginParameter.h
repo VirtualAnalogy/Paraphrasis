@@ -41,6 +41,10 @@ public:
   PluginParameterObserver() {}
   virtual ~PluginParameterObserver() {}
 
+#if ENABLE_MULTITHREADED
+  virtual bool isRealtimePriority() const = 0;
+#endif
+
   /**
    * Method to be called when a parameter's value has been updated.
    */
@@ -126,29 +130,50 @@ public:
   virtual const ParameterValue getScaledValue() const = 0;
 
   /**
-   * Set the parameter's value, scaled in the range {0.0 - 1.0}
-   *
-   * @param value The parameter value, must be between {0.0 - 1.0}
-   */
-  virtual void setScaledValue(const ParameterValue value) = 0;
-
-  /**
    * Get the parameter's interval value, which will be between the minimum
    * and maximum values set in the constructor.
    */
   virtual const ParameterValue getValue() const { return value; }
 
+#if ENABLE_MULTITHREADED
+  friend class Event;
+  friend class ScaledEvent;
+#if HAVE_TESTRUNNER
+  friend class _Tests;
+#endif
+
+  // The multithreaded version shouldn't allow parameters to have their value
+  // be directly set in this manner. Instead, all parameter setting must be
+  // done by the owning parameter set, as it can dispatch the operation on
+  // the correct thread. Allowing this function to remain public might tempt
+  // misuse when caching parameters to directly get/set their value, as this
+  // would not notify all observers on both threads (not to mention other
+  // potential concurrency problems).
+protected:
+#endif
   /**
    * Set the parameter's interval value directly.
    *
    * @param value Value, which must be between the minimum and maximum values
    */
   virtual void setValue(const ParameterValue inValue) {
+    // TODO: Possible ABA problem here
     if(value != inValue) {
       value = inValue;
       notifyObservers();
     }
   }
+
+  /**
+   * Set the parameter's value, scaled in the range {0.0 - 1.0}
+   *
+   * @param value The parameter value, must be between {0.0 - 1.0}
+   */
+  virtual void setScaledValue(const ParameterValue value) = 0;
+
+#if ENABLE_MULTITHREADED
+public:
+#endif
 
   /**
    * @return Get the parameter's minimum value
@@ -206,6 +231,12 @@ public:
     observers.push_back(observer);
   }
 
+  virtual PluginParameterObserver* getObserver(const unsigned int index) const {
+    return index < observers.size() ? observers.at(index) : NULL;
+  }
+
+  virtual int getNumObservers() const { return observers.size(); }
+
   /**
    * Remove an observer from the list of observers for this parameter. If you do not call
    * this method before your observer goes out of scope, future calls to this parameter's
@@ -226,14 +257,22 @@ public:
   }
 
 protected:
-  void notifyObservers() const {
+  /**
+   * Notify all observers that a parameter has been updated. If PluginParameters
+   * is built with ENABLE_MULTITHREADED=1, this method has no effect, since it
+   * will be called synchronously, and observer updates are instead executed
+   * from the EventDispatcher in that case.
+   */
+  virtual void notifyObservers() const {
+#if ! ENABLE_MULTITHREADED
     for(ParameterObserverMap::const_iterator iterator = observers.begin(); iterator != observers.end(); ++iterator) {
       (*iterator)->onParameterUpdated(this);
     }
+#endif
   }
 
-  const ParameterString& getUnit() const { return unit; }
-  const int getDisplayPrecision() const { return precision; }
+  virtual const ParameterString& getUnit() const { return unit; }
+  virtual const int getDisplayPrecision() const { return precision; }
 
 private:
   ParameterString name;

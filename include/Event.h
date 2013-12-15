@@ -23,38 +23,54 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __VOIDPARAMETER_H_
-#define __VOIDPARAMETER_H_
-
-namespace teragon {
-/**
- * Parameter which does not hold a real value. This parameter's value is
- * always 0, regardless of whether setValue() is called.
- * This parameter type is mostly useful to send events between observers.
- */
-class VoidParameter : public PluginParameter {
-public:
-  explicit VoidParameter(ParameterString inName) : PluginParameter(inName) {}
-  virtual ~VoidParameter() {}
-
-  virtual const ParameterString getDisplayText() const { return getName(); }
-  virtual const ParameterValue getDisplayValue() const { return getValue(); }
-  virtual void setDisplayValue(const ParameterValue inValue) { setValue(inValue); }
-
-  virtual const ParameterValue getScaledValue() const { return getValue(); }
-  virtual const ParameterValue getValue() const { return 0.0; }
+#ifndef __EVENT_H__
+#define	__EVENT_H__
 
 #if ENABLE_MULTITHREADED
-#if HAVE_TESTRUNNER
-  friend class _Tests;
-#endif
-protected:
-#endif
-  virtual void setScaledValue(const ParameterValue inValue) { setValue(inValue); }
-  virtual void setValue(const ParameterValue inValue = 0.0) {
-    notifyObservers();
-  }
-};
-}
-#endif
+#include "PluginParameter.h"
+#include "StringParameter.h"
 
+namespace teragon {
+
+class Event {
+public:
+  Event(PluginParameter* p, ParameterValue v,
+    bool realtime = false, PluginParameterObserver* s = NULL) :
+    parameter(p), value(v), isRealtime(realtime), sender(s) {}
+  virtual ~Event() {}
+
+  virtual void apply() { parameter->setValue(value); }
+
+  PluginParameter* parameter;
+  const ParameterValue value;
+  bool isRealtime;
+  const PluginParameterObserver* sender;
+};
+
+class ScaledEvent : public Event {
+public:
+  ScaledEvent(PluginParameter* p, ParameterValue v,
+    bool realtime = false, PluginParameterObserver* s = NULL) :
+  Event(p, v, realtime, s) {}
+  virtual ~ScaledEvent() {}
+
+  virtual void apply() { parameter->setScaledValue(value); }
+};
+
+class StringEvent : public Event {
+public:
+  StringEvent(StringParameter* p, ParameterString v,
+    bool realtime = false, PluginParameterObserver* s = NULL) :
+  Event(dynamic_cast<PluginParameter*>(p), 0, realtime, s),
+    stringParameter(p), stringValue(v) {}
+  virtual ~StringEvent() {}
+
+  virtual void apply() { stringParameter->setValue(stringValue); }
+
+  StringParameter* stringParameter;
+  const ParameterString stringValue;
+};
+} // namespace teragon
+
+#endif // ENABLE_MULTITHREADED
+#endif // __EVENT_H__

@@ -25,57 +25,20 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "TestRunner.h"
 #include "PluginParameters.h"
 
-using namespace teragon;
+#if ENABLE_MULTITHREADED
+// Simulate a realtime audio system by sleeping a bit after processing events.
+// Here we assume 11ms sleep per block, which is approximately the amount of
+// time needed to process 512 samples at 44100Hz sample rate.
+// Several blocks may be processed before async changes are received, but here
+// we only want to ensure that the event was routed from async->realtime.
+#define SLEEP_TIME_PER_BLOCK_MS 11
+#define TEST_NUM_BLOCKS_TO_PROCESS 10
+#endif
 
-////////////////////////////////////////////////////////////////////////////////
-// Test suite macros
-////////////////////////////////////////////////////////////////////////////////
-
-#define ADD_TEST(name, func) { \
-  printf("Test %s: ", name); \
-  if(func) printf("success\n"); \
-  else printf("FAIL\n"); \
-}
-
-#define ASSERT(result) { \
-  if(!result) return false; \
-}
-
-#define ASSERT_IS_NULL(result) { \
-  if(result != NULL) return false; \
-}
-
-#define ASSERT_NOT_NULL(result) { \
-  if(result == NULL) return false; \
-}
-
-#define ASSERT_FALSE(result) { \
-  if(result) return false; \
-}
-
-#define ASSERT_EQUALS(expected, result) { \
-  if(fabs(fabs(result) - fabs(expected)) > 0.001) { \
-    printf("Expected %f, got %f. ", expected, result); \
-    return false; \
-  } \
-}
-
-#define ASSERT_INT_EQUALS(expected, result) { \
-  if(result != expected) { \
-    printf("Expected %d, got %d. ", expected, result); \
-    return false; \
-  } \
-}
-
-#define ASSERT_STRING(expected, result) { \
-  std::string e(expected); \
-  if(e.compare(result) != 0) { \
-    printf("Expected '%s', got '%s'. ", expected, result.c_str()); \
-    return false; \
-  } \
-}
+namespace teragon {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Observers
@@ -83,45 +46,66 @@ using namespace teragon;
 
 class TestObserver : public PluginParameterObserver {
 public:
-  TestObserver(bool &inB) : b(inB) {}
+  TestObserver() : PluginParameterObserver(), notified(false) {}
+  bool isRealtimePriority() const { return true; }
   void onParameterUpdated(const PluginParameter* parameter) {
-    b = true;
+    notified = true;
   }
-private:
-  bool& b;
+  bool notified;
 };
 
 class TestCounterObserver : public PluginParameterObserver {
 public:
-  TestCounterObserver() : count(0) {}
-  void onParameterUpdated(const PluginParameter* parameter) {
+  TestCounterObserver(bool isRealtime = true) : PluginParameterObserver(),
+    realtime(isRealtime), count(0) {}
+  virtual ~TestCounterObserver() {}
+  bool isRealtimePriority() const { return realtime; }
+  virtual void onParameterUpdated(const PluginParameter* parameter) {
     count++;
   }
+  const bool realtime;
   int count;
 };
 
-class BooleanParameterListener : public PluginParameterObserver {
+class TestCacheValueObserver : public TestCounterObserver {
 public:
-  BooleanParameterListener() : PluginParameterObserver(), myValue(false) {}
-  virtual ~BooleanParameterListener() {}
-  bool myValue;
-  void onParameterUpdated(const PluginParameter *parameter) {
-    myValue = parameter->getValue();
+  TestCacheValueObserver(bool isRealtime = true) : TestCounterObserver(isRealtime), value(0) {}
+  virtual ~TestCacheValueObserver() {}
+  virtual void onParameterUpdated(const PluginParameter* parameter) {
+    TestCounterObserver::onParameterUpdated(parameter);
+    value = parameter->getValue();
   }
+  ParameterValue value;
 };
 
-class StringParameterListener : public PluginParameterObserver {
+class BooleanParameterObserver : public PluginParameterObserver {
 public:
-  ParameterString myValue;
-  void onParameterUpdated(const PluginParameter* parameter) {
-    myValue = parameter->getDisplayText();
+  BooleanParameterObserver() : PluginParameterObserver(), value(false) {}
+  virtual ~BooleanParameterObserver() {}
+  bool isRealtimePriority() const { return true; }
+  void onParameterUpdated(const PluginParameter *parameter) {
+    value = parameter->getValue();
   }
+  bool value;
+};
+
+class StringParameterObserver : public PluginParameterObserver {
+public:
+  StringParameterObserver() : PluginParameterObserver(), value("") {}
+  virtual ~StringParameterObserver() {}
+  bool isRealtimePriority() const { return true; }
+  void onParameterUpdated(const PluginParameter* parameter) {
+    value = parameter->getDisplayText();
+  }
+  ParameterString value;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tests
 ////////////////////////////////////////////////////////////////////////////////
 
+class _Tests {
+public:
 static bool testCreateBoolParameter() {
   BooleanParameter p("test");
   ASSERT_FALSE(p.getValue());
@@ -142,11 +126,15 @@ static bool testSetBoolParameter() {
 }
 
 static bool testSetBoolParameterWithListener() {
-  BooleanParameter p("test");
-  BooleanParameterListener l;
-  p.addObserver(&l);
-  p.setValue(true);
-  ASSERT(l.myValue);
+  // This test only works in the single-threaded version of PluginParameters,
+#if ! ENABLE_MULTITHREADED
+  BooleanParameter *p = new BooleanParameter("test");
+  BooleanParameterObserver l;
+  p->addObserver(&l);
+  p->setValue(true);
+  ASSERT(l.value);
+  delete p;
+#endif
   return true;
 }
 
@@ -246,21 +234,29 @@ static bool testSetStringParameter() {
 }
 
 static bool testSetStringParameterWithListener() {
-  StringParameter p("test", "whatever");
-  StringParameterListener l;
-  p.addObserver(&l);
-  p.setValue("something");
-  ASSERT_STRING("something", l.myValue);
+  // This test only works in the single-threaded version of PluginParameters,
+#if ! ENABLE_MULTITHREADED
+  StringParameter *p = new StringParameter("test", "whatever");
+  StringParameterObserver l;
+  p->addObserver(&l);
+  p->setValue("something");
+  ASSERT_STRING("something", l.value);
+  delete p;
+#endif
   return true;
 }
 
 static bool testCreateVoidParameter() {
-  VoidParameter p("test");
-  ASSERT_EQUALS(0.0, p.getValue());
+  // This test only works in the single-threaded version of PluginParameters,
+#if ! ENABLE_MULTITHREADED
+  VoidParameter *p = new VoidParameter("test");
+  ASSERT_EQUALS(0.0, p->getValue());
   TestCounterObserver l;
-  p.addObserver(&l);
-  p.setValue();
+  p->addObserver(&l);
+  p->setValue();
   ASSERT_INT_EQUALS(1, l.count);
+  delete p;
+#endif
   return true;
 }
 
@@ -279,16 +275,21 @@ static bool testCreateParameterWithBadRange() {
   return true;
 }
 
+static bool testCreateParameterSet() {
+  PluginParameterSet s;
+  // Really just a basic sanity check
+  ASSERT_INT_EQUALS(0, s.size());
+  return true;
+}
+
 static bool testAddParameterToSet() {
-  BooleanParameter p1("Parameter 1");
-  BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
   PluginParameter* _p1;
   PluginParameter* _p2;
 
-  _p1 = s.add(&p1);
+  _p1 = s.add(new BooleanParameter("Parameter 1"));
   ASSERT_NOT_NULL(_p1);
-  _p2 = s.add(&p2);
+  _p2 = s.add(new BooleanParameter("Parameter 2"));
   ASSERT_NOT_NULL(_p2);
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 1", s.get(0)->getName());
@@ -306,30 +307,26 @@ static bool testAddNullParameterToSet() {
 }
 
 static bool testAddDuplicateParameterToSet() {
-  BooleanParameter p("test");
+  BooleanParameter *p = new BooleanParameter("test");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p));
-  ASSERT_IS_NULL(s.add(&p));
+  ASSERT_NOT_NULL(s.add(p));
+  ASSERT_IS_NULL(s.add(p));
   ASSERT_INT_EQUALS(1, s.size());
   return true;
 }
 
 static bool testAddDuplicateSafeNameParameterToSet() {
-  BooleanParameter p1("Parameter1");
-  BooleanParameter p2("Parameter 1");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p1));
-  ASSERT_IS_NULL(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter1")));
+  ASSERT_IS_NULL(s.add(new BooleanParameter("Parameter 1")));
   ASSERT_INT_EQUALS(1, s.size());
   return true;
 }
 
 static bool testClearParameterSet() {
-  BooleanParameter *p1 = new BooleanParameter("Parameter1");
-  BooleanParameter *p2 = new BooleanParameter("Parameter2");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(p1));
-  ASSERT_NOT_NULL(s.add(p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter1")));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter2")));
   ASSERT_INT_EQUALS(2, s.size());
   s.clear();
   ASSERT_INT_EQUALS(0, s.size());
@@ -337,11 +334,9 @@ static bool testClearParameterSet() {
 }
 
 static bool testGetParameterByName() {
-  BooleanParameter p1("Parameter 1");
-  BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p1));
-  ASSERT_NOT_NULL(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 1")));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 2")));
   ASSERT_INT_EQUALS(2, s.size());
   PluginParameter *pe = s.get("Parameter 2");
   ASSERT_NOT_NULL(pe);
@@ -350,33 +345,27 @@ static bool testGetParameterByName() {
 }
 
 static bool testGetParameterByIndex() {
-  BooleanParameter p1("Parameter 1");
-  BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p1));
-  ASSERT_NOT_NULL(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 1")));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 2")));
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 2", s.get(1)->getName());
   return true;
 }
 
 static bool testGetParameterByNameOperator() {
-  BooleanParameter p1("Parameter 1");
-  BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p1));
-  ASSERT_NOT_NULL(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 1")));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 2")));
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 2", s["Parameter 2"]->getName());
   return true;
 }
 
 static bool testGetParameterByIndexOperator() {
-  BooleanParameter p1("Parameter 1");
-  BooleanParameter p2("Parameter 2");
   PluginParameterSet s;
-  ASSERT_NOT_NULL(s.add(&p1));
-  ASSERT_NOT_NULL(s.add(&p2));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 1")));
+  ASSERT_NOT_NULL(s.add(new BooleanParameter("Parameter 2")));
   ASSERT_INT_EQUALS(2, s.size());
   ASSERT_STRING("Parameter 2", s[1]->getName());
   return true;
@@ -389,23 +378,25 @@ static bool testGetSafeName() {
 }
 
 static bool testAddObserver() {
-  bool b = false;
-  BooleanParameter p("test");
-  TestObserver t(b);
-  p.addObserver(&t);
-  p.setValue(1.0);
-  ASSERT(b);
+  // This test only works in the single-threaded version of PluginParameters,
+#if ! ENABLE_MULTITHREADED
+  BooleanParameter *p = new BooleanParameter("test");
+  TestObserver t;
+  p->addObserver(&t);
+  p->setValue(1.0);
+  ASSERT(t.notified);
+  delete p;
+#endif
   return true;
 }
 
 static bool testRemoveObserver() {
-  bool b = false;
   BooleanParameter p("test");
-  TestObserver t(b);
+  TestObserver t;
   p.addObserver(&t);
   p.removeObserver(&t);
   p.setValue(1.0);
-  ASSERT_FALSE(b);
+  ASSERT_FALSE(t.notified);
   return true;
 }
 
@@ -463,58 +454,189 @@ static bool testSetPrecision() {
   return true;
 }
 
+#if ENABLE_MULTITHREADED
+static bool testCreateThreadsafeParameterSet() {
+  ThreadsafePluginParameterSet s;
+  ASSERT_INT_EQUALS(0, s.size());
+  return true;
+}
+
+static bool testCreateManyThreadsafeParameterSets() {
+  // Attempt to expose bugs caused by fast-exiting threads
+  for(int i = 0; i < 100; i++) {
+    ThreadsafePluginParameterSet *s = new ThreadsafePluginParameterSet();
+    ASSERT_INT_EQUALS(0, s->size());
+    delete s;
+  }
+  return true;
+}
+
+static bool testThreadsafeSetParameterRealtime() {
+  ThreadsafePluginParameterSet s;
+  PluginParameter *p = s.add(new BooleanParameter("test"));
+  ASSERT_NOT_NULL(p);
+  ASSERT_FALSE(p->getValue());
+  s.set(p, true);
+  s.processRealtimeEvents();
+  ASSERT(p->getValue());
+  return true;
+}
+
+static bool testThreadsafeSetParameterAsync() {
+  ThreadsafePluginParameterSet s;
+  PluginParameter *p = s.add(new BooleanParameter("test"));
+  ASSERT_NOT_NULL(p);
+  ASSERT_FALSE(p->getValue());
+  s.set(p, true);
+  while(!p->getValue()) {
+    s.processRealtimeEvents();
+    usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
+  }
+  ASSERT(p->getValue());
+  return true;
+}
+
+static bool testThreadsafeSetParameterBothThreadsFromAsync() {
+  ThreadsafePluginParameterSet s;
+  TestCacheValueObserver realtimeObserver(true);
+  TestCacheValueObserver asyncObserver(false);
+  PluginParameter *p = s.add(new BooleanParameter("test"));
+  ASSERT_NOT_NULL(p);
+  p->addObserver(&realtimeObserver);
+  p->addObserver(&asyncObserver);
+  ASSERT_FALSE(p->getValue());
+  s.set(p, true);
+  for(int i = 0; i < TEST_NUM_BLOCKS_TO_PROCESS; i++) {
+    s.processRealtimeEvents();
+    usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
+  }
+  ASSERT(p->getValue());
+  ASSERT_INT_EQUALS(1, realtimeObserver.count);
+  ASSERT_INT_EQUALS(1, (int)realtimeObserver.value);
+  ASSERT_INT_EQUALS(1, asyncObserver.count);
+  ASSERT_INT_EQUALS(1, (int)asyncObserver.value);
+  return true;
+}
+
+static bool testThreadsafeSetParameterBothThreadsFromRealtime() {
+  ThreadsafePluginParameterSet s;
+  TestCounterObserver realtimeObserver(true);
+  TestCounterObserver asyncObserver(false);
+  PluginParameter *p = s.add(new BooleanParameter("test"));
+  ASSERT_NOT_NULL(p);
+  p->addObserver(&realtimeObserver);
+  p->addObserver(&asyncObserver);
+  ASSERT_FALSE(p->getValue());
+  s.set(p, true);
+  for(int i = 0; i < TEST_NUM_BLOCKS_TO_PROCESS; i++) {
+    s.processRealtimeEvents();
+    usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
+  }
+  ASSERT(p->getValue());
+  ASSERT_INT_EQUALS(1, realtimeObserver.count);
+  ASSERT_INT_EQUALS(1, asyncObserver.count);
+  return true;
+}
+
+static bool testThreadsafeSetParameterWithSender() {
+  ThreadsafePluginParameterSet s;
+  TestCounterObserver realtimeObserver(true);
+  TestCounterObserver asyncObserver(false);
+  PluginParameter *p = s.add(new BooleanParameter("test"));
+  ASSERT_NOT_NULL(p);
+  p->addObserver(&realtimeObserver);
+  p->addObserver(&asyncObserver);
+  ASSERT_FALSE(p->getValue());
+  s.set(p, true, &asyncObserver);
+  for(int i = 0; i < TEST_NUM_BLOCKS_TO_PROCESS; i++) {
+    s.processRealtimeEvents();
+    usleep(1000 * SLEEP_TIME_PER_BLOCK_MS);
+  }
+  ASSERT(p->getValue());
+  ASSERT_INT_EQUALS(1, realtimeObserver.count);
+  // The sender should NOT be called for its own events
+  ASSERT_INT_EQUALS(0, asyncObserver.count);
+  return true;
+}
+#endif
+};
+
+} // namespace teragon
+
+using namespace teragon;
+
 ////////////////////////////////////////////////////////////////////////////////
 // Run test suite
 ////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
-  ADD_TEST("CreateBoolParameter", testCreateBoolParameter());
-  ADD_TEST("SetBoolParameter", testSetBoolParameter());
-  ADD_TEST("SetBoolParameterWithListener", testSetBoolParameterWithListener());
+  gNumFailedTests = 0;
 
-  ADD_TEST("CreateDecibelParameter", testCreateDecibelParameter());
-  ADD_TEST("SetDecibelParameter", testSetDecibelParameter());
+  ADD_TEST(_Tests::testCreateBoolParameter());
+  ADD_TEST(_Tests::testSetBoolParameter());
+  ADD_TEST(_Tests::testSetBoolParameterWithListener());
 
-  ADD_TEST("CreateFloatParameter", testCreateFloatParameter());
-  ADD_TEST("SetFloatParameter", testSetFloatParameter());
+  ADD_TEST(_Tests::testCreateDecibelParameter());
+  ADD_TEST(_Tests::testSetDecibelParameter());
 
-  ADD_TEST("CreateFrequencyParameter", testCreateFrequencyParameter());
-  ADD_TEST("SetFrequencyParameter", testSetFrequencyParameter());
+  ADD_TEST(_Tests::testCreateFloatParameter());
+  ADD_TEST(_Tests::testSetFloatParameter());
 
-  ADD_TEST("CreateIntegerParameter", testCreateIntegerParameter());
-  ADD_TEST("SetIntegerParameter", testSetIntegerParameter());
+  ADD_TEST(_Tests::testCreateFrequencyParameter());
+  ADD_TEST(_Tests::testSetFrequencyParameter());
 
-  ADD_TEST("CreateStringParameter", testCreateStringParameter());
-  ADD_TEST("SetStringParameter", testSetStringParameter());
-  ADD_TEST("SetStringParameterWithListener", testSetStringParameterWithListener());
+  ADD_TEST(_Tests::testCreateIntegerParameter());
+  ADD_TEST(_Tests::testSetIntegerParameter());
 
-  ADD_TEST("CreateVoidParameter", testCreateVoidParameter());
+  ADD_TEST(_Tests::testCreateStringParameter());
+  ADD_TEST(_Tests::testSetStringParameter());
+  ADD_TEST(_Tests::testSetStringParameterWithListener());
 
-  ADD_TEST("CreateParameterWithBadName", testCreateParameterWithBadName());
-  ADD_TEST("CreateParameterWithBadRange", testCreateParameterWithBadRange());
+  ADD_TEST(_Tests::testCreateVoidParameter());
 
-  ADD_TEST("AddParameterToSet", testAddParameterToSet());
-  ADD_TEST("AddNullParameterToSet", testAddNullParameterToSet());
-  ADD_TEST("AddDuplicateParameterToSet", testAddDuplicateParameterToSet());
-  ADD_TEST("AddDuplicateSafeNameParameterToSet", testAddDuplicateSafeNameParameterToSet());
+  ADD_TEST(_Tests::testCreateParameterWithBadName());
+  ADD_TEST(_Tests::testCreateParameterWithBadRange());
 
-  ADD_TEST("ClearParameterSet", testClearParameterSet());
-  ADD_TEST("GetParameterByName", testGetParameterByName());
-  ADD_TEST("GetParameterByIndex", testGetParameterByIndex());
-  ADD_TEST("GetParameterByNameOperator", testGetParameterByNameOperator());
-  ADD_TEST("GetParameterByIndexOperator", testGetParameterByIndexOperator());
+  ADD_TEST(_Tests::testCreateParameterSet());
+  ADD_TEST(_Tests::testAddParameterToSet());
+  ADD_TEST(_Tests::testAddNullParameterToSet());
+  ADD_TEST(_Tests::testAddDuplicateParameterToSet());
+  ADD_TEST(_Tests::testAddDuplicateSafeNameParameterToSet());
 
-  ADD_TEST("GetSafeName", testGetSafeName());
-  ADD_TEST("AddObserver", testAddObserver());
-  ADD_TEST("RemoveObserver", testRemoveObserver());
-  ADD_TEST("ShouldNotNotifyForSameValue", testShouldNotNotifyForSameValue());
+  ADD_TEST(_Tests::testClearParameterSet());
+  ADD_TEST(_Tests::testGetParameterByName());
+  ADD_TEST(_Tests::testGetParameterByIndex());
+  ADD_TEST(_Tests::testGetParameterByNameOperator());
+  ADD_TEST(_Tests::testGetParameterByIndexOperator());
 
-  ADD_TEST("ParameterType", testParameterType());
-  ADD_TEST("GetMinValue", testGetMinValue());
-  ADD_TEST("GetMaxValue", testGetMaxValue());
-  ADD_TEST("GetDefaultValue", testGetDefaultValue());
-  ADD_TEST("SetParameterUnit", testSetParameterUnit());
-  ADD_TEST("SetPrecision", testSetPrecision());
+  ADD_TEST(_Tests::testGetSafeName());
+  ADD_TEST(_Tests::testAddObserver());
+  ADD_TEST(_Tests::testRemoveObserver());
+  ADD_TEST(_Tests::testShouldNotNotifyForSameValue());
 
-  return 0;
+  ADD_TEST(_Tests::testParameterType());
+  ADD_TEST(_Tests::testGetMinValue());
+  ADD_TEST(_Tests::testGetMaxValue());
+  ADD_TEST(_Tests::testGetDefaultValue());
+  ADD_TEST(_Tests::testSetParameterUnit());
+  ADD_TEST(_Tests::testSetPrecision());
+
+#if ENABLE_MULTITHREADED
+  ADD_TEST(_Tests::testCreateThreadsafeParameterSet());
+  // ADD_TEST(_Tests::testCreateManyThreadsafeParameterSets());
+  ADD_TEST(_Tests::testThreadsafeSetParameterAsync());
+  ADD_TEST(_Tests::testThreadsafeSetParameterRealtime());
+  ADD_TEST(_Tests::testThreadsafeSetParameterBothThreadsFromAsync());
+  ADD_TEST(_Tests::testThreadsafeSetParameterBothThreadsFromRealtime());
+  ADD_TEST(_Tests::testThreadsafeSetParameterWithSender());
+#endif
+
+  if(gNumFailedTests > 0) {
+    printf("\nFAILED %d tests\n", gNumFailedTests);
+  }
+  else {
+    printf("\nAll tests passed\n");
+  }
+
+  return gNumFailedTests;
 }

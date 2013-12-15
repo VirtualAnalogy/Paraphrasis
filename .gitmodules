@@ -1,0 +1,6 @@
+[submodule "include/readerwriterqueue"]
+	path = include/readerwriterqueue
+	url = git@github.com:teragonaudio/readerwriterqueue.git
+[submodule "include/tinythread"]
+	path = include/tinythread
+	url = https://git.gitorious.org/tinythread/teragonaudio-tinythreadpp.git
