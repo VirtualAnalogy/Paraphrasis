@@ -12,7 +12,7 @@
 #define __THINBUTTON_H_2C648127__
 
 #include "JuceHeader.h"
-#include "PluginParameters.h"
+#include "PluginParameterComponent.h"
 #include "ResourceCache.h"
 
 namespace teragon {

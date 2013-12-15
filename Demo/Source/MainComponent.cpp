@@ -28,7 +28,7 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-MainContentComponent::MainContentComponent (teragon::PluginParameterSet &parameters, teragon::ResourceCache *resourceCache)
+MainContentComponent::MainContentComponent (teragon::ThreadsafePluginParameterSet &parameters, teragon::ResourceCache *resourceCache)
     : parameters(parameters),
       resourceCache(resourceCache)
 {
@@ -94,12 +94,10 @@ MainContentComponent::MainContentComponent (teragon::PluginParameterSet &paramet
                                                              resourceCache->get("push_button")));
     pushButton->setName ("push button");
 
-    addAndMakeVisible (smallKnob = new teragon::ImageKnob (parameters["knob"],
-                                                           resourceCache->get("small_knob")));
+    addAndMakeVisible (smallKnob = new teragon::ImageKnob (parameters, "knob"));
     smallKnob->setName ("small knob");
 
-    addAndMakeVisible (largeKnob = new teragon::ImageKnob (parameters["knob"],
-                                                           resourceCache->get("large_knob")));
+    addAndMakeVisible (largeKnob = new teragon::ImageKnob (parameters, "knob"));
     largeKnob->setName ("large knob");
 
     addAndMakeVisible (fader = new teragon::ImageSlider (parameters["knob"],
@@ -190,7 +188,7 @@ void MainContentComponent::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainContentComponent" componentName=""
-                 parentClasses="public Component" constructorParams="teragon::PluginParameterSet &amp;parameters, teragon::ResourceCache *resourceCache"
+                 parentClasses="public Component" constructorParams="teragon::ThreadsafePluginParameterSet &amp;parameters, teragon::ResourceCache *resourceCache"
                  variableInitialisers="parameters(parameters),&#10;resourceCache(resourceCache)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.660"
                  fixedSize="1" initialWidth="250" initialHeight="320">
@@ -235,10 +233,10 @@ BEGIN_JUCER_METADATA
                     class="Component" params="parameters[&quot;indicator&quot;],&#10;resourceCache-&gt;get(&quot;push_button&quot;)"/>
   <GENERICCOMPONENT name="small knob" id="cbdd78d09251ea34" memberName="smallKnob"
                     virtualName="teragon::ImageKnob" explicitFocusOrder="0" pos="152 72 66 66"
-                    class="Component" params="parameters[&quot;knob&quot;],&#10;resourceCache-&gt;get(&quot;small_knob&quot;)"/>
+                    class="Component" params="parameters, &quot;knob&quot;"/>
   <GENERICCOMPONENT name="large knob" id="1ebc5ac437f1ae39" memberName="largeKnob"
                     virtualName="teragon::ImageKnob" explicitFocusOrder="0" pos="120 170 113 113"
-                    class="Component" params="parameters[&quot;knob&quot;],&#10;resourceCache-&gt;get(&quot;large_knob&quot;)"/>
+                    class="Component" params="parameters, &quot;knob&quot;"/>
   <GENERICCOMPONENT name="fader" id="8f5f5e73140aff67" memberName="fader" virtualName="teragon::ImageSlider"
                     explicitFocusOrder="0" pos="24 144 62 134" class="Component"
                     params="parameters[&quot;knob&quot;],&#10;resourceCache-&gt;get(&quot;slider&quot;)"/>

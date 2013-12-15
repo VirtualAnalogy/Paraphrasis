@@ -12,7 +12,7 @@
 #define __IMAGESLIDER_H_B0B8D694__
 
 #include "JuceHeader.h"
-#include "PluginParameters.h"
+#include "PluginParameterComponent.h"
 #include "ResourceCache.h"
 
 namespace teragon {

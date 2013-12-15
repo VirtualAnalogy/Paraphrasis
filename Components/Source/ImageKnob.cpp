@@ -12,10 +12,10 @@
 
 namespace teragon {
 
-ImageKnob::ImageKnob(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates) :
+ImageKnob::ImageKnob(ThreadsafePluginParameterSet &parameters, const char *name) :
 Slider(juce::Slider::RotaryVerticalDrag, juce::Slider::NoTextBox),
-PluginParameterObserver(),
-parameter(parameter), knobImage(imageStates->normal) {
+PluginParameterComponent(parameters, name)
+{
     parameter->addObserver(this);
     setRange(0.0, 1.0);
     setValue(parameter->getScaledValue());
@@ -30,7 +30,7 @@ void ImageKnob::onParameterUpdated(const PluginParameter* parameter) {
 }
 
 void ImageKnob::valueChanged() {
-    parameter->setScaledValue(getValue());
+    onValueChanged(getValue());
 }
 
 void ImageKnob::paint(Graphics &g) {

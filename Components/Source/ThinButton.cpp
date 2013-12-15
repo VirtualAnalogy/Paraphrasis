@@ -26,7 +26,7 @@ ThinButton::~ThinButton() {
 }
 
 void ThinButton::clicked() {
-    parameter->setValue(getToggleState());
+//    parameter->setValue(getToggleState());
 }
 
 void ThinButton::onParameterUpdated(const PluginParameter* parameter) {

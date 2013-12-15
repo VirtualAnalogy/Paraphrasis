@@ -5,7 +5,7 @@
               jucerVersion="3.1.0" companyName="Teragon Audio">
   <MAINGROUP id="qYaJjs" name="ComponentDemo">
     <GROUP id="{E04A37AC-9529-254B-4E46-C1FC485B5238}" name="Tinythread">
-      <FILE id="xdkZQ2" name="tinythread.cpp" compile="1" resource="0" file="PluginParameters/include/tinythread/source/tinythread.cpp"/>
+      <FILE id="f51QW9" name="tinythread.cpp" compile="1" resource="0" file="../Components/PluginParameters/include/tinythread/source/tinythread.cpp"/>
     </GROUP>
     <GROUP id="{08B3F7AA-BD19-0DE8-C8BE-79CDEB3F6DE5}" name="Components">
       <FILE id="SezmTl" name="ImageKnob.cpp" compile="1" resource="0" file="../Components/Source/ImageKnob.cpp"/>
@@ -16,6 +16,8 @@
             file="../Components/Source/IndicatorLight.cpp"/>
       <FILE id="uqAcdr" name="IndicatorLight.h" compile="0" resource="0"
             file="../Components/Source/IndicatorLight.h"/>
+      <FILE id="ZE06Hc" name="PluginParameterComponent.h" compile="0" resource="0"
+            file="../Components/Source/PluginParameterComponent.h"/>
       <FILE id="iICW6f" name="PushButton.h" compile="0" resource="0" file="../Components/Source/PushButton.h"/>
       <FILE id="qstIpY" name="ResourceCache.cpp" compile="1" resource="0"
             file="../Components/Source/ResourceCache.cpp"/>

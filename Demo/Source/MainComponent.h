@@ -22,14 +22,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
-#include "PluginParameters.h"
-
-#include "IndicatorLight.h"
-#include "ImageKnob.h"
-#include "ImageSlider.h"
-#include "PushButton.h"
-#include "ResourceCache.h"
-#include "ToggleButton.h"
+#include "TeragonGuiComponents.h"
 //[/Headers]
 
 
@@ -46,7 +39,7 @@ class MainContentComponent  : public Component
 {
 public:
     //==============================================================================
-    MainContentComponent (teragon::PluginParameterSet &parameters, teragon::ResourceCache *resourceCache);
+    MainContentComponent (teragon::ThreadsafePluginParameterSet &parameters, teragon::ResourceCache *resourceCache);
     ~MainContentComponent();
 
     //==============================================================================
@@ -60,7 +53,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    teragon::PluginParameterSet parameters;
+    teragon::ThreadsafePluginParameterSet &parameters;
     teragon::ResourceCache *resourceCache;
     //[/UserVariables]
 

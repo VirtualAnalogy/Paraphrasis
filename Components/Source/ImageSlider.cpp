@@ -9,7 +9,7 @@
  */
 
 #include "ImageSlider.h"
-#include "PluginParameter.h"
+#include "PluginParameterComponent.h"
 
 namespace teragon {
 
@@ -28,7 +28,7 @@ ImageSlider::~ImageSlider() {
 }
 
 void ImageSlider::valueChanged() {
-    parameter->setValue(getValue());
+//    parameter->setValue(getValue());
 }
 
 void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {

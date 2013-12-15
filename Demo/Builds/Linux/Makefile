@@ -49,7 +49,7 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS := \
-  $(OBJDIR)/tinythread_b62b4707.o \
+  $(OBJDIR)/tinythread_6bd985d.o \
   $(OBJDIR)/ImageKnob_4bdd143c.o \
   $(OBJDIR)/ImageSlider_9bc0d0e7.o \
   $(OBJDIR)/IndicatorLight_e0f6b1a6.o \
@@ -84,7 +84,7 @@ strip:
 	@echo Stripping ComponentDemo
 	-@strip --strip-unneeded $(OUTDIR)/$(TARGET)
 
-$(OBJDIR)/tinythread_b62b4707.o: ../../PluginParameters/include/tinythread/source/tinythread.cpp
+$(OBJDIR)/tinythread_6bd985d.o: ../../../Components/PluginParameters/include/tinythread/source/tinythread.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling tinythread.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"

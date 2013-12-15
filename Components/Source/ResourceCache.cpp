@@ -9,7 +9,7 @@
 */
 
 #include "ResourceCache.h"
-#include "PluginParameter.h"
+#include "PluginParameterComponent.h"
 
 namespace teragon {
 

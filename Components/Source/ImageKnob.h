@@ -12,14 +12,14 @@
 #define __IMAGEKNOB_H_4804529__
 
 #include "JuceHeader.h"
-#include "PluginParameters.h"
+#include "PluginParameterComponent.h"
 #include "ResourceCache.h"
 
 namespace teragon {
 
-class ImageKnob : public juce::Slider, public PluginParameterObserver {
+class ImageKnob : public juce::Slider, public PluginParameterComponent {
 public:
-    ImageKnob(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates);
+    ImageKnob(ThreadsafePluginParameterSet &parameters, const char *name);
     virtual ~ImageKnob();
 
     bool isRealtimePriority() const { return false; }
@@ -29,7 +29,6 @@ public:
     void paint(Graphics &g);
 
 private:
-    PluginParameter *parameter;
     Image knobImage;
 };
 

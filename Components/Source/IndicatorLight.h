@@ -12,7 +12,7 @@
 #define __INDICATORLIGHT_H_DAF02643__
 
 #include "JuceHeader.h"
-#include "PluginParameters.h"
+#include "PluginParameterComponent.h"
 #include "ResourceCache.h"
 
 namespace teragon {
