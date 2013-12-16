@@ -9,18 +9,18 @@
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../PluginParameters/include/PluginParameters.h"
+#include "TeragonGuiComponents.h"
 #include "MainComponent.h"
 #include "Resources.h"
 
 
 namespace teragon {
 //==============================================================================
-class ComponentDemoApplication  : public JUCEApplication
+class ComponentDemoApplication  : public JUCEApplication, public Timer
 {
 public:
     //==============================================================================
-    ComponentDemoApplication() {}
+    ComponentDemoApplication() : JUCEApplication(), Timer() {}
 
     const String getApplicationName()       { return ProjectInfo::projectName; }
     const String getApplicationVersion()    { return ProjectInfo::versionString; }
@@ -34,11 +34,13 @@ public:
         parameters.add(new BooleanParameter("indicator", true));
         parameters.add(new BooleanParameter("button"));
         mainWindow = new MainWindow(parameters);
+        startTimer(33); // ~30fps
     }
 
     void shutdown()
     {
         mainWindow = nullptr; // (deletes our window)
+        stopTimer();
     }
 
     //==============================================================================
@@ -56,18 +58,26 @@ public:
         // the other instance's command-line arguments were.
     }
 
+    void timerCallback()
+    {
+        // Process the events from the parameter set. This should be called from
+        // audio thread of a plugin, or otherwise in the "main" thread of your
+        // application.
+        parameters.processRealtimeEvents();
+    }
+
     //==============================================================================
     /*
         This class implements the desktop window that contains an instance of
         our MainContentComponent class.
     */
-    class MainWindow    : public DocumentWindow
+    class MainWindow : public DocumentWindow
     {
     public:
         MainWindow(teragon::ThreadsafePluginParameterSet &parameters) :
             DocumentWindow ("GUI Demo", Colours::lightgrey, DocumentWindow::allButtons),
             parameters(parameters)
-       {
+        {
             setContentOwned (new MainContentComponent(parameters, Resources::getCache()), true);
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
@@ -97,7 +107,7 @@ private:
     ScopedPointer<MainWindow> mainWindow;
     ThreadsafePluginParameterSet parameters;
 };
-}
+} // namespace teragon
 
 //==============================================================================
 // This macro generates the main() routine that launches the app.

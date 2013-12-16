@@ -10,6 +10,10 @@
     <GROUP id="{08B3F7AA-BD19-0DE8-C8BE-79CDEB3F6DE5}" name="Components">
       <FILE id="SezmTl" name="ImageKnob.cpp" compile="1" resource="0" file="../Components/Source/ImageKnob.cpp"/>
       <FILE id="VsoKTl" name="ImageKnob.h" compile="0" resource="0" file="../Components/Source/ImageKnob.h"/>
+      <FILE id="qWa2F4" name="ImageKnobLarge.h" compile="0" resource="0"
+            file="../Components/Source/ImageKnobLarge.h"/>
+      <FILE id="jQgUir" name="ImageKnobSmall.h" compile="0" resource="0"
+            file="../Components/Source/ImageKnobSmall.h"/>
       <FILE id="Ecwe0o" name="ImageSlider.cpp" compile="1" resource="0" file="../Components/Source/ImageSlider.cpp"/>
       <FILE id="wODINO" name="ImageSlider.h" compile="0" resource="0" file="../Components/Source/ImageSlider.h"/>
       <FILE id="dxJ4hD" name="IndicatorLight.cpp" compile="1" resource="0"
@@ -47,7 +51,8 @@
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1"/>
   </MODULES>
   <EXPORTFORMATS>
-    <LINUX_MAKE targetFolder="Builds/Linux" extraCompilerFlags="-I../../../Components/Source -I../../PluginParameters/include -std=c++11 -DENABLE_MULTITHREADED=1">
+    <LINUX_MAKE targetFolder="Builds/Linux" extraCompilerFlags="-I../../../Components/Source -I../../PluginParameters/include -std=c++11"
+                extraDefs="ENABLE_MULTITHREADED=1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="ComponentDemo"/>
@@ -64,6 +69,24 @@
         <MODULEPATH id="juce_core" path="JuceLibraryCode/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
+    <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-I../../../Components/Source -I../../PluginParameters/include -std=c++11"
+               extraDefs="ENABLE_MULTITHREADED=1">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="1" optimisation="1" targetName="ComponentDemo"/>
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="0" optimisation="2" targetName="ComponentDemo"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_gui_audio" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
   </EXPORTFORMATS>
   <JUCEOPTIONS/>
 </JUCERPROJECT>

@@ -86,26 +86,25 @@ MainContentComponent::MainContentComponent (teragon::ThreadsafePluginParameterSe
     smallKnobLabel->setColour (TextEditor::textColourId, Colours::black);
     smallKnobLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (toggleButton = new teragon::ToggleButton (parameters["button"],
-                                                                 resourceCache->get("toggle_button")));
+    addAndMakeVisible (toggleButton = new teragon::ToggleButton (parameters, "button",
+                                                                 resourceCache));
     toggleButton->setName ("toggle button");
 
-    addAndMakeVisible (pushButton = new teragon::PushButton (parameters["indicator"],
-                                                             resourceCache->get("push_button")));
+    addAndMakeVisible (pushButton = new teragon::PushButton (parameters, "indicator",
+                                                             resourceCache));
     pushButton->setName ("push button");
 
-    addAndMakeVisible (smallKnob = new teragon::ImageKnob (parameters, "knob"));
+    addAndMakeVisible (smallKnob = new teragon::ImageKnobSmall (parameters, "knob", resourceCache));
     smallKnob->setName ("small knob");
 
-    addAndMakeVisible (largeKnob = new teragon::ImageKnob (parameters, "knob"));
+    addAndMakeVisible (largeKnob = new teragon::ImageKnobLarge (parameters, "knob", resourceCache));
     largeKnob->setName ("large knob");
 
-    addAndMakeVisible (fader = new teragon::ImageSlider (parameters["knob"],
-                                                         resourceCache->get("slider")));
+    addAndMakeVisible (fader = new teragon::ImageSlider (parameters, "knob", resourceCache));
     fader->setName ("fader");
 
-    addAndMakeVisible (indicatorLight = new teragon::IndicatorLight (parameters["indicator"],
-                                                                     resourceCache->get("indicator_light")));
+    addAndMakeVisible (indicatorLight = new teragon::IndicatorLight (parameters, "indicator",
+                                                                     resourceCache));
     indicatorLight->setName ("indicator light");
 
 
@@ -227,22 +226,22 @@ BEGIN_JUCER_METADATA
          fontsize="15" bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="toggle button" id="ca1a005aea565e73" memberName="toggleButton"
                     virtualName="teragon::ToggleButton" explicitFocusOrder="0" pos="24 16 72 40"
-                    class="Component" params="parameters[&quot;button&quot;],&#10;resourceCache-&gt;get(&quot;toggle_button&quot;)"/>
+                    class="Component" params="parameters, &quot;button&quot;,&#10;resourceCache"/>
   <GENERICCOMPONENT name="push button" id="95812891ea323314" memberName="pushButton"
                     virtualName="teragon::PushButton" explicitFocusOrder="0" pos="24 72 70 40"
-                    class="Component" params="parameters[&quot;indicator&quot;],&#10;resourceCache-&gt;get(&quot;push_button&quot;)"/>
+                    class="Component" params="parameters, &quot;indicator&quot;,&#10;resourceCache"/>
   <GENERICCOMPONENT name="small knob" id="cbdd78d09251ea34" memberName="smallKnob"
-                    virtualName="teragon::ImageKnob" explicitFocusOrder="0" pos="152 72 66 66"
-                    class="Component" params="parameters, &quot;knob&quot;"/>
+                    virtualName="teragon::ImageKnobSmall" explicitFocusOrder="0"
+                    pos="152 72 66 66" class="Component" params="parameters, &quot;knob&quot;, resourceCache"/>
   <GENERICCOMPONENT name="large knob" id="1ebc5ac437f1ae39" memberName="largeKnob"
-                    virtualName="teragon::ImageKnob" explicitFocusOrder="0" pos="120 170 113 113"
-                    class="Component" params="parameters, &quot;knob&quot;"/>
+                    virtualName="teragon::ImageKnobLarge" explicitFocusOrder="0"
+                    pos="120 170 113 113" class="Component" params="parameters, &quot;knob&quot;, resourceCache"/>
   <GENERICCOMPONENT name="fader" id="8f5f5e73140aff67" memberName="fader" virtualName="teragon::ImageSlider"
                     explicitFocusOrder="0" pos="24 144 62 134" class="Component"
-                    params="parameters[&quot;knob&quot;],&#10;resourceCache-&gt;get(&quot;slider&quot;)"/>
+                    params="parameters, &quot;knob&quot;, resourceCache"/>
   <GENERICCOMPONENT name="indicator light" id="fca1b7e8ed89a244" memberName="indicatorLight"
                     virtualName="teragon::IndicatorLight" explicitFocusOrder="0"
-                    pos="168 16 24 24" class="Component" params="parameters[&quot;indicator&quot;],&#10;resourceCache-&gt;get(&quot;indicator_light&quot;)"/>
+                    pos="168 16 24 24" class="Component" params="parameters, &quot;indicator&quot;,&#10;resourceCache"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

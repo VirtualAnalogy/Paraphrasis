@@ -66,8 +66,8 @@ private:
     ScopedPointer<Label> smallKnobLabel;
     ScopedPointer<teragon::ToggleButton> toggleButton;
     ScopedPointer<teragon::PushButton> pushButton;
-    ScopedPointer<teragon::ImageKnob> smallKnob;
-    ScopedPointer<teragon::ImageKnob> largeKnob;
+    ScopedPointer<teragon::ImageKnobSmall> smallKnob;
+    ScopedPointer<teragon::ImageKnobLarge> largeKnob;
     ScopedPointer<teragon::ImageSlider> fader;
     ScopedPointer<teragon::IndicatorLight> indicatorLight;
 
