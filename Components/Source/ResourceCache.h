@@ -29,6 +29,7 @@ public:
         Image alternate;
         Image background;
     };
+
 public:
     ResourceCache() {}
     virtual ~ResourceCache();

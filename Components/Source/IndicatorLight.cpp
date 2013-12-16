@@ -12,26 +12,23 @@
 
 namespace teragon {
 
-IndicatorLight::IndicatorLight(PluginParameter *parameter,
-                               const ResourceCache::ImageStates *imageStates) :
+IndicatorLight::IndicatorLight(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+                               const ResourceCache *resources) :
 Component(String::empty),
-PluginParameterObserver(),
-parameter(parameter), enabledImage(imageStates->alternate),
-disabledImage(imageStates->normal), enabled(false) {
-    parameter->addObserver(this);
-    setEnabled(parameter->getValue());
-}
-
-IndicatorLight::~IndicatorLight() {
-    parameter->removeObserver(this);
+PluginParameterComponent(parameters, name, resources, "indicator_light"),
+lightOn(false) {
+    setLightOn(parameter->getValue());
 }
 
 void IndicatorLight::onParameterUpdated(const PluginParameter* parameter) {
-    setEnabled(parameter->getValue());
+    setLightOn(parameter->getValue());
     repaint();
 }
 
 void IndicatorLight::paint(juce::Graphics &g) {
+    Image enabledImage = imageStates->normal;
+    Image disabledImage = imageStates->alternate;
+
     g.drawImage(disabledImage, 0, 0, getWidth(), getHeight(),
                 0, 0, disabledImage.getWidth(), disabledImage.getHeight());
 
@@ -59,11 +56,11 @@ void IndicatorLight::timerCallback() {
     repaint();
 }
 
-void IndicatorLight::setEnabled(bool enabled) {
-    if (this->enabled != enabled) {
-        this->enabled = enabled;
-        this->enabledOpacity = enabled ? 0.0f : 1.0f;
-        this->stepRate = (enabled ? 1.0f : -1.0f) * 0.325f;
+void IndicatorLight::setLightOn(bool lightOn) {
+    if (this->lightOn != lightOn) {
+        this->lightOn = lightOn;
+        this->enabledOpacity = lightOn ? 0.0f : 1.0f;
+        this->stepRate = (lightOn ? 1.0f : -1.0f) * 0.325f;
         startTimer(33); // ~30fps
     }
 }

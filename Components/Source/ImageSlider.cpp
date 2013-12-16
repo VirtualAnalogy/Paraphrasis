@@ -13,22 +13,16 @@
 
 namespace teragon {
 
-ImageSlider::ImageSlider(PluginParameter *parameter,
-                         const ResourceCache::ImageStates *imageStates) :
+ImageSlider::ImageSlider(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+                         const ResourceCache *resources) :
 Slider(juce::Slider::LinearVertical, juce::Slider::NoTextBox),
-PluginParameterObserver(),
-parameter(parameter), handleImage(imageStates->normal), wellImage(imageStates->background) {
-    parameter->addObserver(this);
-    setRange(parameter->getMinValue(), parameter->getMaxValue());
+PluginParameterComponent(parameters, name, resources, "slider") {
+    setRange(0.0, 1.0);
     setValue(parameter->getValue());
 }
 
-ImageSlider::~ImageSlider() {
-    parameter->removeObserver(this);
-}
-
 void ImageSlider::valueChanged() {
-//    parameter->setValue(getValue());
+    onValueChanged(getValue());
 }
 
 void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {
@@ -36,6 +30,8 @@ void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {
 }
 
 void ImageSlider::paint(Graphics &g) {
+    Image handleImage = imageStates->normal;
+    Image wellImage = imageStates->background;
     int handleX = (getWidth() - handleImage.getWidth()) / 2;
     int yRange = getHeight() - handleImage.getHeight() / 2;
     // Mysterious logic... o_O Not sure why this handle is so tough to position, even

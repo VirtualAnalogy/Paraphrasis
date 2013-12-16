@@ -12,21 +12,20 @@
 
 namespace teragon {
 
-ThinButton::ThinButton(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates,
-                       const ThinButton::Gravity gravity) :
-                       ImageButton(String::empty), PluginParameterObserver(),
-                       parameter(parameter), gravity(gravity) {
-    parameter->addObserver(this);
-    setImages(imageStates->alternate, imageStates->normal);
+ThinButton::ThinButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+                       const ResourceCache *resources, const String &imageName) :
+ImageButton(String::empty),
+PluginParameterComponent(parameters, name, resources, imageName),
+gravity(kGravityDefault) {
+    juce::ImageButton::setImages(false, false, true,
+                                 imageStates->normal, 1.0f, Colour(0x0),
+                                 Image::null, 1.0f, Colour(0x0),
+                                 imageStates->alternate, 1.0, Colour(0x0));
     setState(parameter->getValue() ? Button::buttonDown : Button::buttonNormal);
 }
 
-ThinButton::~ThinButton() {
-    parameter->removeObserver(this);
-}
-
 void ThinButton::clicked() {
-//    parameter->setValue(getToggleState());
+    onValueChanged(getToggleState());
 }
 
 void ThinButton::onParameterUpdated(const PluginParameter* parameter) {
@@ -35,6 +34,7 @@ void ThinButton::onParameterUpdated(const PluginParameter* parameter) {
 
 void ThinButton::paint(Graphics &g) {
     const Image buttonStateImage = getImageForButtonState();
+
     int buttonY;
     if(gravity == kGravityTop) {
         buttonY = 0;
@@ -44,12 +44,5 @@ void ThinButton::paint(Graphics &g) {
     }
     g.drawImage(buttonStateImage, 0, buttonY, buttonStateImage.getWidth(), buttonStateImage.getHeight(),
                 0, 0, buttonStateImage.getWidth(), buttonStateImage.getHeight());
-}
-
-void ThinButton::setImages(Image buttonDown, Image buttonUp) {
-    juce::ImageButton::setImages(false, false, true,
-                                 buttonUp, 1.0f, Colour(0x0),
-                                 Image::null, 1.0f, Colour(0x0),
-                                 buttonDown, 1.0, Colour(0x0));
 }
 } // namespace teragon

@@ -19,17 +19,13 @@ namespace teragon {
 
 class ImageKnob : public juce::Slider, public PluginParameterComponent {
 public:
-    ImageKnob(ThreadsafePluginParameterSet &parameters, const char *name);
-    virtual ~ImageKnob();
+    ImageKnob(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+              const ResourceCache *resources, const String &imageName);
+    virtual ~ImageKnob() {}
 
-    bool isRealtimePriority() const { return false; }
     void onParameterUpdated(const PluginParameter* parameter);
     void valueChanged();
-
     void paint(Graphics &g);
-
-private:
-    Image knobImage;
 };
 
 } // namespace teragon

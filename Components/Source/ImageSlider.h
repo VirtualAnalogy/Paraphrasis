@@ -17,22 +17,15 @@
 
 namespace teragon {
 
-class ImageSlider : public juce::Slider, public PluginParameterObserver {
+class ImageSlider : public juce::Slider, public PluginParameterComponent {
 public:
-    ImageSlider(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates);
-
-    virtual ~ImageSlider();
+    ImageSlider(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+                const ResourceCache *resources);
+    virtual ~ImageSlider() {}
 
     void valueChanged();
-    bool isRealtimePriority() const { return false; }
     void onParameterUpdated(const PluginParameter* parameter);
-
     void paint(Graphics &g);
-
-private:
-    PluginParameter *parameter;
-    Image handleImage;
-    Image wellImage;
 };
 
 } // namespace teragon

@@ -17,7 +17,7 @@
 
 namespace teragon {
 
-class ThinButton : public juce::ImageButton, public PluginParameterObserver {
+class ThinButton : public juce::ImageButton, public PluginParameterComponent {
 public:
     typedef enum {
         kGravityTop,
@@ -27,22 +27,18 @@ public:
     } Gravity;
 
 public:
-    ThinButton(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates,
-               const ThinButton::Gravity gravity = kGravityDefault);
-    virtual ~ThinButton();
+    ThinButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+               const ResourceCache *resources, const String &imageName);
 
     void clicked();
-    bool isRealtimePriority() const { return false; }
     void onParameterUpdated(const PluginParameter* parameter);
-
     void paint(Graphics &g);
 
     virtual const Image getImageForButtonState() = 0;
 
 private:
-    void setImages(Image downImage, Image upImage);
-
-    PluginParameter *parameter;
+    // For now, always set this to be kGravityDefault (ie, kGravityTop), but
+    // in the future there could be an option to control the gravity.
     Gravity gravity;
 };
 

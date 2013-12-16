@@ -17,25 +17,19 @@
 
 namespace teragon {
 
-class IndicatorLight : public Component, public Timer, public PluginParameterObserver {
+class IndicatorLight : public Component, public Timer, public PluginParameterComponent {
 public:
-    IndicatorLight(PluginParameter *parameter, const ResourceCache::ImageStates *imageStates);
-    virtual ~IndicatorLight();
+    IndicatorLight(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+                   const ResourceCache *resources);
+    virtual ~IndicatorLight() {}
 
-    bool isRealtimePriority() const { return false; }
     void onParameterUpdated(const PluginParameter* parameter);
-
     void paint(Graphics &g);
     void timerCallback();
-
-    void setEnabled(bool enabled);
+    void setLightOn(bool lightOn);
 
 private:
-    PluginParameter *parameter;
-    Image enabledImage;
-    Image disabledImage;
-
-    bool enabled;
+    bool lightOn;
     float enabledOpacity;
     float stepRate;
 };

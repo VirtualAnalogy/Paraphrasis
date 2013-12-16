@@ -17,11 +17,12 @@ namespace teragon {
 
 class PushButton : public ThinButton {
 public:
-    PushButton(PluginParameter* parameter, const ResourceCache::ImageStates *imageStates,
-               const ThinButton::Gravity gravity = kGravityDefault) :
-    ThinButton(parameter, imageStates, gravity) {
+    PushButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+               const ResourceCache *resources) :
+    ThinButton(parameters, name, resources, "push_button") {
         setClickingTogglesState(true);
     }
+
     virtual ~PushButton() {}
 
     const Image getImageForButtonState() {
