@@ -52,7 +52,7 @@ public:
     }
 
     virtual void onValueChanged(ParameterValue value) {
-        parameters.set(parameter, value, this);
+        parameters.setScaled(parameter, value, this);
     }
 
 protected:

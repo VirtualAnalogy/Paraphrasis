@@ -26,7 +26,7 @@ void ImageSlider::valueChanged() {
 }
 
 void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {
-    setValue(parameter->getValue());
+    setValue(parameter->getScaledValue());
 }
 
 void ImageSlider::paint(Graphics &g) {

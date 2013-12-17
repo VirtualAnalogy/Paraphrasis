@@ -21,6 +21,7 @@ public:
                const ResourceCache *resources) :
     ThinButton(parameters, name, resources, "push_button") {
         setClickingTogglesState(true);
+        setToggleState(parameter->getScaledValue() > 0.5, NotificationType::dontSendNotification);
     }
 
     virtual ~PushButton() {}

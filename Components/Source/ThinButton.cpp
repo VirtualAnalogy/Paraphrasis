@@ -21,7 +21,6 @@ gravity(kGravityDefault) {
                                  imageStates->normal, 1.0f, Colour(0x0),
                                  Image::null, 1.0f, Colour(0x0),
                                  imageStates->alternate, 1.0, Colour(0x0));
-    setState(parameter->getValue() ? Button::buttonDown : Button::buttonNormal);
 }
 
 void ThinButton::clicked() {
@@ -29,7 +28,7 @@ void ThinButton::clicked() {
 }
 
 void ThinButton::onParameterUpdated(const PluginParameter* parameter) {
-    setState(parameter->getValue() ? Button::buttonDown : Button::buttonNormal);
+    setToggleState(parameter->getScaledValue() > 0.5, NotificationType::dontSendNotification);
 }
 
 void ThinButton::paint(Graphics &g) {

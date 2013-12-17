@@ -17,12 +17,11 @@ IndicatorLight::IndicatorLight(ThreadsafePluginParameterSet &parameters, const P
 Component(String::empty),
 PluginParameterComponent(parameters, name, resources, "indicator_light"),
 lightOn(false) {
-    setLightOn(parameter->getValue());
+    setLightOn(parameter->getScaledValue() > 0.5);
 }
 
 void IndicatorLight::onParameterUpdated(const PluginParameter* parameter) {
-    setLightOn(parameter->getValue());
-    repaint();
+    setLightOn(parameter->getScaledValue() > 0.5);
 }
 
 void IndicatorLight::paint(juce::Graphics &g) {
