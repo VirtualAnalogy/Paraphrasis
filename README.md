@@ -44,12 +44,13 @@ parameter set and a new resource cache made with `Resources::getCache()` (this
 will require including `Resources.h` from the file where `getCache()` is
 called since this rather long header is not part of `TeragonGuiComponents.h`).
 
-The reason that the ResourceCache is passed as a raw pointer instead of a
-reference is that the editor should take ownership of the cache upon
+**NOTE**: The reason that the ResourceCache is passed as a raw pointer instead
+of a reference is that the editor should take ownership of the cache upon
 construction. This way, you can delete the cache in the editor's destructor
-and spare a bit of memory to the system when the editor is closed.  You could
+and spare a bit of memory to the system when the editor is closed. You could
 also choose to keep a ResourceCache in the processor and pass its address up
-to the editor, but this is not recommended.
+to the editor, but this is not recommended. In either case, you must make sure
+that the cache is deleted at some point or else memory will be leaked.
 
 
 Adding Components

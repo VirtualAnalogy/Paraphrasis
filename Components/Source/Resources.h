@@ -44,6 +44,13 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    /**
+      * @return A new ResourceCache instance which can be used to fetch graphics for
+      * drawing all components. This object is generally passed to the component
+      * window upon creation, which then assumes ownership of the cache. This means
+      * that this object is responsible for deleting the cache upon destruction, or
+      * else resources will be leaked!
+      */
     static teragon::ResourceCache* getCache();
     //[/UserMethods]
 
