@@ -44,4 +44,5 @@ void ImageSlider::paint(Graphics &g) {
     g.drawImageAt(wellImage, 0, 0);
     g.drawImageAt(handleImage, handleX, position - offset);
 }
-}
+
+} // namespace teragon

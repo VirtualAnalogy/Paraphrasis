@@ -46,6 +46,6 @@ private:
     ResourceMap resources;
 };
 
-}
+} // namespace teragon
 
 #endif  // IMAGECACHE_H_INCLUDED

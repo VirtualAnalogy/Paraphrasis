@@ -16,6 +16,7 @@
 namespace teragon {
 
 class ImageKnobSmall : public ImageKnob {
+
 public:
     ImageKnobSmall(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
                    const ResourceCache *resources) :
@@ -23,6 +24,7 @@ public:
 
     virtual ~ImageKnobSmall() {}
 };
+
 } // namespace teragon
 
 #endif  // IMAGEKNOBSMALL_H_INCLUDED

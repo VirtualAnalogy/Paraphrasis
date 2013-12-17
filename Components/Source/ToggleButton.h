@@ -30,6 +30,6 @@ public:
     }
 };
 
-}
+} // namespace teragon
 
 #endif  // __TOGGLEBUTTON_H_CCE55A62__

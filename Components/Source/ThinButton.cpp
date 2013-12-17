@@ -46,4 +46,5 @@ void ThinButton::paint(Graphics &g) {
     g.drawImage(buttonStateImage, 0, buttonY, buttonStateImage.getWidth(), buttonStateImage.getHeight(),
                 0, 0, buttonStateImage.getWidth(), buttonStateImage.getHeight());
 }
+
 } // namespace teragon

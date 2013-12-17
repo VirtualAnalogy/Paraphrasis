@@ -34,6 +34,6 @@ private:
     float stepRate;
 };
 
-}
+} // namespace teragon
 
 #endif  // __INDICATORLIGHT_H_DAF02643__

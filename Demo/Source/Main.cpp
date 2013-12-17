@@ -75,8 +75,8 @@ public:
     {
     public:
         MainWindow(teragon::ThreadsafePluginParameterSet &parameters) :
-            DocumentWindow ("GUI Demo", Colours::lightgrey, DocumentWindow::allButtons),
-            parameters(parameters)
+        DocumentWindow ("GUI Demo", Colours::lightgrey, DocumentWindow::allButtons),
+        parameters(parameters)
         {
             setContentOwned (new MainContentComponent(parameters, Resources::getCache()), true);
             centreWithSize (getWidth(), getHeight());

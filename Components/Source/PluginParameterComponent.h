@@ -15,8 +15,7 @@ public:
     PluginParameterComponent(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
                              const ResourceCache *resources, const String &imageName) :
     PluginParameterObserver(),
-    parameters(parameters), parameter(NULL), imageStates(NULL)
-    {
+    parameters(parameters), parameter(NULL), imageStates(NULL) {
         Logger *logger = Logger::getCurrentLogger();
 
         parameter = parameters[name];
@@ -60,6 +59,7 @@ protected:
     PluginParameter *parameter;
     ResourceCache::ImageStates *imageStates;
 };
+
 } // namespace teragon
 
 #endif

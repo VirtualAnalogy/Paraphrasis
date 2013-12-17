@@ -1,3 +1,6 @@
+#ifndef __TERAGONGUICOMPONENTS_H__
+#define __TERAGONGUICOMPONENTS_H__
+
 #ifndef ENABLE_MULTITHREADED
 #define ENABLE_MULTITHREADED 1
 #endif
@@ -12,3 +15,5 @@
 #include "ResourceCache.h"
 #include "ThinButton.h"
 #include "ToggleButton.h"
+
+#endif

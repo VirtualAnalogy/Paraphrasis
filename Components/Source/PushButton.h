@@ -31,6 +31,6 @@ public:
     }
 };
 
-}
+} // namespace teragon
 
 #endif  // __PUSHBUTTON_H_AE7ED0A8__

@@ -64,4 +64,5 @@ void IndicatorLight::setLightOn(bool lightOn) {
         startTimer(33); // ~30fps
     }
 }
-}
+
+} // namespace teragon
