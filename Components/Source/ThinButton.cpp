@@ -28,6 +28,8 @@ void ThinButton::clicked() {
 }
 
 void ThinButton::onParameterUpdated(const PluginParameter* parameter) {
+    // TODO: Refactor to function
+    juce::MessageManagerLock lock;
     setToggleState(parameter->getScaledValue() > 0.5, NotificationType::dontSendNotification);
 }
 

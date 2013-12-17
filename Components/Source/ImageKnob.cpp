@@ -21,6 +21,7 @@ PluginParameterComponent(parameters, name, resources, imageName) {
 }
 
 void ImageKnob::onParameterUpdated(const PluginParameter* parameter) {
+    juce::MessageManagerLock lock;
     setValue(parameter->getScaledValue());
 }
 

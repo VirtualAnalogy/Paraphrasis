@@ -26,6 +26,7 @@ void ImageSlider::valueChanged() {
 }
 
 void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {
+    juce::MessageManagerLock lock;
     setValue(parameter->getScaledValue());
 }
 

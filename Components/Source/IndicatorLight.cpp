@@ -21,6 +21,7 @@ lightOn(false) {
 }
 
 void IndicatorLight::onParameterUpdated(const PluginParameter* parameter) {
+    juce::MessageManagerLock lock;
     setLightOn(parameter->getScaledValue() > 0.5);
 }
 
