@@ -26,6 +26,11 @@ public:
     void valueChanged();
     void onParameterUpdated(const PluginParameter* parameter);
     void paint(Graphics &g);
+
+private:
+    Image handleImage;
+    Image wellImage;
+    int offset;
 };
 
 } // namespace teragon

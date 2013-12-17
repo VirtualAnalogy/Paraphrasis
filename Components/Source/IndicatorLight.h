@@ -29,6 +29,13 @@ public:
     void setLightOn(bool lightOn);
 
 private:
+    Image enabledImage;
+    Image disabledImage;
+    int enabledImageWidth;
+    int enabledImageHeight;
+    int disabledImageWidth;
+    int disabledImageHeight;
+
     bool lightOn;
     float enabledOpacity;
     float stepRate;

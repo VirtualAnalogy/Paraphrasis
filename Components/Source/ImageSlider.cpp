@@ -17,6 +17,10 @@ ImageSlider::ImageSlider(ThreadsafePluginParameterSet &parameters, const Paramet
                          const ResourceCache *resources) :
 Slider(juce::Slider::LinearVertical, juce::Slider::NoTextBox),
 PluginParameterComponent(parameters, name, resources, "slider") {
+    handleImage = imageStates->normal;
+    wellImage = imageStates->background;
+    offset = handleImage.getHeight() / 4 + 1;
+
     setRange(0.0, 1.0);
     setValue(parameter->getValue());
 }
@@ -31,16 +35,12 @@ void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {
 }
 
 void ImageSlider::paint(Graphics &g) {
-    Image handleImage = imageStates->normal;
-    Image wellImage = imageStates->background;
-    int handleX = (getWidth() - handleImage.getWidth()) / 2;
-    int yRange = getHeight() - handleImage.getHeight() / 2;
+    const int handleX = (getWidth() - handleImage.getWidth()) / 2;
+    const int yRange = getHeight() - handleImage.getHeight() / 2;
     // Mysterious logic... o_O Not sure why this handle is so tough to position, even
     // at position == 0, it is ~20px below the top of the well. Not sure why this is,
     // but this arithmetic seems to put it in the right position.
-    int position = yRange - (yRange * (getValue() / getMaximum() - getMinimum())) + 1;
-    int offset = handleImage.getHeight() / 4 + 1;
-
+    const int position = (int)(yRange - (yRange * (getValue() / getMaximum() - getMinimum())) + 1);
     g.drawImageAt(wellImage, 0, 0);
     g.drawImageAt(handleImage, handleX, position - offset);
 }

@@ -17,6 +17,13 @@ IndicatorLight::IndicatorLight(ThreadsafePluginParameterSet &parameters, const P
 Component(String::empty),
 PluginParameterComponent(parameters, name, resources, "indicator_light"),
 lightOn(false) {
+    enabledImage = imageStates->normal;
+    enabledImageWidth = enabledImage.getWidth();
+    enabledImageHeight = enabledImage.getHeight();
+    disabledImage = imageStates->alternate;
+    disabledImageWidth = disabledImage.getWidth();
+    disabledImageHeight = disabledImage.getHeight();
+
     setLightOn(parameter->getScaledValue() > 0.5);
 }
 
@@ -26,11 +33,11 @@ void IndicatorLight::onParameterUpdated(const PluginParameter* parameter) {
 }
 
 void IndicatorLight::paint(juce::Graphics &g) {
-    Image enabledImage = imageStates->normal;
-    Image disabledImage = imageStates->alternate;
-
+    // Always draw the disabled image, since it will serve as the background. The
+    // enabled image will be drawn on top of this with some degree of opacity, so
+    // the light has a subtle fade effect.
     g.drawImage(disabledImage, 0, 0, getWidth(), getHeight(),
-                0, 0, disabledImage.getWidth(), disabledImage.getHeight());
+                0, 0, disabledImageWidth, disabledImageHeight);
 
     if (enabledOpacity > 0.0f) {
         if (enabledOpacity >= 1.0f) {
@@ -41,7 +48,7 @@ void IndicatorLight::paint(juce::Graphics &g) {
         }
         g.setOpacity(enabledOpacity);
         g.drawImage(enabledImage, 0, 0, getWidth(), getHeight(),
-                    0, 0, enabledImage.getWidth(), enabledImage.getHeight());
+                    0, 0, enabledImageWidth, enabledImageHeight);
     }
 }
 

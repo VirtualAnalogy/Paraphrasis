@@ -27,24 +27,27 @@ void ThinButton::clicked() {
     onValueChanged(getToggleState());
 }
 
+bool ThinButton::isParameterEnabled() const {
+    return parameter->getScaledValue() > 0.5;
+}
+
 void ThinButton::onParameterUpdated(const PluginParameter* parameter) {
-    // TODO: Refactor to function
     juce::MessageManagerLock lock;
-    setToggleState(parameter->getScaledValue() > 0.5, NotificationType::dontSendNotification);
+    setToggleState(isParameterEnabled(), NotificationType::dontSendNotification);
 }
 
 void ThinButton::paint(Graphics &g) {
     const Image buttonStateImage = getImageForButtonState();
+    int buttonY = 0;
+    const int buttonHeight = buttonStateImage.getHeight();
+    const int buttonWidth = buttonStateImage.getWidth();
 
-    int buttonY;
-    if(gravity == kGravityTop) {
-        buttonY = 0;
+    if(gravity == kGravityBottom) {
+        buttonY = getHeight() - buttonHeight;
     }
-    else if(gravity == kGravityBottom) {
-        buttonY = getHeight() - buttonStateImage.getHeight();
-    }
-    g.drawImage(buttonStateImage, 0, buttonY, buttonStateImage.getWidth(), buttonStateImage.getHeight(),
-                0, 0, buttonStateImage.getWidth(), buttonStateImage.getHeight());
+
+    g.drawImage(buttonStateImage, 0, buttonY, buttonWidth, buttonHeight,
+                0, 0, buttonWidth, buttonHeight);
 }
 
 } // namespace teragon

@@ -26,6 +26,11 @@ public:
     void onParameterUpdated(const PluginParameter* parameter);
     void valueChanged();
     void paint(Graphics &g);
+
+private:
+    Rectangle<int> knobArea;
+    int knobWidth;
+    double filmstripImageCount;
 };
 
 } // namespace teragon

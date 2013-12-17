@@ -31,6 +31,7 @@ public:
                const ResourceCache *resources, const String &imageName);
 
     void clicked();
+    bool isParameterEnabled() const;
     void onParameterUpdated(const PluginParameter* parameter);
     void paint(Graphics &g);
 
