@@ -70,6 +70,7 @@ private:
     ScopedPointer<teragon::ImageKnobLarge> largeKnob;
     ScopedPointer<teragon::ImageSlider> fader;
     ScopedPointer<teragon::IndicatorLight> indicatorLight;
+    ScopedPointer<teragon::StatusBar> statusBar;
 
 
     //==============================================================================

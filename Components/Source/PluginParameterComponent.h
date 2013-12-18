@@ -7,6 +7,7 @@
 
 #include "../PluginParameters/include/PluginParameters.h"
 #include "ResourceCache.h"
+#include "StatusBar.h"
 
 namespace teragon {
 
@@ -15,7 +16,7 @@ public:
     PluginParameterComponent(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
                              const ResourceCache *resources, const String &imageName) :
     PluginParameterObserver(),
-    parameters(parameters), parameter(NULL), imageStates(NULL) {
+    parameters(parameters), parameter(NULL), imageStates(NULL), statusBar(NULL) {
         Logger *logger = Logger::getCurrentLogger();
 
         parameter = parameters[name];
@@ -54,10 +55,21 @@ public:
         parameters.setScaled(parameter, value, this);
     }
 
+    virtual void setStatusBar(StatusBar *statusBar) {
+        this->statusBar = statusBar;
+    }
+
+    virtual void onMouseOver() {
+        if(statusBar != NULL && parameter != NULL) {
+            statusBar->displayParameter(parameter);
+        }
+    }
+
 protected:
     ThreadsafePluginParameterSet &parameters;
     PluginParameter *parameter;
     ResourceCache::ImageStates *imageStates;
+    StatusBar *statusBar;
 };
 
 } // namespace teragon

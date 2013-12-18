@@ -28,6 +28,8 @@
       <FILE id="RBtnEa" name="ResourceCache.h" compile="0" resource="0" file="../Components/Source/ResourceCache.h"/>
       <FILE id="IU9rC8" name="Resources.cpp" compile="1" resource="0" file="../Components/Source/Resources.cpp"/>
       <FILE id="HKXzJf" name="Resources.h" compile="0" resource="0" file="../Components/Source/Resources.h"/>
+      <FILE id="EAJuWv" name="StatusBar.cpp" compile="1" resource="0" file="../Components/Source/StatusBar.cpp"/>
+      <FILE id="lwAMH3" name="StatusBar.h" compile="0" resource="0" file="../Components/Source/StatusBar.h"/>
       <FILE id="SAKKCm" name="TeragonGuiComponents.h" compile="0" resource="0"
             file="../Components/Source/TeragonGuiComponents.h"/>
       <FILE id="fw50rv" name="ThinButton.cpp" compile="1" resource="0" file="../Components/Source/ThinButton.cpp"/>

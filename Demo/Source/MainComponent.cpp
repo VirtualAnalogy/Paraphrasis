@@ -107,14 +107,20 @@ MainContentComponent::MainContentComponent (teragon::ThreadsafePluginParameterSe
                                                                      resourceCache));
     indicatorLight->setName ("indicator light");
 
+    addAndMakeVisible (statusBar = new teragon::StatusBar (parameters, resourceCache));
+    statusBar->setName ("status bar");
+
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (250, 320);
+    setSize (250, 350);
 
 
     //[Constructor] You can add your own custom stuff here..
+    largeKnob->setStatusBar(statusBar);
+    smallKnob->setStatusBar(statusBar);
+    fader->setStatusBar(statusBar);
     //[/Constructor]
 }
 
@@ -135,6 +141,7 @@ MainContentComponent::~MainContentComponent()
     largeKnob = nullptr;
     fader = nullptr;
     indicatorLight = nullptr;
+    statusBar = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -150,6 +157,9 @@ void MainContentComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     g.fillAll (Colours::black);
+
+    g.setColour (Colour (0xff889c91));
+    g.fillRect (0, 320, 250, 31);
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -169,6 +179,7 @@ void MainContentComponent::resized()
     largeKnob->setBounds (120, 170, 113, 113);
     fader->setBounds (24, 144, 62, 134);
     indicatorLight->setBounds (168, 16, 24, 24);
+    statusBar->setBounds (0, 320, 248, 30);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -192,9 +203,10 @@ BEGIN_JUCER_METADATA
                  parentClasses="public Component" constructorParams="teragon::ThreadsafePluginParameterSet &amp;parameters, teragon::ResourceCache *resourceCache"
                  variableInitialisers="parameters(parameters),&#10;resourceCache(resourceCache)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.660"
-                 fixedSize="1" initialWidth="250" initialHeight="320">
+                 fixedSize="1" initialWidth="250" initialHeight="350">
   <BACKGROUND backgroundColour="ff000000">
     <IMAGE pos="0 0 250 320" resource="" opacity="1" mode="0"/>
+    <RECT pos="0 320 250 31" fill="solid: ff889c91" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="toggle button label" id="38208308bb309b1a" memberName="toggleButtonLabel"
          virtualName="" explicitFocusOrder="0" pos="14 32 96 24" textCol="ffffffff"
@@ -244,6 +256,9 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="indicator light" id="fca1b7e8ed89a244" memberName="indicatorLight"
                     virtualName="teragon::IndicatorLight" explicitFocusOrder="0"
                     pos="168 16 24 24" class="Component" params="parameters, &quot;indicator&quot;,&#10;resourceCache"/>
+  <GENERICCOMPONENT name="status bar" id="dbd473b147a1d658" memberName="statusBar"
+                    virtualName="teragon::StatusBar" explicitFocusOrder="0" pos="0 320 248 30"
+                    class="Component" params="parameters, resourceCache"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -13,6 +13,7 @@
 #include "IndicatorLight.h"
 #include "PushButton.h"
 #include "ResourceCache.h"
+#include "StatusBar.h"
 #include "ThinButton.h"
 #include "ToggleButton.h"
 

@@ -35,6 +35,10 @@ void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {
 }
 
 void ImageSlider::paint(Graphics &g) {
+    if(isMouseOver() && !isMouseButtonDown()) {
+        onMouseOver();
+    }
+
     const int handleX = (getWidth() - handleImage.getWidth()) / 2;
     const int yRange = getHeight() - handleImage.getHeight() / 2;
     // Mysterious logic... o_O Not sure why this handle is so tough to position, even

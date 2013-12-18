@@ -37,6 +37,10 @@ void ImageKnob::valueChanged() {
 }
 
 void ImageKnob::paint(Graphics &g) {
+    if(isMouseOver() && !isMouseButtonDown()) {
+        onMouseOver();
+    }
+
     const int y = (int)(filmstripImageCount * getValue()) * knobWidth;
     knobArea.setY(y);
     const Image knobFrame = imageStates->normal.getClippedImage(knobArea);

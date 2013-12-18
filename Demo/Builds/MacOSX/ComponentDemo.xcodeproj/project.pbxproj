@@ -27,6 +27,7 @@
 		CD194810B9372BB3FFA30B90 /* RecentFilesMenuTemplate.nib in Resources */ = {isa = PBXBuildFile; fileRef = F0B619B9CD4D648AE9CE14E9 /* RecentFilesMenuTemplate.nib */; };
 		E63EFDF52B5C0CD42F4B227B /* Resources.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECC164A79F5220EA662EECBB /* Resources.cpp */; };
 		EE8848FDB8B25A9FCCE0A963 /* Main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D21E59F0C744DF5BF6F6DDE3 /* Main.cpp */; };
+		F6E715845147448846AB61CE /* StatusBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC64C92D515AC5760AE0D98 /* StatusBar.cpp */; };
 		F7931BF8BB17956EECD801F5 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4600A3BECBA9CC8996D028F /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -108,6 +109,7 @@
 		1FEDA1D3B7617B633275E1A0 /* AppConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppConfig.h; path = ../../JuceLibraryCode/AppConfig.h; sourceTree = SOURCE_ROOT; };
 		209D2EC11BD6B7FFA78F90D7 /* juce_RelativePoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_RelativePoint.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/positioning/juce_RelativePoint.cpp; sourceTree = SOURCE_ROOT; };
 		2116985117B4C826EFC2E991 /* juce_TextPropertyComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_TextPropertyComponent.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/properties/juce_TextPropertyComponent.cpp; sourceTree = SOURCE_ROOT; };
+		219A333936DFD70E01B17C77 /* StatusBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = StatusBar.h; path = ../../../Components/Source/StatusBar.h; sourceTree = SOURCE_ROOT; };
 		21DDB07696277A73ACA4D806 /* juce_TabbedComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_TabbedComponent.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/layout/juce_TabbedComponent.h; sourceTree = SOURCE_ROOT; };
 		223757966A5318CB915EACBF /* juce_FileLogger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_FileLogger.cpp; path = ../../JuceLibraryCode/modules/juce_core/logging/juce_FileLogger.cpp; sourceTree = SOURCE_ROOT; };
 		22E6C610C14668B68BF150F6 /* juce_TextButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_TextButton.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/buttons/juce_TextButton.cpp; sourceTree = SOURCE_ROOT; };
@@ -343,6 +345,7 @@
 		7C81487C28FEE9DC426D3E10 /* juce_WindowsRegistry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_WindowsRegistry.h; path = ../../JuceLibraryCode/modules/juce_core/misc/juce_WindowsRegistry.h; sourceTree = SOURCE_ROOT; };
 		7C8A1893A814676593FFF3EF /* juce_gui_extra.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = juce_gui_extra.mm; path = ../../JuceLibraryCode/modules/juce_gui_extra/juce_gui_extra.mm; sourceTree = SOURCE_ROOT; };
 		7CA53673F8DFDEACA5E0A098 /* juce_CPlusPlusCodeTokeniser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_CPlusPlusCodeTokeniser.h; path = ../../JuceLibraryCode/modules/juce_gui_extra/code_editor/juce_CPlusPlusCodeTokeniser.h; sourceTree = SOURCE_ROOT; };
+		7CC64C92D515AC5760AE0D98 /* StatusBar.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = StatusBar.cpp; path = ../../../Components/Source/StatusBar.cpp; sourceTree = SOURCE_ROOT; };
 		7CCCD44191D1182C1637C950 /* juce_TextEditor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_TextEditor.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/widgets/juce_TextEditor.h; sourceTree = SOURCE_ROOT; };
 		7CCF2303DF52307DA952935B /* juce_XmlElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_XmlElement.h; path = ../../JuceLibraryCode/modules/juce_core/xml/juce_XmlElement.h; sourceTree = SOURCE_ROOT; };
 		7D9FCA4E03A184A94D59F6EB /* juce_TargetPlatform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_TargetPlatform.h; path = ../../JuceLibraryCode/modules/juce_core/system/juce_TargetPlatform.h; sourceTree = SOURCE_ROOT; };
@@ -1039,6 +1042,8 @@
 				348CDEF2DA905E4E9C885213 /* ResourceCache.h */,
 				ECC164A79F5220EA662EECBB /* Resources.cpp */,
 				DE8DD477539F89DC5F0FC3CA /* Resources.h */,
+				7CC64C92D515AC5760AE0D98 /* StatusBar.cpp */,
+				219A333936DFD70E01B17C77 /* StatusBar.h */,
 				404081BE69642226115498CC /* TeragonGuiComponents.h */,
 				F9EDD320DFD7F571BDD4B086 /* ThinButton.cpp */,
 				E6D69AE2FD65E0972410D880 /* ThinButton.h */,
@@ -1997,6 +2002,7 @@
 				04BF12BA680DEB2E51B6EB43 /* IndicatorLight.cpp in Sources */,
 				4583F286EE6B1E203925F911 /* ResourceCache.cpp in Sources */,
 				E63EFDF52B5C0CD42F4B227B /* Resources.cpp in Sources */,
+				F6E715845147448846AB61CE /* StatusBar.cpp in Sources */,
 				91EA3C90ABF669477C6C9698 /* ThinButton.cpp in Sources */,
 				B65BCDA84DC54051FBEFA9E8 /* MainComponent.cpp in Sources */,
 				EE8848FDB8B25A9FCCE0A963 /* Main.cpp in Sources */,

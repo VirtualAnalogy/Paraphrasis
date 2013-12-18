@@ -55,6 +55,7 @@ OBJECTS := \
   $(OBJDIR)/IndicatorLight_e0f6b1a6.o \
   $(OBJDIR)/ResourceCache_2f3bdd5f.o \
   $(OBJDIR)/Resources_4cda91f0.o \
+  $(OBJDIR)/StatusBar_8b72fc8c.o \
   $(OBJDIR)/ThinButton_a1e978a.o \
   $(OBJDIR)/MainComponent_a6ffb4a5.o \
   $(OBJDIR)/Main_90ebc5c2.o \
@@ -112,6 +113,11 @@ $(OBJDIR)/ResourceCache_2f3bdd5f.o: ../../../Components/Source/ResourceCache.cpp
 $(OBJDIR)/Resources_4cda91f0.o: ../../../Components/Source/Resources.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling Resources.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+
+$(OBJDIR)/StatusBar_8b72fc8c.o: ../../../Components/Source/StatusBar.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling StatusBar.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 $(OBJDIR)/ThinButton_a1e978a.o: ../../../Components/Source/ThinButton.cpp
