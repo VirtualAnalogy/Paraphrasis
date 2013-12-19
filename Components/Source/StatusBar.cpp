@@ -67,7 +67,22 @@ void StatusBar::onParameterUpdated(const PluginParameter *parameter) {
 }
 
 void StatusBar::displayParameter(const PluginParameter *parameter) {
-    parameterNameLabel.setText(parameter->getName(), NotificationType::dontSendNotification);
+    String string = parameter->getName();
+    // TODO: Move to subclass of label, along with some of the font attributes above
+    const Font font = parameterNameLabel.getFont();
+    const int maxWidth = getWidth();
+    float renderedTextWidth = font.getStringWidthFloat(string);
+    int truncateAtIndex = string.length();
+    while(renderedTextWidth >= maxWidth) {
+        String truncatedString(string.substring(0, --truncateAtIndex));
+        truncatedString += "…";
+        renderedTextWidth = font.getStringWidthFloat(truncatedString);
+        if(renderedTextWidth < maxWidth) {
+            string = truncatedString;
+            break;
+        }
+    }
+    parameterNameLabel.setText(string, NotificationType::dontSendNotification);
     parameterValueLabel.setText(parameter->getDisplayText(), NotificationType::dontSendNotification);
 
     labelOpacity = 1.0f;
