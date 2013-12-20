@@ -31,7 +31,7 @@ IndicatorLight::IndicatorLight(ThreadsafePluginParameterSet &parameters, const P
                                const ResourceCache *resources) :
 Component(String::empty),
 PluginParameterComponent(parameters, name, resources, "indicator_light"),
-lightOn(false) {
+lightOn(false), pulse(false) {
     enabledImage = imageStates->normal;
     enabledImageWidth = enabledImage.getWidth();
     enabledImageHeight = enabledImage.getHeight();
@@ -44,7 +44,14 @@ lightOn(false) {
 
 void IndicatorLight::onParameterUpdated(const PluginParameter* parameter) {
     juce::MessageManagerLock lock;
-    setLightOn(parameter->getScaledValue() > 0.5);
+
+    // For VoidParameter, we simply pulse the light
+    if(dynamic_cast<const VoidParameter*>(parameter) != nullptr) {
+        setLightOn(true, true);
+    }
+    else {
+        setLightOn(parameter->getScaledValue() > 0.5);
+    }
 }
 
 void IndicatorLight::paint(juce::Graphics &g) {
@@ -71,6 +78,9 @@ void IndicatorLight::timerCallback() {
     enabledOpacity += stepRate;
     if (enabledOpacity >= 1.0f) {
         stopTimer();
+        if(pulse) {
+            setLightOn(false);
+        }
     }
     else if (enabledOpacity <= 0.0f) {
         stopTimer();
@@ -78,11 +88,12 @@ void IndicatorLight::timerCallback() {
     repaint();
 }
 
-void IndicatorLight::setLightOn(bool lightOn) {
+void IndicatorLight::setLightOn(bool lightOn, bool pulse) {
     if (this->lightOn != lightOn) {
         this->lightOn = lightOn;
         this->enabledOpacity = lightOn ? 0.0f : 1.0f;
         this->stepRate = (lightOn ? 1.0f : -1.0f) * 0.325f;
+        this->pulse = pulse;
         startTimer(33); // ~30fps
     }
 }

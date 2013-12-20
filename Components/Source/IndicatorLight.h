@@ -41,7 +41,7 @@ public:
     void onParameterUpdated(const PluginParameter* parameter);
     void paint(Graphics &g);
     void timerCallback();
-    void setLightOn(bool lightOn);
+    void setLightOn(bool lightOn, bool pulse = false);
 
 private:
     Image enabledImage;
@@ -54,6 +54,7 @@ private:
     bool lightOn;
     float enabledOpacity;
     float stepRate;
+    bool pulse;
 };
 
 } // namespace teragon
