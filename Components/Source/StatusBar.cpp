@@ -16,7 +16,7 @@ namespace teragon {
 StatusBar::StatusBar(ThreadsafePluginParameterSet &parameters, const ResourceCache *resources) :
 juce::Component(),
 PluginParameterObserver(),
-parameters(parameters) {
+parameters(parameters), labelOpacity(1.0), clearTimeout(0) {
     addAndMakeVisible(&parameterNameLabel);
     addAndMakeVisible(&parameterValueLabel);
 
@@ -67,26 +67,11 @@ void StatusBar::onParameterUpdated(const PluginParameter *parameter) {
 }
 
 void StatusBar::displayParameter(const PluginParameter *parameter) {
-    String string = parameter->getName();
-    // TODO: Move to subclass of label, along with some of the font attributes above
-    const Font font = parameterNameLabel.getFont();
-    const int maxWidth = getWidth();
-    float renderedTextWidth = font.getStringWidthFloat(string);
-    int truncateAtIndex = string.length();
-    while(renderedTextWidth >= maxWidth) {
-        String truncatedString(string.substring(0, --truncateAtIndex));
-        truncatedString += "…";
-        renderedTextWidth = font.getStringWidthFloat(truncatedString);
-        if(renderedTextWidth < maxWidth) {
-            string = truncatedString;
-            break;
-        }
-    }
-    parameterNameLabel.setText(string, NotificationType::dontSendNotification);
-    parameterValueLabel.setText(parameter->getDisplayText(), NotificationType::dontSendNotification);
+    parameterNameLabel.setText("aoeu aoeu aoeu aoeu aoeu aoeu aoeu ht sq");
+    parameterValueLabel.setText(parameter->getDisplayText());
 
     labelOpacity = 1.0f;
-    clearTimeout = kClearTimeoutInMs / 30;
+    clearTimeout = kClearTimeoutInMs / 30; // ~30fps
     if (!isTimerRunning()) {
         startTimer(33); // ~30fps
     }
@@ -107,8 +92,8 @@ void StatusBar::timerCallback() {
     }
     // Fadeout finished, hide the text and stop the timer
     else {
-        parameterNameLabel.setText(String::empty, NotificationType::dontSendNotification);
-        parameterValueLabel.setText(String::empty, NotificationType::dontSendNotification);
+        parameterNameLabel.setText(String::empty);
+        parameterValueLabel.setText(String::empty);
         stopTimer();
     }
 }

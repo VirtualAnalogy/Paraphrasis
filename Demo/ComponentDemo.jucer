@@ -8,6 +8,8 @@
       <FILE id="f51QW9" name="tinythread.cpp" compile="1" resource="0" file="../Components/PluginParameters/include/tinythread/source/tinythread.cpp"/>
     </GROUP>
     <GROUP id="{08B3F7AA-BD19-0DE8-C8BE-79CDEB3F6DE5}" name="Components">
+      <FILE id="ciwnsS" name="EllipsizedLabel.h" compile="0" resource="0"
+            file="../Components/Source/EllipsizedLabel.h"/>
       <FILE id="SezmTl" name="ImageKnob.cpp" compile="1" resource="0" file="../Components/Source/ImageKnob.cpp"/>
       <FILE id="VsoKTl" name="ImageKnob.h" compile="0" resource="0" file="../Components/Source/ImageKnob.h"/>
       <FILE id="qWa2F4" name="ImageKnobLarge.h" compile="0" resource="0"

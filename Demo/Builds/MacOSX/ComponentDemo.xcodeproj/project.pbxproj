@@ -128,6 +128,7 @@
 		288C84686B6BD31F28ABA1D8 /* juce_Component.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_Component.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/components/juce_Component.cpp; sourceTree = SOURCE_ROOT; };
 		28A78A761EF688A026D9F744 /* juce_Result.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_Result.cpp; path = ../../JuceLibraryCode/modules/juce_core/misc/juce_Result.cpp; sourceTree = SOURCE_ROOT; };
 		28BEDCF944673CF9776EBA49 /* juce_data_structures.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = juce_data_structures.mm; path = ../../JuceLibraryCode/modules/juce_data_structures/juce_data_structures.mm; sourceTree = SOURCE_ROOT; };
+		28F30776762A7364DF128E61 /* EllipsizedLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EllipsizedLabel.h; path = ../../../Components/Source/EllipsizedLabel.h; sourceTree = SOURCE_ROOT; };
 		29A94558BBA8F0A875906BBC /* juce_JPEGLoader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_JPEGLoader.cpp; path = ../../JuceLibraryCode/modules/juce_graphics/image_formats/juce_JPEGLoader.cpp; sourceTree = SOURCE_ROOT; };
 		29AF921290187B5E003CBBDD /* juce_StringArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_StringArray.h; path = ../../JuceLibraryCode/modules/juce_core/text/juce_StringArray.h; sourceTree = SOURCE_ROOT; };
 		29C8C1D571590E4DD70BBA80 /* juce_InterprocessConnectionServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_InterprocessConnectionServer.cpp; path = ../../JuceLibraryCode/modules/juce_events/interprocess/juce_InterprocessConnectionServer.cpp; sourceTree = SOURCE_ROOT; };
@@ -1028,6 +1029,7 @@
 		3DC1A1D46CABAF1D2557431A /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				28F30776762A7364DF128E61 /* EllipsizedLabel.h */,
 				0CFEE565534880B17A286A33 /* ImageKnob.cpp */,
 				96BD67972A4E2FB6082ADC6B /* ImageKnob.h */,
 				4734C9D903633603B25268B1 /* ImageKnobLarge.h */,

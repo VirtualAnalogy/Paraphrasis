@@ -12,6 +12,7 @@
 #define STATUSBAR_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "EllipsizedLabel.h"
 #include "ResourceCache.h"
 #include "../PluginParameters/include/ThreadsafePluginParameterSet.h"
 
@@ -40,13 +41,13 @@ protected:
 private:
     void configureLabelProperties(Label &label);
 
-    // TODO: Replace with BitmapFont when ready
-    juce::Label parameterNameLabel;
-    juce::Label parameterValueLabel;
-    float labelOpacity;
-    float clearTimeout;
+    EllipsizedLabel parameterNameLabel;
+    EllipsizedLabel parameterValueLabel;
 
     ThreadsafePluginParameterSet &parameters;
+
+    float labelOpacity;
+    float clearTimeout;
 };
 
 } // namespace teragon
