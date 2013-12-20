@@ -39,12 +39,12 @@ PluginParameterComponent(parameters, name, resources, imageName) {
     knobArea.setHeight(knobWidth);
 
     setRange(0.0, 1.0);
-    setValue(parameter->getScaledValue());
+    setValue(parameter->getScaledValue(), NotificationType::dontSendNotification);
 }
 
 void ImageKnob::onParameterUpdated(const PluginParameter* parameter) {
     juce::MessageManagerLock lock;
-    setValue(parameter->getScaledValue());
+    setValue(parameter->getScaledValue(), NotificationType::dontSendNotification);
 }
 
 void ImageKnob::valueChanged() {

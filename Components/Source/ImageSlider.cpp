@@ -37,7 +37,7 @@ PluginParameterComponent(parameters, name, resources, "slider") {
     offset = handleImage.getHeight() / 4 + 1;
 
     setRange(0.0, 1.0);
-    setValue(parameter->getValue());
+    setValue(parameter->getScaledValue(), NotificationType::dontSendNotification);
 }
 
 void ImageSlider::valueChanged() {
@@ -46,7 +46,7 @@ void ImageSlider::valueChanged() {
 
 void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {
     juce::MessageManagerLock lock;
-    setValue(parameter->getScaledValue());
+    setValue(parameter->getScaledValue(), NotificationType::dontSendNotification);
 }
 
 void ImageSlider::paint(Graphics &g) {
