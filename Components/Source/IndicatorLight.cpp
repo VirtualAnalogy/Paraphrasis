@@ -23,6 +23,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "AnimationConstants.h"
 #include "IndicatorLight.h"
 
 namespace teragon {
@@ -77,9 +78,13 @@ void IndicatorLight::paint(juce::Graphics &g) {
 void IndicatorLight::timerCallback() {
     enabledOpacity += stepRate;
     if (enabledOpacity >= 1.0f) {
-        stopTimer();
         if(pulse) {
-            setLightOn(false);
+            if(pulseHoldFrames-- <= 0) {
+                setLightOn(false);
+            }
+        }
+        else {
+            stopTimer();
         }
     }
     else if (enabledOpacity <= 0.0f) {
@@ -92,9 +97,12 @@ void IndicatorLight::setLightOn(bool lightOn, bool pulse) {
     if (this->lightOn != lightOn) {
         this->lightOn = lightOn;
         this->enabledOpacity = lightOn ? 0.0f : 1.0f;
-        this->stepRate = (lightOn ? 1.0f : -1.0f) * 0.325f;
+        this->stepRate = (lightOn ? 1.0f : -1.0f) * kFadeDurationStepRate;
         this->pulse = pulse;
-        startTimer(33); // ~30fps
+        if(pulse) {
+            pulseHoldFrames = (int)(kFadeDurationInMs / kAnimationFrameRate);
+        }
+        startTimer(kAnimationTimerRateInMs);
     }
 }
 

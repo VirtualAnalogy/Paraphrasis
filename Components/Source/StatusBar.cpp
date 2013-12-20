@@ -25,6 +25,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "StatusBar.h"
 #include "PluginParameterComponent.h"
+#include "AnimationConstants.h"
 
 namespace teragon {
 
@@ -72,10 +73,6 @@ StatusBar::~StatusBar() {
     }
 }
 
-bool StatusBar::isRealtimePriority() const {
-    return false;
-}
-
 void StatusBar::onParameterUpdated(const PluginParameter *parameter) {
     juce::MessageManagerLock lock;
     displayParameter(parameter);
@@ -86,9 +83,9 @@ void StatusBar::displayParameter(const PluginParameter *parameter) {
     parameterValueLabel.setText(parameter->getDisplayText());
 
     labelOpacity = 1.0f;
-    clearTimeout = kClearTimeoutInMs / 30; // ~30fps
+    clearTimeout = kClearTimeoutInMs / kAnimationFrameRate;
     if (!isTimerRunning()) {
-        startTimer(33); // ~30fps
+        startTimer(kAnimationTimerRateInMs);
     }
 }
 
@@ -101,7 +98,7 @@ void StatusBar::timerCallback() {
     }
     // Fadeout has started
     else if(labelOpacity > 0.0f) {
-        labelOpacity -= kFadeStepRate;
+        labelOpacity -= kFadeDurationStepRate;
         parameterNameLabel.setAlpha(labelOpacity);
         parameterValueLabel.setAlpha(labelOpacity);
     }

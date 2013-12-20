@@ -24,6 +24,7 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "PushButton.h"
+#include "AnimationConstants.h"
 
 namespace teragon {
 
@@ -40,8 +41,8 @@ ThinButton(parameters, name, resources, "push_button") {
 void PushButton::clicked() {
     ThinButton::clicked();
     enabledOpacity = getToggleState() ? 0.0f : 1.0f;
-    stepRate = (getToggleState() ? 1.0f : -1.0f) * 0.325f;
-    startTimer(33); // ~30fps
+    stepRate = (getToggleState() ? 1.0f : -1.0f) * kFadeDurationStepRate;
+    startTimer(kAnimationTimerRateInMs);
 }
 
 void PushButton::paint(Graphics &g) {

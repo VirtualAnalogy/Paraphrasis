@@ -592,6 +592,7 @@
 		D7AC752A6748BC3FC0590AB4 /* juce_RelativeCoordinate.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_RelativeCoordinate.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/positioning/juce_RelativeCoordinate.cpp; sourceTree = SOURCE_ROOT; };
 		D8CC570D8E95123DAEADABC6 /* juce_PropertyPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_PropertyPanel.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/properties/juce_PropertyPanel.cpp; sourceTree = SOURCE_ROOT; };
 		D8DABFF2704E776626CBDF84 /* juce_KeyMappingEditorComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_KeyMappingEditorComponent.h; path = ../../JuceLibraryCode/modules/juce_gui_extra/misc/juce_KeyMappingEditorComponent.h; sourceTree = SOURCE_ROOT; };
+		D8DC0DBBE93E8EB62254278B /* AnimationConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnimationConstants.h; path = ../../../Components/Source/AnimationConstants.h; sourceTree = SOURCE_ROOT; };
 		D8EA1E0BA80ACEF6A4EF8434 /* juce_ModalComponentManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_ModalComponentManager.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/components/juce_ModalComponentManager.cpp; sourceTree = SOURCE_ROOT; };
 		D8F2A6284073909FB45ED978 /* juce_FileDragAndDropTarget.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_FileDragAndDropTarget.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/mouse/juce_FileDragAndDropTarget.h; sourceTree = SOURCE_ROOT; };
 		D912D181252026DEAC5A7630 /* juce_Value.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_Value.cpp; path = ../../JuceLibraryCode/modules/juce_data_structures/values/juce_Value.cpp; sourceTree = SOURCE_ROOT; };
@@ -1031,6 +1032,7 @@
 		3DC1A1D46CABAF1D2557431A /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				D8DC0DBBE93E8EB62254278B /* AnimationConstants.h */,
 				28F30776762A7364DF128E61 /* EllipsizedLabel.h */,
 				0CFEE565534880B17A286A33 /* ImageKnob.cpp */,
 				96BD67972A4E2FB6082ADC6B /* ImageKnob.h */,

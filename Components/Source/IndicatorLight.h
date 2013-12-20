@@ -55,6 +55,7 @@ private:
     float enabledOpacity;
     float stepRate;
     bool pulse;
+    int pulseHoldFrames;
 };
 
 } // namespace teragon

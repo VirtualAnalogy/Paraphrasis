@@ -23,48 +23,34 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef STATUSBAR_H_INCLUDED
-#define STATUSBAR_H_INCLUDED
-
-#include "JuceHeader.h"
-#include "EllipsizedLabel.h"
-#include "ResourceCache.h"
-#include "../PluginParameters/include/ThreadsafePluginParameterSet.h"
+#ifndef ANIMATIONCONSTANTS_H_INCLUDED
+#define ANIMATIONCONSTANTS_H_INCLUDED
 
 namespace teragon {
 
-class StatusBar : public juce::Component, public juce::Timer, public PluginParameterObserver {
-public:
-    StatusBar(ThreadsafePluginParameterSet &parameters, const ResourceCache *resources);
-    virtual ~StatusBar();
+/**
+* Framerate for animations, in frames per second.
+*/
+static const float kAnimationFrameRate = 30.0f;
 
-    virtual void resized() override;
+/**
+* Used for scheduling timers, so this constant is how many milliseconds a
+* frame is shown for.
+*/
+static const int kAnimationTimerRateInMs = (int)((1.0f / kAnimationFrameRate) * 1000.0f);
 
-    virtual void subscribeToParameters();
-    virtual bool isRealtimePriority() const { return false; }
-    virtual void onParameterUpdated(const PluginParameter *parameter);
+/**
+* Length of fade animations, in milliseconds.
+* TODO: Separate durations for fade in/out
+*/
+static const float kFadeDurationInMs = 100.0f;
 
-    virtual void displayParameter(const PluginParameter *parameter);
-    virtual void timerCallback();
+/**
+* Fade animations modulate the opacity from 0.0 -> 1.0 (or backwards), this
+* constant controls how much to change this value per frame.
+*/
+static const float kFadeDurationStepRate = 1.0f / (kFadeDurationInMs / kAnimationTimerRateInMs);
 
-protected:
-    static const int kClearTimeoutInMs = 1500;
-    // Number of pixels between top and bottom label
-    static const int kPadding = 4;
-    static const int kFontSize = 13;
+}
 
-private:
-    void configureLabelProperties(Label &label);
-
-    EllipsizedLabel parameterNameLabel;
-    EllipsizedLabel parameterValueLabel;
-
-    ThreadsafePluginParameterSet &parameters;
-
-    float labelOpacity;
-    float clearTimeout;
-};
-
-} // namespace teragon
-
-#endif  // STATUSBAR_H_INCLUDED
+#endif  // ANIMATIONCONSTANTS_H_INCLUDED
