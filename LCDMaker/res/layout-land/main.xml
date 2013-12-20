@@ -14,51 +14,15 @@
         android:layout_height="120px"
         android:background="@drawable/lcd" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp"
-        android:gravity="center_horizontal">
-
-        <Button
-            android:id="@+id/lcd_big_width"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_text_set_width" />
-
-        <Button
-            android:id="@+id/lcd_big_height"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_text_set_height" />
-    </LinearLayout>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"/>
 
     <!--suppress AndroidLintPxUsage -->
     <View
         android:id="@+id/lcd_small"
-        android:layout_width="wrap_content"
+        android:layout_width="1000px"
         android:layout_height="70px"
         android:background="@drawable/lcd_singleline" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp"
-        android:gravity="center_horizontal">
-
-        <Button
-            android:id="@+id/lcd_small_width"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_text_set_width" />
-
-        <Button
-            android:id="@+id/lcd_small_height"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_text_set_height" />
-    </LinearLayout>
 
 </LinearLayout>

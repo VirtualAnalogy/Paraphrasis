@@ -37,8 +37,8 @@
     <!--suppress AndroidLintPxUsage -->
     <View
         android:id="@+id/lcd_small"
-        android:layout_width="310px"
-        android:layout_height="30px"
+        android:layout_width="1000px"
+        android:layout_height="70px"
         android:background="@drawable/lcd_singleline" />
 
     <LinearLayout
