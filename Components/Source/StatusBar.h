@@ -42,6 +42,7 @@ public:
 
     virtual void resized() override;
 
+    virtual void subscribeToParameters();
     virtual bool isRealtimePriority() const;
     virtual void onParameterUpdated(const PluginParameter *parameter);
 

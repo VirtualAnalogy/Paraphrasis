@@ -34,9 +34,24 @@ PluginParameterObserver(),
 parameters(parameters), labelOpacity(1.0), clearTimeout(0) {
     addAndMakeVisible(&parameterNameLabel);
     addAndMakeVisible(&parameterValueLabel);
+}
 
+void StatusBar::subscribeToParameters() {
     for(int i = 0; i < parameters.size(); ++i) {
-        parameters[i]->addObserver(this);
+        PluginParameter *parameter = parameters[i];
+        // Don't show void parameters, as these are used mainly for sending messages
+        if(dynamic_cast<const VoidParameter*>(parameter) == nullptr) {
+            // Only update the parameter if it has at least one other component listening to it. Otherwise
+            // we risk showing a bunch of internal parameters which we may not want to expose.
+            for(unsigned int j = 0; j < parameter->getNumObservers(); ++j) {
+                PluginParameterObserver *observer = parameter->getObserver(j);
+                PluginParameterComponent *component = dynamic_cast<PluginParameterComponent*>(observer);
+                if(observer != this && component != nullptr) {
+                    parameter->addObserver(this);
+                    component->setStatusObserver(this);
+                }
+            }
+        }
     }
 }
 
@@ -66,23 +81,11 @@ bool StatusBar::isRealtimePriority() const {
 
 void StatusBar::onParameterUpdated(const PluginParameter *parameter) {
     juce::MessageManagerLock lock;
-
-    // Don't bother showing boolean parameters, toggle buttons change their state too quickly
-    // and push buttons are rather obvious.
-    if(dynamic_cast<const BooleanParameter*>(parameter) == nullptr) {
-        // Only update the parameter if it has at least one other component listening to it. Otherwise
-        // we risk showing a bunch of internal parameters which we may not want to expose.
-        for(unsigned int i = 0; i < parameter->getNumObservers(); ++i) {
-            PluginParameterObserver *observer = parameter->getObserver(i);
-            if(observer != this && dynamic_cast<PluginParameterComponent*>(observer) != nullptr) {
-                displayParameter(parameter);
-            }
-        }
-    }
+    displayParameter(parameter);
 }
 
 void StatusBar::displayParameter(const PluginParameter *parameter) {
-    parameterNameLabel.setText("aoeu aoeu aoeu aoeu aoeu aoeu aoeu ht sq");
+    parameterNameLabel.setText(parameter->getName());
     parameterValueLabel.setText(parameter->getDisplayText());
 
     labelOpacity = 1.0f;

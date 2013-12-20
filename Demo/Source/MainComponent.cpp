@@ -137,15 +137,13 @@ MainContentComponent::MainContentComponent (teragon::ThreadsafePluginParameterSe
 
 
     //[UserPreSize]
+    statusBar->subscribeToParameters();
     //[/UserPreSize]
 
     setSize (250, 350);
 
 
     //[Constructor] You can add your own custom stuff here..
-    largeKnob->setStatusBar(statusBar);
-    smallKnob->setStatusBar(statusBar);
-    fader->setStatusBar(statusBar);
     //[/Constructor]
 }
 

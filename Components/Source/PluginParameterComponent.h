@@ -32,7 +32,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "../PluginParameters/include/PluginParameters.h"
 #include "ResourceCache.h"
-#include "StatusBar.h"
 
 namespace teragon {
 
@@ -41,11 +40,11 @@ public:
     PluginParameterComponent(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
                              const ResourceCache *resources, const String &imageName) :
     PluginParameterObserver(),
-    parameters(parameters), parameter(NULL), imageStates(NULL), statusBar(NULL) {
+    parameters(parameters), parameter(nullptr), imageStates(nullptr), observer(nullptr) {
         Logger *logger = Logger::getCurrentLogger();
 
         parameter = parameters[name];
-        if (parameter == NULL) {
+        if(parameter == nullptr) {
             String message = "Could not bind component to parameter: ";
             message += name.c_str();
             logger->writeToLog(message);
@@ -53,12 +52,12 @@ public:
         }
         parameter->addObserver(this);
 
-        if (resources == NULL) {
+        if(resources == nullptr) {
             logger->writeToLog("Could not initialize component with NULL ResourceCache");
             return;
         }
         imageStates = resources->get(imageName);
-        if (imageStates == NULL) {
+        if(imageStates == nullptr) {
             String message = "Could not find image resource for component: ";
             message += imageName;
             logger->writeToLog(message);
@@ -67,8 +66,11 @@ public:
     }
 
     virtual ~PluginParameterComponent() {
-        if (parameter != NULL) {
+        if(parameter != nullptr) {
             parameter->removeObserver(this);
+            if(observer != nullptr) {
+                parameter->removeObserver(observer);
+            }
         }
     }
 
@@ -80,13 +82,13 @@ public:
         parameters.setScaled(parameter, value, this);
     }
 
-    virtual void setStatusBar(StatusBar *statusBar) {
-        this->statusBar = statusBar;
+    virtual void setStatusObserver(PluginParameterObserver *observer) {
+        this->observer = observer;
     }
 
     virtual void onMouseOver() {
-        if(statusBar != NULL && parameter != NULL) {
-            statusBar->displayParameter(parameter);
+        if(observer != nullptr) {
+            observer->onParameterUpdated(parameter);
         }
     }
 
@@ -94,7 +96,7 @@ protected:
     ThreadsafePluginParameterSet &parameters;
     PluginParameter *parameter;
     ResourceCache::ImageStates *imageStates;
-    StatusBar *statusBar;
+    PluginParameterObserver *observer;
 };
 
 } // namespace teragon
