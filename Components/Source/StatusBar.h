@@ -53,6 +53,7 @@ protected:
     static const int kClearTimeoutInMs = 1500;
     // Number of pixels between top and bottom label
     static const int kPadding = 4;
+    static const int kFontSize = 13;
 
 private:
     void configureLabelProperties(Label &label);

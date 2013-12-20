@@ -38,9 +38,9 @@ public:
               const ResourceCache *resources, const String &imageName);
     virtual ~ImageKnob() {}
 
-    void onParameterUpdated(const PluginParameter* parameter);
-    void valueChanged();
-    void paint(Graphics &g);
+    virtual void onParameterUpdated(const PluginParameter* parameter);
+    virtual void valueChanged();
+    virtual void paint(Graphics &g);
 
 private:
     Rectangle<int> knobArea;

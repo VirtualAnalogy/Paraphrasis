@@ -24,7 +24,6 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "ImageSlider.h"
-#include "PluginParameterComponent.h"
 
 namespace teragon {
 

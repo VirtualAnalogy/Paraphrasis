@@ -66,7 +66,7 @@ void StatusBar::resized() {
 
 void StatusBar::configureLabelProperties(Label &label) {
     label.setColour(Label::textColourId, Colours::black);
-    label.setFont(Font(Font::getDefaultMonospacedFontName(), 12, Font::plain));
+    label.setFont(Font(Font::getDefaultMonospacedFontName(), kFontSize, Font::plain));
 }
 
 StatusBar::~StatusBar() {
