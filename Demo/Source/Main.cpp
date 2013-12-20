@@ -44,10 +44,12 @@ public:
     //==============================================================================
     void initialise (const String& commandLine)
     {
-        parameters.add(new FloatParameter("knob", 0, 100, 20));
-        parameters.add(new FloatParameter("slider", 0, 100, 0));
-        parameters.add(new BooleanParameter("indicator", true));
-        parameters.add(new BooleanParameter("button"));
+        parameters.add(new FloatParameter("Float", 0, 100, 50));
+        parameters.add(new IntegerParameter("Integer", 0, 100, 50));
+        parameters.add(new DecibelParameter("Volume", -60, 6, 0));
+        parameters.add(new FrequencyParameter("Frequency", 100, 20000, 700));
+        parameters.add(new VoidParameter("Toggle Button"));
+        parameters.add(new BooleanParameter("Push Button"));
         mainWindow = new MainWindow(parameters);
         startTimer(33); // ~30fps
     }
