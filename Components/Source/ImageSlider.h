@@ -32,6 +32,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* A vertical fader widget, which contains a background well and a handle
+* image. A horizontal variant of this widget is not provided, because this
+* control type is rarely used (with crossfaders being the notable exception).
+*/
 class ImageSlider : public juce::Slider, public PluginParameterComponent {
 public:
     ImageSlider(ThreadsafePluginParameterSet &parameters, const ParameterString &name,

@@ -30,6 +30,17 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* This class provides storage for image resources. In order to make editing
+* plugins efficient in Introjucer, all graphics are saved as resources in
+* the Resources class and cached here. Each image can have three states:
+* normal, alternate, and background.
+*
+* Usually you want to create a ResourceCache with the Resources::getCache()
+* method, and passing the associated pointer to the GUI Component. Note that
+* you must delete the ResourceCache created from this call when the GUI
+* is destructed or closed, otherwise memory will be leaked.
+*/
 class ResourceCache {
 public:
     class ImageStates {

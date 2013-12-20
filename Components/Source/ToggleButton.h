@@ -30,6 +30,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* A toggle button widget which does not show a current state. This is mostly
+* useful for triggering actions, such as save, open, etc. Although this
+* component does not require a given parameter type, it is most useful when
+* bound to a VoidParameter, which can act as a basic message passing system
+* between the GUI and core of an application.
+*/
 class ToggleButton : public ThinButton {
 public:
     ToggleButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,

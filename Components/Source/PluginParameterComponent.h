@@ -35,6 +35,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* Base class for all TeragonGuiComponents widgets. Basically handles the
+* process of observing a parameter and sending updates to that parameter
+* on an associated ThreadsafePluginParameterSet.
+*/
 class PluginParameterComponent : public PluginParameterObserver {
 public:
     PluginParameterComponent(ThreadsafePluginParameterSet &parameters, const ParameterString &name,

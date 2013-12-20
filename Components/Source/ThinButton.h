@@ -32,6 +32,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* Base class for buttons. See the ToggleButton and PushButton subclasses
+* for further information.
+*/
 class ThinButton : public juce::ImageButton, public PluginParameterComponent {
 public:
     typedef enum {

@@ -30,8 +30,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* Large knob widget. See the ImageKnob class for further documentation.
+*/
 class ImageKnobLarge : public ImageKnob {
-
 public:
     ImageKnobLarge(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
                    const ResourceCache *resources) :

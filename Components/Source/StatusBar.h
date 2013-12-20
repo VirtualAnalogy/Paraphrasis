@@ -33,6 +33,22 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* Provides a two-line status window for displaying parameter information.
+* To use this widget, you must call subscribeToParameters() after all other
+* GUI widgets have been constructed. That method will iterate over all
+* parameters in the ThreadsafePluginParameterSet, finding those which have
+* at least one TeragonGuiComponent registered as an observer. Any updates
+* on those parameters will be automatically displayed in this component.
+*
+* This widget is necessary because of the minimalist style of the other GUI
+* widgets. Rather than cluttering up the entire UI with unit labels, or
+* using tooltips to display plugin values, this component is used instead.
+*
+* For components which can receive mouse-over events, this widget will
+* register itself as an observer there as well so that the current parameter
+* value can be shown without having to alter the value.
+*/
 class StatusBar : public juce::Component, public juce::Timer, public PluginParameterObserver {
 public:
     StatusBar(ThreadsafePluginParameterSet &parameters, const ResourceCache *resources);

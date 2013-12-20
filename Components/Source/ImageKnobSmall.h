@@ -30,8 +30,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* Small knob widget. See the ImageKnob class for further documentation.
+*/
 class ImageKnobSmall : public ImageKnob {
-
 public:
     ImageKnobSmall(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
                    const ResourceCache *resources) :

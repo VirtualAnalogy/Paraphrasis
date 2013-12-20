@@ -30,6 +30,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* Widget for a state button, which can be either turned on or off. This
+* widget makes most sense to associate with BooleanParameters, but it can
+* be used for any numerical parameter.
+*/
 class PushButton : public ThinButton, public Timer {
 public:
     PushButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,

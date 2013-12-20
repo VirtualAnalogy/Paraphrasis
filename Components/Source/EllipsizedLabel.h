@@ -30,6 +30,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* This class is a simple subclass of the Juce Label class, with the only
+* difference being that it ellipsizes long text (ie, adding "…" to the end
+* of long strings which must be truncated. Juce also ellipsizes, but it
+* first tries to compact the text by decreasing the width, which looks
+* quite bad. Also, Juce does not use the UTF-8 ellipsis character, instead
+* using "...", which takes up much more space.
+*/
 class EllipsizedLabel : public juce::Label {
 public:
     EllipsizedLabel() : Label() {}

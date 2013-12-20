@@ -32,6 +32,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
+/**
+* A small light which can be lit up when the associated parameter is enabled.
+* If the parameter is a VoidParameter, then the light will pulse by briefly
+* lighting up and then dimming out. This can be very useful for showing tempo
+* or other timed events.
+*/
 class IndicatorLight : public Component, public Timer, public PluginParameterComponent {
 public:
     IndicatorLight(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
