@@ -1,6 +1,14 @@
 TeragonGuiComponents
 ====================
 
+TeragonGuiComponents is a set of widgets designed for use in audio software.
+The graphics were done by [Max Rudberg][5] and are licensed under the Creative
+Commons License (see the LICENSE-GRAPHICS.txt file for more details). This
+project also includes a few classes for use in VST plugins with Juce.
+
+Should you wish to reuse the graphics, please give proper attribution to both
+[Max Rudberg][5] and [Teragon Audio][6].
+
 
 Setting up TeragonGuiComponents in a Project
 --------------------------------------------
@@ -12,6 +20,12 @@ storing parameter data in some other format and don't feel comfortable
 migrating to PluginParameters, then you can at least mirror the data in a
 PluginParameters set and observe parameter changes to synchronize the set with
 your preferred data storage container.
+
+Please note that PluginParameters must be built in multithreaded mode,
+otherwise parameter updates will be delivered from the audio thread. See the
+README of the PluginParameters project for more details. Also be sure to look
+at the source code of the demo project which demonstrates usage of
+PluginParameters with the GUI components.
 
 TeragonGuiComponents also is built on [Juce][2], though it is certainly
 possible to use the graphics with VSTGUI (or other GUI toolkits). While use of
@@ -33,13 +47,13 @@ search paths in your project.
 The editor class will need to take a few additional constructor parameters:
 
 * `AudioProcessor*` (which is actually needed in all Juce plugin GUIs)
-* `teragon::PluginParameterSet`
+* `teragon::ThreadsafePluginParameterSet&`
 * `teragon::ResourceCache*`
 
 The `TeragonGuiComponents.h` header file must therefore be included in the
 editor's header.
 
-And correspondingly, the plugin processor should pass up a reference to its
+Correspondingly, the plugin processor should pass up a reference to its
 parameter set and a new resource cache made with `Resources::getCache()` (this
 will require including `Resources.h` from the file where `getCache()` is
 called since this rather long header is not part of `TeragonGuiComponents.h`).
@@ -59,25 +73,22 @@ Adding Components
 Within the Juce GUI editor, you'll be adding a bunch of Generic Components
 rather than Juce's own knobs, sliders and buttons. The classes for the
 components must be given in the virtual class section (you can leave the class
-as `Component`) of the editor's right-hand panel. Each component takes two
-arguments: a `PluginParameter*` and a `ResourceCache::ImageStates*`. The
-`ImageState` for a given component can be acquired with a call to 
-`resources->get("image_name")`, where each component has the respective name:
+as `Component`) of the editor's right-hand panel. Each component takes the
+following arguments:
 
-* `teragon::ImageKnob` -- `large_knob` or `small_knob`
-* `teragon::ImageSlider` -- `slider`
-* `teragon::IndicatorLight` -- `indicator_light`
-* `teragon::PushButton` -- `push_button`
-* `teragon::ToggleButton` -- `toggle_button`
+* A reference to the parameter set (`teragon::ThreadsafePluginParameterSet&`)
+* The parameter name (`const ParameterString&`)
+* A pointer to the resource cache (`const teragon::ResourceCache*`)
 
-Where the size of each graphic is as follows:
+Where the size of each component is as follows:
 
-* `large_knob`: 113x113
-* `small_knob`: 66x66
-* `slider`: 62x134
-* `indicator_light`: 24x24
-* `push_button`: 70x40
-* `toggle_button`: 70x40
+* `teragon::ImageKnobLarge`: 113x113
+* `teragon::ImageKnobSmall`: 66x66
+* `teragon::ImageSlider`: 62x134
+* `teragon::IndicatorLight`: 24x24
+* `teragon::PushButton`: 70x40
+* `teragon::ToggleButton`: 70x40
+* `teragon::StatusBar`: (Variable)x70
 
 Both of the buttons are drawn at the top of their 70x40 frame, but only take
 up 24px of height. Labels should be placed *below* the buttons, and this area
@@ -85,7 +96,8 @@ is also clickable, since otherwise the buttons could be hard to hit with the
 mouse.
 
 An example application with all components can be found in the `Demo` folder,
-this is a good reference for how to use the classes.
+this is a good reference for how to use the classes. Also each class has some
+usage documentation in the header file.
 
 
 Background Images
@@ -103,6 +115,10 @@ the Juce layout boxes. Now control labels can be placed, use Open Sans
 Semi-Bold for all labels, pure white. For control names, use 15pt font at 100%
 opacity (except for small knobs, which should have 11pt), and for label units
 use 9pt at 50% opacity. Use "Sentence Case" for labels.
+
+In the top-level folder of the project, there is a Pixelmator template for
+creating the backgrounds. It has each component in a separate layer, making it
+easy to create GUI mockups.
 
 When the background is finished, it can be imported into the Introjucer for
 the main window's background.
@@ -130,3 +146,5 @@ dimensions as the desktop.
 [2]: http://www.juce.com
 [3]: https://github.com/teragonaudio/TeragonGuiComponents/blob/master/LICENSE-GRAPHICS.txt
 [4]: https://github.com/teragonaudio/TeragonGuiComponents/blob/master/LICENSE-CODE.txt
+[5]: http://www.maxrudberg.com
+[6]: http://www.teragonaudio.com
