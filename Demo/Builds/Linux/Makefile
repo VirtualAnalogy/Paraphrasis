@@ -53,6 +53,7 @@ OBJECTS := \
   $(OBJDIR)/ImageKnob_4bdd143c.o \
   $(OBJDIR)/ImageSlider_9bc0d0e7.o \
   $(OBJDIR)/IndicatorLight_e0f6b1a6.o \
+  $(OBJDIR)/PushButton_6ee30acb.o \
   $(OBJDIR)/ResourceCache_2f3bdd5f.o \
   $(OBJDIR)/Resources_4cda91f0.o \
   $(OBJDIR)/StatusBar_8b72fc8c.o \
@@ -103,6 +104,11 @@ $(OBJDIR)/ImageSlider_9bc0d0e7.o: ../../../Components/Source/ImageSlider.cpp
 $(OBJDIR)/IndicatorLight_e0f6b1a6.o: ../../../Components/Source/IndicatorLight.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling IndicatorLight.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+
+$(OBJDIR)/PushButton_6ee30acb.o: ../../../Components/Source/PushButton.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling PushButton.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 $(OBJDIR)/ResourceCache_2f3bdd5f.o: ../../../Components/Source/ResourceCache.cpp

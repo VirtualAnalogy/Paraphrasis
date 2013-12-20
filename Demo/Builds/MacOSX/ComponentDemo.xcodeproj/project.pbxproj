@@ -24,6 +24,7 @@
 		B65BCDA84DC54051FBEFA9E8 /* MainComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EC9BC6CA47A96925D8345A /* MainComponent.cpp */; };
 		BAC4AB818902ABB57F7BBBBB /* ImageKnob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0CFEE565534880B17A286A33 /* ImageKnob.cpp */; };
 		BEAFB08D5EA4A9F4515B4A09 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ADEC216D2D77C8B5F8BD69C /* WebKit.framework */; };
+		C355B5B26BAA7410E8697331 /* PushButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55BEF54212CC3C146B220795 /* PushButton.cpp */; };
 		CD194810B9372BB3FFA30B90 /* RecentFilesMenuTemplate.nib in Resources */ = {isa = PBXBuildFile; fileRef = F0B619B9CD4D648AE9CE14E9 /* RecentFilesMenuTemplate.nib */; };
 		E63EFDF52B5C0CD42F4B227B /* Resources.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECC164A79F5220EA662EECBB /* Resources.cpp */; };
 		EE8848FDB8B25A9FCCE0A963 /* Main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D21E59F0C744DF5BF6F6DDE3 /* Main.cpp */; };
@@ -252,6 +253,7 @@
 		54FF66AFB22D3BB9CD0C4245 /* juce_PixelFormats.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_PixelFormats.h; path = ../../JuceLibraryCode/modules/juce_graphics/colour/juce_PixelFormats.h; sourceTree = SOURCE_ROOT; };
 		5513D4D2F8DAABA5B0251745 /* juce_CPlusPlusCodeTokeniser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_CPlusPlusCodeTokeniser.cpp; path = ../../JuceLibraryCode/modules/juce_gui_extra/code_editor/juce_CPlusPlusCodeTokeniser.cpp; sourceTree = SOURCE_ROOT; };
 		559E448410A96042C743BF65 /* juce_PopupMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_PopupMenu.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/menus/juce_PopupMenu.h; sourceTree = SOURCE_ROOT; };
+		55BEF54212CC3C146B220795 /* PushButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PushButton.cpp; path = ../../../Components/Source/PushButton.cpp; sourceTree = SOURCE_ROOT; };
 		55E36B17CC15BA77DD508A25 /* juce_android_Network.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_android_Network.cpp; path = ../../JuceLibraryCode/modules/juce_core/native/juce_android_Network.cpp; sourceTree = SOURCE_ROOT; };
 		56164420774DC329832F144A /* juce_MouseListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_MouseListener.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/mouse/juce_MouseListener.h; sourceTree = SOURCE_ROOT; };
 		566BB6A668DF56B05222429C /* juce_GlyphArrangement.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_GlyphArrangement.cpp; path = ../../JuceLibraryCode/modules/juce_graphics/fonts/juce_GlyphArrangement.cpp; sourceTree = SOURCE_ROOT; };
@@ -1039,6 +1041,7 @@
 				AAF8882171A2DDC8136716D5 /* IndicatorLight.cpp */,
 				E6BAB3E4C498759C52355408 /* IndicatorLight.h */,
 				9395FA733C8982F3C1537C8E /* PluginParameterComponent.h */,
+				55BEF54212CC3C146B220795 /* PushButton.cpp */,
 				D72B741EB9AA8F4F85CA6260 /* PushButton.h */,
 				5499844D41AC5E6928CB3BEA /* ResourceCache.cpp */,
 				348CDEF2DA905E4E9C885213 /* ResourceCache.h */,
@@ -2002,6 +2005,7 @@
 				BAC4AB818902ABB57F7BBBBB /* ImageKnob.cpp in Sources */,
 				66F8A81E63F8673604B4955A /* ImageSlider.cpp in Sources */,
 				04BF12BA680DEB2E51B6EB43 /* IndicatorLight.cpp in Sources */,
+				C355B5B26BAA7410E8697331 /* PushButton.cpp in Sources */,
 				4583F286EE6B1E203925F911 /* ResourceCache.cpp in Sources */,
 				E63EFDF52B5C0CD42F4B227B /* Resources.cpp in Sources */,
 				F6E715845147448846AB61CE /* StatusBar.cpp in Sources */,

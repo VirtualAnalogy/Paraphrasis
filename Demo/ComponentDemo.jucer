@@ -24,6 +24,7 @@
             file="../Components/Source/IndicatorLight.h"/>
       <FILE id="ZE06Hc" name="PluginParameterComponent.h" compile="0" resource="0"
             file="../Components/Source/PluginParameterComponent.h"/>
+      <FILE id="gTNdke" name="PushButton.cpp" compile="1" resource="0" file="../Components/Source/PushButton.cpp"/>
       <FILE id="iICW6f" name="PushButton.h" compile="0" resource="0" file="../Components/Source/PushButton.h"/>
       <FILE id="qstIpY" name="ResourceCache.cpp" compile="1" resource="0"
             file="../Components/Source/ResourceCache.cpp"/>

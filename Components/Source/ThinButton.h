@@ -45,14 +45,15 @@ public:
     ThinButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
                const ResourceCache *resources, const String &imageName);
 
-    void clicked();
-    bool isParameterEnabled() const;
-    void onParameterUpdated(const PluginParameter* parameter);
-    void paint(Graphics &g);
+    virtual void clicked();
+    virtual bool isParameterEnabled() const;
+    virtual void onParameterUpdated(const PluginParameter* parameter);
+
+    virtual void paint(Graphics &g);
 
     virtual const Image getImageForButtonState() = 0;
 
-private:
+protected:
     // For now, always set this to be kGravityDefault (ie, kGravityTop), but
     // in the future there could be an option to control the gravity.
     Gravity gravity;

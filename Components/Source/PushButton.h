@@ -30,21 +30,27 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
-class PushButton : public ThinButton {
+class PushButton : public ThinButton, public Timer {
 public:
     PushButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
-               const ResourceCache *resources) :
-    ThinButton(parameters, name, resources, "push_button") {
-        setClickingTogglesState(true);
-        // Set initial button state
-        setToggleState(isParameterEnabled(), NotificationType::dontSendNotification);
-    }
+               const ResourceCache *resources);
 
     virtual ~PushButton() {}
 
     const Image getImageForButtonState() {
         return getToggleState() ? getDownImage() : getNormalImage();
     }
+
+    virtual void clicked();
+    virtual void paint(Graphics &g);
+
+    virtual void timerCallback();
+
+private:
+    Image enabledImage;
+    Image disabledImage;
+    float enabledOpacity;
+    float stepRate;
 };
 
 } // namespace teragon
