@@ -4,7 +4,9 @@
     <option name="ACTIVITY_CLASS" value="" />
     <option name="MODE" value="default_activity" />
     <option name="DEPLOY" value="true" />
+    <option name="ARTIFACT_NAME" value="" />
     <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+    <option name="USE_LAST_SELECTED_DEVICE" value="false" />
     <option name="PREFERRED_AVD" value="" />
     <option name="USE_COMMAND_LINE" value="true" />
     <option name="COMMAND_LINE" value="" />
@@ -16,6 +18,9 @@
     <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
     <RunnerSettings RunnerId="AndroidDebugRunner" />
     <ConfigurationWrapper RunnerId="AndroidDebugRunner" />
-    <method />
+    <method>
+      <option name="Android.Gradle.BeforeRunTask" enabled="false" />
+      <option name="Make" enabled="true" />
+    </method>
   </configuration>
 </component>
