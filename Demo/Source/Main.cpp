@@ -92,7 +92,7 @@ public:
     {
     public:
         MainWindow(teragon::ThreadsafePluginParameterSet &parameters) :
-        DocumentWindow ("GUI Demo", Colours::lightgrey, DocumentWindow::allButtons),
+        DocumentWindow ("TeragonGuiComponent Demo", Colours::lightgrey, DocumentWindow::allButtons),
         parameters(parameters)
         {
             setContentOwned (new MainContentComponent(parameters, Resources::getCache()), true);
