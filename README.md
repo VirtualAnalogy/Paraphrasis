@@ -86,8 +86,8 @@ Where the size of each component is as follows:
 * `teragon::ImageKnobSmall`: 66x66
 * `teragon::ImageSlider`: 62x134
 * `teragon::IndicatorLight`: 24x24
-* `teragon::PushButton`: 70x40
-* `teragon::ToggleButton`: 70x40
+* `teragon::PushButton`: 72x(Variable)
+* `teragon::ToggleButton`: 72x(Variable)
 * `teragon::StatusBar`: (Variable)x70
 
 Both of the buttons are drawn at the top of their 70x40 frame, but only take
@@ -104,24 +104,42 @@ Background Images
 -----------------
 
 Backgrounds for plugins are created in an image editor, such as Photoshop or
-Gimp. Tile the primary texture for the background and the secondary texture
-for groups of controls. When making control groups, the secondary texture
-should have rounded corners of 3px.
+Pixelmator. I prefer using [Pixelmator][7] since it is reasonably priced
+(compared to Photoshop) and very powerful while easy to use (compared to
+GIMP). It also has nice snapping gridlines for doing accurate layout. In the
+top-level folder of the project, there is a Pixelmator template for creating
+the backgrounds. It has each component in a separate layer, making it easy to
+create GUI mockups. Each component also has a semi-transparent alignment
+helper layer for use in making pixel-perfect layouts within Introjucer.
 
-Once the controls have been placed in Introjucer, I usually set the background
-color to bright red `#FFFF0000` and then take a screenshot.  Importing this
-into Photoshop, and then open up some of the control PNGs, placing them over
-the Juce layout boxes. Now control labels can be placed, use Open Sans
-Semi-Bold for all labels, pure white. For control names, use 15pt font at 100%
-opacity (except for small knobs, which should have 11pt), and for label units
-use 9pt at 50% opacity. Use "Sentence Case" for labels.
+If you choose not to use the Pixelmator template, please be aware of the
+following style guidelines:
 
-In the top-level folder of the project, there is a Pixelmator template for
-creating the backgrounds. It has each component in a separate layer, making it
-easy to create GUI mockups.
+* Use "Title Case" (not "Sentence case") for component labels.
+* Text for large knob labels is Open Sans Semi-Bold, 15pt, 100% white.
+* Text for all other labels is Open Sans Semi-Bold, 12pt, 100% white.
+* Text for all knob unit labels is Open Sans Semi-Bold, 9pt, 50% white.
+* Tile the texture image for the background.
+* Tile the contrast texture to separate groups of related components. Box
+  them in using a rounded rectangle with 3px corner radius.
 
 When the background is finished, it can be imported into the Introjucer for
-the main window's background.
+the main window's background. My layout workflow looks something like this:
+
+1. Make copy of Template.pxm document in project.
+2. Drag around components in Pixelmator until layout looks nice.
+3. Set labels, component names, etc.
+4. Export PNG from Pixelmator with all layers visible.
+5. Import PNG into Introjucer.
+6. Make Components in Introjucer, align to blue boundary shapes.
+7. Re-export PNG from Pixelmator with all layers disabled except the
+   background and label names. Object such as slider wells and disabled states
+   (for indicator lights and buttons) are not necessary to export, these are
+   done in the Component classes.
+8. Go back to Introjucer, reload background image.
+9. Fill in Component parameters in Introjucer.
+
+That's it! Now you have a fully-functional GUI for your plugin.
 
 
 LCD Screens
@@ -148,3 +166,4 @@ dimensions as the desktop.
 [4]: https://github.com/teragonaudio/TeragonGuiComponents/blob/master/LICENSE-CODE.txt
 [5]: http://www.maxrudberg.com
 [6]: http://www.teragonaudio.com
+[7]: http://www.pixelmator.com
