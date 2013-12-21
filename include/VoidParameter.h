@@ -37,7 +37,7 @@ public:
   explicit VoidParameter(ParameterString inName) : PluginParameter(inName) {}
   virtual ~VoidParameter() {}
 
-  virtual const ParameterString getDisplayText() const { return getName(); }
+  virtual const ParameterString getDisplayText() const { return "Triggered"; }
   virtual const ParameterValue getDisplayValue() const { return getValue(); }
   virtual void setDisplayValue(const ParameterValue inValue) { setValue(inValue); }
 

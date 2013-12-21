@@ -42,8 +42,10 @@ public:
   ParameterValue inMaxValue, ParameterValue inDefaultValue) :
   FloatParameter(inName, convertDecibelsToLinear(inMinValue),
    convertDecibelsToLinear(inMaxValue), convertDecibelsToLinear(inDefaultValue)) {
-    range = getMaxValue() - getMinValue();
+    logMinValue = log(getMinValue());
+    range = log(getMaxValue()) - log(getMinValue());
   }
+
   virtual ~DecibelParameter() {}
 
   virtual const ParameterString getDisplayText() const {
@@ -61,7 +63,16 @@ public:
     return 20.0 * log10(linear);
   }
 
+  virtual const ParameterValue getScaledValue() const {
+    return (log(getValue()) - logMinValue) / range;
+  }
+
+  virtual void setScaledValue(const ParameterValue inValue) {
+    setValue(exp(inValue * range + logMinValue));
+  }
+
 private:
+  double logMinValue;
   double range;
 };
 }

@@ -121,6 +121,11 @@ The multithreaded mode must be enabled at compile-time like so:
 #include "PluginParameters.h"
 ```
 
+Some dependencies of the multithreaded implementation require C++11 support,
+so you may need to enable this for your compiler as necessary. Likewise, you
+will need to add `tinythread.cpp` to the list of files compiled by your
+project.
+
 When a `ThreadsafePluginParameterSet` (which should be used instead of the
 regular `PluginParameterSet`) is created by your plugin, it will create a new
 low-priority background thread for asynchronous parameter events.  This thread
@@ -132,7 +137,7 @@ In multithreaded mode, you should directly modify parameter values. Instead,
 you must schedule changes via an event dispatcher. Therefore a full
 implementation would look something like this:
 
-(From plugin's audio processing code):
+In plugin's audio processing code:
 
 ```c++
 MyPlugin::MyPlugin() {
@@ -142,7 +147,6 @@ MyPlugin::MyPlugin() {
   this->parameters.add(new FrequencyParameter("Frequency", 20.0, 20000.0, 10000.0);
   this->parameters.add(new DecibelParameter("Gain", -60.0, 3.0, 0.0));
 }
-```
 
 void MyPlugin::process(float** inputs, float** outputs, long blocksize) {
   this->parameters.processRealtimeEvents();
@@ -166,7 +170,8 @@ void MyPlugin::getParameterDisplay(VstInt32 index, char* text) {
 }
 ```
 
-(From plugin's GUI code):
+In plugin's GUI code:
+
 ```c++
 // This code will be highly implementation-specific, but basically let's
 // assume that some GUI code is ready to set a parameter value after user

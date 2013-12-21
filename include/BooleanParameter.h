@@ -35,7 +35,7 @@ public:
   PluginParameter(inName), value(inDefaultValue) {}
   virtual ~BooleanParameter() {}
 
-  virtual const ParameterString getDisplayText() const { return value ? "true" : "false"; }
+  virtual const ParameterString getDisplayText() const { return value ? "Enabled" : "Disabled"; }
   virtual const ParameterValue getDisplayValue() const { return getValue(); }
   virtual void setDisplayValue(const ParameterValue inValue) { setValue(inValue); }
 

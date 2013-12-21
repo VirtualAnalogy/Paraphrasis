@@ -36,11 +36,12 @@ public:
   int inMinValue, int inMaxValue, int inDefaultValue) :
   FloatParameter(inName, (ParameterValue)inMinValue,
     (ParameterValue)inMaxValue, (ParameterValue)inDefaultValue) {}
+
   virtual ~IntegerParameter() {}
 
   virtual const ParameterString getDisplayText() const {
     std::stringstream numberFormatter;
-    numberFormatter << getValue();
+    numberFormatter << (int)getValue();
     std::string result = numberFormatter.str();
     if(getUnit().length() > 0) {
       result.append(" ").append(getUnit());

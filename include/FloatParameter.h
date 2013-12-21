@@ -37,6 +37,7 @@ public:
   PluginParameter(inName, inMinValue, inMaxValue, inDefaultValue) {
     range = inMaxValue - inMinValue;
   }
+
   virtual ~FloatParameter() {}
 
   virtual const ParameterString getDisplayText() const {
@@ -49,6 +50,7 @@ public:
     }
     return result;
   }
+
   virtual const ParameterValue getScaledValue() const {
     return (getValue() - getMinValue()) / range;
   }

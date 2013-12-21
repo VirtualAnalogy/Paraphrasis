@@ -55,6 +55,7 @@ public:
       return numberFormatter.str() + " Hz";
     }
   }
+
   virtual const ParameterValue getScaledValue() const {
     return (log(getValue()) - logMinValue) / range;
   }
