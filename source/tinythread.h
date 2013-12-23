@@ -379,7 +379,7 @@ class lock_guard {
 };
 
 /// Condition variable class.
-/// This is a signalling object for synchronizing the execution flow for
+/// This is a signaling object for synchronizing the execution flow for
 /// several threads. Example usage:
 /// @code
 /// // Shared data and associated mutex and condition variable objects
@@ -535,10 +535,12 @@ enum memory_order {
 /// \code{.cpp}
 /// tthread::atomic_flag myFlag(ATOMIC_FLAG_INIT);
 /// \endcode
+#ifndef ATOMIC_FLAG_INIT
 #define ATOMIC_FLAG_INIT 0
+#endif
 
 /// Atomic flag class.
-/// This is an atomic boolean object that provides methods for atmically
+/// This is an atomic boolean object that provides methods for atomically
 /// testing, setting and clearing the state of the object. It can be used
 /// for implementing user space spin-locks, for instance.
 class atomic_flag {
@@ -552,7 +554,7 @@ class atomic_flag {
     }
 
     /// Atomically test and set the value.
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     /// @return The value held before this operation.
     inline bool test_and_set(memory_order order = memory_order_seq_cst)
     {
@@ -570,7 +572,7 @@ class atomic_flag {
         : "%eax", "memory"
       );
   #elif defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))
-      int *ptrFlag = &mFlag;
+      volatile int *ptrFlag = &mFlag;
       __asm {
         mov eax,1
         mov ecx,ptrFlag
@@ -603,7 +605,7 @@ class atomic_flag {
     }
 
     /// Atomically changes the state to cleared (false).
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     inline void clear(memory_order order = memory_order_seq_cst)
     {
 #if defined(_TTHREAD_HAS_ATOMIC_BUILTINS_)
@@ -618,7 +620,7 @@ class atomic_flag {
         : "%eax", "memory"
       );
   #elif defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))
-      int *ptrFlag = &mFlag;
+      volatile int *ptrFlag = &mFlag;
       __asm {
         mov eax,0
         mov ecx,ptrFlag
@@ -673,7 +675,7 @@ struct atomic {
 
     /// Atomically replaces the current value.
     /// @param desired The new value.
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     inline void store(T desired, memory_order order = memory_order_seq_cst)
     {
 #ifdef _TTHREAD_HAS_ATOMIC_BUILTINS_
@@ -686,7 +688,7 @@ struct atomic {
     }
 
     /// Atomically loads the current value.
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     inline T load(memory_order order = memory_order_seq_cst) const
     {
 #ifdef _TTHREAD_HAS_ATOMIC_BUILTINS_
@@ -703,7 +705,7 @@ struct atomic {
     /// addition of the value and arg. The operation is a read-modify-write
     /// operation.
     /// @param arg The value to be added to the current value.
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     inline T fetch_add(T arg, memory_order order = memory_order_seq_cst)
     {
 #ifdef _TTHREAD_HAS_ATOMIC_BUILTINS_
@@ -721,7 +723,7 @@ struct atomic {
     /// subtraction of the value and arg. The operation is a read-modify-write
     /// operation.
     /// @param arg The value to be subtracted from the current value.
-    /// @param order The memory sycnhronization ordering for this operation.
+    /// @param order The memory synchronization ordering for this operation.
     inline T fetch_sub(T arg, memory_order order = memory_order_seq_cst)
     {
 #ifdef _TTHREAD_HAS_ATOMIC_BUILTINS_
@@ -805,6 +807,19 @@ typedef atomic<unsigned long>      atomic_ulong;  ///< Specialized atomic for ty
 typedef atomic<long long>          atomic_llong;  ///< Specialized atomic for type long long.
 typedef atomic<unsigned long long> atomic_ullong; ///< Specialized atomic for type unsigned long long.
 
+#if defined(_TTHREAD_WIN32_)
+#define MS_VC_EXCEPTION 0x406d1388
+#pragma warning(disable: 6312)
+#pragma warning(disable: 6322)
+typedef struct
+{
+    DWORD dwType;        // must be 0x1000
+    LPCSTR szName;       // pointer to name (in same addr space)
+    DWORD dwThreadID;    // thread ID (-1 caller thread)
+    DWORD dwFlags;       // reserved for future use, most be zero
+} THREADNAME_INFO;
+#endif
+
 /// Thread class.
 class thread {
   public:
@@ -868,6 +883,18 @@ class thread {
     {
       return mHandle;
     }
+
+    /// Tell the operating system to schedule this thread with lower priority.
+    /// @note This call may or may not effect the thread's performance, this is
+    /// why the class only allows one to decrease the priority, since increasing
+    /// it usually requires root permissions on POSIX systems, or may otherwise
+    /// be ignored by the OS.
+    void set_low_priority();
+
+    /// Set the human-readable name for the thread. This is mostly useful while
+    /// debugging.
+    /// @param[in] name Name of the thread
+    void set_name(const char* name);
 
     /// Determine the number of threads which can possibly execute concurrently.
     /// This function is useful for determining the optimal number of threads to
@@ -978,7 +1005,7 @@ namespace chrono {
 
       /// Construct a duration object with the given duration.
       template <class _Rep2>
-        explicit duration(const _Rep2& r) : rep_(r) {};
+        explicit duration(const _Rep2& r) : rep_(r) {}
 
       /// Return the value of the duration object.
       rep count() const

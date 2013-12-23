@@ -316,6 +316,59 @@ thread::id thread::get_id() const
 #endif
 }
 
+void thread::set_low_priority()
+{
+#if defined(_TTHREAD_WIN32_)
+    SetThreadPriority(mHandle, THREAD_PRIORITY_LOWEST);
+#elif defined(_TTHREAD_POSIX_)
+    pthread_attr_t thread_attr;
+    int policy = 0;
+    int priority = 0;
+
+    pthread_attr_init(&thread_attr);
+    pthread_attr_getschedpolicy(&thread_attr, &policy);
+    priority = sched_get_priority_min(policy);
+
+#if __APPLE__
+    struct sched_param param;
+    memset(&param, 0, sizeof(param));
+    param.sched_priority = priority;
+    pthread_setschedparam(mHandle, SCHED_OTHER, &param);
+#else
+    pthread_setschedprio(mHandle, priority);
+#endif
+    pthread_attr_destroy(&thread_attr);
+#endif
+}
+
+void thread::set_name(const char* name)
+{
+#if defined(_TTHREAD_WIN32_)
+    THREADNAME_INFO info;
+    info.dwType = 0x1000;
+    info.szName = (LPCSTR)name;
+    info.dwThreadID = mWin32ThreadID;
+    info.dwFlags = 0;
+
+    __try
+    {
+        RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info);
+    }
+    __except (EXCEPTION_CONTINUE_EXECUTION)
+    {
+    }
+#elif defined(_TTHREAD_POSIX_)
+    // Setting the thread name varies a bit on different POSIX platforms
+#if defined(__APPLE__)
+    pthread_setname_np(name);
+#elif __linux
+    pthread_setname_np(mHandle, name);
+#else
+    pthread_set_name_np(mHandle, name);
+#endif
+#endif
+}
+
 unsigned thread::hardware_concurrency()
 {
 #if defined(_TTHREAD_WIN32_)
