@@ -23,12 +23,12 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "AnimationConstants.h"
 #include "IndicatorLight.h"
+#include "AnimationConstants.h"
 
 namespace teragon {
 
-IndicatorLight::IndicatorLight(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+IndicatorLight::IndicatorLight(ConcurrentParameterSet &parameters, const ParameterString &name,
                                const ResourceCache *resources) :
 Component(String::empty),
 PluginParameterComponent(parameters, name, resources, "indicator_light"),
@@ -43,7 +43,7 @@ lightOn(false), pulse(false) {
     setLightOn(parameter->getScaledValue() > 0.5);
 }
 
-void IndicatorLight::onParameterUpdated(const PluginParameter* parameter) {
+void IndicatorLight::onParameterUpdated(const Parameter* parameter) {
     juce::MessageManagerLock lock;
 
     // For VoidParameter, we simply pulse the light

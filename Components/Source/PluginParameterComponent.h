@@ -38,35 +38,36 @@ namespace teragon {
 /**
 * Base class for all TeragonGuiComponents widgets. Basically handles the
 * process of observing a parameter and sending updates to that parameter
-* on an associated ThreadsafePluginParameterSet.
+* on an associated ConcurrentParameterSet.
 */
-class PluginParameterComponent : public PluginParameterObserver {
+class PluginParameterComponent : public ParameterObserver {
 public:
-    PluginParameterComponent(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+    PluginParameterComponent(ConcurrentParameterSet &parameters, const ParameterString &name,
                              const ResourceCache *resources, const String &imageName) :
-    PluginParameterObserver(),
+    ParameterObserver(),
     parameters(parameters), parameter(nullptr), imageStates(nullptr), observer(nullptr) {
-        Logger *logger = Logger::getCurrentLogger();
-
         parameter = parameters[name];
         if(parameter == nullptr) {
             String message = "Could not bind component to parameter: ";
             message += name.c_str();
-            logger->writeToLog(message);
+            Logger::getCurrentLogger()->writeToLog(message);
             return;
         }
         parameter->addObserver(this);
 
-        if(resources == nullptr) {
-            logger->writeToLog("Could not initialize component with NULL ResourceCache");
+        if(resources == nullptr && imageName != String::empty) {
+          String message = "Could not initialize component with NULL ResourceCache";
+          Logger::getCurrentLogger()->writeToLog(message);
             return;
         }
-        imageStates = resources->get(imageName);
-        if(imageStates == nullptr) {
-            String message = "Could not find image resource for component: ";
-            message += imageName;
-            logger->writeToLog(message);
-            return;
+        else if(resources != nullptr) {
+            imageStates = resources->get(imageName);
+            if(imageStates == nullptr) {
+                String message = "Could not find image resource for component: ";
+                message += imageName;
+                Logger::getCurrentLogger()->writeToLog(message);
+                return;
+            }
         }
     }
 
@@ -87,7 +88,7 @@ public:
         parameters.setScaled(parameter, value, this);
     }
 
-    virtual void setStatusObserver(PluginParameterObserver *observer) {
+    virtual void setStatusObserver(ParameterObserver *observer) {
         this->observer = observer;
     }
 
@@ -97,11 +98,15 @@ public:
         }
     }
 
+private:
+    // Disallow assignment operator
+    PluginParameterComponent& operator=(const PluginParameterComponent&) { return *this; }
+
 protected:
-    ThreadsafePluginParameterSet &parameters;
-    PluginParameter *parameter;
+    ConcurrentParameterSet &parameters;
+    Parameter *parameter;
     ResourceCache::ImageStates *imageStates;
-    PluginParameterObserver *observer;
+    ParameterObserver *observer;
 };
 
 } // namespace teragon

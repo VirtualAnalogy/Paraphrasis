@@ -28,20 +28,31 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
-PushButton::PushButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+PushButton::PushButton(ConcurrentParameterSet &parameters, const ParameterString &name,
                        const ResourceCache *resources) :
-ThinButton(parameters, name, resources, "push_button") {
+ThinButton(parameters, name, resources, "push_button"),
+enabledOpacity(0.0f), stepRate(0.0f) {
     enabledImage = imageStates->normal;
     disabledImage = imageStates->alternate;
     setClickingTogglesState(true);
     // Set initial button state
     setToggleState(isParameterEnabled(), NotificationType::dontSendNotification);
+    enabledOpacity = isParameterEnabled() ? 0.0f : 1.0f;
+}
+
+void PushButton::onParameterUpdated(const Parameter *parameter) {
+    ThinButton::onParameterUpdated(parameter);
+    postClicked();
 }
 
 void PushButton::clicked() {
     ThinButton::clicked();
-    enabledOpacity = getToggleState() ? 0.0f : 1.0f;
-    stepRate = (getToggleState() ? 1.0f : -1.0f) * kFadeDurationStepRate;
+    postClicked();
+}
+
+void PushButton::postClicked() {
+    enabledOpacity = getToggleState() ? 1.0f : 0.0f;
+    stepRate = (getToggleState() ? -1.0f : 1.0f) * kFadeDurationStepRate;
     startTimer(kAnimationTimerRateInMs);
 }
 
@@ -59,7 +70,7 @@ void PushButton::paint(Graphics &g) {
                 0, 0, buttonWidth, buttonHeight);
 
     if(enabledOpacity > 0.0f) {
-        if(enabledOpacity >= 1.0f) {
+        if(enabledOpacity > 1.0f) {
             enabledOpacity = 1.0f;
         }
         else if(enabledOpacity < 0.0f) {

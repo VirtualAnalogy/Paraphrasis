@@ -29,27 +29,33 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
-StatusBar::StatusBar(ThreadsafePluginParameterSet &parameters, const ResourceCache *resources) :
-juce::Component(),
-PluginParameterObserver(),
+StatusBar::StatusBar(ConcurrentParameterSet &parameters, const ResourceCache*) :
+juce::Component(), juce::Timer(), ParameterObserver(),
 parameters(parameters), labelOpacity(1.0), clearTimeout(0) {
     addAndMakeVisible(&parameterNameLabel);
     addAndMakeVisible(&parameterValueLabel);
 }
 
 void StatusBar::subscribeToParameters() {
-    for(int i = 0; i < parameters.size(); ++i) {
-        PluginParameter *parameter = parameters[i];
+    for(size_t i = 0; i < parameters.size(); ++i) {
+        Parameter *parameter = parameters[i];
         // Only update the parameter if it has at least one other component listening to it. Otherwise
         // we risk showing a bunch of internal parameters which we may not want to expose.
-        for(unsigned int j = 0; j < parameter->getNumObservers(); ++j) {
-            PluginParameterObserver *observer = parameter->getObserver(j);
+        for(size_t j = 0; j < parameter->getNumObservers(); ++j) {
+            ParameterObserver *observer = parameter->getObserver(j);
             PluginParameterComponent *component = dynamic_cast<PluginParameterComponent*>(observer);
             if(observer != this && component != nullptr) {
                 parameter->addObserver(this);
                 component->setStatusObserver(this);
             }
         }
+    }
+}
+
+void StatusBar::ignoreParameter(const ParameterString &name) {
+    Parameter *parameter = parameters[name];
+    if(parameter != nullptr) {
+        parameter->removeObserver(this);
     }
 }
 
@@ -62,23 +68,27 @@ void StatusBar::resized() {
     configureLabelProperties(parameterValueLabel);
 }
 
+const Font StatusBar::getFont() {
+    return Font(Font::getDefaultMonospacedFontName(), (float)kFontSize, Font::plain);
+}
+
 void StatusBar::configureLabelProperties(Label &label) {
     label.setColour(Label::textColourId, Colours::black);
-    label.setFont(Font(Font::getDefaultMonospacedFontName(), kFontSize, Font::plain));
+    label.setFont(getFont());
 }
 
 StatusBar::~StatusBar() {
-    for(int i = 0; i < parameters.size(); ++i) {
+    for(size_t i = 0; i < parameters.size(); ++i) {
         parameters[i]->removeObserver(this);
     }
 }
 
-void StatusBar::onParameterUpdated(const PluginParameter *parameter) {
+void StatusBar::onParameterUpdated(const Parameter *parameter) {
     juce::MessageManagerLock lock;
     displayParameter(parameter);
 }
 
-void StatusBar::displayParameter(const PluginParameter *parameter) {
+void StatusBar::displayParameter(const Parameter *parameter) {
     parameterNameLabel.setText(parameter->getName());
     parameterValueLabel.setText(parameter->getDisplayText());
 

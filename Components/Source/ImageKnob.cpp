@@ -27,7 +27,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
-ImageKnob::ImageKnob(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+ImageKnob::ImageKnob(ConcurrentParameterSet &parameters, const ParameterString &name,
                      const ResourceCache *resources, const String &imageName) :
 Slider(juce::Slider::RotaryVerticalDrag, juce::Slider::NoTextBox),
 PluginParameterComponent(parameters, name, resources, imageName) {
@@ -42,7 +42,7 @@ PluginParameterComponent(parameters, name, resources, imageName) {
     setValue(parameter->getScaledValue(), NotificationType::dontSendNotification);
 }
 
-void ImageKnob::onParameterUpdated(const PluginParameter* parameter) {
+void ImageKnob::onParameterUpdated(const Parameter* parameter) {
     juce::MessageManagerLock lock;
     setValue(parameter->getScaledValue(), NotificationType::dontSendNotification);
 }

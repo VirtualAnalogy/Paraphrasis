@@ -51,6 +51,12 @@ public:
         parameters.add(new VoidParameter("Toggle Button"));
         parameters.add(new BooleanParameter("Push Button"));
         mainWindow = new MainWindow(parameters);
+
+        // Create a runloop for processing realtime events. When using the
+        // components in a plugin, you don't need to do this, instead you
+        // should call processRealtimeEvents() in the plugin's process
+        // callback (ie, processBlock() for Juce plugins, processReplacing()
+        // for regular VSTs).
         startTimer(33); // ~30fps
     }
 
@@ -91,7 +97,7 @@ public:
     class MainWindow : public DocumentWindow
     {
     public:
-        MainWindow(teragon::ThreadsafePluginParameterSet &parameters) :
+        MainWindow(teragon::ConcurrentParameterSet &parameters) :
         DocumentWindow ("TeragonGuiComponent Demo", Colours::lightgrey, DocumentWindow::allButtons),
         parameters(parameters)
         {
@@ -117,12 +123,12 @@ public:
 
     private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
-        const ThreadsafePluginParameterSet &parameters;
+        const ConcurrentParameterSet &parameters;
     };
 
 private:
     ScopedPointer<MainWindow> mainWindow;
-    ThreadsafePluginParameterSet parameters;
+    ConcurrentParameterSet parameters;
 };
 } // namespace teragon
 

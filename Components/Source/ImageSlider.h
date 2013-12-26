@@ -39,12 +39,12 @@ namespace teragon {
 */
 class ImageSlider : public juce::Slider, public PluginParameterComponent {
 public:
-    ImageSlider(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+    ImageSlider(ConcurrentParameterSet &parameters, const ParameterString &name,
                 const ResourceCache *resources);
     virtual ~ImageSlider() {}
 
     void valueChanged();
-    void onParameterUpdated(const PluginParameter* parameter);
+    void onParameterUpdated(const Parameter* parameter);
     void paint(Graphics &g);
 
 private:

@@ -46,7 +46,7 @@ void ResourceCache::add(String name, const char* normalImage, const int normalIm
     ImageStates *imageStates = new ImageStates(normalImageCached,
                                                alternateImageCached,
                                                backgroundImageCached);
-    String keyName = PluginParameter::makeSafeName(name.toStdString());
+    String keyName = Parameter::makeSafeName(name.toStdString());
     resources.set(keyName, imageStates);
 }
 
@@ -60,7 +60,7 @@ ResourceCache::~ResourceCache() {
 }
 
 ResourceCache::ImageStates* ResourceCache::get(const String& name) const {
-    String safeName = PluginParameter::makeSafeName(name.toStdString());
+    String safeName = Parameter::makeSafeName(name.toStdString());
     return resources.contains(safeName) ? resources[safeName] : nullptr;
 }
 

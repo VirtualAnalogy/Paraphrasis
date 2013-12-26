@@ -46,12 +46,12 @@ public:
     } Gravity;
 
 public:
-    ThinButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+    ThinButton(ConcurrentParameterSet &parameters, const ParameterString &name,
                const ResourceCache *resources, const String &imageName);
 
     virtual void clicked();
     virtual bool isParameterEnabled() const;
-    virtual void onParameterUpdated(const PluginParameter* parameter);
+    virtual void onParameterUpdated(const Parameter* parameter);
 
     virtual void paint(Graphics &g);
 

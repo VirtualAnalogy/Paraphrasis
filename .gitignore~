@@ -8,7 +8,6 @@ project.xcworkspace
 workspace.xml
 *.aps
 *.idb
-*.ilk
 *.ipch
 *.lastbuildstate
 *.lib

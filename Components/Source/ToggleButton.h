@@ -39,7 +39,7 @@ namespace teragon {
 */
 class ToggleButton : public ThinButton {
 public:
-    ToggleButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+    ToggleButton(ConcurrentParameterSet &parameters, const ParameterString &name,
                  const ResourceCache *resources) :
     ThinButton(parameters, name, resources, "toggle_button") {
         setClickingTogglesState(false);

@@ -35,7 +35,7 @@ namespace teragon {
 */
 class ImageKnobSmall : public ImageKnob {
 public:
-    ImageKnobSmall(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+    ImageKnobSmall(ConcurrentParameterSet &parameters, const ParameterString &name,
                    const ResourceCache *resources) :
     ImageKnob(parameters, name, resources, "small_knob") {}
 

@@ -27,7 +27,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
-ImageSlider::ImageSlider(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+ImageSlider::ImageSlider(ConcurrentParameterSet &parameters, const ParameterString &name,
                          const ResourceCache *resources) :
 Slider(juce::Slider::LinearVertical, juce::Slider::NoTextBox),
 PluginParameterComponent(parameters, name, resources, "slider") {
@@ -43,7 +43,7 @@ void ImageSlider::valueChanged() {
     onValueChanged(getValue());
 }
 
-void ImageSlider::onParameterUpdated(const PluginParameter* parameter) {
+void ImageSlider::onParameterUpdated(const Parameter* parameter) {
     juce::MessageManagerLock lock;
     setValue(parameter->getScaledValue(), NotificationType::dontSendNotification);
 }

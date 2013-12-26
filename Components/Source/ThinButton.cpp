@@ -27,7 +27,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 
-ThinButton::ThinButton(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+ThinButton::ThinButton(ConcurrentParameterSet &parameters, const ParameterString &name,
                        const ResourceCache *resources, const String &imageName) :
 ImageButton(String::empty),
 PluginParameterComponent(parameters, name, resources, imageName),
@@ -46,7 +46,7 @@ bool ThinButton::isParameterEnabled() const {
     return parameter->getScaledValue() > 0.5;
 }
 
-void ThinButton::onParameterUpdated(const PluginParameter* parameter) {
+void ThinButton::onParameterUpdated(const Parameter*) {
     juce::MessageManagerLock lock;
     setToggleState(isParameterEnabled(), NotificationType::dontSendNotification);
 }

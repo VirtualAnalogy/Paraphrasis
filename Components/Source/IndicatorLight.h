@@ -40,11 +40,11 @@ namespace teragon {
 */
 class IndicatorLight : public Component, public Timer, public PluginParameterComponent {
 public:
-    IndicatorLight(ThreadsafePluginParameterSet &parameters, const ParameterString &name,
+    IndicatorLight(ConcurrentParameterSet &parameters, const ParameterString &name,
                    const ResourceCache *resources);
     virtual ~IndicatorLight() {}
 
-    void onParameterUpdated(const PluginParameter* parameter);
+    void onParameterUpdated(const Parameter* parameter);
     void paint(Graphics &g);
     void timerCallback();
     void setLightOn(bool lightOn, bool pulse = false);

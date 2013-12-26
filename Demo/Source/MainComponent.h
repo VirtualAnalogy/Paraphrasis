@@ -64,7 +64,7 @@ class MainContentComponent  : public Component
 {
 public:
     //==============================================================================
-    MainContentComponent (teragon::ThreadsafePluginParameterSet &parameters, teragon::ResourceCache *resourceCache);
+    MainContentComponent (teragon::ConcurrentParameterSet &p, teragon::ResourceCache *r);
     ~MainContentComponent();
 
     //==============================================================================
@@ -81,7 +81,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    teragon::ThreadsafePluginParameterSet &parameters;
+    teragon::ConcurrentParameterSet &parameters;
     teragon::ResourceCache *resourceCache;
     //[/UserVariables]
 

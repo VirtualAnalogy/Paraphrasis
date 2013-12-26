@@ -53,9 +53,9 @@ POSSIBILITY OF SUCH DAMAGE.
 //[/MiscUserDefs]
 
 //==============================================================================
-MainContentComponent::MainContentComponent (teragon::ThreadsafePluginParameterSet &parameters, teragon::ResourceCache *resourceCache)
-    : parameters(parameters),
-      resourceCache(resourceCache)
+MainContentComponent::MainContentComponent (teragon::ConcurrentParameterSet &p, teragon::ResourceCache *r)
+    : parameters(p),
+      resourceCache(r)
 {
     addAndMakeVisible (toggleButton = new teragon::ToggleButton (parameters, "Toggle Button",
                                                                  resourceCache));
@@ -175,10 +175,10 @@ void MainContentComponent::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainContentComponent" componentName=""
-                 parentClasses="public Component" constructorParams="teragon::ThreadsafePluginParameterSet &amp;parameters, teragon::ResourceCache *resourceCache"
-                 variableInitialisers="parameters(parameters),&#10;resourceCache(resourceCache)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.660"
-                 fixedSize="1" initialWidth="579" initialHeight="250">
+                 parentClasses="public Component" constructorParams="teragon::ConcurrentParameterSet &amp;p, teragon::ResourceCache *r"
+                 variableInitialisers="parameters(p),&#10;resourceCache(r)" snapPixels="8"
+                 snapActive="1" snapShown="1" overlayOpacity="0.660" fixedSize="1"
+                 initialWidth="579" initialHeight="250">
   <BACKGROUND backgroundColour="ff000000">
     <IMAGE pos="0 0 579 250" resource="background_png" opacity="1" mode="0"/>
   </BACKGROUND>

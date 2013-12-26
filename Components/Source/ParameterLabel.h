@@ -23,25 +23,35 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef IMAGEKNOBLARGE_H_INCLUDED
-#define IMAGEKNOBLARGE_H_INCLUDED
+#ifndef PARAMETERLABEL_H_INCLUDED
+#define PARAMETERLABEL_H_INCLUDED
 
-#include "ImageKnob.h"
+#include "JuceHeader.h"
+#include "EllipsizedLabel.h"
+#include "PluginParameterComponent.h"
 
 namespace teragon {
 
 /**
-* Large knob widget. See the ImageKnob class for further documentation.
+* A simple  component to display a parameter value. A ResourceCache is not
+* necessary for this constructor, since it is just using the built-in font
+* rendering.
 */
-class ImageKnobLarge : public ImageKnob {
+class ParameterLabel : public EllipsizedLabel, public PluginParameterComponent {
 public:
-    ImageKnobLarge(ConcurrentParameterSet &parameters, const ParameterString &name,
-                   const ResourceCache *resources) :
-    ImageKnob(parameters, name, resources, "large_knob") {}
+    ParameterLabel(ConcurrentParameterSet &parameters, const ParameterString &name) :
+    EllipsizedLabel(), PluginParameterComponent(parameters, name, nullptr, String::empty) {
+        setText(parameter->getDisplayText());
+    }
 
-    virtual ~ImageKnobLarge() {}
+    virtual ~ParameterLabel() {}
+
+    virtual void onParameterUpdated(const Parameter *parameter) {
+        juce::MessageManagerLock lock;
+        setText(parameter->getDisplayText());
+    }
 };
 
-} // namespace teragon
+}
 
-#endif  // IMAGEKNOBLARGE_H_INCLUDED
+#endif  // PARAMETERLABEL_H_INCLUDED
