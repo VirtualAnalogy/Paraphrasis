@@ -23,58 +23,63 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __DecibelParameter_h__
-#define __DecibelParameter_h__
+#ifndef __PluginParameters_DecibelParameter_h__
+#define __PluginParameters_DecibelParameter_h__
 
 #include <sstream>
 #include <math.h>
 #include "FloatParameter.h"
 
 namespace teragon {
+
 class DecibelParameter : public FloatParameter {
 public:
-  /**
-   * Create a new parameter for a volume in decibels. Note that this parameter
-   * represents its value internally as a *linear* value. If you actually need
-   * this value in decibels, see the convertLinearToDecibels() method.
-   */
-  explicit DecibelParameter(ParameterString inName, ParameterValue inMinValue,
-  ParameterValue inMaxValue, ParameterValue inDefaultValue) :
-  FloatParameter(inName, convertDecibelsToLinear(inMinValue),
-   convertDecibelsToLinear(inMaxValue), convertDecibelsToLinear(inDefaultValue)) {
-    logMinValue = log(getMinValue());
-    range = log(getMaxValue()) - log(getMinValue());
-  }
+    /**
+     * Create a new parameter for a volume in decibels. Note that this parameter
+     * represents its value internally as a *linear* value. If you actually need
+     * this value in decibels, see the convertLinearToDecibels() method.
+     */
+    DecibelParameter(const ParameterString &inName,
+                     ParameterValue inMinValue,
+                     ParameterValue inMaxValue,
+                     ParameterValue inDefaultValue) :
+    FloatParameter(inName, convertDecibelsToLinear(inMinValue),
+                   convertDecibelsToLinear(inMaxValue),
+                   convertDecibelsToLinear(inDefaultValue)) {
+        logMinValue = log(getMinValue());
+        range = log(getMaxValue()) - log(getMinValue());
+    }
 
-  virtual ~DecibelParameter() {}
+    virtual ~DecibelParameter() {}
 
-  virtual const ParameterString getDisplayText() const {
-    std::stringstream numberFormatter;
-    numberFormatter.precision(getDisplayPrecision());
-    numberFormatter << std::fixed << convertLinearToDecibels(getValue());
-    return numberFormatter.str() + " dB";
-  }
+    virtual const ParameterString getDisplayText() const {
+        std::stringstream numberFormatter;
+        numberFormatter.precision(getDisplayPrecision());
+        numberFormatter << std::fixed << convertLinearToDecibels(getValue());
+        return numberFormatter.str() + " dB";
+    }
 
-  static const ParameterValue convertDecibelsToLinear(const ParameterValue decibels) {
-    return pow(10.0, decibels / 20.0);
-  }
+    static const ParameterValue convertDecibelsToLinear(const ParameterValue decibels) {
+        return pow(10.0, decibels / 20.0);
+    }
 
-  static const ParameterValue convertLinearToDecibels(const ParameterValue linear) {
-    return 20.0 * log10(linear);
-  }
+    static const ParameterValue convertLinearToDecibels(const ParameterValue linear) {
+        return 20.0 * log10(linear);
+    }
 
-  virtual const ParameterValue getScaledValue() const {
-    return (log(getValue()) - logMinValue) / range;
-  }
+    virtual const ParameterValue getScaledValue() const {
+        return (log(getValue()) - logMinValue) / range;
+    }
 
-  virtual void setScaledValue(const ParameterValue inValue) {
-    setValue(exp(inValue * range + logMinValue));
-  }
+    virtual void setScaledValue(const ParameterValue inValue) {
+        setValue(exp(inValue * range + logMinValue));
+    }
 
 private:
-  double logMinValue;
-  double range;
+    double logMinValue;
+    double range;
 };
-}
 
-#endif
+} // namespace teragon
+
+#endif // __PluginParameters_DecibelParameter_h__

@@ -23,14 +23,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __TEST_RUNNER_H__
-#define __TEST_RUNNER_H__
+#ifndef __PluginParameters_TestRunner_h__
+#define __PluginParameters_TestRunner_h__
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#define HAVE_TESTRUNNER 1
-#include "PluginParameters.h"
 
 // From http://stackoverflow.com/a/240370/14302
 #define STRINGIFY(x) #x
@@ -79,6 +76,13 @@ static int gNumFailedTests = 0;
   } \
 }
 
+#define ASSERT_SIZE_EQUALS(expected, result) { \
+  if(result != expected) { \
+    printf("Expected %lu, got %lu. ", expected, result); \
+    return false; \
+  } \
+}
+
 #define ASSERT_STRING(expected, result) { \
   std::string e(expected); \
   if(e.compare(result) != 0) { \
@@ -87,4 +91,4 @@ static int gNumFailedTests = 0;
   } \
 }
 
-#endif // #ifndef __TEST_RUNNER_H__
+#endif // __PluginParameters_TestRunner_h__

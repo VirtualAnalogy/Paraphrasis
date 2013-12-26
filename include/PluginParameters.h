@@ -23,25 +23,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __PLUGINPARAMETERS_H__
-#define	__PLUGINPARAMETERS_H__
+#ifndef __PluginParameters_PluginParameters_h__
+#define __PluginParameters_PluginParameters_h__
 
-#ifndef ENABLE_MULTITHREADED
-#define ENABLE_MULTITHREADED 0
+#ifndef PLUGINPARAMETERS_MULTITHREADED
+#define PLUGINPARAMETERS_MULTITHREADED 1
 #endif
 
+#include "BlobParameter.h"
 #include "BooleanParameter.h"
 #include "DecibelParameter.h"
 #include "FloatParameter.h"
 #include "FrequencyParameter.h"
 #include "IntegerParameter.h"
 #include "StringParameter.h"
-#include "PluginParameterSet.h"
+#include "ParameterSet.h"
 #include "VoidParameter.h"
 
-#if ENABLE_MULTITHREADED
+#if PLUGINPARAMETERS_MULTITHREADED
 #include "EventDispatcher.h"
-#include "ThreadsafePluginParameterSet.h"
+#include "ConcurrentParameterSet.h"
 #endif
 
-#endif
+#endif // __PluginParameters_PluginParameters_h__

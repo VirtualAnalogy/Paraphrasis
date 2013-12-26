@@ -23,58 +23,60 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __FrequencyParameter_h__
-#define __FrequencyParameter_h__
+#ifndef __PluginParameters_FrequencyParameter_h__
+#define __PluginParameters_FrequencyParameter_h__
 
 #include <sstream>
 #include <math.h>
-#include "PluginParameter.h"
+#include "Parameter.h"
 
 namespace teragon {
-class FrequencyParameter : public PluginParameter {
+
+class FrequencyParameter : public Parameter {
 public:
-  explicit FrequencyParameter(ParameterString inName, ParameterValue inMinValue,
-  ParameterValue inMaxValue, ParameterValue inDefaultValue) :
-  PluginParameter(inName, inMinValue, inMaxValue, inDefaultValue) {
-    logMinValue = log(inMinValue);
-    range = log(inMaxValue) - log(inMinValue);
-  }
-  virtual ~FrequencyParameter() {}
-
-  virtual const ParameterString getDisplayText() const {
-    if(getValue() >= 1000.0) {
-      std::stringstream numberFormatter;
-      numberFormatter.precision(getDisplayPrecision());
-      numberFormatter << std::fixed << getValue() / 1000.0;
-      return numberFormatter.str() + " kHz";
+    FrequencyParameter(const ParameterString &inName,
+                       ParameterValue inMinValue,
+                       ParameterValue inMaxValue,
+                       ParameterValue inDefaultValue) :
+    Parameter(inName, inMinValue, inMaxValue, inDefaultValue) {
+        logMinValue = log(inMinValue);
+        range = log(inMaxValue) - log(inMinValue);
     }
-    else {
-      std::stringstream numberFormatter;
-      numberFormatter.precision(getDisplayPrecision());
-      numberFormatter << std::fixed << getValue();
-      return numberFormatter.str() + " Hz";
+
+    virtual ~FrequencyParameter() {}
+
+    virtual const ParameterString getDisplayText() const {
+        if(getValue() >= 1000.0) {
+            std::stringstream numberFormatter;
+            numberFormatter.precision(getDisplayPrecision());
+            numberFormatter << std::fixed << getValue() / 1000.0;
+            return numberFormatter.str() + " kHz";
+        }
+        else {
+            std::stringstream numberFormatter;
+            numberFormatter.precision(getDisplayPrecision());
+            numberFormatter << std::fixed << getValue();
+            return numberFormatter.str() + " Hz";
+        }
     }
-  }
 
-  virtual const ParameterValue getScaledValue() const {
-    return (log(getValue()) - logMinValue) / range;
-  }
+    virtual const ParameterValue getScaledValue() const {
+        return (log(getValue()) - logMinValue) / range;
+    }
 
-#if ENABLE_MULTITHREADED
-#if HAVE_TESTRUNNER
-  friend class _Tests;
-#endif
+#if PLUGINPARAMETERS_MULTITHREADED
 protected:
 #endif
 
-  virtual void setScaledValue(const ParameterValue inValue) {
-    setValue(exp(inValue * range + logMinValue));
-  }
+    virtual void setScaledValue(const ParameterValue inValue) {
+        setValue(exp(inValue * range + logMinValue));
+    }
 
 private:
-  double logMinValue;
-  double range;
+    double logMinValue;
+    double range;
 };
-}
 
-#endif
+} // namespace teragon
+
+#endif // __PluginParameters_FrequencyParameter_h__

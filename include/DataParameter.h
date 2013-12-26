@@ -23,38 +23,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __PluginParameters_StringParameter_h__
-#define __PluginParameters_StringParameter_h__
+#ifndef __PluginParameters_DataParameter_h__
+#define __PluginParameters_DataParameter_h__
 
-#include "DataParameter.h"
+#include "Parameter.h"
 
 namespace teragon {
 
-class StringParameter : public DataParameter {
+/**
+* This class is intended for non-calculation data holders, such as strings or blobs.
+*/
+class DataParameter : public Parameter {
 public:
-    StringParameter(const ParameterString &inName,
-                    ParameterString inDefaultValue = "") :
-    DataParameter(inName), stringValue(inDefaultValue) {}
+    DataParameter(const ParameterString &inName) : Parameter(inName, 0.0, 1.0, 0.0) {}
+    virtual ~DataParameter() {}
 
-    virtual ~StringParameter() {}
-
-    virtual const ParameterString getDisplayText() const {
-        return stringValue;
+    virtual const ParameterValue getScaledValue() const {
+        return 0.0;
     }
 
+    virtual void setScaledValue(const ParameterValue value) {}
+
+    virtual void setValue(const ParameterValue inValue) {}
+
 #if PLUGINPARAMETERS_MULTITHREADED
+    friend class Event;
+    friend class DataEvent;
+
 protected:
 #endif
 
-    virtual void setValue(const void *inData, const size_t inDataSize = 0) {
-        stringValue = (const char *)inData;
-        notifyObservers();
-    }
-
-private:
-    ParameterString stringValue;
+    virtual void setValue(const void *inData, const size_t inDataSize) = 0;
 };
 
 } // namespace teragon
 
-#endif // __PluginParameters_StringParameter_h__
+#endif // __PluginParameters_DataParameter_h__

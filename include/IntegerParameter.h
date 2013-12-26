@@ -23,32 +23,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __IntegerParameter_h__
-#define __IntegerParameter_h__
+#ifndef __PluginParameters_IntegerParameter_h__
+#define __PluginParameters_IntegerParameter_h__
 
 #include <sstream>
 #include "FloatParameter.h"
 
 namespace teragon {
+
 class IntegerParameter : public FloatParameter {
 public:
-  explicit IntegerParameter(ParameterString inName,
-  int inMinValue, int inMaxValue, int inDefaultValue) :
-  FloatParameter(inName, (ParameterValue)inMinValue,
-    (ParameterValue)inMaxValue, (ParameterValue)inDefaultValue) {}
+    IntegerParameter(const ParameterString &inName,
+                     int inMinValue,
+                     int inMaxValue,
+                     int inDefaultValue) :
+    FloatParameter(inName, (ParameterValue)inMinValue,
+                   (ParameterValue)inMaxValue,
+                   (ParameterValue)inDefaultValue) {}
 
-  virtual ~IntegerParameter() {}
+    virtual ~IntegerParameter() {}
 
-  virtual const ParameterString getDisplayText() const {
-    std::stringstream numberFormatter;
-    numberFormatter << (int)getValue();
-    std::string result = numberFormatter.str();
-    if(getUnit().length() > 0) {
-      result.append(" ").append(getUnit());
+    virtual const ParameterString getDisplayText() const {
+        std::stringstream numberFormatter;
+        numberFormatter << (int)getValue();
+        std::string result = numberFormatter.str();
+        if(getUnit().length() > 0) {
+            result.append(" ").append(getUnit());
+        }
+        return result;
     }
-    return result;
-  }
 };
-}
 
-#endif
+} // namespace teragon
+
+#endif // __PluginParameters_IntegerParameter_h__
