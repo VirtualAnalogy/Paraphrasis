@@ -26,7 +26,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #ifndef __PLUGINPARAMETERCOMPONENT_H__
 #define __PLUGINPARAMETERCOMPONENT_H__
 
-#if ! ENABLE_MULTITHREADED
+#if !PLUGINPARAMETERS_MULTITHREADED
 #error PluginParameters must be built in multi-threaded mode
 #endif
 
