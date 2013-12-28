@@ -26,11 +26,11 @@ POSSIBILITY OF SUCH DAMAGE.
 #ifndef __PLUGINPARAMETERCOMPONENT_H__
 #define __PLUGINPARAMETERCOMPONENT_H__
 
+#include "../PluginParameters/include/PluginParameters.h"
 #if !PLUGINPARAMETERS_MULTITHREADED
 #error PluginParameters must be built in multi-threaded mode
 #endif
 
-#include "../PluginParameters/include/PluginParameters.h"
 #include "ResourceCache.h"
 
 namespace teragon {
