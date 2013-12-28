@@ -112,7 +112,7 @@ freely, subject to the following restrictions:
 
 // Check if we can support the assembly language atomic operations?
 #if (defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))) || \
-    (defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))) || \
+    (defined(_MSC_VER) && (defined(_M_IX86))) || \
     (defined(__GNUC__) && (defined(__ppc__)))
   #define _TTHREAD_HAS_ASM_ATOMICS_
 #endif
