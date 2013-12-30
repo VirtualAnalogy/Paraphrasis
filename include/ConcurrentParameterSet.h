@@ -69,7 +69,8 @@ public:
      */
     explicit ConcurrentParameterSet() : ParameterSet(), EventScheduler(),
     asyncDispatcher(this, false), realtimeDispatcher(this, true),
-    asyncDispatcherThread(asyncDispatcherCallback, &asyncDispatcher) {
+    asyncDispatcherThread(asyncDispatcherCallback, &asyncDispatcher),
+    realtimeEventLoopPaused(false) {
         asyncDispatcherThread.set_name("PluginParametersAsyncDispatcher");
         asyncDispatcherThread.set_low_priority();
 
@@ -302,6 +303,30 @@ public:
         }
     }
 
+    /**
+     * Pause normal processing of realtime events. When this method is called,
+     * then events will be executed on both the realtime and asynchronous
+     * threads immediately after scheduling them. This is necessary so that the
+     * GUI still looks and behaves normally when even when audio processing
+     * is stopped.
+     *
+     * This method should be called by the plugin when the transport changes
+     * from playback to paused/stopped. Leaving a ConcurrentParameterSet paused
+     * while playback is active may result in priority inversion, be careful!
+     */
+    virtual void pause() {
+        realtimeEventLoopPaused = true;
+    }
+
+    /**
+     * Resume normal processing of realtime events. This method should be
+     * called by the plugin when the transport changes from pause/stopped
+     * to playing.
+     */
+    virtual void resume() {
+        realtimeEventLoopPaused = false;
+    }
+
     static void sleep(const unsigned long milliseconds) {
 #if WIN32
         Sleep(milliseconds);
@@ -326,12 +351,17 @@ protected:
             asyncDispatcher.add(event);
             asyncDispatcher.notify();
         }
+
+        if(realtimeEventLoopPaused) {
+            processRealtimeEvents();
+        }
     }
 
 private:
     EventDispatcher asyncDispatcher;
     EventDispatcher realtimeDispatcher;
     EventDispatcherThread asyncDispatcherThread;
+    bool realtimeEventLoopPaused;
 
 #endif // PLUGINPARAMETERS_MULTITHREADED
 };

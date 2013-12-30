@@ -139,7 +139,8 @@ The multi-threaded mode must be enabled at compile-time like so:
 ```
 
 *Note*: As of PluginParameters version 3.0, the multi-threaded implementation is
-the default; it is not necessary to force this definition anymore.
+the default; it is not necessary to force this definition anymore. Simply
+including `PluginParameters.h` is enough.
 
 Some dependencies of the multi-threaded implementation require C++11 support,
 so you may need to enable this for your compiler as necessary. Likewise, you
@@ -156,7 +157,7 @@ In multi-threaded mode, you may not directly modify parameter values. Instead,
 you must schedule changes via an event dispatcher. Therefore a full
 implementation would look something like this:
 
-In plugin's audio processing code:
+In VST plugin's audio processing code:
 
 ```c++
 MyPlugin::MyPlugin() {
@@ -187,6 +188,14 @@ void MyPlugin::getParameterName (VstInt32 index, char* label) {
 void MyPlugin::getParameterDisplay(VstInt32 index, char* text) {
   vst_strncpy(text, this->parameters[index]->getDisplayText().c_str(), kVstMaxParamStrLen);
 }
+
+void MyPlugin::suspend() {
+  this->parameters.pause();
+}
+
+void MyPlugin::resume() {
+  this->parameters.resume();
+}
 ```
 
 In plugin's GUI code:
@@ -208,7 +217,7 @@ bool MyGui::isRealtimePriority() const {
 }
 
 void MyGui::onParameterUpdated(const PluginParameter* parameter) {
-  // Set widget to reflect parameter's new value
+  // Update widget to reflect parameter's new value
 }
 ```
 

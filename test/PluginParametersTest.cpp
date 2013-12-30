@@ -25,7 +25,9 @@
 
 #include <stdio.h>
 
-// Disable multi-threaded build to directly test parameter functionality
+// Disable multi-threaded build, otherwise Parameter::setValue() is not directly
+// accessible without using a ConcurrentParameterSet. This symbol should be
+// defined before including PluginParameters.h.
 #define PLUGINPARAMETERS_MULTITHREADED 0
 #include "PluginParameters.h"
 #include "TestRunner.h"
@@ -417,14 +419,6 @@ public:
         return true;
     }
 
-    static bool testParameterType() {
-        BooleanParameter p("test");
-        ASSERT_INT_EQUALS(0, p.getType());
-        p.setType(1234);
-        ASSERT_INT_EQUALS(1234, p.getType());
-        return true;
-    }
-
     static bool testGetMinValue() {
         FloatParameter p("test", 0.123, 1.23, 1.00);
         ASSERT_EQUALS(0.123, p.getMinValue());
@@ -459,6 +453,14 @@ public:
         // Rounding!
         p.setDisplayPrecision(5);
         ASSERT_STRING("0.12346", p.getDisplayText());
+        return true;
+    }
+
+    static bool testSetParameterDescription() {
+        BooleanParameter p("test");
+        ASSERT_STRING("", p.getDescription());
+        p.setDescription("hello, world!");
+        ASSERT_STRING("hello, world!", p.getDescription());
         return true;
     }
 };
@@ -519,12 +521,12 @@ int main(int argc, char *argv[]) {
     ADD_TEST(_Tests::testRemoveObserver());
     ADD_TEST(_Tests::testShouldNotNotifyForSameValue());
 
-    ADD_TEST(_Tests::testParameterType());
     ADD_TEST(_Tests::testGetMinValue());
     ADD_TEST(_Tests::testGetMaxValue());
     ADD_TEST(_Tests::testGetDefaultValue());
     ADD_TEST(_Tests::testSetParameterUnit());
     ADD_TEST(_Tests::testSetPrecision());
+    ADD_TEST(_Tests::testSetParameterDescription());
 
     if(gNumFailedTests > 0) {
         printf("\nFAILED %d tests\n", gNumFailedTests);

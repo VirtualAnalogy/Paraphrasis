@@ -34,7 +34,7 @@ namespace teragon {
 typedef std::string ParameterString;
 typedef double ParameterValue;
 
-static const int kDefaultDisplayPrecision = 1;
+static const unsigned int kDefaultDisplayPrecision = 1;
 
 class Parameter;
 
@@ -63,8 +63,8 @@ public:
      * @param inName The parameter name
      */
     Parameter(const ParameterString &inName) :
-    name(inName), minValue(0.0), maxValue(1.0), defaultValue(0.0), value(0.0),
-    type(0), precision(kDefaultDisplayPrecision) {}
+    name(inName), unit(""), minValue(0.0), maxValue(1.0), defaultValue(0.0), value(0.0),
+    precision(kDefaultDisplayPrecision), description("") {}
 
     /**
       * Create a new floating point parameter. This is probably the most common
@@ -88,8 +88,8 @@ public:
               ParameterValue inMinValue,
               ParameterValue inMaxValue,
               ParameterValue inDefaultValue) :
-    name(inName), minValue(inMinValue), maxValue(inMaxValue), defaultValue(inDefaultValue),
-    value(inDefaultValue), type(0), precision(kDefaultDisplayPrecision) {}
+    name(inName), unit(""), minValue(inMinValue), maxValue(inMaxValue), defaultValue(inDefaultValue),
+    value(inDefaultValue), precision(kDefaultDisplayPrecision), description("") {}
 
     virtual ~Parameter() {}
 
@@ -200,40 +200,35 @@ public:
     }
 
     /**
-     * @return Get the parameter's initial default value. Useful for reset.
+     * @return Get the parameter's initial default value. Useful for resetting parameters.
      */
     virtual const ParameterValue getDefaultValue() const {
         return defaultValue;
     }
 
     /**
-     * @parameter Get the parameter's user-defined type
+     * Get the number of decimal places for displaying floating-point parameter values.
      */
-    virtual const unsigned int getType() const {
-        return type;
+    virtual const unsigned int getDisplayPrecision() const {
+        return precision;
     }
 
     /**
-     * Set the parameter's user-defined type. The type can be useful for treating
-     * groups of parameters in a given way, such as parameters which require a GUI
-     * update or a set which is common to a single oscillator in a multi-oscillator
-     * synthesizer. By default, the type is 0. This field is unsigned to make it
-     * easier use with bitfields.
-     *
-     * @param inType Type to set
-     */
-    virtual void setType(unsigned int inType) {
-        this->type = inType;
-    }
-
-    /**
-     * Number of floating point digits to be displayed, for parameters which
-     * support display precision.
+     * Number of floating point digits to be displayed, for parameters which support
+     * display precision.
      *
      * @param inPrecision Number of decimal digits to display
      */
     virtual void setDisplayPrecision(unsigned int inPrecision) {
         this->precision = inPrecision;
+    }
+
+    /**
+     * Get the unit string for the parameter. This is generally used by getDisplayText(),
+     * and is by default an empty string.
+     */
+    virtual const ParameterString &getUnit() const {
+        return unit;
     }
 
     /**
@@ -247,6 +242,23 @@ public:
     }
 
     /**
+     * Get the parameter description, which is a string that describes what the function of
+     * the parameter is. This can be used to provide user-facing help for parameters.
+     */
+    const ParameterString &getDescription() const {
+        return description;
+    }
+
+    /**
+     * Set the parameter's description.
+     *
+     * @param description Parameter description
+     */
+    void setDescription(const ParameterString &inDescription) {
+        this->description = inDescription;
+    }
+
+    /**
      * Add an observer to be alerted any time this parameter is set to a new value.
      *
      * @param observer Pointer to observing instance
@@ -255,10 +267,20 @@ public:
         observers.push_back(observer);
     }
 
+    /**
+     * Get a given observer for the parameter.
+     *
+     * @param index Observer to get. If the index is invalid, NULL will be returned.
+     * @return The ParameterObserver, or NULL if the index is out of range.
+     */
     virtual ParameterObserver *getObserver(const size_t index) const {
         return index < observers.size() ? observers.at(index) : NULL;
     }
 
+    /**
+     * Get the total number of observers for the parameter. Useful for iterating over
+     * the list of observers.
+     */
     virtual const size_t getNumObservers() const {
         return observers.size();
     }
@@ -297,14 +319,6 @@ protected:
 #endif
     }
 
-    virtual const ParameterString &getUnit() const {
-        return unit;
-    }
-
-    virtual const int getDisplayPrecision() const {
-        return precision;
-    }
-
 private:
     // Disallow assignment operator. It doesn't really make sense to try
     // to assign one parameter to another, and if this is allowed then we
@@ -320,8 +334,8 @@ private:
     const ParameterValue maxValue;
     const ParameterValue defaultValue;
     ParameterValue value;
-    unsigned int type;
     unsigned int precision;
+    ParameterString description;
 
     ParameterObserverMap observers;
 };
