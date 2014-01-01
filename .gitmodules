@@ -1,3 +1,6 @@
 [submodule "Components/PluginParameters"]
 	path = Components/PluginParameters
 	url = https://github.com/teragonaudio/PluginParameters.git
+[submodule "Components/Plugin/arduino-base64"]
+	path = Components/Plugin/arduino-base64
+	url = https://github.com/teragonaudio/arduino-base64.git

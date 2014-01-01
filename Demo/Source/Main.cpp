@@ -31,11 +31,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace teragon {
 //==============================================================================
-class ComponentDemoApplication  : public JUCEApplication, public Timer
+class ComponentDemoApplication : public JUCEApplication
 {
 public:
     //==============================================================================
-    ComponentDemoApplication() : JUCEApplication(), Timer() {}
+    ComponentDemoApplication() : JUCEApplication() {}
 
     const String getApplicationName()       { return ProjectInfo::projectName; }
     const String getApplicationVersion()    { return ProjectInfo::versionString; }
@@ -52,18 +52,19 @@ public:
         parameters.add(new BooleanParameter("Push Button"));
         mainWindow = new MainWindow(parameters);
 
-        // Create a runloop for processing realtime events. When using the
-        // components in a plugin, you don't need to do this, instead you
-        // should call processRealtimeEvents() in the plugin's process
-        // callback (ie, processBlock() for Juce plugins, processReplacing()
-        // for regular VSTs).
-        startTimer(33); // ~30fps
+        // Normally, the audio process callback (ie, processBlock() for Juce
+        // plugins, and processReplacing() for regular VSTs) should call
+        // processRealtimeEvents(). The plugin must also call pause() and
+        // resume() on the ConcurrentParameterSet so that events can be
+        // applied when audio processing is not active. Since this demo app
+        // doesn't have an audio callback, we simply pause the parameter set,
+        // which will process all events immediately after scheduling them.
+        parameters.pause();
     }
 
     void shutdown()
     {
         mainWindow = nullptr; // (deletes our window)
-        stopTimer();
     }
 
     //==============================================================================
@@ -79,14 +80,6 @@ public:
         // When another instance of the app is launched while this one is running,
         // this method is invoked, and the commandLine parameter tells you what
         // the other instance's command-line arguments were.
-    }
-
-    void timerCallback()
-    {
-        // Process the events from the parameter set. This should be called from
-        // audio thread of a plugin, or otherwise in the "main" thread of your
-        // application.
-        parameters.processRealtimeEvents();
     }
 
     //==============================================================================

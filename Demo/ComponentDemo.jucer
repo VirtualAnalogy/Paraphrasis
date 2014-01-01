@@ -98,7 +98,7 @@
   </MODULES>
   <EXPORTFORMATS>
     <LINUX_MAKE targetFolder="Builds/Linux" extraCompilerFlags="-I../../../Components/Source -I../../PluginParameters/include -std=c++11"
-                extraDefs="ENABLE_MULTITHREADED=1">
+                extraDefs="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="ComponentDemo"/>

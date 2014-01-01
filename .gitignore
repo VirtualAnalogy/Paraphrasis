@@ -1,9 +1,5 @@
 # Files from various IDE's
-Demo/Builds/Linux/build/*
-Demo/Builds/Linux/nbproject/*
-Demo/Builds/MacOSX/.idea/*
-Demo/Builds/MacOSX/RecentFilesMenuTemplate.nib
-Demo/Builds/MacOSX/build/*
+Demo/Builds/*
 project.xcworkspace
 workspace.xml
 *.aps
