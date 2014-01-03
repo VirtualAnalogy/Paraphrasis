@@ -143,8 +143,7 @@ void TeragonPluginBase::setStateInformation(const void *data, int sizeInBytes) {
             // Check to make sure that this parameter exists in the saved XML state. We
             // could run into problems when a newer version of this plugin introduces new
             // parameters which may not necessarily exist in saved documents from older
-            // versions. In such cases, these new parameters will retain their default
-            // values.
+            // versions. In such cases, new parameters will retain their default values.
             if(xmlState->hasAttribute(attributeName)) {
                 if(dynamic_cast<StringParameter *>(parameter) != nullptr) {
                     // Convert juce strings to binary data events
