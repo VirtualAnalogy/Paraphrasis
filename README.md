@@ -1,4 +1,4 @@
 Paraphrasis
 ===========
 
-Paraphrasis is spectral modeling synthesiser.
+Paraphrasis is spectral modeling synthesizer.
