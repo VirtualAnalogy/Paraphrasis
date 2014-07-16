@@ -27,24 +27,24 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter)
+ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor(ParaphrasisAudioProcessor* ownerFilter)
     : AudioProcessorEditor(ownerFilter)
 {
-    addAndMakeVisible (bypassBtn = new TextButton ("Bypass Button"));
-    bypassBtn->setButtonText (TRANS("Bypass"));
-    bypassBtn->addListener (this);
+    addAndMakeVisible(bypassBtn = new TextButton("Bypass Button"));
+    bypassBtn->setButtonText(TRANS("Bypass"));
+    bypassBtn->addListener(this);
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 400);
+    setSize(600, 400);
 
 
     //[Constructor] You can add your own custom stuff here..
     getProcessor()->requestUIUpdate();//UI update must be done each time a new editor is constructed
     bypassBtn->setClickingTogglesState(true);
-    startTimer (200); //starts timer with interval of 200mS
+    startTimer(200);  //starts timer with interval of 200mS
     //[/Constructor]
 }
 
@@ -61,12 +61,12 @@ ParaphrasisAudioProcessorEditor::~ParaphrasisAudioProcessorEditor()
 }
 
 //==============================================================================
-void ParaphrasisAudioProcessorEditor::paint (Graphics& g)
+void ParaphrasisAudioProcessorEditor::paint(Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colours::white);
+    g.fillAll(Colours::white);
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -74,12 +74,12 @@ void ParaphrasisAudioProcessorEditor::paint (Graphics& g)
 
 void ParaphrasisAudioProcessorEditor::resized()
 {
-    bypassBtn->setBounds (80, 96, 150, 24);
+    bypassBtn->setBounds(80, 96, 150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicked)
+void ParaphrasisAudioProcessorEditor::buttonClicked(Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     ParaphrasisAudioProcessor* ourProcessor = getProcessor();
@@ -103,7 +103,7 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
 void ParaphrasisAudioProcessorEditor::timerCallback()
 {
     ParaphrasisAudioProcessor* ourProcessor = getProcessor();
-    if (ourProcessor->needsUIUpdate() )
+    if (ourProcessor->needsUIUpdate())
     {
         //load your UI components with internal state information from plug-in - example:
         /*YourButtonName->setToggleState(1.0f == ourProcessor->getParameter(YourProjectNameAudioProcessor::MasterBypass), false);*/
