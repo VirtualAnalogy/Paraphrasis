@@ -70,34 +70,7 @@ namespace Loris {
 RealTimeSynthesizer::RealTimeSynthesizer( std::vector<double> & buffer ) :
     Synthesizer( buffer )
 {
-    OneOverSrate = 0;
-}
-    
-void RealTimeSynthesizer::setupRealtime(PartialList::iterator begin_partials, PartialList::iterator end_partials)
-{
-    //	grow the sample buffer, if necessary, to accommodate the latest
-    //  Partial, with the fade time tacked on the end
-    double duration = PartialUtils::timeSpan( begin_partials, end_partials ).second + m_fadeTimeSec;
-    
-    typedef std::vector< double >::size_type Sz_Type;
-    Sz_Type Nsamps = 1 + Sz_Type( duration * m_srateHz );
-    if ( m_sampleBuffer->size() < Nsamps )
-    {
-        m_sampleBuffer->resize( Nsamps );
-    }
-    
-    //  better to compute this only once:
-    OneOverSrate = 1. / m_srateHz;
-    
-    //  use a Resampler to quantize the Breakpoint times and
-    //  correct the phases:
-    Resampler quantizer( OneOverSrate );
-    quantizer.setPhaseCorrect( true );
-    for (auto p = begin_partials; p != end_partials; ++p)
-    {
-        quantizer.quantize( *p );
-    }
-
+    initInstance();
 }
 // ---------------------------------------------------------------------------
 //  RealTimeSynthesizer constructor
@@ -119,7 +92,7 @@ void RealTimeSynthesizer::setupRealtime(PartialList::iterator begin_partials, Pa
 RealTimeSynthesizer::RealTimeSynthesizer( Parameters params, std::vector<double> & buffer ) :
     Synthesizer( params, buffer )
 {
-    OneOverSrate = 0;
+    initInstance();
 }
 // ---------------------------------------------------------------------------
 //  RealTimeSynthesizer constructor
@@ -140,7 +113,7 @@ RealTimeSynthesizer::RealTimeSynthesizer( Parameters params, std::vector<double>
 RealTimeSynthesizer::RealTimeSynthesizer( double samplerate, std::vector<double> & buffer ) :
     Synthesizer( samplerate, buffer )
 {
-    OneOverSrate = 0;
+    initInstance();
 }
 // ---------------------------------------------------------------------------
 //  RealTimeSynthesizer constructor
@@ -165,9 +138,80 @@ RealTimeSynthesizer::RealTimeSynthesizer( double samplerate, std::vector<double>
                           double fade ) :
     Synthesizer( samplerate, buffer, fade )
 {
-    OneOverSrate = 0;
+    initInstance();
 }
 //	-- synthesis --
+void RealTimeSynthesizer::initInstance()
+{
+    OneOverSrate = 0;
+}
+    
+void RealTimeSynthesizer::setupRealtime(PartialList & partials)
+{
+    //	grow the sample buffer, if necessary, to accommodate the latest
+    //  Partial, with the fade time tacked on the end
+    double duration = PartialUtils::timeSpan( partials.begin(), partials.end() ).second + m_fadeTimeSec;
+    
+    // resize buffer to contain all samples
+    typedef std::vector< double >::size_type Sz_Type;
+    Sz_Type Nsamps = 1 + Sz_Type( duration * m_srateHz );
+    if ( m_sampleBuffer->size() < Nsamps )
+    {
+        m_sampleBuffer->resize( Nsamps );
+    }
+    
+    //  better to compute this only once:
+    OneOverSrate = 1. / m_srateHz;
+    
+    //  use a Resampler to quantize the Breakpoint times and
+    //  correct the phases:
+    Resampler quantizer( OneOverSrate );
+    quantizer.setPhaseCorrect( true );
+    for ( auto p = partials.begin(); p != partials.end(); ++p )
+    {
+        quantizer.quantize( *p );
+    }
+    
+    // partials in partial list will be sorted by start time
+    partials.sort(PartialUtils::compareStartTimeLess());
+    
+    this->partials = partials; 
+}
+
+void
+    RealTimeSynthesizer::synthesizeNext( int samples )
+{
+    double endTime = ( processedSamples + samples ) * OneOverSrate  + 2 * m_fadeTimeSec;
+    bool processed = false;
+    
+    int size = partialsBeingProcessed.size();
+    std::pair<PartialList::const_iterator, Partial::const_iterator> partial;
+    for (int i = 0; i < size; i++)
+    {
+        partial = partialsBeingProcessed.front();
+        partialsBeingProcessed.pop();
+        lastBreakpoint = synthesize( *partial.first, partial.second, endTime );
+        processed = true;
+        
+        if ( lastBreakpoint != partialsIt->end() )
+            partialsBeingProcessed.push( partial );
+    }
+    
+    while ( partialsIt != partials.end() && partialsIt->startTime() <= endTime )
+    {
+        lastBreakpoint = synthesize( *partialsIt, partialsIt->begin(), endTime );
+        processed = true;
+        
+        if ( lastBreakpoint != partialsIt->end() )
+            partialsBeingProcessed.push(std::make_pair(partialsIt, lastBreakpoint));
+        
+        partialsIt++;
+    }
+    
+    if ( processed )
+        processedSamples += samples;
+}
+    
 // ---------------------------------------------------------------------------
 //  synthesize
 // ---------------------------------------------------------------------------
@@ -188,15 +232,15 @@ RealTimeSynthesizer::RealTimeSynthesizer( double samplerate, std::vector<double>
 //!         Partial, p, including fade out at the end.
 //! \throw  InvalidPartial if the Partial has negative start time.
 //  
-void
-RealTimeSynthesizer::synthesize( Partial p, double startTime, double endTime )
+Partial::const_iterator
+    RealTimeSynthesizer::synthesize( const Partial &p, Partial::const_iterator lastBreakpoint , const double endTime)
 {
     if ( p.numBreakpoints() == 0 )
     {
 #ifdef Loris_Debug
         debugger << "Synthesizer ignoring a partial that contains no Breakpoints" << endl;
 #endif
-        return;
+        return lastBreakpoint;
     }
     
     if ( p.startTime() < 0 )
@@ -204,10 +248,14 @@ RealTimeSynthesizer::synthesize( Partial p, double startTime, double endTime )
 #ifdef Loris_Debug
         Throw( InvalidPartial, "Tried to synthesize a Partial having start time less than 0." );
 #else
-        return;
+        return lastBreakpoint;
 #endif
     }
     
+    if ( lastBreakpoint.time() >= endTime || lastBreakpoint == p.end() )
+    {
+        return lastBreakpoint;
+    }
 #ifdef Loris_Debug
     debugger << "synthesizing Partial from " << p.startTime() * m_srateHz
              << " to " << p.endTime() * m_srateHz << " starting phase "
@@ -216,13 +264,6 @@ RealTimeSynthesizer::synthesize( Partial p, double startTime, double endTime )
 #endif
     // find closest breakpoint to startTime, if break point starts after start
     // time get the one before
-//    Partial::const_iterator it = p.findNearest(startTime);
-//    if (it != p.begin() && it.time() > startTime)
-//        it--;
-    
-//    Partial::const_iterator endIt = p.findNearest(endTime);
-//    if (endIt != p.end() && endIt.time() < endTime)
-//        endIt++;
     
     
     endSamp = index_type( ( p.endTime() + m_fadeTimeSec ) * m_srateHz );
@@ -236,21 +277,23 @@ RealTimeSynthesizer::synthesize( Partial p, double startTime, double endTime )
     //  all that really needs to happen here is setting the frequency
     //  correctly, the phase will be reset again in the loop over 
     //  Breakpoints below, and the amp and bw can start at 0.
-//    if (it == p.begin())
+    if (lastBreakpoint == p.begin())
         m_osc.resetEnvelopes( BreakpointUtils::makeNullBefore( p.first(), p.startTime() - itime ), m_srateHz );
-//    else
-//        m_osc.resetEnvelopes( it.breakpoint(), m_srateHz );
+    else
+        m_osc.resetEnvelopes( lastBreakpoint.breakpoint(), m_srateHz );
+    
     //  cache the previous frequency (in Hz) so that it
     //  can be used to reset the phase when necessary
     //  in the sample computation loop below (this saves
     //  having to recompute from the oscillator's radian
     //  frequency):
-    prevFrequency = p.first().frequency();
+    prevFrequency = lastBreakpoint->frequency();
     
     //  synthesize linear-frequency segments until 
     //  there aren't any more Breakpoints to make segments:
     bufferBegin = &( m_sampleBuffer->front() );
-    for (auto it = p.begin() ; it != p.end(); ++it )
+    auto it = lastBreakpoint;
+    for (++it ; it.time() >= endTime; ++it )
     {
         tgtSamp = index_type( (it.time() * m_srateHz) + 0.5 );   //  cheap rounding
         Assert( tgtSamp >= currentSamp );
@@ -286,10 +329,13 @@ RealTimeSynthesizer::synthesize( Partial p, double startTime, double endTime )
     }
     
     // in case we finished the partial render fade out
-//    if (it == p.end())
+    if (it == p.end())
+    {
         //  render a fade out segment:
         m_osc.oscillate( bufferBegin + currentSamp, bufferBegin + endSamp, BreakpointUtils::makeNullAfter( p.last(), m_fadeTimeSec ), m_srateHz );
+    }
     
+    return it;
 }
     
 }   //  end of namespace Loris

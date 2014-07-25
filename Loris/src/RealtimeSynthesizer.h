@@ -35,6 +35,8 @@
  
 #include "Synthesizer.h"
 #include <vector>
+#include <queue>
+
 //	begin namespace
 namespace Loris {
 // ---------------------------------------------------------------------------
@@ -120,9 +122,23 @@ public:
 	//	~RealTimeSynthesizer( void );
 	//	RealTimeSynthesizer & operator= ( const RealTimeSynthesizer & other );
     
-    void setupRealtime(PartialList::iterator begin_partials, PartialList::iterator end_partials);
-	 
-//	-- synthesis --
+    void setupRealtime(PartialList & partials);
+    
+    void synthesizeNext(int samples);
+    
+    void resetSynth()
+    {
+        partialsIt = partials.begin();
+        
+        std::fill (m_sampleBuffer->begin(), m_sampleBuffer->end(), 0);
+        processedSamples = 0;
+    }
+	 	
+//	-- parameter access and mutation --
+//	-- implementation --
+private:
+    
+    //	-- synthesis --
 	//!	Synthesize a bandwidth-enhanced sinusoidal Partial. Zero-amplitude
 	//!	Breakpoints are inserted at either end of the Partial to reduce
 	//!	turn-on and turn-off artifacts, as described above. The synthesizer
@@ -130,62 +146,20 @@ public:
     //! Previous contents of the buffer is (!)
 	//!	overwritten. Partials with start times earlier than the Partial fade
 	//!	time will have shorter onset fades. Partials are not rendered at
-	//!   frequencies above the half-sample rate. 
+	//!   frequencies above the half-sample rate.
 	//!
 	//! \param  p The Partial to synthesize.
 	//! \return Nothing.
 	//!	\pre    The partial must have non-negative start time.
-	//! \post   This RealTimeSynthesizer's sample buffer (vector) has been 
-	//!         resized to accommodate the entire duration of the 
+	//! \post   This RealTimeSynthesizer's sample buffer (vector) has been
+	//!         resized to accommodate the entire duration of the
 	//!         Partial, p, including fade out at the end.
 	//!	\throw	InvalidPartial if the Partial has negative start time.
-	void synthesize( Partial p, double startTime, double endTime );
-	 
-	//!	Function call operator: same as synthesize( p ).
-	void operator() ( const Partial & p, double startTime, double endTime ) { synthesize( p, startTime, endTime ) ; }
-	 
-	//!	Synthesize all Partials on the specified half-open (STL-style) range.
-	//!	Null Breakpoints are inserted at either end of the Partial to reduce
-	//!	turn-on and turn-off artifacts, as described above. The synthesizer
-	//!	will resize the buffer as necessary to accommodate all the samples,
-	//!	including the fade outs. Previous contents of the buffer are not
-	//!	overwritten. Partials with start times earlier than the Partial fade
-	//!	time will have shorter onset fades.  Partials are not rendered at
-	//! frequencies above the half-sample rate. 
-	//!
-	//! \param  begin_partials The beginning of the range of Partials 
-	//!         to synthesize.
-	//! \param 	end_partials The end of the range of Partials 
-	//!         to synthesize.
-	//! \return Nothing.
-	//!	\pre    The partials must have non-negative start times.
-	//! \post   This RealTimeSynthesizer's sample buffer (vector) has been 
-	//!         resized to accommodate the entire duration of all the 
-	//!         Partials including fade out at the ends.
-	//!	\throw	InvalidPartial if any Partial has negative start time.
-#if ! defined(NO_TEMPLATE_MEMBERS)
-	template< typename Iter >
-	void synthesize( Iter begin_partials, Iter end_partials, double startTime, double endTime );
-#else
-    inline
-	void synthesize( PartialList::iterator begin_partials, 
-					 PartialList::iterator end_partials, double startTime, double endTime );
-#endif
-	 
-	//!	Function call operator: same as 
-	//!	synthesize( begin_partials, end_partials ).
-#if ! defined(NO_TEMPLATE_MEMBERS)
-	template< typename Iter >
-	void operator() ( Iter begin_partials, Iter end_partials, double startTime, double endTime );
-#else
-    inline
-	void operator() ( PartialList::iterator begin_partials, 
-					  PartialList::iterator end_partials, double startTime, double endTime );
-#endif
-	
-//	-- parameter access and mutation --
-//	-- implementation --
-private:
+	Partial::const_iterator synthesize( const Partial & p, Partial::const_iterator lastBreakpoint, const double endTime);
+    
+    void initInstance();
+    
+    
     double OneOverSrate;
     typedef unsigned long index_type;
     double itime;
@@ -196,64 +170,16 @@ private:
     double prevFrequency;
     double * bufferBegin;
     double dphase;
+    
+    PartialList partials;
+    PartialList::const_iterator partialsIt;
+    double processedSamples = 0;
+    Partial::const_iterator lastBreakpoint;
+//    std::map<PartialList::const_iterator, Partial::const_iterator> partialsBeingProcesses;
+    std::queue<std::pair<PartialList::const_iterator, Partial::const_iterator>> partialsBeingProcessed;
 };	//	end of class RealTimeSynthesizer
-// ---------------------------------------------------------------------------
-//	synthesize 
-// ---------------------------------------------------------------------------
-//!	Synthesize all Partials on the specified half-open (STL-style) range.
-//!	Null Breakpoints are inserted at either end of the Partial to reduce
-//!	turn-on and turn-off artifacts, as described above. The RealTimeSynthesizer
-//!	will resize the buffer as necessary to accommodate all the samples,
-//!	including the fade outs. Previous contents of the buffer are not
-//!	overwritten. Partials with start times earlier than the Partial fade
-//!	time will have shorter onset fades.
-//!
-//! \param  begin_partials The beginning of the range of Partials 
-//!         to synthesize.
-//! \param 	end_partials The end of the range of Partials 
-//!         to synthesize.
-//! \return Nothing.
-//!	\pre    The partials must have non-negative start times.
-//! \post   This RealTimeSynthesizer's sample buffer (vector) has been 
-//!         resized to accommodate the entire duration of all the 
-//!         Partials including fade out at the ends.
-//!	\throw	InvalidPartial if any Partial has negative start time.
-//
-#if ! defined(NO_TEMPLATE_MEMBERS)
-template<typename Iter>
-void 
-RealTimeSynthesizer::synthesize( Iter begin_partials, Iter end_partials, double startTime, double endTime )
-#else
-inline void 
-RealTimeSynthesizer::synthesize( PartialList::iterator begin_partials, 
-						 PartialList::iterator end_partials, double startTime, double endTime )
-#endif
-{
-    for ( auto it = begin_partials; it != end_partials; ++it )
-    {
-        if ( it->endTime() >= startTime && it->startTime() <= endTime )
-        {
-            synthesize( *(it), startTime, endTime );
-        }
-    }
+
+
 }
-// ---------------------------------------------------------------------------
-//	operator() 
-// ---------------------------------------------------------------------------
-//!	Function call operator: same as 
-//!		synthesize( begin_partials, end_partials, timeShift ).
-//
-#if ! defined(NO_TEMPLATE_MEMBERS)
-template<typename Iter>
-void
-RealTimeSynthesizer::operator() ( Iter begin_partials, Iter end_partials, double startTime, double endTime )
-#else
-inline void
-RealTimeSynthesizer::operator() ( PartialList::iterator begin_partials, 
-                          PartialList::iterator end_partials, double startTime, double endTime )
-#endif
-{ 
-	synthesize( begin_partials, end_partials, startTime, endTime );
-}
-}	//	end of namespace Loris
+
 #endif /* ndef INCLUDE_REAL_TIME_SYNTHESIZER_H */

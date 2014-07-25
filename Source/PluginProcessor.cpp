@@ -175,7 +175,7 @@ public:
             it++;
         }
 #ifdef REAL_TIME
-        synth.setupRealtime(this->partials.begin(), this->partials.end());
+        synth.setupRealtime(partials);
 #endif
         lastFreqMultiplyer = 1.0;
     
@@ -200,7 +200,7 @@ public:
     
         playNote = true;
         
-        std::fill (buffer.begin(), buffer.end(), 0);
+        synth.resetSynth();
     }
 
     void stopNote(bool allowTailOff)
@@ -224,11 +224,10 @@ public:
     {
         if (!playNote) return;
     
+#ifndef REAL_TIME
         const double startTime = sampleIndex * secPerSample;
         const double endTime = (sampleIndex + numSamples) * secPerSample;
         
-        
-#ifndef REAL_TIME
         filteredPartials.clear();
         buffer.clear();
         auto it = partials.begin();
@@ -242,7 +241,7 @@ public:
         }
         synth.synthesize(filteredPartials.begin(), filteredPartials.end());
 #else
-        synth.synthesize(partials.begin(), partials.end(), startTime, endTime);
+        synth.synthesizeNext(numSamples);
 #endif
         while (--numSamples >= 0)
         {
