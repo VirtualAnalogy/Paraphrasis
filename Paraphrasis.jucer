@@ -15,6 +15,10 @@
               userNotes="HAVE_FFTW3_H is for Loris to include and build with fftw-3 library (HAVE_FFTW_H for fftw-2 I supose). Debug_Loris can be usefull as well.&#10;&#10;Check for others platforms check type sizes: the defaults are in parenthesis ()&#10;&#10;#define SIZEOF_BOOL 1&#10;#define SIZEOF_CHAR 1&#10;#define SIZEOF_DOUBLE 8 // @ ImportLemur.C (8)&#10;#define SIZEOF_FLOAT 4  // @ ImportLemur.C (4)&#10;#define SIZEOF_INT 4 //@ AiffData.C(4), ImportLemur.C(4), SdifFile.C (4)&#10;#define SIZEOF_INT_P 8 //&#10;#define SIZEOF_LONG 8 // @ AiffData.C(4), ImportLemur.C(4), SdifFile.C (4)&#10;#define SIZEOF_SHORT 2 // @ AiffData.C(2), ImportLemur.C(2), SdifFile.C (2)&#10;#define SIZEOF_SIZE_T 8/Users/tomasmedek/Documents/VirtualAnalogy/Paraphrasis/Loris/config.h.in.txt">
   <MAINGROUP id="e1kq1V" name="Paraphrasis">
     <GROUP id="{2E5C234B-471B-526D-CD3C-6DDD7ADD8349}" name="Loris">
+      <FILE id="wvrbJO" name="RealtimeSynthesizer.h" compile="0" resource="0"
+            file="Loris/src/RealtimeSynthesizer.h"/>
+      <FILE id="PQyqZq" name="RealtimeSynthesizer.C" compile="1" resource="0"
+            file="Loris/src/RealtimeSynthesizer.C"/>
       <FILE id="xh8duX" name="AiffData.C" compile="1" resource="0" file="Loris/src/AiffData.C"/>
       <FILE id="YnTiqm" name="AiffData.h" compile="0" resource="0" file="Loris/src/AiffData.h"/>
       <FILE id="QFWmiy" name="AiffFile.C" compile="1" resource="0" file="Loris/src/AiffFile.C"/>
