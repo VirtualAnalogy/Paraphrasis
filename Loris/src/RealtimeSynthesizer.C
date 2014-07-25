@@ -233,8 +233,14 @@ void
 //! \throw  InvalidPartial if the Partial has negative start time.
 //  
 Partial::const_iterator
-    RealTimeSynthesizer::synthesize( const Partial &p, Partial::const_iterator lastBreakpoint , const double endTime)
+    RealTimeSynthesizer::synthesize( const Partial &p, const Partial::const_iterator & lastBreakpoint , const double endTime)
 {
+//    if ( p.duration() < endTime)
+//        return p.end();
+//    else
+//        return p.findNearest(endTime);
+    
+    double startTime = p.startTime();
     if ( p.numBreakpoints() == 0 )
     {
 #ifdef Loris_Debug
@@ -243,7 +249,7 @@ Partial::const_iterator
         return lastBreakpoint;
     }
     
-    if ( p.startTime() < 0 )
+    if ( startTime < 0 )
     {
 #ifdef Loris_Debug
         Throw( InvalidPartial, "Tried to synthesize a Partial having start time less than 0." );
@@ -270,21 +276,22 @@ Partial::const_iterator
 
     //  compute the starting time for synthesis of this Partial,
     //  m_fadeTimeSec before the Partial's startTime, but not before 0:
-    itime = ( m_fadeTimeSec < p.startTime() ) ? ( p.startTime() - m_fadeTimeSec ) : 0.;
+    itime = ( m_fadeTimeSec < startTime ) ? ( startTime- m_fadeTimeSec ) : 0.;
     currentSamp = index_type( (itime * m_srateHz) + 0.5 );   //  cheap rounding
     
+    auto it = lastBreakpoint;
     //  reset the oscillator: in case we are starting from begining
     //  all that really needs to happen here is setting the frequency
     //  correctly, the phase will be reset again in the loop over 
     //  Breakpoints below, and the amp and bw can start at 0.
     if (lastBreakpoint == p.begin())
     {
-        m_osc.resetEnvelopes( BreakpointUtils::makeNullBefore( p.first(), p.startTime() - itime ), m_srateHz );
+        m_osc.resetEnvelopes( BreakpointUtils::makeNullBefore( p.first(), startTime - itime ), m_srateHz );
     }
     else
     {
         m_osc.resetEnvelopes( lastBreakpoint.breakpoint(), m_srateHz );
-        lastBreakpoint++;
+        it++;
     }
     
     //  cache the previous frequency (in Hz) so that it
@@ -297,12 +304,14 @@ Partial::const_iterator
     //  synthesize linear-frequency segments until 
     //  there aren't any more Breakpoints to make segments:
     bufferBegin = &( m_sampleBuffer->front() );
-    auto it = lastBreakpoint;
-    for (it; it.time() <= endTime && it != p.end(); ++it )
+    double time;
+    const Breakpoint *bp;
+    for (; (time = it.time()) <= endTime && it != p.end(); ++it )
     {
-        tgtSamp = index_type( (it.time() * m_srateHz) + 0.5 );   //  cheap rounding
+        tgtSamp = index_type( (time * m_srateHz) + 0.5 );   //  cheap rounding
         Assert( tgtSamp >= currentSamp );
         
+        bp = &(it.breakpoint());
         //  if the current oscillator amplitude is
         //  zero, and the target Breakpoint amplitude
         //  is not, reset the oscillator phase so that
@@ -319,18 +328,18 @@ Partial::const_iterator
             //  double favg = 0.5 * ( prevFrequency + it.breakpoint().frequency() );
             //  double dphase = 2 * Pi * favg * ( tgtSamp - currentSamp ) / m_srateHz;
             //
-            dphase = Pi * ( prevFrequency + it.breakpoint().frequency() )
+            dphase = Pi * ( prevFrequency + bp->frequency() )
                                * ( tgtSamp - currentSamp ) * OneOverSrate;
-            m_osc.setPhase( it.breakpoint().phase() - dphase );
+            m_osc.setPhase( bp->phase() - dphase );
         }
         
-        m_osc.oscillate( bufferBegin + currentSamp, bufferBegin + tgtSamp, it.breakpoint(), m_srateHz );
+        m_osc.oscillate( bufferBegin + currentSamp, bufferBegin + tgtSamp, *bp, m_srateHz );
         
         currentSamp = tgtSamp;
         
         //  remember the frequency, may need it to reset the 
         //  phase if a Null Breakpoint is encountered:
-        prevFrequency = it.breakpoint().frequency();
+        prevFrequency = bp->frequency();
     }
     
     // in case we finished the partial render fade out

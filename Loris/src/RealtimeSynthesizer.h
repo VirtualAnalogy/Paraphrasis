@@ -155,7 +155,7 @@ private:
 	//!         resized to accommodate the entire duration of the
 	//!         Partial, p, including fade out at the end.
 	//!	\throw	InvalidPartial if the Partial has negative start time.
-	Partial::const_iterator synthesize( const Partial & p, Partial::const_iterator lastBreakpoint, const double endTime);
+	Partial::const_iterator synthesize( const Partial & p, const Partial::const_iterator & lastBreakpoint, const double endTime);
     
     void initInstance();
     

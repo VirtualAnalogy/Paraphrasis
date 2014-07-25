@@ -155,6 +155,8 @@ void
 Oscillator::oscillate( double * begin, double * end,
                        const Breakpoint & bp, double srate )
 {
+    return;
+    
     double targetFreq = bp.frequency() * TwoPi / srate;     //  radians per sample
     double targetAmp = bp.amplitude(); 
     double targetBw = bp.bandwidth();
