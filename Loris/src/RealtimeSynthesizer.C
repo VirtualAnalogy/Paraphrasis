@@ -278,9 +278,14 @@ Partial::const_iterator
     //  correctly, the phase will be reset again in the loop over 
     //  Breakpoints below, and the amp and bw can start at 0.
     if (lastBreakpoint == p.begin())
+    {
         m_osc.resetEnvelopes( BreakpointUtils::makeNullBefore( p.first(), p.startTime() - itime ), m_srateHz );
+    }
     else
+    {
         m_osc.resetEnvelopes( lastBreakpoint.breakpoint(), m_srateHz );
+        lastBreakpoint++;
+    }
     
     //  cache the previous frequency (in Hz) so that it
     //  can be used to reset the phase when necessary
@@ -293,7 +298,7 @@ Partial::const_iterator
     //  there aren't any more Breakpoints to make segments:
     bufferBegin = &( m_sampleBuffer->front() );
     auto it = lastBreakpoint;
-    for (++it ; it.time() >= endTime; ++it )
+    for (it; it.time() <= endTime && it != p.end(); ++it )
     {
         tgtSamp = index_type( (it.time() * m_srateHz) + 0.5 );   //  cheap rounding
         Assert( tgtSamp >= currentSamp );
