@@ -16,10 +16,18 @@
 #include "SdifFile.h"
 #include "Synthesizer.h"
 #include "RealTimeSynthesizer.h"
+
 #include "Channelizer.h"
-//#define FUNDAMENTAL_FREQUENCY 440 //pad
-#define FUNDAMENTAL_FREQUENCY 109 //pno
+
+#define PAD
+#ifdef PAD
+  #define FUNDAMENTAL_FREQUENCY 440 //pad
+#else
+  #define FUNDAMENTAL_FREQUENCY 109 //pno
+#endif
+
 #define REAL_TIME
+
 //==============================================================================
 /** A demo synth sound that's just a basic sine wave.. */
 class SineWaveSound : public SynthesiserSound
@@ -293,7 +301,7 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor()
 
     initLoris();
 
-    for (int i = 4; --i >= 0;)
+    for (int i = 10; --i >= 0;)
         synth.addVoice(new LorisVoice(partials));    // These voices will play our custom sine-wave sounds..
 
     synth.addSound(new LorisSound());
@@ -326,8 +334,12 @@ void ParaphrasisAudioProcessor::initLoris()
     
 #define LOAD_FROM_AIFF 1
 #if LOAD_FROM_AIFF
+
+#ifdef PAD
+    Loris::AiffFile inputFile("/Users/tomasmedek/Documents/Tmp/LorisTest/pad-quater.aiff");
+#else
     Loris::AiffFile inputFile("/Users/tomasmedek/Documents/Tmp/LorisTest/Piano.ff.C3.mono.cropped.aiff");
-//    Loris::AiffFile inputFile("/Users/tomasmedek/Documents/Tmp/LorisTest/pad-quater.aiff");
+#endif
     
     Loris::AiffFile::samples_type samples = inputFile.samples();
     Loris::AiffFile::markers_type markers = inputFile.markers();
