@@ -37,13 +37,21 @@
 
 #include <vector>
 #include <queue>
+#include <cmath>
+
+#if defined(HAVE_M_PI) && (HAVE_M_PI)
+const double Pi = M_PI;
+#else
+const double Pi = 3.14159265358979324;
+#endif
+
 
 //	begin namespace
 namespace Loris {
     
 struct PartialStruct
 {
-    enum { NoBreakpointProcessed = -1, FirstBreakpoint };
+    enum { NoBreakpointProcessed = 0, FirstBreakpoint };
     
     double duration = 0.0;
     double startTime = 0.0;
@@ -147,15 +155,15 @@ public:
     
     void synthesizeNext(int samples);
     
-    void resetSynth()
+    void resetSynth(double freqScale)
     {
         partialIdx = 0;
         
         std::fill (m_sampleBuffer->begin(), m_sampleBuffer->end(), 0);
         processedSamples = 0;
         
-        int size = partials.size();
-        for (int i = 0; i < size; i++)
+        int sizeP = partials.size();
+        for (int i = 0; i < sizeP; i++)
         {
             //  compute the starting time for synthesis of this Partial,
             //  m_fadeTimeSec before the Partial's startTime, but not before 0:
@@ -163,14 +171,34 @@ public:
             partials[i].state.currentSamp = index_type( (partials[i].startTime * m_srateHz) + 0.5 );   //  cheap rounding
             partials[i].state.lastBreakpoint = PartialStruct::NoBreakpointProcessed;
             
+            int sizeB = partials[i].breakpoints.size();
+            double endPhase = 0;
+            for (int j = 0; j < sizeB; j++)
+            {
+                double f = partials[i].breakpoints[j].second._frequency *= freqScale;
+                partials[i].breakpoints[j].second._phase = endPhase;
+                
+                //  correct phase
+                if (j + 1 < sizeB)
+                    endPhase = wrapPi( 2. * Pi * (partials[i].breakpoints[j + 1].first - partials[i].breakpoints[j].first) * f + partials[i].breakpoints[j].second._phase);
+            }
+            
             //  cache the previous frequency (in Hz) so that it
             //  can be used to reset the phase when necessary
             //  in the sample computation loop below (this saves
             //  having to recompute from the oscillator's radian
             //  frequency):
-            partials[i].state.prevFrequency = partials[i].breakpoints[1].second.frequency();// 0 is null breakpoint
+            partials[i].state.prevFrequency = partials[i].breakpoints[1].second._frequency;// 0 is null breakpoint
         }
         
+    }
+    
+    static inline double wrapPi( double x )
+    {
+        using namespace std; // floor should be in std
+#define ROUND(x) (floor(.5 + (x)))
+        const double TwoPi = 2.0*Pi;
+        return x + ( TwoPi * ROUND(-x/TwoPi) );
     }
 	 	
 //	-- parameter access and mutation --
@@ -194,7 +222,7 @@ private:
 	//!         resized to accommodate the entire duration of the
 	//!         Partial, p, including fade out at the end.
 	//!	\throw	InvalidPartial if the Partial has negative start time.
-	void synthesize( PartialStruct & p, const double endTime);
+	void synthesize( PartialStruct & p, const int samples);
     
     void initInstance();
     

@@ -17,7 +17,8 @@
 #include "Synthesizer.h"
 #include "RealTimeSynthesizer.h"
 #include "Channelizer.h"
-#define FUNDAMENTAL_FREQUENCY 440
+//#define FUNDAMENTAL_FREQUENCY 440 //pad
+#define FUNDAMENTAL_FREQUENCY 109 //pno
 #define REAL_TIME
 //==============================================================================
 /** A demo synth sound that's just a basic sine wave.. */
@@ -178,7 +179,6 @@ public:
         synth.setupRealtime(partials);
 #endif
         lastFreqMultiplyer = 1.0;
-    
     }
 
     bool canPlaySound(SynthesiserSound* sound)
@@ -194,13 +194,12 @@ public:
 
         double freqMultiplyer = MidiMessage::getMidiNoteInHertz (midiNoteNumber) / FUNDAMENTAL_FREQUENCY;
     
-        Loris::PartialUtils::scaleFrequency(partials.begin(), partials.end(), freqMultiplyer / lastFreqMultiplyer);//scale back
-    
+        synth.resetSynth(freqMultiplyer / lastFreqMultiplyer);//scale back
+        
         lastFreqMultiplyer = freqMultiplyer;
     
         playNote = true;
-        
-        synth.resetSynth();
+
     }
 
     void stopNote(bool allowTailOff)
@@ -208,6 +207,7 @@ public:
         sampleIndex = 0;
         clearCurrentNote();
         playNote = false;
+        first--;
     }
 
     void pitchWheelMoved(int /*newValue*/)
@@ -223,6 +223,8 @@ public:
     void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples)
     {
         if (!playNote) return;
+        
+        
     
 #ifndef REAL_TIME
         const double startTime = sampleIndex * secPerSample;
@@ -241,7 +243,8 @@ public:
         }
         synth.synthesize(filteredPartials.begin(), filteredPartials.end());
 #else
-        synth.synthesizeNext(numSamples);
+//        if (first > 0)
+            synth.synthesizeNext(numSamples);
 #endif
         while (--numSamples >= 0)
         {
@@ -269,6 +272,7 @@ private:
 #endif
     double lastFreqMultiplyer;
     bool playNote;
+    int first = 2;
 };
 
 
@@ -322,8 +326,8 @@ void ParaphrasisAudioProcessor::initLoris()
     
 #define LOAD_FROM_AIFF 1
 #if LOAD_FROM_AIFF
-//    Loris::AiffFile inputFile("/Users/tomasmedek/Documents/Tmp/LorisTest/Piano.ff.C3.mono.cropped.aiff");
-    Loris::AiffFile inputFile("/Users/tomasmedek/Documents/Tmp/LorisTest/pad-quater.aiff");
+    Loris::AiffFile inputFile("/Users/tomasmedek/Documents/Tmp/LorisTest/Piano.ff.C3.mono.cropped.aiff");
+//    Loris::AiffFile inputFile("/Users/tomasmedek/Documents/Tmp/LorisTest/pad-quater.aiff");
     
     Loris::AiffFile::samples_type samples = inputFile.samples();
     Loris::AiffFile::markers_type markers = inputFile.markers();

@@ -47,11 +47,7 @@
 #include <algorithm>
 #include <cmath>
 #include <assert.h>
-#if defined(HAVE_M_PI) && (HAVE_M_PI)
-    const double Pi = M_PI;
-#else
-    const double Pi = 3.14159265358979324;
-#endif
+
 //  begin namespace
 namespace Loris {
 // ---------------------------------------------------------------------------
@@ -209,23 +205,19 @@ void RealTimeSynthesizer::setupRealtime(PartialList & partials)
         this->partials.push_back(pStruct);
     }
     
-    resetSynth();
+    resetSynth(1.0);
 
 }
 
 void
     RealTimeSynthesizer::synthesizeNext( int samples )
 {
-    double endTime = ( processedSamples + samples ) * OneOverSrate;
-    bool processed = false;
-    
     int size = partialsBeingProcessed.size();
     PartialStruct *partial;
     for (int i = 0; i < size; i++)
     {
         partial = partialsBeingProcessed.front();
-        synthesize( *partial, endTime );
-        processed = true;
+        synthesize( *partial, samples );
         
         if ( partial->state.lastBreakpoint < partial->numBreakpoints - 1)
             partialsBeingProcessed.push( partial );
@@ -237,16 +229,12 @@ void
     for (; partialIdx < partialSize; partialIdx++)
     {
         partial = &(partials[partialIdx]);
-        synthesize( *partial, endTime);
-        processed = true;
+        synthesize( *partial, samples );
         
         if ( partial->state.lastBreakpoint < partial->numBreakpoints - 1)
             partialsBeingProcessed.push(partial);
         
     }
-    
-    if ( processed )
-        processedSamples += samples;
 }
     
 // ---------------------------------------------------------------------------
@@ -270,14 +258,14 @@ void
 //! \throw  InvalidPartial if the Partial has negative start time.
 //  
 void
-    RealTimeSynthesizer::synthesize( PartialStruct &p, const double endTime)
+    RealTimeSynthesizer::synthesize( PartialStruct &p, const int samples)
 {
     if ( p.numBreakpoints <= 0 || p.startTime < 0 )
         return;
     
     assert(p.breakpoints.size() != 0);
     
-    if ( p.state.lastBreakpoint != -1 && ( p.state.lastBreakpoint >= p.numBreakpoints - 1 || p.breakpoints[p.state.lastBreakpoint].first > endTime) )
+    if ( p.state.lastBreakpoint >= p.numBreakpoints - 1 )// || p.breakpoints[p.state.lastBreakpoint].first > endTime) )
         return;
 
     m_osc.resetEnvelopes( p.breakpoints[p.state.lastBreakpoint].second, m_srateHz );
@@ -287,11 +275,11 @@ void
     //  there aren't any more Breakpoints to make segments:
     bufferBegin = &( m_sampleBuffer->front() );
     const Breakpoint *bp;
-    double time;
+    int processedSamples = 0;
     int i;
-    for (i = p.state.lastBreakpoint + 1; (time = p.breakpoints[i].first) <= endTime && i < p.numBreakpoints; ++i )
+    for (i = p.state.lastBreakpoint + 1;  i < p.numBreakpoints; ++i )
     {
-        tgtSamp = index_type( (time * m_srateHz) + 0.5 );   //  cheap rounding
+        tgtSamp = index_type( (p.breakpoints[i].first * m_srateHz) + 0.5 );   //  cheap rounding
         Assert( tgtSamp >= p.state.currentSamp );
         
         bp = &(p.breakpoints[i].second);
@@ -318,11 +306,15 @@ void
         
         m_osc.oscillate( bufferBegin + p.state.currentSamp, bufferBegin + tgtSamp, *bp, m_srateHz );
         
+        processedSamples += tgtSamp - p.state.currentSamp;
         p.state.currentSamp = tgtSamp;
         
         //  remember the frequency, may need it to reset the 
         //  phase if a Null Breakpoint is encountered:
         p.state.prevFrequency = bp->frequency();
+        
+        if (processedSamples >= samples)
+            break;
     }
     
     p.state.lastBreakpoint = i;
