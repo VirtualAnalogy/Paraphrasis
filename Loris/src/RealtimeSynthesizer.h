@@ -154,20 +154,21 @@ public:
         std::fill (m_sampleBuffer->begin(), m_sampleBuffer->end(), 0);
         processedSamples = 0;
         
-        for (auto p : partials)
+        int size = partials.size();
+        for (int i = 0; i < size; i++)
         {
             //  compute the starting time for synthesis of this Partial,
             //  m_fadeTimeSec before the Partial's startTime, but not before 0:
 
-            p.state.currentSamp = index_type( (p.startTime * m_srateHz) + 0.5 );   //  cheap rounding
-            p.state.lastBreakpoint = PartialStruct::NoBreakpointProcessed;
+            partials[i].state.currentSamp = index_type( (partials[i].startTime * m_srateHz) + 0.5 );   //  cheap rounding
+            partials[i].state.lastBreakpoint = PartialStruct::NoBreakpointProcessed;
             
             //  cache the previous frequency (in Hz) so that it
             //  can be used to reset the phase when necessary
             //  in the sample computation loop below (this saves
             //  having to recompute from the oscillator's radian
             //  frequency):
-            p.state.prevFrequency = p.breakpoints[1].second.frequency();// 0 is null breakpoint
+            partials[i].state.prevFrequency = partials[i].breakpoints[1].second.frequency();// 0 is null breakpoint
         }
         
     }
@@ -207,7 +208,7 @@ private:
     std::vector<PartialStruct> partials;
     int partialIdx;
     double processedSamples = 0;
-    std::queue<PartialStruct> partialsBeingProcessed;
+    std::queue<PartialStruct* > partialsBeingProcessed;
 };	//	end of class RealTimeSynthesizer
 
 

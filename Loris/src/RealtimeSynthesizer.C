@@ -43,8 +43,10 @@
 #include "Partial.h"
 #include "Resampler.h"
 #include "phasefix.h"
+
 #include <algorithm>
 #include <cmath>
+#include <assert.h>
 #if defined(HAVE_M_PI) && (HAVE_M_PI)
     const double Pi = M_PI;
 #else
@@ -182,18 +184,18 @@ void RealTimeSynthesizer::setupRealtime(PartialList & partials)
     {
         if (it.numBreakpoints() <= 0) continue;
         PartialStruct pStruct;
-        pStruct.duration = it.duration();
-        pStruct.endTime = it.endTime();
-        pStruct.numBreakpoints = it.numBreakpoints();
+        pStruct.numBreakpoints = it.numBreakpoints() + 2;// + fade in + fade out
+        pStruct.breakpoints.reserve(pStruct.numBreakpoints);
         
-        pStruct.breakpoints.reserve(pStruct.numBreakpoints + 2);
-        
-        pStruct.startTime = ( m_fadeTimeSec < it.startTime() ) ? ( it.startTime() - m_fadeTimeSec ) : 0.;
-        pStruct.state.endSamp = index_type( ( pStruct.endTime + m_fadeTimeSec ) * m_srateHz );
+        pStruct.startTime = ( m_fadeTimeSec < it.startTime() ) ? ( it.startTime() - m_fadeTimeSec ) : 0.;// compute fade in bp time
+        pStruct.endTime = it.endTime() + m_fadeTimeSec;// compute fade out bp time
+        pStruct.duration = pStruct.endTime - pStruct.startTime;// new duration based on fade in and out
+
+        pStruct.state.endSamp = index_type( pStruct.endTime * m_srateHz );
         
         Partial::const_iterator jt = it.begin();
-        // fade in breakpoint
-        pStruct.breakpoints.push_back(std::make_pair(pStruct.startTime, BreakpointUtils::makeNullBefore( jt.breakpoint(), m_fadeTimeSec)));
+        // fade in breakpoint, compute fade in time
+        pStruct.breakpoints.push_back(std::make_pair(pStruct.startTime, BreakpointUtils::makeNullBefore( jt.breakpoint(), it.startTime() - pStruct.startTime)));
         for (; jt != it.end(); jt++)
         {
             pStruct.breakpoints.push_back(std::make_pair(jt.time(), jt.breakpoint()));
@@ -203,6 +205,7 @@ void RealTimeSynthesizer::setupRealtime(PartialList & partials)
         jt--;
         pStruct.breakpoints.push_back(std::make_pair(jt.time() + m_fadeTimeSec, BreakpointUtils::makeNullAfter( jt.breakpoint(), m_fadeTimeSec )));
         
+        assert(pStruct.breakpoints.size() != 0);
         this->partials.push_back(pStruct);
     }
     
@@ -217,25 +220,27 @@ void
     bool processed = false;
     
     int size = partialsBeingProcessed.size();
-    PartialStruct partial;
+    PartialStruct *partial;
     for (int i = 0; i < size; i++)
     {
         partial = partialsBeingProcessed.front();
-        partialsBeingProcessed.pop();
-        synthesize( partial, endTime );
+        synthesize( *partial, endTime );
         processed = true;
         
-        if ( partial.state.lastBreakpoint < partial.numBreakpoints - 1)
+        if ( partial->state.lastBreakpoint < partial->numBreakpoints - 1)
             partialsBeingProcessed.push( partial );
+        
+        partialsBeingProcessed.pop();
     }
     
     int partialSize = partials.size();
     for (; partialIdx < partialSize; partialIdx++)
     {
-        synthesize( partial, endTime);
+        partial = &(partials[partialIdx]);
+        synthesize( *partial, endTime);
         processed = true;
         
-        if ( partial.state.lastBreakpoint < partial.numBreakpoints - 1)
+        if ( partial->state.lastBreakpoint < partial->numBreakpoints - 1)
             partialsBeingProcessed.push(partial);
         
     }
@@ -267,10 +272,12 @@ void
 void
     RealTimeSynthesizer::synthesize( PartialStruct &p, const double endTime)
 {
-    if ( p.numBreakpoints == 0 || p.startTime < 0 )
+    if ( p.numBreakpoints <= 0 || p.startTime < 0 )
         return;
     
-    if ( p.state.lastBreakpoint >= p.numBreakpoints - 1 || p.breakpoints[p.state.lastBreakpoint].first > endTime)
+    assert(p.breakpoints.size() != 0);
+    
+    if ( p.state.lastBreakpoint != -1 && ( p.state.lastBreakpoint >= p.numBreakpoints - 1 || p.breakpoints[p.state.lastBreakpoint].first > endTime) )
         return;
 
     m_osc.resetEnvelopes( p.breakpoints[p.state.lastBreakpoint].second, m_srateHz );
