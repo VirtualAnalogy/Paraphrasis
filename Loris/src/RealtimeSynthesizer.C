@@ -214,6 +214,8 @@ void
 {
     int size = partialsBeingProcessed.size();
     PartialStruct *partial;
+    
+    // partials being processed
     for (int i = 0; i < size; i++)
     {
         partial = partialsBeingProcessed.front();
@@ -225,6 +227,7 @@ void
         partialsBeingProcessed.pop();
     }
     
+    // partials to be processed
     int partialSize = partials.size();
     for (; partialIdx < partialSize; partialIdx++)
     {
@@ -269,7 +272,6 @@ void
         return;
 
     m_osc.resetEnvelopes( p.breakpoints[p.state.lastBreakpoint].second, m_srateHz );
-
         
     //  synthesize linear-frequency segments until 
     //  there aren't any more Breakpoints to make segments:

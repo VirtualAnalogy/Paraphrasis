@@ -5,7 +5,7 @@
  * manipulation, and synthesis of digitized sounds using the Reassigned
  * Bandwidth-Enhanced Additive Sound Model.
  *
- * Loris is Copyright (c) 1999-2010 by Kelly Fitz and Lippold Haken
+ * Loris is Copyright (c) 1999-2010, 2014 by Kelly Fitz, Lippold Haken and Tomas Medek
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,8 @@ const double Pi = 3.14159265358979324;
 
 //	begin namespace
 namespace Loris {
-    
+// Using this struct because iterating over partials and especially Breakpoint is very
+// expensive. So I wrote this data container.
 struct PartialStruct
 {
     enum { NoBreakpointProcessed = 0, FirstBreakpoint };
@@ -165,29 +166,23 @@ public:
         int sizeP = partials.size();
         for (int i = 0; i < sizeP; i++)
         {
-            //  compute the starting time for synthesis of this Partial,
-            //  m_fadeTimeSec before the Partial's startTime, but not before 0:
-
             partials[i].state.currentSamp = index_type( (partials[i].startTime * m_srateHz) + 0.5 );   //  cheap rounding
             partials[i].state.lastBreakpoint = PartialStruct::NoBreakpointProcessed;
             
             int sizeB = partials[i].breakpoints.size();
-            double endPhase = 0;
+            double endPhase = 0; // first is null breakpoint
             for (int j = 0; j < sizeB; j++)
             {
-                double f = partials[i].breakpoints[j].second._frequency *= freqScale;
-                partials[i].breakpoints[j].second._phase = endPhase;
+                double newFrequency = partials[i].breakpoints[j].second._frequency *= freqScale;
+                partials[i].breakpoints[j].second._phase = endPhase; // synchronize phase with previous wave, beginig is previous ending
                 
-                //  correct phase
+                //  calculate end phase which will be begging for the next one
                 if (j + 1 < sizeB)
-                    endPhase = wrapPi( 2. * Pi * (partials[i].breakpoints[j + 1].first - partials[i].breakpoints[j].first) * f + partials[i].breakpoints[j].second._phase);
+                    endPhase = wrapPi( 2. * Pi * (partials[i].breakpoints[j + 1].first - partials[i].breakpoints[j].first) * newFrequency + partials[i].breakpoints[j].second._phase);
             }
             
             //  cache the previous frequency (in Hz) so that it
             //  can be used to reset the phase when necessary
-            //  in the sample computation loop below (this saves
-            //  having to recompute from the oscillator's radian
-            //  frequency):
             partials[i].state.prevFrequency = partials[i].breakpoints[1].second._frequency;// 0 is null breakpoint
         }
         
