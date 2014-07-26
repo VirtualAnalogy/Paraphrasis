@@ -46,47 +46,54 @@
 		83850F0AD7FCEA3E1FD1D11B /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A82E5E1F91C050E4A1DD726 /* CoreMIDI.framework */; };
 		84AC3148CA980E884867FCF3 /* juce_AU_Resources.r in Rez */ = {isa = PBXBuildFile; fileRef = 0705B3374B7B97ACF3A0A5E8 /* juce_AU_Resources.r */; };
 		867EE953145A6F300CE1F956 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A8BDA1262759D533C96B562 /* Accelerate.framework */; };
-		87FF13E119810AC600F56B20 /* AiffData.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF138919810AC600F56B20 /* AiffData.C */; };
-		87FF13E219810AC600F56B20 /* AiffFile.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF138B19810AC600F56B20 /* AiffFile.C */; };
-		87FF13E319810AC600F56B20 /* Analyzer.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF138D19810AC600F56B20 /* Analyzer.C */; };
-		87FF13E419810AC600F56B20 /* AssociateBandwidth.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF138F19810AC600F56B20 /* AssociateBandwidth.C */; };
-		87FF13E519810AC600F56B20 /* BigEndian.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF139119810AC600F56B20 /* BigEndian.C */; };
-		87FF13E619810AC600F56B20 /* Breakpoint.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF139319810AC600F56B20 /* Breakpoint.C */; };
-		87FF13E719810AC600F56B20 /* BreakpointUtils.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF139619810AC600F56B20 /* BreakpointUtils.C */; };
-		87FF13E819810AC600F56B20 /* Channelizer.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF139819810AC600F56B20 /* Channelizer.C */; };
-		87FF13E919810AC600F56B20 /* Collator.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF139A19810AC600F56B20 /* Collator.C */; };
-		87FF13EA19810AC600F56B20 /* Dilator.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF139C19810AC600F56B20 /* Dilator.C */; };
-		87FF13EB19810AC600F56B20 /* Distiller.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF139E19810AC600F56B20 /* Distiller.C */; };
-		87FF13EC19810AC600F56B20 /* Envelope.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13A019810AC600F56B20 /* Envelope.C */; };
-		87FF13ED19810AC600F56B20 /* F0Estimate.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13A319810AC600F56B20 /* F0Estimate.C */; };
-		87FF13EE19810AC600F56B20 /* fftsg.c in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13A519810AC600F56B20 /* fftsg.c */; };
-		87FF13EF19810AC600F56B20 /* Filter.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13A619810AC600F56B20 /* Filter.C */; };
-		87FF13F019810AC600F56B20 /* FourierTransform.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13A819810AC600F56B20 /* FourierTransform.C */; };
-		87FF13F119810AC600F56B20 /* FrequencyReference.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13AA19810AC600F56B20 /* FrequencyReference.C */; };
-		87FF13F219810AC600F56B20 /* Fundamental.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13AC19810AC600F56B20 /* Fundamental.C */; };
-		87FF13F319810AC600F56B20 /* Harmonifier.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13AE19810AC600F56B20 /* Harmonifier.C */; };
-		87FF13F419810AC600F56B20 /* ImportLemur.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13B019810AC600F56B20 /* ImportLemur.C */; };
-		87FF13F519810AC600F56B20 /* KaiserWindow.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13B219810AC600F56B20 /* KaiserWindow.C */; };
-		87FF13F619810AC600F56B20 /* LinearEnvelope.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13B419810AC600F56B20 /* LinearEnvelope.C */; };
-		87FF13F719810AC600F56B20 /* LorisExceptions.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13B719810AC600F56B20 /* LorisExceptions.C */; };
-		87FF13F819810AC600F56B20 /* Marker.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13B919810AC600F56B20 /* Marker.C */; };
-		87FF13F919810AC600F56B20 /* Morpher.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13BB19810AC600F56B20 /* Morpher.C */; };
-		87FF13FA19810AC600F56B20 /* NoiseGenerator.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13BD19810AC600F56B20 /* NoiseGenerator.C */; };
-		87FF13FB19810AC600F56B20 /* Notifier.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13BF19810AC600F56B20 /* Notifier.C */; };
-		87FF13FC19810AC600F56B20 /* Oscillator.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13C119810AC600F56B20 /* Oscillator.C */; };
-		87FF13FD19810AC600F56B20 /* Partial.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13C319810AC600F56B20 /* Partial.C */; };
-		87FF13FE19810AC600F56B20 /* PartialBuilder.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13C519810AC600F56B20 /* PartialBuilder.C */; };
-		87FF13FF19810AC600F56B20 /* PartialUtils.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13C919810AC600F56B20 /* PartialUtils.C */; };
-		87FF140019810AC600F56B20 /* phasefix.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13CB19810AC600F56B20 /* phasefix.C */; };
-		87FF140119810AC600F56B20 /* RealtimeSynthesizer.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13CD19810AC600F56B20 /* RealtimeSynthesizer.C */; };
-		87FF140219810AC600F56B20 /* ReassignedSpectrum.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13CF19810AC600F56B20 /* ReassignedSpectrum.C */; };
-		87FF140319810AC600F56B20 /* Resampler.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13D119810AC600F56B20 /* Resampler.C */; };
-		87FF140419810AC600F56B20 /* SdifFile.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13D319810AC600F56B20 /* SdifFile.C */; };
-		87FF140519810AC600F56B20 /* Sieve.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13D519810AC600F56B20 /* Sieve.C */; };
-		87FF140619810AC600F56B20 /* SpcFile.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13D719810AC600F56B20 /* SpcFile.C */; };
-		87FF140719810AC600F56B20 /* SpectralPeakSelector.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13DA19810AC600F56B20 /* SpectralPeakSelector.C */; };
-		87FF140819810AC600F56B20 /* SpectralSurface.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13DC19810AC600F56B20 /* SpectralSurface.C */; };
-		87FF140919810AC600F56B20 /* Synthesizer.C in Sources */ = {isa = PBXBuildFile; fileRef = 87FF13DF19810AC600F56B20 /* Synthesizer.C */; };
+		87CB607D19845B0D00C7C70C /* AiffData.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB601D19845B0D00C7C70C /* AiffData.C */; };
+		87CB607E19845B0D00C7C70C /* AiffFile.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB601F19845B0D00C7C70C /* AiffFile.C */; };
+		87CB607F19845B0D00C7C70C /* Analyzer.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB602119845B0D00C7C70C /* Analyzer.C */; };
+		87CB608019845B0D00C7C70C /* AssociateBandwidth.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB602319845B0D00C7C70C /* AssociateBandwidth.C */; };
+		87CB608119845B0D00C7C70C /* BigEndian.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB602519845B0D00C7C70C /* BigEndian.C */; };
+		87CB608219845B0D00C7C70C /* Breakpoint.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB602719845B0D00C7C70C /* Breakpoint.C */; };
+		87CB608319845B0D00C7C70C /* BreakpointUtils.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB602A19845B0D00C7C70C /* BreakpointUtils.C */; };
+		87CB608419845B0D00C7C70C /* Channelizer.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB602C19845B0D00C7C70C /* Channelizer.C */; };
+		87CB608519845B0D00C7C70C /* Collator.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB602E19845B0D00C7C70C /* Collator.C */; };
+		87CB608619845B0D00C7C70C /* Dilator.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB603019845B0D00C7C70C /* Dilator.C */; };
+		87CB608719845B0D00C7C70C /* Distiller.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB603219845B0D00C7C70C /* Distiller.C */; };
+		87CB608819845B0D00C7C70C /* Envelope.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB603419845B0D00C7C70C /* Envelope.C */; };
+		87CB608919845B0D00C7C70C /* F0Estimate.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB603719845B0D00C7C70C /* F0Estimate.C */; };
+		87CB608A19845B0D00C7C70C /* fftsg.c in Sources */ = {isa = PBXBuildFile; fileRef = 87CB603919845B0D00C7C70C /* fftsg.c */; };
+		87CB608B19845B0D00C7C70C /* Filter.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB603A19845B0D00C7C70C /* Filter.C */; };
+		87CB608C19845B0D00C7C70C /* FourierTransform.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB603C19845B0D00C7C70C /* FourierTransform.C */; };
+		87CB608D19845B0D00C7C70C /* FrequencyReference.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB603E19845B0D00C7C70C /* FrequencyReference.C */; };
+		87CB608E19845B0D00C7C70C /* Fundamental.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB604019845B0D00C7C70C /* Fundamental.C */; };
+		87CB608F19845B0D00C7C70C /* Harmonifier.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB604219845B0D00C7C70C /* Harmonifier.C */; };
+		87CB609019845B0D00C7C70C /* ImportLemur.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB604419845B0D00C7C70C /* ImportLemur.C */; };
+		87CB609119845B0D00C7C70C /* KaiserWindow.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB604619845B0D00C7C70C /* KaiserWindow.C */; };
+		87CB609219845B0D00C7C70C /* LinearEnvelope.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB604819845B0D00C7C70C /* LinearEnvelope.C */; };
+		87CB609319845B0D00C7C70C /* loris.h.in in Resources */ = {isa = PBXBuildFile; fileRef = 87CB604B19845B0D00C7C70C /* loris.h.in */; };
+		87CB609419845B0D00C7C70C /* lorisAnalyzer_pi.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB604C19845B0D00C7C70C /* lorisAnalyzer_pi.C */; };
+		87CB609519845B0D00C7C70C /* lorisBpEnvelope_pi.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB604D19845B0D00C7C70C /* lorisBpEnvelope_pi.C */; };
+		87CB609619845B0D00C7C70C /* lorisException_pi.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB604E19845B0D00C7C70C /* lorisException_pi.C */; };
+		87CB609719845B0D00C7C70C /* LorisExceptions.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB605019845B0D00C7C70C /* LorisExceptions.C */; };
+		87CB609819845B0D00C7C70C /* lorisNonObj_pi.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB605219845B0D00C7C70C /* lorisNonObj_pi.C */; };
+		87CB609919845B0D00C7C70C /* lorisPartialList_pi.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB605319845B0D00C7C70C /* lorisPartialList_pi.C */; };
+		87CB609A19845B0D00C7C70C /* lorisUtilities_pi.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB605419845B0D00C7C70C /* lorisUtilities_pi.C */; };
+		87CB609B19845B0D00C7C70C /* Marker.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB605519845B0D00C7C70C /* Marker.C */; };
+		87CB609C19845B0D00C7C70C /* Morpher.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB605719845B0D00C7C70C /* Morpher.C */; };
+		87CB609D19845B0D00C7C70C /* NoiseGenerator.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB605919845B0D00C7C70C /* NoiseGenerator.C */; };
+		87CB609E19845B0D00C7C70C /* Notifier.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB605B19845B0D00C7C70C /* Notifier.C */; };
+		87CB609F19845B0D00C7C70C /* Oscillator.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB605D19845B0D00C7C70C /* Oscillator.C */; };
+		87CB60A019845B0D00C7C70C /* Partial.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB605F19845B0D00C7C70C /* Partial.C */; };
+		87CB60A119845B0D00C7C70C /* PartialBuilder.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB606119845B0D00C7C70C /* PartialBuilder.C */; };
+		87CB60A219845B0D00C7C70C /* PartialUtils.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB606519845B0D00C7C70C /* PartialUtils.C */; };
+		87CB60A319845B0D00C7C70C /* phasefix.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB606719845B0D00C7C70C /* phasefix.C */; };
+		87CB60A419845B0D00C7C70C /* RealtimeSynthesizer.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB606919845B0D00C7C70C /* RealtimeSynthesizer.C */; };
+		87CB60A519845B0D00C7C70C /* ReassignedSpectrum.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB606B19845B0D00C7C70C /* ReassignedSpectrum.C */; };
+		87CB60A619845B0D00C7C70C /* Resampler.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB606D19845B0D00C7C70C /* Resampler.C */; };
+		87CB60A719845B0D00C7C70C /* SdifFile.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB606F19845B0D00C7C70C /* SdifFile.C */; };
+		87CB60A819845B0D00C7C70C /* Sieve.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB607119845B0D00C7C70C /* Sieve.C */; };
+		87CB60A919845B0D00C7C70C /* SpcFile.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB607319845B0D00C7C70C /* SpcFile.C */; };
+		87CB60AA19845B0D00C7C70C /* SpectralPeakSelector.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB607619845B0D00C7C70C /* SpectralPeakSelector.C */; };
+		87CB60AB19845B0D00C7C70C /* SpectralSurface.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB607819845B0D00C7C70C /* SpectralSurface.C */; };
+		87CB60AC19845B0D00C7C70C /* Synthesizer.C in Sources */ = {isa = PBXBuildFile; fileRef = 87CB607B19845B0D00C7C70C /* Synthesizer.C */; };
 		8CA22C6C21AA4672F50A4D24 /* juce_graphics.mm in Sources */ = {isa = PBXBuildFile; fileRef = DAE1896DF7D477B62A7102E8 /* juce_graphics.mm */; };
 		90213C54FA74EBF8BEE3FA3F /* juce_VST_Wrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1B5223FFD2619DF686703649 /* juce_VST_Wrapper.mm */; };
 		971B4FBA552768CE65703ADC /* juce_RTAS_MacUtilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = 912B2DDCF7A1DDAB8B73BFD0 /* juce_RTAS_MacUtilities.mm */; };
@@ -604,95 +611,103 @@
 		870D4F57391FC9E2D6D8D1A0 /* juce_FileChooserDialogBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_FileChooserDialogBox.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/filebrowser/juce_FileChooserDialogBox.cpp; sourceTree = SOURCE_ROOT; };
 		8715FBF3B1B49F9F11985966 /* juce_ChoicePropertyComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_ChoicePropertyComponent.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/properties/juce_ChoicePropertyComponent.h; sourceTree = SOURCE_ROOT; };
 		87ACD243386F905C66C5C168 /* juce_audio_processors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_audio_processors.h; path = ../../JuceLibraryCode/modules/juce_audio_processors/juce_audio_processors.h; sourceTree = SOURCE_ROOT; };
+		87CB601D19845B0D00C7C70C /* AiffData.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AiffData.C; path = ../../Loris/src/AiffData.C; sourceTree = "<group>"; };
+		87CB601E19845B0D00C7C70C /* AiffData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AiffData.h; path = ../../Loris/src/AiffData.h; sourceTree = "<group>"; };
+		87CB601F19845B0D00C7C70C /* AiffFile.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AiffFile.C; path = ../../Loris/src/AiffFile.C; sourceTree = "<group>"; };
+		87CB602019845B0D00C7C70C /* AiffFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AiffFile.h; path = ../../Loris/src/AiffFile.h; sourceTree = "<group>"; };
+		87CB602119845B0D00C7C70C /* Analyzer.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Analyzer.C; path = ../../Loris/src/Analyzer.C; sourceTree = "<group>"; };
+		87CB602219845B0D00C7C70C /* Analyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Analyzer.h; path = ../../Loris/src/Analyzer.h; sourceTree = "<group>"; };
+		87CB602319845B0D00C7C70C /* AssociateBandwidth.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AssociateBandwidth.C; path = ../../Loris/src/AssociateBandwidth.C; sourceTree = "<group>"; };
+		87CB602419845B0D00C7C70C /* AssociateBandwidth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AssociateBandwidth.h; path = ../../Loris/src/AssociateBandwidth.h; sourceTree = "<group>"; };
+		87CB602519845B0D00C7C70C /* BigEndian.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BigEndian.C; path = ../../Loris/src/BigEndian.C; sourceTree = "<group>"; };
+		87CB602619845B0D00C7C70C /* BigEndian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BigEndian.h; path = ../../Loris/src/BigEndian.h; sourceTree = "<group>"; };
+		87CB602719845B0D00C7C70C /* Breakpoint.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Breakpoint.C; path = ../../Loris/src/Breakpoint.C; sourceTree = "<group>"; };
+		87CB602819845B0D00C7C70C /* Breakpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Breakpoint.h; path = ../../Loris/src/Breakpoint.h; sourceTree = "<group>"; };
+		87CB602919845B0D00C7C70C /* BreakpointEnvelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointEnvelope.h; path = ../../Loris/src/BreakpointEnvelope.h; sourceTree = "<group>"; };
+		87CB602A19845B0D00C7C70C /* BreakpointUtils.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BreakpointUtils.C; path = ../../Loris/src/BreakpointUtils.C; sourceTree = "<group>"; };
+		87CB602B19845B0D00C7C70C /* BreakpointUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointUtils.h; path = ../../Loris/src/BreakpointUtils.h; sourceTree = "<group>"; };
+		87CB602C19845B0D00C7C70C /* Channelizer.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Channelizer.C; path = ../../Loris/src/Channelizer.C; sourceTree = "<group>"; };
+		87CB602D19845B0D00C7C70C /* Channelizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Channelizer.h; path = ../../Loris/src/Channelizer.h; sourceTree = "<group>"; };
+		87CB602E19845B0D00C7C70C /* Collator.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Collator.C; path = ../../Loris/src/Collator.C; sourceTree = "<group>"; };
+		87CB602F19845B0D00C7C70C /* Collator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Collator.h; path = ../../Loris/src/Collator.h; sourceTree = "<group>"; };
+		87CB603019845B0D00C7C70C /* Dilator.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Dilator.C; path = ../../Loris/src/Dilator.C; sourceTree = "<group>"; };
+		87CB603119845B0D00C7C70C /* Dilator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Dilator.h; path = ../../Loris/src/Dilator.h; sourceTree = "<group>"; };
+		87CB603219845B0D00C7C70C /* Distiller.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Distiller.C; path = ../../Loris/src/Distiller.C; sourceTree = "<group>"; };
+		87CB603319845B0D00C7C70C /* Distiller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Distiller.h; path = ../../Loris/src/Distiller.h; sourceTree = "<group>"; };
+		87CB603419845B0D00C7C70C /* Envelope.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Envelope.C; path = ../../Loris/src/Envelope.C; sourceTree = "<group>"; };
+		87CB603519845B0D00C7C70C /* Envelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Envelope.h; path = ../../Loris/src/Envelope.h; sourceTree = "<group>"; };
+		87CB603619845B0D00C7C70C /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = ../../Loris/src/Exception.h; sourceTree = "<group>"; };
+		87CB603719845B0D00C7C70C /* F0Estimate.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = F0Estimate.C; path = ../../Loris/src/F0Estimate.C; sourceTree = "<group>"; };
+		87CB603819845B0D00C7C70C /* F0Estimate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = F0Estimate.h; path = ../../Loris/src/F0Estimate.h; sourceTree = "<group>"; };
+		87CB603919845B0D00C7C70C /* fftsg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fftsg.c; path = ../../Loris/src/fftsg.c; sourceTree = "<group>"; };
+		87CB603A19845B0D00C7C70C /* Filter.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Filter.C; path = ../../Loris/src/Filter.C; sourceTree = "<group>"; };
+		87CB603B19845B0D00C7C70C /* Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Filter.h; path = ../../Loris/src/Filter.h; sourceTree = "<group>"; };
+		87CB603C19845B0D00C7C70C /* FourierTransform.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FourierTransform.C; path = ../../Loris/src/FourierTransform.C; sourceTree = "<group>"; };
+		87CB603D19845B0D00C7C70C /* FourierTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FourierTransform.h; path = ../../Loris/src/FourierTransform.h; sourceTree = "<group>"; };
+		87CB603E19845B0D00C7C70C /* FrequencyReference.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FrequencyReference.C; path = ../../Loris/src/FrequencyReference.C; sourceTree = "<group>"; };
+		87CB603F19845B0D00C7C70C /* FrequencyReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FrequencyReference.h; path = ../../Loris/src/FrequencyReference.h; sourceTree = "<group>"; };
+		87CB604019845B0D00C7C70C /* Fundamental.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fundamental.C; path = ../../Loris/src/Fundamental.C; sourceTree = "<group>"; };
+		87CB604119845B0D00C7C70C /* Fundamental.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fundamental.h; path = ../../Loris/src/Fundamental.h; sourceTree = "<group>"; };
+		87CB604219845B0D00C7C70C /* Harmonifier.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Harmonifier.C; path = ../../Loris/src/Harmonifier.C; sourceTree = "<group>"; };
+		87CB604319845B0D00C7C70C /* Harmonifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Harmonifier.h; path = ../../Loris/src/Harmonifier.h; sourceTree = "<group>"; };
+		87CB604419845B0D00C7C70C /* ImportLemur.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ImportLemur.C; path = ../../Loris/src/ImportLemur.C; sourceTree = "<group>"; };
+		87CB604519845B0D00C7C70C /* ImportLemur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImportLemur.h; path = ../../Loris/src/ImportLemur.h; sourceTree = "<group>"; };
+		87CB604619845B0D00C7C70C /* KaiserWindow.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KaiserWindow.C; path = ../../Loris/src/KaiserWindow.C; sourceTree = "<group>"; };
+		87CB604719845B0D00C7C70C /* KaiserWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KaiserWindow.h; path = ../../Loris/src/KaiserWindow.h; sourceTree = "<group>"; };
+		87CB604819845B0D00C7C70C /* LinearEnvelope.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LinearEnvelope.C; path = ../../Loris/src/LinearEnvelope.C; sourceTree = "<group>"; };
+		87CB604919845B0D00C7C70C /* LinearEnvelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinearEnvelope.h; path = ../../Loris/src/LinearEnvelope.h; sourceTree = "<group>"; };
+		87CB604A19845B0D00C7C70C /* loris.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = loris.h; path = ../../Loris/src/loris.h; sourceTree = "<group>"; };
+		87CB604B19845B0D00C7C70C /* loris.h.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = loris.h.in; path = ../../Loris/src/loris.h.in; sourceTree = "<group>"; };
+		87CB604C19845B0D00C7C70C /* lorisAnalyzer_pi.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lorisAnalyzer_pi.C; path = ../../Loris/src/lorisAnalyzer_pi.C; sourceTree = "<group>"; };
+		87CB604D19845B0D00C7C70C /* lorisBpEnvelope_pi.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lorisBpEnvelope_pi.C; path = ../../Loris/src/lorisBpEnvelope_pi.C; sourceTree = "<group>"; };
+		87CB604E19845B0D00C7C70C /* lorisException_pi.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lorisException_pi.C; path = ../../Loris/src/lorisException_pi.C; sourceTree = "<group>"; };
+		87CB604F19845B0D00C7C70C /* lorisException_pi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lorisException_pi.h; path = ../../Loris/src/lorisException_pi.h; sourceTree = "<group>"; };
+		87CB605019845B0D00C7C70C /* LorisExceptions.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LorisExceptions.C; path = ../../Loris/src/LorisExceptions.C; sourceTree = "<group>"; };
+		87CB605119845B0D00C7C70C /* LorisExceptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LorisExceptions.h; path = ../../Loris/src/LorisExceptions.h; sourceTree = "<group>"; };
+		87CB605219845B0D00C7C70C /* lorisNonObj_pi.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lorisNonObj_pi.C; path = ../../Loris/src/lorisNonObj_pi.C; sourceTree = "<group>"; };
+		87CB605319845B0D00C7C70C /* lorisPartialList_pi.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lorisPartialList_pi.C; path = ../../Loris/src/lorisPartialList_pi.C; sourceTree = "<group>"; };
+		87CB605419845B0D00C7C70C /* lorisUtilities_pi.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lorisUtilities_pi.C; path = ../../Loris/src/lorisUtilities_pi.C; sourceTree = "<group>"; };
+		87CB605519845B0D00C7C70C /* Marker.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Marker.C; path = ../../Loris/src/Marker.C; sourceTree = "<group>"; };
+		87CB605619845B0D00C7C70C /* Marker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Marker.h; path = ../../Loris/src/Marker.h; sourceTree = "<group>"; };
+		87CB605719845B0D00C7C70C /* Morpher.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Morpher.C; path = ../../Loris/src/Morpher.C; sourceTree = "<group>"; };
+		87CB605819845B0D00C7C70C /* Morpher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Morpher.h; path = ../../Loris/src/Morpher.h; sourceTree = "<group>"; };
+		87CB605919845B0D00C7C70C /* NoiseGenerator.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoiseGenerator.C; path = ../../Loris/src/NoiseGenerator.C; sourceTree = "<group>"; };
+		87CB605A19845B0D00C7C70C /* NoiseGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoiseGenerator.h; path = ../../Loris/src/NoiseGenerator.h; sourceTree = "<group>"; };
+		87CB605B19845B0D00C7C70C /* Notifier.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Notifier.C; path = ../../Loris/src/Notifier.C; sourceTree = "<group>"; };
+		87CB605C19845B0D00C7C70C /* Notifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Notifier.h; path = ../../Loris/src/Notifier.h; sourceTree = "<group>"; };
+		87CB605D19845B0D00C7C70C /* Oscillator.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Oscillator.C; path = ../../Loris/src/Oscillator.C; sourceTree = "<group>"; };
+		87CB605E19845B0D00C7C70C /* Oscillator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Oscillator.h; path = ../../Loris/src/Oscillator.h; sourceTree = "<group>"; };
+		87CB605F19845B0D00C7C70C /* Partial.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Partial.C; path = ../../Loris/src/Partial.C; sourceTree = "<group>"; };
+		87CB606019845B0D00C7C70C /* Partial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Partial.h; path = ../../Loris/src/Partial.h; sourceTree = "<group>"; };
+		87CB606119845B0D00C7C70C /* PartialBuilder.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PartialBuilder.C; path = ../../Loris/src/PartialBuilder.C; sourceTree = "<group>"; };
+		87CB606219845B0D00C7C70C /* PartialBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PartialBuilder.h; path = ../../Loris/src/PartialBuilder.h; sourceTree = "<group>"; };
+		87CB606319845B0D00C7C70C /* PartialList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PartialList.h; path = ../../Loris/src/PartialList.h; sourceTree = "<group>"; };
+		87CB606419845B0D00C7C70C /* PartialPtrs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PartialPtrs.h; path = ../../Loris/src/PartialPtrs.h; sourceTree = "<group>"; };
+		87CB606519845B0D00C7C70C /* PartialUtils.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PartialUtils.C; path = ../../Loris/src/PartialUtils.C; sourceTree = "<group>"; };
+		87CB606619845B0D00C7C70C /* PartialUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PartialUtils.h; path = ../../Loris/src/PartialUtils.h; sourceTree = "<group>"; };
+		87CB606719845B0D00C7C70C /* phasefix.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = phasefix.C; path = ../../Loris/src/phasefix.C; sourceTree = "<group>"; };
+		87CB606819845B0D00C7C70C /* phasefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = phasefix.h; path = ../../Loris/src/phasefix.h; sourceTree = "<group>"; };
+		87CB606919845B0D00C7C70C /* RealtimeSynthesizer.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RealtimeSynthesizer.C; path = ../../Loris/src/RealtimeSynthesizer.C; sourceTree = "<group>"; };
+		87CB606A19845B0D00C7C70C /* RealtimeSynthesizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RealtimeSynthesizer.h; path = ../../Loris/src/RealtimeSynthesizer.h; sourceTree = "<group>"; };
+		87CB606B19845B0D00C7C70C /* ReassignedSpectrum.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ReassignedSpectrum.C; path = ../../Loris/src/ReassignedSpectrum.C; sourceTree = "<group>"; };
+		87CB606C19845B0D00C7C70C /* ReassignedSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReassignedSpectrum.h; path = ../../Loris/src/ReassignedSpectrum.h; sourceTree = "<group>"; };
+		87CB606D19845B0D00C7C70C /* Resampler.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Resampler.C; path = ../../Loris/src/Resampler.C; sourceTree = "<group>"; };
+		87CB606E19845B0D00C7C70C /* Resampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Resampler.h; path = ../../Loris/src/Resampler.h; sourceTree = "<group>"; };
+		87CB606F19845B0D00C7C70C /* SdifFile.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SdifFile.C; path = ../../Loris/src/SdifFile.C; sourceTree = "<group>"; };
+		87CB607019845B0D00C7C70C /* SdifFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SdifFile.h; path = ../../Loris/src/SdifFile.h; sourceTree = "<group>"; };
+		87CB607119845B0D00C7C70C /* Sieve.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sieve.C; path = ../../Loris/src/Sieve.C; sourceTree = "<group>"; };
+		87CB607219845B0D00C7C70C /* Sieve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Sieve.h; path = ../../Loris/src/Sieve.h; sourceTree = "<group>"; };
+		87CB607319845B0D00C7C70C /* SpcFile.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SpcFile.C; path = ../../Loris/src/SpcFile.C; sourceTree = "<group>"; };
+		87CB607419845B0D00C7C70C /* SpcFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpcFile.h; path = ../../Loris/src/SpcFile.h; sourceTree = "<group>"; };
+		87CB607519845B0D00C7C70C /* SpectralPeaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralPeaks.h; path = ../../Loris/src/SpectralPeaks.h; sourceTree = "<group>"; };
+		87CB607619845B0D00C7C70C /* SpectralPeakSelector.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SpectralPeakSelector.C; path = ../../Loris/src/SpectralPeakSelector.C; sourceTree = "<group>"; };
+		87CB607719845B0D00C7C70C /* SpectralPeakSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralPeakSelector.h; path = ../../Loris/src/SpectralPeakSelector.h; sourceTree = "<group>"; };
+		87CB607819845B0D00C7C70C /* SpectralSurface.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SpectralSurface.C; path = ../../Loris/src/SpectralSurface.C; sourceTree = "<group>"; };
+		87CB607919845B0D00C7C70C /* SpectralSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralSurface.h; path = ../../Loris/src/SpectralSurface.h; sourceTree = "<group>"; };
+		87CB607A19845B0D00C7C70C /* sse_mathfun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sse_mathfun.h; path = ../../Loris/src/sse_mathfun.h; sourceTree = "<group>"; };
+		87CB607B19845B0D00C7C70C /* Synthesizer.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Synthesizer.C; path = ../../Loris/src/Synthesizer.C; sourceTree = "<group>"; };
+		87CB607C19845B0D00C7C70C /* Synthesizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Synthesizer.h; path = ../../Loris/src/Synthesizer.h; sourceTree = "<group>"; };
 		87D22EC1EAF2FABE43B454A5 /* juce_android_WebBrowserComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_android_WebBrowserComponent.cpp; path = ../../JuceLibraryCode/modules/juce_gui_extra/native/juce_android_WebBrowserComponent.cpp; sourceTree = SOURCE_ROOT; };
-		87FF138919810AC600F56B20 /* AiffData.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AiffData.C; path = ../../Loris/src/AiffData.C; sourceTree = "<group>"; };
-		87FF138A19810AC600F56B20 /* AiffData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AiffData.h; path = ../../Loris/src/AiffData.h; sourceTree = "<group>"; };
-		87FF138B19810AC600F56B20 /* AiffFile.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AiffFile.C; path = ../../Loris/src/AiffFile.C; sourceTree = "<group>"; };
-		87FF138C19810AC600F56B20 /* AiffFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AiffFile.h; path = ../../Loris/src/AiffFile.h; sourceTree = "<group>"; };
-		87FF138D19810AC600F56B20 /* Analyzer.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Analyzer.C; path = ../../Loris/src/Analyzer.C; sourceTree = "<group>"; };
-		87FF138E19810AC600F56B20 /* Analyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Analyzer.h; path = ../../Loris/src/Analyzer.h; sourceTree = "<group>"; };
-		87FF138F19810AC600F56B20 /* AssociateBandwidth.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AssociateBandwidth.C; path = ../../Loris/src/AssociateBandwidth.C; sourceTree = "<group>"; };
-		87FF139019810AC600F56B20 /* AssociateBandwidth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AssociateBandwidth.h; path = ../../Loris/src/AssociateBandwidth.h; sourceTree = "<group>"; };
-		87FF139119810AC600F56B20 /* BigEndian.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BigEndian.C; path = ../../Loris/src/BigEndian.C; sourceTree = "<group>"; };
-		87FF139219810AC600F56B20 /* BigEndian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BigEndian.h; path = ../../Loris/src/BigEndian.h; sourceTree = "<group>"; };
-		87FF139319810AC600F56B20 /* Breakpoint.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Breakpoint.C; path = ../../Loris/src/Breakpoint.C; sourceTree = "<group>"; };
-		87FF139419810AC600F56B20 /* Breakpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Breakpoint.h; path = ../../Loris/src/Breakpoint.h; sourceTree = "<group>"; };
-		87FF139519810AC600F56B20 /* BreakpointEnvelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointEnvelope.h; path = ../../Loris/src/BreakpointEnvelope.h; sourceTree = "<group>"; };
-		87FF139619810AC600F56B20 /* BreakpointUtils.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BreakpointUtils.C; path = ../../Loris/src/BreakpointUtils.C; sourceTree = "<group>"; };
-		87FF139719810AC600F56B20 /* BreakpointUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointUtils.h; path = ../../Loris/src/BreakpointUtils.h; sourceTree = "<group>"; };
-		87FF139819810AC600F56B20 /* Channelizer.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Channelizer.C; path = ../../Loris/src/Channelizer.C; sourceTree = "<group>"; };
-		87FF139919810AC600F56B20 /* Channelizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Channelizer.h; path = ../../Loris/src/Channelizer.h; sourceTree = "<group>"; };
-		87FF139A19810AC600F56B20 /* Collator.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Collator.C; path = ../../Loris/src/Collator.C; sourceTree = "<group>"; };
-		87FF139B19810AC600F56B20 /* Collator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Collator.h; path = ../../Loris/src/Collator.h; sourceTree = "<group>"; };
-		87FF139C19810AC600F56B20 /* Dilator.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Dilator.C; path = ../../Loris/src/Dilator.C; sourceTree = "<group>"; };
-		87FF139D19810AC600F56B20 /* Dilator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Dilator.h; path = ../../Loris/src/Dilator.h; sourceTree = "<group>"; };
-		87FF139E19810AC600F56B20 /* Distiller.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Distiller.C; path = ../../Loris/src/Distiller.C; sourceTree = "<group>"; };
-		87FF139F19810AC600F56B20 /* Distiller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Distiller.h; path = ../../Loris/src/Distiller.h; sourceTree = "<group>"; };
-		87FF13A019810AC600F56B20 /* Envelope.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Envelope.C; path = ../../Loris/src/Envelope.C; sourceTree = "<group>"; };
-		87FF13A119810AC600F56B20 /* Envelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Envelope.h; path = ../../Loris/src/Envelope.h; sourceTree = "<group>"; };
-		87FF13A219810AC600F56B20 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = ../../Loris/src/Exception.h; sourceTree = "<group>"; };
-		87FF13A319810AC600F56B20 /* F0Estimate.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = F0Estimate.C; path = ../../Loris/src/F0Estimate.C; sourceTree = "<group>"; };
-		87FF13A419810AC600F56B20 /* F0Estimate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = F0Estimate.h; path = ../../Loris/src/F0Estimate.h; sourceTree = "<group>"; };
-		87FF13A519810AC600F56B20 /* fftsg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fftsg.c; path = ../../Loris/src/fftsg.c; sourceTree = "<group>"; };
-		87FF13A619810AC600F56B20 /* Filter.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Filter.C; path = ../../Loris/src/Filter.C; sourceTree = "<group>"; };
-		87FF13A719810AC600F56B20 /* Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Filter.h; path = ../../Loris/src/Filter.h; sourceTree = "<group>"; };
-		87FF13A819810AC600F56B20 /* FourierTransform.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FourierTransform.C; path = ../../Loris/src/FourierTransform.C; sourceTree = "<group>"; };
-		87FF13A919810AC600F56B20 /* FourierTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FourierTransform.h; path = ../../Loris/src/FourierTransform.h; sourceTree = "<group>"; };
-		87FF13AA19810AC600F56B20 /* FrequencyReference.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FrequencyReference.C; path = ../../Loris/src/FrequencyReference.C; sourceTree = "<group>"; };
-		87FF13AB19810AC600F56B20 /* FrequencyReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FrequencyReference.h; path = ../../Loris/src/FrequencyReference.h; sourceTree = "<group>"; };
-		87FF13AC19810AC600F56B20 /* Fundamental.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Fundamental.C; path = ../../Loris/src/Fundamental.C; sourceTree = "<group>"; };
-		87FF13AD19810AC600F56B20 /* Fundamental.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fundamental.h; path = ../../Loris/src/Fundamental.h; sourceTree = "<group>"; };
-		87FF13AE19810AC600F56B20 /* Harmonifier.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Harmonifier.C; path = ../../Loris/src/Harmonifier.C; sourceTree = "<group>"; };
-		87FF13AF19810AC600F56B20 /* Harmonifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Harmonifier.h; path = ../../Loris/src/Harmonifier.h; sourceTree = "<group>"; };
-		87FF13B019810AC600F56B20 /* ImportLemur.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ImportLemur.C; path = ../../Loris/src/ImportLemur.C; sourceTree = "<group>"; };
-		87FF13B119810AC600F56B20 /* ImportLemur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImportLemur.h; path = ../../Loris/src/ImportLemur.h; sourceTree = "<group>"; };
-		87FF13B219810AC600F56B20 /* KaiserWindow.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KaiserWindow.C; path = ../../Loris/src/KaiserWindow.C; sourceTree = "<group>"; };
-		87FF13B319810AC600F56B20 /* KaiserWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KaiserWindow.h; path = ../../Loris/src/KaiserWindow.h; sourceTree = "<group>"; };
-		87FF13B419810AC600F56B20 /* LinearEnvelope.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LinearEnvelope.C; path = ../../Loris/src/LinearEnvelope.C; sourceTree = "<group>"; };
-		87FF13B519810AC600F56B20 /* LinearEnvelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinearEnvelope.h; path = ../../Loris/src/LinearEnvelope.h; sourceTree = "<group>"; };
-		87FF13B619810AC600F56B20 /* loris.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = loris.h; path = ../../Loris/src/loris.h; sourceTree = "<group>"; };
-		87FF13B719810AC600F56B20 /* LorisExceptions.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LorisExceptions.C; path = ../../Loris/src/LorisExceptions.C; sourceTree = "<group>"; };
-		87FF13B819810AC600F56B20 /* LorisExceptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LorisExceptions.h; path = ../../Loris/src/LorisExceptions.h; sourceTree = "<group>"; };
-		87FF13B919810AC600F56B20 /* Marker.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Marker.C; path = ../../Loris/src/Marker.C; sourceTree = "<group>"; };
-		87FF13BA19810AC600F56B20 /* Marker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Marker.h; path = ../../Loris/src/Marker.h; sourceTree = "<group>"; };
-		87FF13BB19810AC600F56B20 /* Morpher.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Morpher.C; path = ../../Loris/src/Morpher.C; sourceTree = "<group>"; };
-		87FF13BC19810AC600F56B20 /* Morpher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Morpher.h; path = ../../Loris/src/Morpher.h; sourceTree = "<group>"; };
-		87FF13BD19810AC600F56B20 /* NoiseGenerator.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoiseGenerator.C; path = ../../Loris/src/NoiseGenerator.C; sourceTree = "<group>"; };
-		87FF13BE19810AC600F56B20 /* NoiseGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoiseGenerator.h; path = ../../Loris/src/NoiseGenerator.h; sourceTree = "<group>"; };
-		87FF13BF19810AC600F56B20 /* Notifier.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Notifier.C; path = ../../Loris/src/Notifier.C; sourceTree = "<group>"; };
-		87FF13C019810AC600F56B20 /* Notifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Notifier.h; path = ../../Loris/src/Notifier.h; sourceTree = "<group>"; };
-		87FF13C119810AC600F56B20 /* Oscillator.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Oscillator.C; path = ../../Loris/src/Oscillator.C; sourceTree = "<group>"; };
-		87FF13C219810AC600F56B20 /* Oscillator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Oscillator.h; path = ../../Loris/src/Oscillator.h; sourceTree = "<group>"; };
-		87FF13C319810AC600F56B20 /* Partial.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Partial.C; path = ../../Loris/src/Partial.C; sourceTree = "<group>"; };
-		87FF13C419810AC600F56B20 /* Partial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Partial.h; path = ../../Loris/src/Partial.h; sourceTree = "<group>"; };
-		87FF13C519810AC600F56B20 /* PartialBuilder.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PartialBuilder.C; path = ../../Loris/src/PartialBuilder.C; sourceTree = "<group>"; };
-		87FF13C619810AC600F56B20 /* PartialBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PartialBuilder.h; path = ../../Loris/src/PartialBuilder.h; sourceTree = "<group>"; };
-		87FF13C719810AC600F56B20 /* PartialList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PartialList.h; path = ../../Loris/src/PartialList.h; sourceTree = "<group>"; };
-		87FF13C819810AC600F56B20 /* PartialPtrs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PartialPtrs.h; path = ../../Loris/src/PartialPtrs.h; sourceTree = "<group>"; };
-		87FF13C919810AC600F56B20 /* PartialUtils.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PartialUtils.C; path = ../../Loris/src/PartialUtils.C; sourceTree = "<group>"; };
-		87FF13CA19810AC600F56B20 /* PartialUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PartialUtils.h; path = ../../Loris/src/PartialUtils.h; sourceTree = "<group>"; };
-		87FF13CB19810AC600F56B20 /* phasefix.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = phasefix.C; path = ../../Loris/src/phasefix.C; sourceTree = "<group>"; };
-		87FF13CC19810AC600F56B20 /* phasefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = phasefix.h; path = ../../Loris/src/phasefix.h; sourceTree = "<group>"; };
-		87FF13CD19810AC600F56B20 /* RealtimeSynthesizer.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; name = RealtimeSynthesizer.C; path = ../../Loris/src/RealtimeSynthesizer.C; sourceTree = "<group>"; };
-		87FF13CE19810AC600F56B20 /* RealtimeSynthesizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = RealtimeSynthesizer.h; path = ../../Loris/src/RealtimeSynthesizer.h; sourceTree = "<group>"; };
-		87FF13CF19810AC600F56B20 /* ReassignedSpectrum.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ReassignedSpectrum.C; path = ../../Loris/src/ReassignedSpectrum.C; sourceTree = "<group>"; };
-		87FF13D019810AC600F56B20 /* ReassignedSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReassignedSpectrum.h; path = ../../Loris/src/ReassignedSpectrum.h; sourceTree = "<group>"; };
-		87FF13D119810AC600F56B20 /* Resampler.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Resampler.C; path = ../../Loris/src/Resampler.C; sourceTree = "<group>"; };
-		87FF13D219810AC600F56B20 /* Resampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Resampler.h; path = ../../Loris/src/Resampler.h; sourceTree = "<group>"; };
-		87FF13D319810AC600F56B20 /* SdifFile.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SdifFile.C; path = ../../Loris/src/SdifFile.C; sourceTree = "<group>"; };
-		87FF13D419810AC600F56B20 /* SdifFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SdifFile.h; path = ../../Loris/src/SdifFile.h; sourceTree = "<group>"; };
-		87FF13D519810AC600F56B20 /* Sieve.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sieve.C; path = ../../Loris/src/Sieve.C; sourceTree = "<group>"; };
-		87FF13D619810AC600F56B20 /* Sieve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Sieve.h; path = ../../Loris/src/Sieve.h; sourceTree = "<group>"; };
-		87FF13D719810AC600F56B20 /* SpcFile.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SpcFile.C; path = ../../Loris/src/SpcFile.C; sourceTree = "<group>"; };
-		87FF13D819810AC600F56B20 /* SpcFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpcFile.h; path = ../../Loris/src/SpcFile.h; sourceTree = "<group>"; };
-		87FF13D919810AC600F56B20 /* SpectralPeaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralPeaks.h; path = ../../Loris/src/SpectralPeaks.h; sourceTree = "<group>"; };
-		87FF13DA19810AC600F56B20 /* SpectralPeakSelector.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SpectralPeakSelector.C; path = ../../Loris/src/SpectralPeakSelector.C; sourceTree = "<group>"; };
-		87FF13DB19810AC600F56B20 /* SpectralPeakSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralPeakSelector.h; path = ../../Loris/src/SpectralPeakSelector.h; sourceTree = "<group>"; };
-		87FF13DC19810AC600F56B20 /* SpectralSurface.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SpectralSurface.C; path = ../../Loris/src/SpectralSurface.C; sourceTree = "<group>"; };
-		87FF13DD19810AC600F56B20 /* SpectralSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralSurface.h; path = ../../Loris/src/SpectralSurface.h; sourceTree = "<group>"; };
-		87FF13DE19810AC600F56B20 /* sse_mathfun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sse_mathfun.h; path = ../../Loris/src/sse_mathfun.h; sourceTree = "<group>"; };
-		87FF13DF19810AC600F56B20 /* Synthesizer.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Synthesizer.C; path = ../../Loris/src/Synthesizer.C; sourceTree = "<group>"; };
-		87FF13E019810AC600F56B20 /* Synthesizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = Synthesizer.h; path = ../../Loris/src/Synthesizer.h; sourceTree = "<group>"; };
 		882EF90B0233AC0A86CA6E0E /* juce_CPlusPlusCodeTokeniser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_CPlusPlusCodeTokeniser.cpp; path = ../../JuceLibraryCode/modules/juce_gui_extra/code_editor/juce_CPlusPlusCodeTokeniser.cpp; sourceTree = SOURCE_ROOT; };
 		8841F4740B33ABDC02151A7A /* juce_CharacterFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_CharacterFunctions.h; path = ../../JuceLibraryCode/modules/juce_core/text/juce_CharacterFunctions.h; sourceTree = SOURCE_ROOT; };
 		884A03862E9933046421CD19 /* juce_InterprocessConnection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_InterprocessConnection.cpp; path = ../../JuceLibraryCode/modules/juce_events/interprocess/juce_InterprocessConnection.cpp; sourceTree = SOURCE_ROOT; };
@@ -830,7 +845,7 @@
 		AA3796A29562CDE73B7B9E60 /* juce_ImageConvolutionKernel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_ImageConvolutionKernel.cpp; path = ../../JuceLibraryCode/modules/juce_graphics/images/juce_ImageConvolutionKernel.cpp; sourceTree = SOURCE_ROOT; };
 		AA394E83B379850769996300 /* juce_KeyMappingEditorComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_KeyMappingEditorComponent.cpp; path = ../../JuceLibraryCode/modules/juce_gui_extra/misc/juce_KeyMappingEditorComponent.cpp; sourceTree = SOURCE_ROOT; };
 		AB2DACB75CCF515D2E8B6739 /* juce_ComponentBoundsConstrainer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_ComponentBoundsConstrainer.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/layout/juce_ComponentBoundsConstrainer.cpp; sourceTree = SOURCE_ROOT; };
-		AB7468777840B62AA801D46E /* PluginProcessor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; name = PluginProcessor.cpp; path = ../../Source/PluginProcessor.cpp; sourceTree = SOURCE_ROOT; };
+		AB7468777840B62AA801D46E /* PluginProcessor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PluginProcessor.cpp; path = ../../Source/PluginProcessor.cpp; sourceTree = SOURCE_ROOT; };
 		AB7AAFFF23483EA11C87BBB5 /* juce_CharPointer_ASCII.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_CharPointer_ASCII.h; path = ../../JuceLibraryCode/modules/juce_core/text/juce_CharPointer_ASCII.h; sourceTree = SOURCE_ROOT; };
 		AC3556DBA94964D67B82125E /* juce_KeyListener.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_KeyListener.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/keyboard/juce_KeyListener.cpp; sourceTree = SOURCE_ROOT; };
 		AC6DB0787CD6E256AAB3E43E /* juce_audio_devices.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = juce_audio_devices.mm; path = ../../JuceLibraryCode/modules/juce_audio_devices/juce_audio_devices.mm; sourceTree = SOURCE_ROOT; };
@@ -1278,94 +1293,102 @@
 		17AEC8BB678DA90FC953EB16 /* Loris */ = {
 			isa = PBXGroup;
 			children = (
-				87FF138919810AC600F56B20 /* AiffData.C */,
-				87FF138A19810AC600F56B20 /* AiffData.h */,
-				87FF138B19810AC600F56B20 /* AiffFile.C */,
-				87FF138C19810AC600F56B20 /* AiffFile.h */,
-				87FF138D19810AC600F56B20 /* Analyzer.C */,
-				87FF138E19810AC600F56B20 /* Analyzer.h */,
-				87FF138F19810AC600F56B20 /* AssociateBandwidth.C */,
-				87FF139019810AC600F56B20 /* AssociateBandwidth.h */,
-				87FF139119810AC600F56B20 /* BigEndian.C */,
-				87FF139219810AC600F56B20 /* BigEndian.h */,
-				87FF139319810AC600F56B20 /* Breakpoint.C */,
-				87FF139419810AC600F56B20 /* Breakpoint.h */,
-				87FF139519810AC600F56B20 /* BreakpointEnvelope.h */,
-				87FF139619810AC600F56B20 /* BreakpointUtils.C */,
-				87FF139719810AC600F56B20 /* BreakpointUtils.h */,
-				87FF139819810AC600F56B20 /* Channelizer.C */,
-				87FF139919810AC600F56B20 /* Channelizer.h */,
-				87FF139A19810AC600F56B20 /* Collator.C */,
-				87FF139B19810AC600F56B20 /* Collator.h */,
-				87FF139C19810AC600F56B20 /* Dilator.C */,
-				87FF139D19810AC600F56B20 /* Dilator.h */,
-				87FF139E19810AC600F56B20 /* Distiller.C */,
-				87FF139F19810AC600F56B20 /* Distiller.h */,
-				87FF13A019810AC600F56B20 /* Envelope.C */,
-				87FF13A119810AC600F56B20 /* Envelope.h */,
-				87FF13A219810AC600F56B20 /* Exception.h */,
-				87FF13A319810AC600F56B20 /* F0Estimate.C */,
-				87FF13A419810AC600F56B20 /* F0Estimate.h */,
-				87FF13A519810AC600F56B20 /* fftsg.c */,
-				87FF13A619810AC600F56B20 /* Filter.C */,
-				87FF13A719810AC600F56B20 /* Filter.h */,
-				87FF13A819810AC600F56B20 /* FourierTransform.C */,
-				87FF13A919810AC600F56B20 /* FourierTransform.h */,
-				87FF13AA19810AC600F56B20 /* FrequencyReference.C */,
-				87FF13AB19810AC600F56B20 /* FrequencyReference.h */,
-				87FF13AC19810AC600F56B20 /* Fundamental.C */,
-				87FF13AD19810AC600F56B20 /* Fundamental.h */,
-				87FF13AE19810AC600F56B20 /* Harmonifier.C */,
-				87FF13AF19810AC600F56B20 /* Harmonifier.h */,
-				87FF13B019810AC600F56B20 /* ImportLemur.C */,
-				87FF13B119810AC600F56B20 /* ImportLemur.h */,
-				87FF13B219810AC600F56B20 /* KaiserWindow.C */,
-				87FF13B319810AC600F56B20 /* KaiserWindow.h */,
-				87FF13B419810AC600F56B20 /* LinearEnvelope.C */,
-				87FF13B519810AC600F56B20 /* LinearEnvelope.h */,
-				87FF13B619810AC600F56B20 /* loris.h */,
-				87FF13B719810AC600F56B20 /* LorisExceptions.C */,
-				87FF13B819810AC600F56B20 /* LorisExceptions.h */,
-				87FF13B919810AC600F56B20 /* Marker.C */,
-				87FF13BA19810AC600F56B20 /* Marker.h */,
-				87FF13BB19810AC600F56B20 /* Morpher.C */,
-				87FF13BC19810AC600F56B20 /* Morpher.h */,
-				87FF13BD19810AC600F56B20 /* NoiseGenerator.C */,
-				87FF13BE19810AC600F56B20 /* NoiseGenerator.h */,
-				87FF13BF19810AC600F56B20 /* Notifier.C */,
-				87FF13C019810AC600F56B20 /* Notifier.h */,
-				87FF13C119810AC600F56B20 /* Oscillator.C */,
-				87FF13C219810AC600F56B20 /* Oscillator.h */,
-				87FF13C319810AC600F56B20 /* Partial.C */,
-				87FF13C419810AC600F56B20 /* Partial.h */,
-				87FF13C519810AC600F56B20 /* PartialBuilder.C */,
-				87FF13C619810AC600F56B20 /* PartialBuilder.h */,
-				87FF13C719810AC600F56B20 /* PartialList.h */,
-				87FF13C819810AC600F56B20 /* PartialPtrs.h */,
-				87FF13C919810AC600F56B20 /* PartialUtils.C */,
-				87FF13CA19810AC600F56B20 /* PartialUtils.h */,
-				87FF13CB19810AC600F56B20 /* phasefix.C */,
-				87FF13CC19810AC600F56B20 /* phasefix.h */,
-				87FF13CD19810AC600F56B20 /* RealtimeSynthesizer.C */,
-				87FF13CE19810AC600F56B20 /* RealtimeSynthesizer.h */,
-				87FF13CF19810AC600F56B20 /* ReassignedSpectrum.C */,
-				87FF13D019810AC600F56B20 /* ReassignedSpectrum.h */,
-				87FF13D119810AC600F56B20 /* Resampler.C */,
-				87FF13D219810AC600F56B20 /* Resampler.h */,
-				87FF13D319810AC600F56B20 /* SdifFile.C */,
-				87FF13D419810AC600F56B20 /* SdifFile.h */,
-				87FF13D519810AC600F56B20 /* Sieve.C */,
-				87FF13D619810AC600F56B20 /* Sieve.h */,
-				87FF13D719810AC600F56B20 /* SpcFile.C */,
-				87FF13D819810AC600F56B20 /* SpcFile.h */,
-				87FF13D919810AC600F56B20 /* SpectralPeaks.h */,
-				87FF13DA19810AC600F56B20 /* SpectralPeakSelector.C */,
-				87FF13DB19810AC600F56B20 /* SpectralPeakSelector.h */,
-				87FF13DC19810AC600F56B20 /* SpectralSurface.C */,
-				87FF13DD19810AC600F56B20 /* SpectralSurface.h */,
-				87FF13DE19810AC600F56B20 /* sse_mathfun.h */,
-				87FF13DF19810AC600F56B20 /* Synthesizer.C */,
-				87FF13E019810AC600F56B20 /* Synthesizer.h */,
+				87CB601D19845B0D00C7C70C /* AiffData.C */,
+				87CB601E19845B0D00C7C70C /* AiffData.h */,
+				87CB601F19845B0D00C7C70C /* AiffFile.C */,
+				87CB602019845B0D00C7C70C /* AiffFile.h */,
+				87CB602119845B0D00C7C70C /* Analyzer.C */,
+				87CB602219845B0D00C7C70C /* Analyzer.h */,
+				87CB602319845B0D00C7C70C /* AssociateBandwidth.C */,
+				87CB602419845B0D00C7C70C /* AssociateBandwidth.h */,
+				87CB602519845B0D00C7C70C /* BigEndian.C */,
+				87CB602619845B0D00C7C70C /* BigEndian.h */,
+				87CB602719845B0D00C7C70C /* Breakpoint.C */,
+				87CB602819845B0D00C7C70C /* Breakpoint.h */,
+				87CB602919845B0D00C7C70C /* BreakpointEnvelope.h */,
+				87CB602A19845B0D00C7C70C /* BreakpointUtils.C */,
+				87CB602B19845B0D00C7C70C /* BreakpointUtils.h */,
+				87CB602C19845B0D00C7C70C /* Channelizer.C */,
+				87CB602D19845B0D00C7C70C /* Channelizer.h */,
+				87CB602E19845B0D00C7C70C /* Collator.C */,
+				87CB602F19845B0D00C7C70C /* Collator.h */,
+				87CB603019845B0D00C7C70C /* Dilator.C */,
+				87CB603119845B0D00C7C70C /* Dilator.h */,
+				87CB603219845B0D00C7C70C /* Distiller.C */,
+				87CB603319845B0D00C7C70C /* Distiller.h */,
+				87CB603419845B0D00C7C70C /* Envelope.C */,
+				87CB603519845B0D00C7C70C /* Envelope.h */,
+				87CB603619845B0D00C7C70C /* Exception.h */,
+				87CB603719845B0D00C7C70C /* F0Estimate.C */,
+				87CB603819845B0D00C7C70C /* F0Estimate.h */,
+				87CB603919845B0D00C7C70C /* fftsg.c */,
+				87CB603A19845B0D00C7C70C /* Filter.C */,
+				87CB603B19845B0D00C7C70C /* Filter.h */,
+				87CB603C19845B0D00C7C70C /* FourierTransform.C */,
+				87CB603D19845B0D00C7C70C /* FourierTransform.h */,
+				87CB603E19845B0D00C7C70C /* FrequencyReference.C */,
+				87CB603F19845B0D00C7C70C /* FrequencyReference.h */,
+				87CB604019845B0D00C7C70C /* Fundamental.C */,
+				87CB604119845B0D00C7C70C /* Fundamental.h */,
+				87CB604219845B0D00C7C70C /* Harmonifier.C */,
+				87CB604319845B0D00C7C70C /* Harmonifier.h */,
+				87CB604419845B0D00C7C70C /* ImportLemur.C */,
+				87CB604519845B0D00C7C70C /* ImportLemur.h */,
+				87CB604619845B0D00C7C70C /* KaiserWindow.C */,
+				87CB604719845B0D00C7C70C /* KaiserWindow.h */,
+				87CB604819845B0D00C7C70C /* LinearEnvelope.C */,
+				87CB604919845B0D00C7C70C /* LinearEnvelope.h */,
+				87CB604A19845B0D00C7C70C /* loris.h */,
+				87CB604B19845B0D00C7C70C /* loris.h.in */,
+				87CB604C19845B0D00C7C70C /* lorisAnalyzer_pi.C */,
+				87CB604D19845B0D00C7C70C /* lorisBpEnvelope_pi.C */,
+				87CB604E19845B0D00C7C70C /* lorisException_pi.C */,
+				87CB604F19845B0D00C7C70C /* lorisException_pi.h */,
+				87CB605019845B0D00C7C70C /* LorisExceptions.C */,
+				87CB605119845B0D00C7C70C /* LorisExceptions.h */,
+				87CB605219845B0D00C7C70C /* lorisNonObj_pi.C */,
+				87CB605319845B0D00C7C70C /* lorisPartialList_pi.C */,
+				87CB605419845B0D00C7C70C /* lorisUtilities_pi.C */,
+				87CB605519845B0D00C7C70C /* Marker.C */,
+				87CB605619845B0D00C7C70C /* Marker.h */,
+				87CB605719845B0D00C7C70C /* Morpher.C */,
+				87CB605819845B0D00C7C70C /* Morpher.h */,
+				87CB605919845B0D00C7C70C /* NoiseGenerator.C */,
+				87CB605A19845B0D00C7C70C /* NoiseGenerator.h */,
+				87CB605B19845B0D00C7C70C /* Notifier.C */,
+				87CB605C19845B0D00C7C70C /* Notifier.h */,
+				87CB605D19845B0D00C7C70C /* Oscillator.C */,
+				87CB605E19845B0D00C7C70C /* Oscillator.h */,
+				87CB605F19845B0D00C7C70C /* Partial.C */,
+				87CB606019845B0D00C7C70C /* Partial.h */,
+				87CB606119845B0D00C7C70C /* PartialBuilder.C */,
+				87CB606219845B0D00C7C70C /* PartialBuilder.h */,
+				87CB606319845B0D00C7C70C /* PartialList.h */,
+				87CB606419845B0D00C7C70C /* PartialPtrs.h */,
+				87CB606519845B0D00C7C70C /* PartialUtils.C */,
+				87CB606619845B0D00C7C70C /* PartialUtils.h */,
+				87CB606719845B0D00C7C70C /* phasefix.C */,
+				87CB606819845B0D00C7C70C /* phasefix.h */,
+				87CB606919845B0D00C7C70C /* RealtimeSynthesizer.C */,
+				87CB606A19845B0D00C7C70C /* RealtimeSynthesizer.h */,
+				87CB606B19845B0D00C7C70C /* ReassignedSpectrum.C */,
+				87CB606C19845B0D00C7C70C /* ReassignedSpectrum.h */,
+				87CB606D19845B0D00C7C70C /* Resampler.C */,
+				87CB606E19845B0D00C7C70C /* Resampler.h */,
+				87CB606F19845B0D00C7C70C /* SdifFile.C */,
+				87CB607019845B0D00C7C70C /* SdifFile.h */,
+				87CB607119845B0D00C7C70C /* Sieve.C */,
+				87CB607219845B0D00C7C70C /* Sieve.h */,
+				87CB607319845B0D00C7C70C /* SpcFile.C */,
+				87CB607419845B0D00C7C70C /* SpcFile.h */,
+				87CB607519845B0D00C7C70C /* SpectralPeaks.h */,
+				87CB607619845B0D00C7C70C /* SpectralPeakSelector.C */,
+				87CB607719845B0D00C7C70C /* SpectralPeakSelector.h */,
+				87CB607819845B0D00C7C70C /* SpectralSurface.C */,
+				87CB607919845B0D00C7C70C /* SpectralSurface.h */,
+				87CB607A19845B0D00C7C70C /* sse_mathfun.h */,
+				87CB607B19845B0D00C7C70C /* Synthesizer.C */,
+				87CB607C19845B0D00C7C70C /* Synthesizer.h */,
 			);
 			name = Loris;
 			sourceTree = "<group>";
@@ -3002,6 +3025,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87CB609319845B0D00C7C70C /* loris.h.in in Resources */,
 				716C496402DCACD07E16CEBB /* RecentFilesMenuTemplate.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3038,93 +3062,99 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				87FF140519810AC600F56B20 /* Sieve.C in Sources */,
-				87FF13EC19810AC600F56B20 /* Envelope.C in Sources */,
+				87CB608819845B0D00C7C70C /* Envelope.C in Sources */,
+				87CB60A419845B0D00C7C70C /* RealtimeSynthesizer.C in Sources */,
 				32E2AAEC75781997DB252E52 /* PluginProcessor.cpp in Sources */,
 				A525AFDF5216836B0DBA718A /* PluginEditor.cpp in Sources */,
 				382CB5DE93F362A55617E96A /* AUBase.cpp in Sources */,
 				CE3D17AD9D6DB3642C3781CD /* AUBuffer.cpp in Sources */,
-				87FF13F719810AC600F56B20 /* LorisExceptions.C in Sources */,
 				35B795BA88938930AF7675E5 /* AUCarbonViewBase.cpp in Sources */,
-				87FF13FA19810AC600F56B20 /* NoiseGenerator.C in Sources */,
-				87FF13F619810AC600F56B20 /* LinearEnvelope.C in Sources */,
-				87FF13F119810AC600F56B20 /* FrequencyReference.C in Sources */,
-				87FF13FE19810AC600F56B20 /* PartialBuilder.C in Sources */,
+				87CB60AA19845B0D00C7C70C /* SpectralPeakSelector.C in Sources */,
+				87CB60A619845B0D00C7C70C /* Resampler.C in Sources */,
+				87CB609219845B0D00C7C70C /* LinearEnvelope.C in Sources */,
+				87CB608D19845B0D00C7C70C /* FrequencyReference.C in Sources */,
 				6EF41A6468291A17980055B4 /* AUCarbonViewControl.cpp in Sources */,
 				38BB9738B367BBEAAC4F95EA /* AUCarbonViewDispatch.cpp in Sources */,
 				553401C965DCED2F928A6E36 /* AUDispatch.cpp in Sources */,
-				87FF13E619810AC600F56B20 /* Breakpoint.C in Sources */,
+				87CB60A319845B0D00C7C70C /* phasefix.C in Sources */,
+				87CB609F19845B0D00C7C70C /* Oscillator.C in Sources */,
+				87CB608219845B0D00C7C70C /* Breakpoint.C in Sources */,
 				21FF2C763F0BAFDE4E598521 /* AUEffectBase.cpp in Sources */,
+				87CB609A19845B0D00C7C70C /* lorisUtilities_pi.C in Sources */,
+				87CB60A019845B0D00C7C70C /* Partial.C in Sources */,
 				DC877787D89BF336477EBF80 /* AUInputElement.cpp in Sources */,
-				87FF140119810AC600F56B20 /* RealtimeSynthesizer.C in Sources */,
-				87FF13E919810AC600F56B20 /* Collator.C in Sources */,
+				87CB60A719845B0D00C7C70C /* SdifFile.C in Sources */,
+				87CB608519845B0D00C7C70C /* Collator.C in Sources */,
 				205B72D0CBAAC5A5A9C608D4 /* AUMIDIBase.cpp in Sources */,
-				87FF13E319810AC600F56B20 /* Analyzer.C in Sources */,
-				87FF140419810AC600F56B20 /* SdifFile.C in Sources */,
-				87FF13EE19810AC600F56B20 /* fftsg.c in Sources */,
+				87CB607F19845B0D00C7C70C /* Analyzer.C in Sources */,
+				87CB608A19845B0D00C7C70C /* fftsg.c in Sources */,
 				E168BEBB22CADC0A77903CD2 /* AUMIDIEffectBase.cpp in Sources */,
-				87FF140619810AC600F56B20 /* SpcFile.C in Sources */,
 				BCF7B95E6AE14232CCE77B03 /* AUOutputBase.cpp in Sources */,
+				87CB609619845B0D00C7C70C /* lorisException_pi.C in Sources */,
 				DF65C6B917CDE8783114FF70 /* AUOutputElement.cpp in Sources */,
 				B74E68614DAC3A504B9F20BC /* AUScopeElement.cpp in Sources */,
 				F70D9EF0C0DBD7EAF941A984 /* CAAudioChannelLayout.cpp in Sources */,
-				87FF140919810AC600F56B20 /* Synthesizer.C in Sources */,
-				87FF13E719810AC600F56B20 /* BreakpointUtils.C in Sources */,
+				87CB608319845B0D00C7C70C /* BreakpointUtils.C in Sources */,
 				15BDBF09038F3B1E828E0399 /* CAAUParameter.cpp in Sources */,
+				87CB60A519845B0D00C7C70C /* ReassignedSpectrum.C in Sources */,
+				87CB609B19845B0D00C7C70C /* Marker.C in Sources */,
 				44F945FDE5F3D4E887074CDA /* CAMutex.cpp in Sources */,
 				1443781D45D68883B27216A6 /* CarbonEventHandler.cpp in Sources */,
-				87FF13F519810AC600F56B20 /* KaiserWindow.C in Sources */,
+				87CB609119845B0D00C7C70C /* KaiserWindow.C in Sources */,
 				6BBFC74A269A1F875D0F8497 /* CAStreamBasicDescription.cpp in Sources */,
 				1E97E39B01F24C9BF53C3CC9 /* CAVectorUnit.cpp in Sources */,
-				87FF13F319810AC600F56B20 /* Harmonifier.C in Sources */,
+				87CB609C19845B0D00C7C70C /* Morpher.C in Sources */,
+				87CB608F19845B0D00C7C70C /* Harmonifier.C in Sources */,
 				0F33FA555D37A117851DCC7A /* ComponentBase.cpp in Sources */,
-				87FF140719810AC600F56B20 /* SpectralPeakSelector.C in Sources */,
+				87CB609719845B0D00C7C70C /* LorisExceptions.C in Sources */,
 				97D746D3BC298729086DB41F /* MusicDeviceBase.cpp in Sources */,
 				5646BFCB58B22AB1C8B5F673 /* juce_AAX_Wrapper.cpp in Sources */,
-				87FF13FF19810AC600F56B20 /* PartialUtils.C in Sources */,
-				87FF13E219810AC600F56B20 /* AiffFile.C in Sources */,
+				87CB607E19845B0D00C7C70C /* AiffFile.C in Sources */,
 				3D3A0F20582B427FB2588392 /* juce_AAX_Wrapper.mm in Sources */,
 				EA699730E8359DD7A5F310A1 /* juce_AU_Wrapper.mm in Sources */,
 				D59B4CAD3FB2665601DCE18E /* juce_audio_basics.mm in Sources */,
-				87FF13E519810AC600F56B20 /* BigEndian.C in Sources */,
-				87FF13E119810AC600F56B20 /* AiffData.C in Sources */,
+				87CB608119845B0D00C7C70C /* BigEndian.C in Sources */,
+				87CB607D19845B0D00C7C70C /* AiffData.C in Sources */,
+				87CB609819845B0D00C7C70C /* lorisNonObj_pi.C in Sources */,
 				7FA2574FF01D8EB7854FFC53 /* juce_audio_devices.mm in Sources */,
 				D1DCE6630A34577DF4803DCA /* juce_audio_formats.mm in Sources */,
-				87FF13E819810AC600F56B20 /* Channelizer.C in Sources */,
-				87FF13FB19810AC600F56B20 /* Notifier.C in Sources */,
-				87FF140819810AC600F56B20 /* SpectralSurface.C in Sources */,
+				87CB60AB19845B0D00C7C70C /* SpectralSurface.C in Sources */,
+				87CB60A919845B0D00C7C70C /* SpcFile.C in Sources */,
+				87CB608419845B0D00C7C70C /* Channelizer.C in Sources */,
 				F9E164ABE4E29A05201C9E9D /* juce_audio_processors.mm in Sources */,
 				F89E86F7E9977DCED82AD1C4 /* juce_audio_utils.mm in Sources */,
-				87FF13EF19810AC600F56B20 /* Filter.C in Sources */,
-				87FF13F219810AC600F56B20 /* Fundamental.C in Sources */,
-				87FF13FC19810AC600F56B20 /* Oscillator.C in Sources */,
-				87FF13F419810AC600F56B20 /* ImportLemur.C in Sources */,
+				87CB608B19845B0D00C7C70C /* Filter.C in Sources */,
+				87CB608E19845B0D00C7C70C /* Fundamental.C in Sources */,
+				87CB60A819845B0D00C7C70C /* Sieve.C in Sources */,
+				87CB609019845B0D00C7C70C /* ImportLemur.C in Sources */,
 				20F31A7E867C1183AE135929 /* juce_core.mm in Sources */,
 				0C64D0CA4D461A85430E7BC8 /* juce_data_structures.mm in Sources */,
 				426000F7395627DCC665A494 /* juce_events.mm in Sources */,
-				87FF13EB19810AC600F56B20 /* Distiller.C in Sources */,
+				87CB608719845B0D00C7C70C /* Distiller.C in Sources */,
+				87CB609419845B0D00C7C70C /* lorisAnalyzer_pi.C in Sources */,
 				8CA22C6C21AA4672F50A4D24 /* juce_graphics.mm in Sources */,
-				87FF13F819810AC600F56B20 /* Marker.C in Sources */,
 				3A10BBEBD5A629DFC270892E /* juce_gui_basics.mm in Sources */,
-				87FF13FD19810AC600F56B20 /* Partial.C in Sources */,
+				87CB609919845B0D00C7C70C /* lorisPartialList_pi.C in Sources */,
 				E7D95281D9DB1F7377BA5AA3 /* juce_gui_extra.mm in Sources */,
-				87FF13ED19810AC600F56B20 /* F0Estimate.C in Sources */,
-				87FF13E419810AC600F56B20 /* AssociateBandwidth.C in Sources */,
+				87CB608919845B0D00C7C70C /* F0Estimate.C in Sources */,
+				87CB608019845B0D00C7C70C /* AssociateBandwidth.C in Sources */,
+				87CB60AC19845B0D00C7C70C /* Synthesizer.C in Sources */,
 				FC362CD58AA86B7A6CD38DFA /* juce_PluginUtilities.cpp in Sources */,
 				AA893904B48708AE1A1B233D /* juce_RTAS_DigiCode1.cpp in Sources */,
 				09FCF9BC1AC28684305D3AAC /* juce_RTAS_DigiCode2.cpp in Sources */,
 				7FF428AE4294D833773DA886 /* juce_RTAS_DigiCode3.cpp in Sources */,
-				87FF140219810AC600F56B20 /* ReassignedSpectrum.C in Sources */,
-				87FF140019810AC600F56B20 /* phasefix.C in Sources */,
-				87FF13F919810AC600F56B20 /* Morpher.C in Sources */,
 				971B4FBA552768CE65703ADC /* juce_RTAS_MacUtilities.mm in Sources */,
-				87FF13F019810AC600F56B20 /* FourierTransform.C in Sources */,
+				87CB609519845B0D00C7C70C /* lorisBpEnvelope_pi.C in Sources */,
+				87CB60A219845B0D00C7C70C /* PartialUtils.C in Sources */,
+				87CB608C19845B0D00C7C70C /* FourierTransform.C in Sources */,
 				43EDE28A248ED331C32F15C7 /* juce_RTAS_Wrapper.cpp in Sources */,
 				79E735A7183F35221C68770D /* juce_VST_Wrapper.cpp in Sources */,
-				87FF13EA19810AC600F56B20 /* Dilator.C in Sources */,
+				87CB608619845B0D00C7C70C /* Dilator.C in Sources */,
+				87CB609E19845B0D00C7C70C /* Notifier.C in Sources */,
+				87CB60A119845B0D00C7C70C /* PartialBuilder.C in Sources */,
 				90213C54FA74EBF8BEE3FA3F /* juce_VST_Wrapper.mm in Sources */,
-				87FF140319810AC600F56B20 /* Resampler.C in Sources */,
 				350115668BDAD6E1C4B97913 /* juce_VST3_Wrapper.cpp in Sources */,
+				87CB609D19845B0D00C7C70C /* NoiseGenerator.C in Sources */,
 				71C14BA6CD9A7F6CCF0F4908 /* juce_VST3_Wrapper.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3135,7 +3165,7 @@
 		86AA2B14FD6A603EB953B90D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3153,7 +3183,6 @@
 					"JUCE_APP_VERSION=1.0.0",
 					"JUCE_APP_VERSION_HEX=0x10000",
 				);
-				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -3188,7 +3217,7 @@
 		90BA731E0DFDF22F8ECD95DF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3197,7 +3226,7 @@
 				EXCLUDED_SOURCE_FILE_NAMES = "$(EXCLUDED_SOURCE_FILE_NAMES_$(CURRENT_ARCH))";
 				EXCLUDED_SOURCE_FILE_NAMES_x86_64 = "*Carbon*.cpp";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_NDEBUG=1",
 					"NDEBUG=1",
@@ -3207,7 +3236,6 @@
 					"JUCE_APP_VERSION_HEX=0x10000",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
