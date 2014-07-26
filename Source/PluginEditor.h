@@ -36,12 +36,12 @@
                                                                     //[/Comments]
 */
 class ParaphrasisAudioProcessorEditor  : public AudioProcessorEditor,
-                                         public Timer,
-                                         public ButtonListener
+    public Timer,
+    public ButtonListener
 {
 public:
     //==============================================================================
-    ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter);
+    ParaphrasisAudioProcessorEditor(ParaphrasisAudioProcessor* ownerFilter);
     ~ParaphrasisAudioProcessorEditor();
 
     //==============================================================================
@@ -49,13 +49,13 @@ public:
     void timerCallback();
     ParaphrasisAudioProcessor* getProcessor() const
     {
-        return static_cast <ParaphrasisAudioProcessor*> (getAudioProcessor() );
+        return static_cast <ParaphrasisAudioProcessor*>(getAudioProcessor());
     }
     //[/UserMethods]
 
-    void paint (Graphics& g);
+    void paint(Graphics& g);
     void resized();
-    void buttonClicked (Button* buttonThatWasClicked);
+    void buttonClicked(Button* buttonThatWasClicked);
 
 
 
@@ -68,7 +68,7 @@ private:
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParaphrasisAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParaphrasisAudioProcessorEditor)
 };
 
 //[EndFile] You can add extra defines here...
