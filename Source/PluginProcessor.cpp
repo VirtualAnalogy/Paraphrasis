@@ -52,14 +52,7 @@ public:
     {
         Logger::getCurrentLogger()->writeToLog(String(":: new voice initialized "));
         secPerSample = 1.0 / 44100;
-        buffer.reserve(400000);
     
-        auto it = partials.begin();//make copy of partials for frequency scaling
-        while (it != partials.end()) {
-            this->partials.push_back(*it);
-            it++;
-        }
-
         synth.setupRealtime(partials);
 
         lastFreqMultiplyer = 1.0;
@@ -80,7 +73,7 @@ public:
         
         double freqMultiplyer = MidiMessage::getMidiNoteInHertz (midiNoteNumber) / FUNDAMENTAL_FREQUENCY;
     
-        synth.resetSynth(freqMultiplyer / lastFreqMultiplyer);//scale back
+        synth.resetSynth(freqMultiplyer / lastFreqMultiplyer);//scale back to original and scale to desired pitch
         
         lastFreqMultiplyer = freqMultiplyer;
         play = true;
@@ -100,9 +93,7 @@ public:
         else
         {
             // we're being told to stop playing immediately, so reset everything..
-            sampleIndex = 0;
-            play = false;
-            clearCurrentNote();
+            stop();
         }
     }
 
@@ -122,7 +113,6 @@ public:
         
         synth.synthesizeNext(numSamples);
         
-        
         if (tailOff > 0.)
         {
             while (--numSamples >= 0)
@@ -133,10 +123,7 @@ public:
                 
                 if (tailOff <= 0.005)
                 {
-                    tailOff = 0.;
-                    sampleIndex = 0;
-                    clearCurrentNote();
-                    play = false;
+                    stop();
                     break;
                 }
 
@@ -161,6 +148,14 @@ public:
             }
         }
     }
+    
+    void stop()
+    {
+        play = false;
+        tailOff = 0.;
+        sampleIndex = 0;
+        clearCurrentNote();
+    }
 
 private:
     double level, tailOff;
@@ -182,12 +177,6 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor()
     userParams[masterBypass]=0.0f;//default to not bypassed
     //repeat for "OtherParams"
     uiUpdateFlag=true;//Request UI update
-
-    // Initialise the synth...
-    //    for (int i = 4; --i >= 0;)
-    //        synth.addVoice (new SineWaveVoice());   // These voices will play our custom sine-wave sounds..
-    //
-    //    synth.addSound (new SineWaveSound());
     
     initLogging();
 
@@ -215,7 +204,7 @@ void ParaphrasisAudioProcessor::deleteLogger()
 void ParaphrasisAudioProcessor::initLogging()
 {
     deleteLogger();
-    Logger* logger = FileLogger::createDefaultAppLogger(String("/Users/tomasmedek/Documents/"), String("Paraphrasis.log"), String("Paraphrasis with FFTW3 with jesus_culture.aiff"));
+    Logger* logger = FileLogger::createDefaultAppLogger(String("/Users/tomasmedek/Documents/"), String("Paraphrasis.log"), String("Paraphrasis Log"));
     Logger::setCurrentLogger(logger);
     
 }
