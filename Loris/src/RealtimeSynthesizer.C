@@ -175,37 +175,69 @@ void RealTimeSynthesizer::setupRealtime(PartialList & partials)
     // partials in partial list will be sorted by start time
     partials.sort(PartialUtils::compareStartTimeLess());
     
-    this->partials = partials; 
+    
+    // assuming I am getting sorted partials by time
+    this->partials.clear();
+    for (auto it : partials)
+    {
+        if (it.numBreakpoints() <= 0) continue;
+        PartialStruct pStruct;
+        pStruct.duration = it.duration();
+        pStruct.endTime = it.endTime();
+        pStruct.numBreakpoints = it.numBreakpoints();
+        
+        pStruct.breakpoints.reserve(pStruct.numBreakpoints + 2);
+        
+        pStruct.startTime = ( m_fadeTimeSec < it.startTime() ) ? ( it.startTime() - m_fadeTimeSec ) : 0.;
+        pStruct.state.endSamp = index_type( ( pStruct.endTime + m_fadeTimeSec ) * m_srateHz );
+        
+        Partial::const_iterator jt = it.begin();
+        // fade in breakpoint
+        pStruct.breakpoints.push_back(std::make_pair(pStruct.startTime, BreakpointUtils::makeNullBefore( jt.breakpoint(), m_fadeTimeSec)));
+        for (; jt != it.end(); jt++)
+        {
+            pStruct.breakpoints.push_back(std::make_pair(jt.time(), jt.breakpoint()));
+        }
+        
+        // fade out breakpoint
+        jt--;
+        pStruct.breakpoints.push_back(std::make_pair(jt.time() + m_fadeTimeSec, BreakpointUtils::makeNullAfter( jt.breakpoint(), m_fadeTimeSec )));
+        
+        this->partials.push_back(pStruct);
+    }
+    
+    resetSynth();
+
 }
 
 void
     RealTimeSynthesizer::synthesizeNext( int samples )
 {
-    double endTime = ( processedSamples + samples ) * OneOverSrate  + 2 * m_fadeTimeSec;
+    double endTime = ( processedSamples + samples ) * OneOverSrate;
     bool processed = false;
     
     int size = partialsBeingProcessed.size();
-    std::pair<PartialList::const_iterator, Partial::const_iterator> partial;
+    PartialStruct partial;
     for (int i = 0; i < size; i++)
     {
         partial = partialsBeingProcessed.front();
         partialsBeingProcessed.pop();
-        lastBreakpoint = synthesize( *partial.first, partial.second, endTime );
+        synthesize( partial, endTime );
         processed = true;
         
-        if ( lastBreakpoint != partialsIt->end() )
+        if ( partial.state.lastBreakpoint < partial.numBreakpoints - 1)
             partialsBeingProcessed.push( partial );
     }
     
-    while ( partialsIt != partials.end() && partialsIt->startTime() <= endTime )
+    int partialSize = partials.size();
+    for (; partialIdx < partialSize; partialIdx++)
     {
-        lastBreakpoint = synthesize( *partialsIt, partialsIt->begin(), endTime );
+        synthesize( partial, endTime);
         processed = true;
         
-        if ( lastBreakpoint != partialsIt->end() )
-            partialsBeingProcessed.push(std::make_pair(partialsIt, lastBreakpoint));
+        if ( partial.state.lastBreakpoint < partial.numBreakpoints - 1)
+            partialsBeingProcessed.push(partial);
         
-        partialsIt++;
     }
     
     if ( processed )
@@ -232,86 +264,30 @@ void
 //!         Partial, p, including fade out at the end.
 //! \throw  InvalidPartial if the Partial has negative start time.
 //  
-Partial::const_iterator
-    RealTimeSynthesizer::synthesize( const Partial &p, const Partial::const_iterator & lastBreakpoint , const double endTime)
+void
+    RealTimeSynthesizer::synthesize( PartialStruct &p, const double endTime)
 {
-//    if ( p.duration() < endTime)
-//        return p.end();
-//    else
-//        return p.findNearest(endTime);
+    if ( p.numBreakpoints == 0 || p.startTime < 0 )
+        return;
     
-    double startTime = p.startTime();
-    if ( p.numBreakpoints() == 0 )
-    {
-#ifdef Loris_Debug
-        debugger << "Synthesizer ignoring a partial that contains no Breakpoints" << endl;
-#endif
-        return lastBreakpoint;
-    }
-    
-    if ( startTime < 0 )
-    {
-#ifdef Loris_Debug
-        Throw( InvalidPartial, "Tried to synthesize a Partial having start time less than 0." );
-#else
-        return lastBreakpoint;
-#endif
-    }
-    
-    if ( lastBreakpoint.time() >= endTime || lastBreakpoint == p.end() )
-    {
-        return lastBreakpoint;
-    }
-#ifdef Loris_Debug
-    debugger << "synthesizing Partial from " << p.startTime() * m_srateHz
-             << " to " << p.endTime() * m_srateHz << " starting phase "
-             << p.initialPhase() << " starting frequency " 
-             << p.first().frequency() << endl;
-#endif
-    // find closest breakpoint to startTime, if break point starts after start
-    // time get the one before
-    
-    
-    endSamp = index_type( ( p.endTime() + m_fadeTimeSec ) * m_srateHz );
+    if ( p.state.lastBreakpoint >= p.numBreakpoints - 1 || p.breakpoints[p.state.lastBreakpoint].first > endTime)
+        return;
 
-    //  compute the starting time for synthesis of this Partial,
-    //  m_fadeTimeSec before the Partial's startTime, but not before 0:
-    itime = ( m_fadeTimeSec < startTime ) ? ( startTime- m_fadeTimeSec ) : 0.;
-    currentSamp = index_type( (itime * m_srateHz) + 0.5 );   //  cheap rounding
-    
-    auto it = lastBreakpoint;
-    //  reset the oscillator: in case we are starting from begining
-    //  all that really needs to happen here is setting the frequency
-    //  correctly, the phase will be reset again in the loop over 
-    //  Breakpoints below, and the amp and bw can start at 0.
-    if (lastBreakpoint == p.begin())
-    {
-        m_osc.resetEnvelopes( BreakpointUtils::makeNullBefore( p.first(), startTime - itime ), m_srateHz );
-    }
-    else
-    {
-        m_osc.resetEnvelopes( lastBreakpoint.breakpoint(), m_srateHz );
-        it++;
-    }
-    
-    //  cache the previous frequency (in Hz) so that it
-    //  can be used to reset the phase when necessary
-    //  in the sample computation loop below (this saves
-    //  having to recompute from the oscillator's radian
-    //  frequency):
-    prevFrequency = lastBreakpoint->frequency();
-    
+    m_osc.resetEnvelopes( p.breakpoints[p.state.lastBreakpoint].second, m_srateHz );
+
+        
     //  synthesize linear-frequency segments until 
     //  there aren't any more Breakpoints to make segments:
     bufferBegin = &( m_sampleBuffer->front() );
-    double time;
     const Breakpoint *bp;
-    for (; (time = it.time()) <= endTime && it != p.end(); ++it )
+    double time;
+    int i;
+    for (i = p.state.lastBreakpoint + 1; (time = p.breakpoints[i].first) <= endTime && i < p.numBreakpoints; ++i )
     {
         tgtSamp = index_type( (time * m_srateHz) + 0.5 );   //  cheap rounding
-        Assert( tgtSamp >= currentSamp );
+        Assert( tgtSamp >= p.state.currentSamp );
         
-        bp = &(it.breakpoint());
+        bp = &(p.breakpoints[i].second);
         //  if the current oscillator amplitude is
         //  zero, and the target Breakpoint amplitude
         //  is not, reset the oscillator phase so that
@@ -328,28 +304,21 @@ Partial::const_iterator
             //  double favg = 0.5 * ( prevFrequency + it.breakpoint().frequency() );
             //  double dphase = 2 * Pi * favg * ( tgtSamp - currentSamp ) / m_srateHz;
             //
-            dphase = Pi * ( prevFrequency + bp->frequency() )
-                               * ( tgtSamp - currentSamp ) * OneOverSrate;
+            dphase = Pi * ( p.state.prevFrequency + bp->frequency() )
+                               * ( tgtSamp - p.state.currentSamp ) * OneOverSrate;
             m_osc.setPhase( bp->phase() - dphase );
         }
         
-        m_osc.oscillate( bufferBegin + currentSamp, bufferBegin + tgtSamp, *bp, m_srateHz );
+        m_osc.oscillate( bufferBegin + p.state.currentSamp, bufferBegin + tgtSamp, *bp, m_srateHz );
         
-        currentSamp = tgtSamp;
+        p.state.currentSamp = tgtSamp;
         
         //  remember the frequency, may need it to reset the 
         //  phase if a Null Breakpoint is encountered:
-        prevFrequency = bp->frequency();
+        p.state.prevFrequency = bp->frequency();
     }
     
-    // in case we finished the partial render fade out
-    if (it == p.end())
-    {
-        //  render a fade out segment:
-        m_osc.oscillate( bufferBegin + currentSamp, bufferBegin + endSamp, BreakpointUtils::makeNullAfter( p.last(), m_fadeTimeSec ), m_srateHz );
-    }
-    
-    return it;
+    p.state.lastBreakpoint = i;
 }
     
 }   //  end of namespace Loris

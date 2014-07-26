@@ -62,6 +62,8 @@ class Breakpoint
 	double _amplitude;	//!	absolute
 	double _bandwidth;	//!	fraction of total energy that is noise energy
 	double _phase;		//!	radians
+    
+    friend class RealTimeSynthesizer;
 	
 //	-- public Breakpoint interface --
 

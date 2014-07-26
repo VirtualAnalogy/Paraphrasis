@@ -34,11 +34,32 @@
  */
  
 #include "Synthesizer.h"
+
 #include <vector>
 #include <queue>
 
 //	begin namespace
 namespace Loris {
+    
+struct PartialStruct
+{
+    enum { NoBreakpointProcessed = -1, FirstBreakpoint };
+    
+    double duration = 0.0;
+    double startTime = 0.0;
+    double endTime = 0.0;
+    int numBreakpoints = 0;
+
+    std::vector<std::pair<double, Breakpoint>> breakpoints;
+    
+    struct SynthesizerState
+    {
+        int currentSamp = 0;
+        int endSamp = 0;
+        int lastBreakpoint = NoBreakpointProcessed;
+        double prevFrequency;
+    } state;
+};
 // ---------------------------------------------------------------------------
 //	class RealTimeSynthesizer
 //
@@ -128,10 +149,27 @@ public:
     
     void resetSynth()
     {
-        partialsIt = partials.begin();
+        partialIdx = 0;
         
         std::fill (m_sampleBuffer->begin(), m_sampleBuffer->end(), 0);
         processedSamples = 0;
+        
+        for (auto p : partials)
+        {
+            //  compute the starting time for synthesis of this Partial,
+            //  m_fadeTimeSec before the Partial's startTime, but not before 0:
+
+            p.state.currentSamp = index_type( (p.startTime * m_srateHz) + 0.5 );   //  cheap rounding
+            p.state.lastBreakpoint = PartialStruct::NoBreakpointProcessed;
+            
+            //  cache the previous frequency (in Hz) so that it
+            //  can be used to reset the phase when necessary
+            //  in the sample computation loop below (this saves
+            //  having to recompute from the oscillator's radian
+            //  frequency):
+            p.state.prevFrequency = p.breakpoints[1].second.frequency();// 0 is null breakpoint
+        }
+        
     }
 	 	
 //	-- parameter access and mutation --
@@ -155,28 +193,21 @@ private:
 	//!         resized to accommodate the entire duration of the
 	//!         Partial, p, including fade out at the end.
 	//!	\throw	InvalidPartial if the Partial has negative start time.
-	Partial::const_iterator synthesize( const Partial & p, const Partial::const_iterator & lastBreakpoint, const double endTime);
+	void synthesize( PartialStruct & p, const double endTime);
     
     void initInstance();
     
     
     double OneOverSrate;
     typedef unsigned long index_type;
-    double itime;
-    index_type endSamp;
-    index_type startSamp;
-    index_type currentSamp;
     index_type tgtSamp;
-    double prevFrequency;
     double * bufferBegin;
     double dphase;
     
-    PartialList partials;
-    PartialList::const_iterator partialsIt;
+    std::vector<PartialStruct> partials;
+    int partialIdx;
     double processedSamples = 0;
-    Partial::const_iterator lastBreakpoint;
-//    std::map<PartialList::const_iterator, Partial::const_iterator> partialsBeingProcesses;
-    std::queue<std::pair<PartialList::const_iterator, Partial::const_iterator>> partialsBeingProcessed;
+    std::queue<PartialStruct> partialsBeingProcessed;
 };	//	end of class RealTimeSynthesizer
 
 
