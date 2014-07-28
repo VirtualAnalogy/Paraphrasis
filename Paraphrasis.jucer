@@ -88,8 +88,6 @@
           <FILE id="d9B8Lh" name="ResourceCache.cpp" compile="1" resource="0"
                 file="ThirdParty/TeragonGuiComponents/Components/Source/ResourceCache.cpp"/>
           <FILE id="o9YkJf" name="ResourceCache.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/ResourceCache.h"/>
-          <FILE id="Mor30p" name="Resources.cpp" compile="1" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/Resources.cpp"/>
-          <FILE id="mbzdl9" name="Resources.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/Resources.h"/>
           <FILE id="bFtsUB" name="StatusBar.cpp" compile="1" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/StatusBar.cpp"/>
           <FILE id="Wowm5i" name="StatusBar.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/StatusBar.h"/>
           <FILE id="C6ZONL" name="TeragonGuiComponents.h" compile="0" resource="0"
@@ -227,6 +225,10 @@
         <FILE id="qQljKW" name="Synthesizer.C" compile="1" resource="0" file="ThirdParty/Loris/src/Synthesizer.C"/>
         <FILE id="g6eHv5" name="Synthesizer.h" compile="0" resource="0" file="ThirdParty/Loris/src/Synthesizer.h"/>
       </GROUP>
+    </GROUP>
+    <GROUP id="{9192CF98-9223-5DB9-2150-93920664B3B5}" name="Resources">
+      <FILE id="N6hDn0" name="Resources.cpp" compile="1" resource="0" file="Resources/Resources.cpp"/>
+      <FILE id="SoAiLb" name="Resources.h" compile="0" resource="0" file="Resources/Resources.h"/>
     </GROUP>
     <GROUP id="{D622DAE1-E1E0-6CCD-1959-8382BD645EB0}" name="Source">
       <FILE id="X5nnNL" name="PluginProcessor.cpp" compile="1" resource="0"

@@ -64,6 +64,10 @@ public:
     static const int push_button_normal_pngSize;
     static const char* push_button_pressed_png;
     static const int push_button_pressed_pngSize;
+    static const char* slider_well_png;
+    static const int slider_well_pngSize;
+    static const char* slider_thumb_png;
+    static const int slider_thumb_pngSize;
 
 
 private:

@@ -183,6 +183,12 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor() : TeragonPluginBase(), Pa
 
     synth.addSound(new LorisSound());
     
+    parameters.add(new teragon::FrequencyParameter("Sample Pitch", 50, 10000, 440));
+    parameters.add(new teragon::FrequencyParameter("Frequency Resolution", 30, 10000, 40));
+    
+    parameters.add(new teragon::BooleanParameter("Load"));
+    parameters.add(new teragon::BooleanParameter("Analyze"));
+    
     parameters.pause();
 }
 

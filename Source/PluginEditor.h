@@ -51,6 +51,9 @@ public:
     void paint (Graphics& g);
     void resized();
 
+    // Binary resources:
+    static const char* background_png;
+    static const int background_pngSize;
 
 
 private:
@@ -60,6 +63,12 @@ private:
     //[/UserVariables]
 
     //==============================================================================
+    ScopedPointer<teragon::ImageKnobLarge> knob;
+    ScopedPointer<teragon::ToggleButton> button;
+    ScopedPointer<teragon::ImageKnobLarge> knob2;
+    ScopedPointer<teragon::ToggleButton> button2;
+    ScopedPointer<Label> label;
+    Image cachedImage_background_png;
 
 
     //==============================================================================
