@@ -15,6 +15,80 @@
               userNotes="HAVE_FFTW3_H is for Loris to include and build with fftw-3 library (HAVE_FFTW_H for fftw-2 I supose). Debug_Loris can be usefull as well.&#10;&#10;Check for others platforms check type sizes: the defaults are in parenthesis ()&#10;&#10;#define SIZEOF_BOOL 1&#10;#define SIZEOF_CHAR 1&#10;#define SIZEOF_DOUBLE 8 // @ ImportLemur.C (8)&#10;#define SIZEOF_FLOAT 4  // @ ImportLemur.C (4)&#10;#define SIZEOF_INT 4 //@ AiffData.C(4), ImportLemur.C(4), SdifFile.C (4)&#10;#define SIZEOF_INT_P 8 //&#10;#define SIZEOF_LONG 8 // @ AiffData.C(4), ImportLemur.C(4), SdifFile.C (4)&#10;#define SIZEOF_SHORT 2 // @ AiffData.C(2), ImportLemur.C(2), SdifFile.C (2)&#10;#define SIZEOF_SIZE_T 8/Users/tomasmedek/Documents/VirtualAnalogy/Paraphrasis/Loris/config.h.in.txt">
   <MAINGROUP id="e1kq1V" name="Paraphrasis">
     <GROUP id="{2E5C234B-471B-526D-CD3C-6DDD7ADD8349}" name="ThirdParty">
+      <GROUP id="{744D2AA9-7629-E2A3-1B00-D4E6516DB18C}" name="Teragon">
+        <GROUP id="{F57B51A9-F024-16A2-94BE-9673CAB6CC70}" name="PluginParameters">
+          <GROUP id="{47E61763-C820-44B2-1BB7-42B12A4BCC81}" name="readerwriterqueue">
+            <FILE id="J9m9Am" name="atomicops.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/readerwriterqueue/atomicops.h"/>
+            <FILE id="CnpshN" name="readerwriterqueue.h" compile="0" resource="0"
+                  file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/readerwriterqueue/readerwriterqueue.h"/>
+          </GROUP>
+          <GROUP id="{FB43D6EB-2A98-9228-2920-8702753F01B3}" name="tinythread">
+            <FILE id="QpdCl4" name="fast_mutex.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/tinythread/source/fast_mutex.h"/>
+            <FILE id="uFFWde" name="tinythread.cpp" compile="1" resource="0" file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/tinythread/source/tinythread.cpp"/>
+            <FILE id="V0uINA" name="tinythread.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/tinythread/source/tinythread.h"/>
+          </GROUP>
+          <FILE id="QQUd4B" name="BlobParameter.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/BlobParameter.h"/>
+          <FILE id="qTzheS" name="BooleanParameter.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/BooleanParameter.h"/>
+          <FILE id="OFWq2g" name="ConcurrentParameterSet.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/ConcurrentParameterSet.h"/>
+          <FILE id="VylsAD" name="DataParameter.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/DataParameter.h"/>
+          <FILE id="t3850v" name="DecibelParameter.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/DecibelParameter.h"/>
+          <FILE id="BIyHO8" name="Event.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/Event.h"/>
+          <FILE id="Anbenb" name="EventDispatcher.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/EventDispatcher.h"/>
+          <FILE id="EkVo1P" name="FloatParameter.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/FloatParameter.h"/>
+          <FILE id="BXB1Xq" name="FrequencyParameter.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/FrequencyParameter.h"/>
+          <FILE id="Y4EeNW" name="IntegerParameter.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/IntegerParameter.h"/>
+          <FILE id="mOQ2mM" name="Parameter.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/Parameter.h"/>
+          <FILE id="ugUBPu" name="ParameterSet.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/ParameterSet.h"/>
+          <FILE id="J03Scz" name="PluginParameters.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/PluginParameters.h"/>
+          <FILE id="rQ4Qtf" name="StringParameter.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/StringParameter.h"/>
+          <FILE id="Zzl23a" name="VoidParameter.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/VoidParameter.h"/>
+        </GROUP>
+        <GROUP id="{AB0EF2A4-6A07-D671-A9B0-C3FD250B4882}" name="GuiComponents">
+          <FILE id="HnmmvN" name="AnimationConstants.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/Source/AnimationConstants.h"/>
+          <FILE id="v4Yeb8" name="EllipsizedLabel.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/Source/EllipsizedLabel.h"/>
+          <FILE id="liJ8jE" name="ImageKnob.cpp" compile="1" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/ImageKnob.cpp"/>
+          <FILE id="fpnNMO" name="ImageKnob.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/ImageKnob.h"/>
+          <FILE id="wdV0qQ" name="ImageKnobLarge.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/Source/ImageKnobLarge.h"/>
+          <FILE id="Kea1Vn" name="ImageKnobSmall.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/Source/ImageKnobSmall.h"/>
+          <FILE id="LPFdct" name="ImageSlider.cpp" compile="1" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/ImageSlider.cpp"/>
+          <FILE id="WmRIVr" name="ImageSlider.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/ImageSlider.h"/>
+          <FILE id="SVF0Yd" name="IndicatorLight.cpp" compile="1" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/Source/IndicatorLight.cpp"/>
+          <FILE id="ESrdjU" name="IndicatorLight.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/Source/IndicatorLight.h"/>
+          <FILE id="DyzHRn" name="ParameterLabel.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/Source/ParameterLabel.h"/>
+          <FILE id="pLsRaW" name="PluginParameterComponent.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/Source/PluginParameterComponent.h"/>
+          <FILE id="VO21ig" name="PushButton.cpp" compile="1" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/PushButton.cpp"/>
+          <FILE id="ZSXebp" name="PushButton.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/PushButton.h"/>
+          <FILE id="d9B8Lh" name="ResourceCache.cpp" compile="1" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/Source/ResourceCache.cpp"/>
+          <FILE id="o9YkJf" name="ResourceCache.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/ResourceCache.h"/>
+          <FILE id="Mor30p" name="Resources.cpp" compile="1" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/Resources.cpp"/>
+          <FILE id="mbzdl9" name="Resources.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/Resources.h"/>
+          <FILE id="bFtsUB" name="StatusBar.cpp" compile="1" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/StatusBar.cpp"/>
+          <FILE id="Wowm5i" name="StatusBar.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/StatusBar.h"/>
+          <FILE id="C6ZONL" name="TeragonGuiComponents.h" compile="0" resource="0"
+                file="ThirdParty/TeragonGuiComponents/Components/Source/TeragonGuiComponents.h"/>
+          <FILE id="jf0ijz" name="ThinButton.cpp" compile="1" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/ThinButton.cpp"/>
+          <FILE id="x9rocJ" name="ThinButton.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/ThinButton.h"/>
+          <FILE id="Il0I7O" name="ToggleButton.h" compile="0" resource="0" file="ThirdParty/TeragonGuiComponents/Components/Source/ToggleButton.h"/>
+        </GROUP>
+      </GROUP>
       <GROUP id="{DE6F4A8B-68A2-96DE-A6AE-E9A269A646BB}" name="Loris">
         <FILE id="tUhaVU" name="AiffData.C" compile="1" resource="0" file="ThirdParty/Loris/src/AiffData.C"/>
         <FILE id="IRfZaW" name="AiffData.h" compile="0" resource="0" file="ThirdParty/Loris/src/AiffData.h"/>
