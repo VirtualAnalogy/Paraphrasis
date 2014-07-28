@@ -172,12 +172,8 @@ private:
 
 
 //==============================================================================
-ParaphrasisAudioProcessor::ParaphrasisAudioProcessor()
+ParaphrasisAudioProcessor::ParaphrasisAudioProcessor() : TeragonPluginBase(), ParameterObserver()
 {
-    userParams[masterBypass]=0.0f;//default to not bypassed
-    //repeat for "OtherParams"
-    uiUpdateFlag=true;//Request UI update
-    
     initLogging();
 
     initLoris();
@@ -186,6 +182,8 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor()
         synth.addVoice(new LorisVoice(partials));    // These voices will play our custom sine-wave sounds..
 
     synth.addSound(new LorisSound());
+    
+    parameters.pause();
 }
 
 //==============================================================================
@@ -272,129 +270,11 @@ void ParaphrasisAudioProcessor::initLoris()
     Logger::getCurrentLogger()->writeToLog(String(":: Final partials count ") + String((int) partials.size()));
 }
 //==============================================================================
-const String ParaphrasisAudioProcessor::getName() const
-{
-    return JucePlugin_Name;
-}
-//==============================================================================
-int ParaphrasisAudioProcessor::getNumParameters()
-{
-    return totalNumParam;
-}
-//==============================================================================
-float ParaphrasisAudioProcessor::getParameter(int index)
-{
-    //TODO: add cases for any special parameters
-    if (index >= 0  && index < totalNumParam)
-        return userParams[index];
-    else
-        return 0.0f;//invalid index
-}
-//==============================================================================
-void ParaphrasisAudioProcessor::setParameter(int index, float newValue)
-{
-    //TODO: add cases for any special parameters
-    if (index >= 0 && index < totalNumParam)
-        userParams[index] = newValue;
-
-    uiUpdateFlag = true;//Request UI update for when it did not come from  the primary editor
-}
-//==============================================================================
-const String ParaphrasisAudioProcessor::getParameterName(int index)
-{
-    switch (index)
-    {
-        case masterBypass :
-            return "Master Bypass";
-        //OtherParams...
-        default :
-            return String::empty;
-    }
-}
-//==============================================================================
-const String ParaphrasisAudioProcessor::getParameterText(int index)
-{
-    if (index>=0 && index < totalNumParam)
-        return String(userParams[index]);  //return parameter value as string
-    else
-        return String::empty;
-}
-//==============================================================================
-const String ParaphrasisAudioProcessor::getInputChannelName(int channelIndex) const
-{
-    return String(channelIndex + 1);
-}
-//==============================================================================
-const String ParaphrasisAudioProcessor::getOutputChannelName(int channelIndex) const
-{
-    return String(channelIndex + 1);
-}
-//==============================================================================
-bool ParaphrasisAudioProcessor::isInputChannelStereoPair(int index) const
-{
-    return true;
-}
-//==============================================================================
-bool ParaphrasisAudioProcessor::isOutputChannelStereoPair(int index) const
-{
-    return true;
-}
-//==============================================================================
-bool ParaphrasisAudioProcessor::acceptsMidi() const
-{
-#if JucePlugin_WantsMidiInput
-    return true;
-#else
-    return false;
-#endif
-}
-//==============================================================================
-bool ParaphrasisAudioProcessor::producesMidi() const
-{
-#if JucePlugin_ProducesMidiOutput
-    return true;
-#else
-    return false;
-#endif
-}
-//==============================================================================
-bool ParaphrasisAudioProcessor::silenceInProducesSilenceOut() const
-{
-    return false;
-}
-//==============================================================================
-double ParaphrasisAudioProcessor::getTailLengthSeconds() const
-{
-    return 0.0;
-}
-//==============================================================================
-int ParaphrasisAudioProcessor::getNumPrograms()
-{
-    return 0;
-}
-//==============================================================================
-int ParaphrasisAudioProcessor::getCurrentProgram()
-{
-    return 0;
-}
-//==============================================================================
-void ParaphrasisAudioProcessor::setCurrentProgram(int index)
-{
-}
-//==============================================================================
-const String ParaphrasisAudioProcessor::getProgramName(int index)
-{
-    return String::empty;
-}
-//==============================================================================
-void ParaphrasisAudioProcessor::changeProgramName(int index, const String& newName)
-{
-}
-//==============================================================================
 void ParaphrasisAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    TeragonPluginBase::prepareToPlay(sampleRate, samplesPerBlock);
     synth.setCurrentPlaybackSampleRate(sampleRate);
 }
 //==============================================================================
@@ -402,7 +282,19 @@ void ParaphrasisAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
+    TeragonPluginBase::releaseResources();
 }
+
+//==============================================================================
+void ParaphrasisAudioProcessor::onParameterUpdated(const Parameter *parameter) {
+    if(parameter->getName() == "Name") {
+
+    }
+    else if(parameter->getName() == "Another name") {
+
+    }
+}
+
 //==============================================================================
 void ParaphrasisAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
@@ -421,11 +313,14 @@ void ParaphrasisAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuff
     //    buffer.clear (i, 0, buffer.getNumSamples() );
     //}
 
+    // In case we have more outputs than inputs, we'll clear any output
+    // channels that didn't contain input data, (because these aren't
+    // guaranteed to be empty - they may contain garbage).
+    TeragonPluginBase::processBlock(buffer, midiMessages);
+    
     const int numSamples = buffer.getNumSamples();
 
-    // and now get the synth to process these midi events and generate its output.
-    if (userParams[masterBypass] == 0.0f)
-        synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
+    synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
 }
 //==============================================================================
 bool ParaphrasisAudioProcessor::hasEditor() const
@@ -435,41 +330,7 @@ bool ParaphrasisAudioProcessor::hasEditor() const
 //==============================================================================
 AudioProcessorEditor* ParaphrasisAudioProcessor::createEditor()
 {
-    return new ParaphrasisAudioProcessorEditor(this);
-}
-//==============================================================================
-void ParaphrasisAudioProcessor::getStateInformation(MemoryBlock& destData)
-{
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
-    //Save userParams/Data to file
-    XmlElement root("Root");
-    XmlElement* el;
-    el = root.createNewChildElement("Bypass");
-    el->addTextElement(String(userParams[masterBypass]));
-    copyXmlToBinary(root,destData);
-}
-//==============================================================================
-void ParaphrasisAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
-{
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
-    //Load userParams/Data from file
-    XmlElement* pRoot = getXmlFromBinary(data,sizeInBytes);
-    if (pRoot!=NULL)
-    {
-        forEachXmlChildElement((*pRoot), pChild)
-        {
-            if (pChild->hasTagName("Bypass"))
-            {
-                String text = pChild->getAllSubText();
-                setParameter(masterBypass, text.getFloatValue());
-            }
-        }
-        delete pRoot;
-        uiUpdateFlag=true;//Request UI update
-    }
+    return new ParaphrasisAudioProcessorEditor(this, parameters, Resources::getCache());
 }
 //==============================================================================
 // This creates new instances of the plugin..

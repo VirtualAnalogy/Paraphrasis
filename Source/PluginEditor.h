@@ -23,6 +23,8 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
+#include "TeragonGuiComponents.h"
+#include "Resources.h"
 //[/Headers]
 
 
@@ -35,39 +37,33 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class ParaphrasisAudioProcessorEditor  : public AudioProcessorEditor,
-    public Timer,
-    public ButtonListener
+class ParaphrasisAudioProcessorEditor  : public AudioProcessorEditor
 {
 public:
     //==============================================================================
-    ParaphrasisAudioProcessorEditor(ParaphrasisAudioProcessor* ownerFilter);
+    ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet& p, teragon::ResourceCache *r);
     ~ParaphrasisAudioProcessorEditor();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void timerCallback();
-    ParaphrasisAudioProcessor* getProcessor() const
-    {
-        return static_cast <ParaphrasisAudioProcessor*>(getAudioProcessor());
-    }
     //[/UserMethods]
 
-    void paint(Graphics& g);
+    void paint (Graphics& g);
     void resized();
-    void buttonClicked(Button* buttonThatWasClicked);
+
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    teragon::ConcurrentParameterSet &parameters;
+    teragon::ResourceCache *resources;
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<TextButton> bypassBtn;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParaphrasisAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParaphrasisAudioProcessorEditor)
 };
 
 //[EndFile] You can add extra defines here...
