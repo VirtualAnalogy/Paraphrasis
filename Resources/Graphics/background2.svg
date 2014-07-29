@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="background.svg"
+   sodipodi:docname="background2.svg"
    inkscape:export-filename="/Users/tomasmedek/Documents/VirtualAnalogy/Paraphrasis/Resources/Graphics/background.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -245,8 +245,8 @@
      inkscape:guide-bbox="true"
      inkscape:window-width="1280"
      inkscape:window-height="752"
-     inkscape:window-x="447"
-     inkscape:window-y="0"
+     inkscape:window-x="120"
+     inkscape:window-y="7"
      inkscape:window-maximized="0">
     <sodipodi:guide
        orientation="1,0"
@@ -429,7 +429,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -485,6 +485,26 @@
        y="-327.36218"
        ry="3.062331"
        transform="scale(1,-1)" />
+    <text
+       xml:space="preserve"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
+       x="30.353554"
+       y="292.04559"
+       id="text3863-5"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3865-7"
+         x="30.353554"
+         y="292.04559"
+         style="font-size:13px;fill:#4d4d4d;fill-opacity:1">Source</tspan></text>
+    <image
+       y="242.77371"
+       x="-16.936514"
+       id="image3162"
+       xlink:href="file:///Users/tomasmedek/Documents/VirtualAnalogy/Paraphrasis/Resources/Graphics/metal.png"
+       height="328"
+       width="345"
+       style="opacity:0.29" />
     <g
        id="g3088"
        transform="matrix(0.75151245,0,0,0.75151245,69.229299,-56.618762)">
@@ -528,26 +548,6 @@
          id="rect4296"
          style="opacity:0.98999999;fill:#1a1a1a;fill-opacity:1;stroke:none" />
     </g>
-    <text
-       xml:space="preserve"
-       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
-       x="30.353554"
-       y="292.04559"
-       id="text3863-5"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan3865-7"
-         x="30.353554"
-         y="292.04559"
-         style="font-size:13px;fill:#4d4d4d;fill-opacity:1">Source</tspan></text>
-    <image
-       y="243.86218"
-       x="-17.5"
-       id="image3261"
-       xlink:href="file:///Users/tomasmedek/Desktop/Untitled.png"
-       height="328"
-       width="345"
-       style="opacity:0.29" />
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:1.5px;word-spacing:0px;text-anchor:middle;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Sans"
@@ -679,12 +679,5 @@
        width="299.93463"
        id="rect3110"
        style="opacity:0.56034479999999998;fill:url(#radialGradient3886);fill-opacity:1;stroke:none" />
-    <rect
-       style="opacity:0.45689655;fill:#cccccc;fill-opacity:1;stroke:none"
-       id="rect3153"
-       width="270"
-       height="228"
-       x="326"
-       y="147.36218" />
   </g>
 </svg>
