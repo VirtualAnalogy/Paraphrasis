@@ -22,6 +22,17 @@
   <defs
      id="defs4">
     <linearGradient
+       id="linearGradient3880">
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="0"
+         id="stop3882" />
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="1"
+         id="stop3884" />
+    </linearGradient>
+    <linearGradient
        inkscape:collect="always"
        id="linearGradient3877">
       <stop
@@ -62,6 +73,17 @@
          stdDeviation="1.0885413"
          id="feGaussianBlur4149" />
     </filter>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3880"
+       id="radialGradient3886"
+       cx="350.43042"
+       cy="-352.62372"
+       fx="350.43042"
+       fy="-352.62372"
+       r="130.005"
+       gradientTransform="matrix(2.2922579,3.8026301e-8,-4.7787285e-8,2.8806583,-655.00416,736.92726)"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -70,9 +92,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="170.8122"
-     inkscape:cy="650.8"
+     inkscape:zoom="1"
+     inkscape:cx="197.27473"
+     inkscape:cy="689.68709"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -277,8 +299,8 @@
        id="rect3067"
        width="421.23361"
        height="410.12195"
-       x="-49.103046"
-       y="199.80122"
+       x="-100.36829"
+       y="205.45808"
        ry="11.111678" />
     <rect
        style="fill:#f9f9f9;fill-opacity:1;stroke:none"
@@ -320,45 +342,49 @@
        y="-327.36218"
        ry="3.062331"
        transform="scale(1,-1)" />
-    <text
-       xml:space="preserve"
-       style="font-size:7.37251759px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.57758622;fill:#000000;fill-opacity:1;stroke:none;filter:url(#filter4147);font-family:Sans"
-       x="148.36081"
-       y="531.16003"
-       id="text4135"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan4137"
-         x="148.36081"
+    <g
+       id="g3088"
+       transform="matrix(0.75151245,0,0,0.75151245,69.229299,-56.618762)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text4135"
          y="531.16003"
-         style="font-size:19.66004562px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"><tspan
-           style="fill:#333333"
-           id="tspan4139">Para</tspan><tspan
-           id="tspan4141"
-           style="fill:#1a1a1a">phrasis</tspan></tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text4290"
-       y="529.66003"
-       x="148.86081"
-       style="font-size:7.37251759px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       xml:space="preserve"><tspan
-         style="font-size:19.66004562px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
-         y="529.66003"
+         x="148.36081"
+         style="font-size:7.37251759px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.57758622;fill:#000000;fill-opacity:1;stroke:none;filter:url(#filter4147);font-family:Sans"
+         xml:space="preserve"><tspan
+           style="font-size:19.66004562px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
+           y="531.16003"
+           x="148.36081"
+           id="tspan4137"
+           sodipodi:role="line"><tspan
+             id="tspan4139"
+             style="fill:#333333">Para</tspan><tspan
+             style="fill:#1a1a1a"
+             id="tspan4141">phrasis</tspan></tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:7.37251759px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
          x="148.86081"
-         id="tspan4292"
-         sodipodi:role="line"><tspan
-           id="tspan4128"
-           style="fill:#333333">Para</tspan><tspan
-           style="fill:#00ccff"
-           id="tspan4294">phrasis</tspan></tspan></text>
-    <rect
-       style="opacity:0.98999999000000005;fill:#1a1a1a;fill-opacity:1;stroke:none"
-       id="rect4296"
-       width="2.2412055"
-       height="2.1534362"
-       x="261.85324"
-       y="515.54205" />
+         y="529.66003"
+         id="text4290"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4292"
+           x="148.86081"
+           y="529.66003"
+           style="font-size:19.66004562px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"><tspan
+             style="fill:#333333"
+             id="tspan4128">Para</tspan><tspan
+             id="tspan4294"
+             style="fill:#00ccff">phrasis</tspan></tspan></text>
+      <rect
+         y="515.54205"
+         x="261.85324"
+         height="2.1534362"
+         width="2.2412055"
+         id="rect4296"
+         style="opacity:0.98999999;fill:#1a1a1a;fill-opacity:1;stroke:none" />
+    </g>
     <text
        xml:space="preserve"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
@@ -373,9 +399,9 @@
          style="font-size:13px;fill:#4d4d4d;fill-opacity:1">Source</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:1.50000000000000000px;word-spacing:0px;text-anchor:middle;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-size:14px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:1.5px;word-spacing:0px;text-anchor:middle;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Sans"
        x="236.06139"
-       y="287.94952"
+       y="292.19208"
        id="text3049"
        sodipodi:linespacing="125%"
        inkscape:export-xdpi="90"
@@ -383,20 +409,20 @@
          sodipodi:role="line"
          id="tspan3051"
          x="236.81139"
-         y="287.94952"
-         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;letter-spacing:1.50000000000000000px;text-anchor:middle;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'">Select</tspan></text>
+         y="292.19208"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;letter-spacing:1.5px;text-anchor:middle;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'">Select</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:1.50000000000000000px;word-spacing:0px;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:1.5px;word-spacing:0px;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Sans"
        x="113.62868"
-       y="464.44189"
+       y="482.44189"
        id="text3134"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3136"
          x="113.62868"
-         y="464.44189"
-         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:1.50000000000000000px;word-spacing:0px;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'">ANALYZE</tspan></text>
+         y="482.44189"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:1.5px;word-spacing:0px;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'">ANALYZE</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Sans"
@@ -494,12 +520,13 @@
          x="201.2932"
          sodipodi:role="line">Hz</tspan></text>
     <rect
-       style="fill:#9f9d9d;fill-opacity:1;stroke:none"
-       id="rect4151"
-       width="159.5"
-       height="20.425507"
-       x="29.5"
-       y="296.89917"
-       ry="3.7127686" />
+       transform="scale(1,-1)"
+       ry="0"
+       y="-552.36218"
+       x="0"
+       height="300.09131"
+       width="299.93463"
+       id="rect3110"
+       style="opacity:0.5603448;fill:url(#radialGradient3886);fill-opacity:1;stroke:none" />
   </g>
 </svg>
