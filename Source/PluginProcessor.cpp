@@ -12,18 +12,10 @@
 #include "Analyzer.h"
 #include "AiffFile.h"
 #include "PartialUtils.h"
+#include "Resampler.h"
 #include "SdifFile.h"
 #include "Synthesizer.h"
 #include "RealTimeSynthesizer.h"
-
-#include "Channelizer.h"
-
-#define PAD
-#ifdef PAD
-  #define FUNDAMENTAL_FREQUENCY 440 //pad
-#else
-  #define FUNDAMENTAL_FREQUENCY 109 //pno
-#endif
 
 //==============================================================================
 class LorisSound : public SynthesiserSound
@@ -49,7 +41,7 @@ public:
     LorisVoice() :
         tailOff(0.0), sampleIndex(0), synth(buffer)
     {
-        secPerSample = 1.0 / 44100;
+        secPerSample = 1.0 / getSampleRate();
 
         lastFreqMultiplyer = 1.0;
         play = false;
@@ -67,7 +59,7 @@ public:
         sampleIndex = 0;
         tailOff = 0.0;
         
-        double freqMultiplyer = MidiMessage::getMidiNoteInHertz (midiNoteNumber) / FUNDAMENTAL_FREQUENCY;
+        double freqMultiplyer = MidiMessage::getMidiNoteInHertz (midiNoteNumber) / defaultPitch;
     
         synth.resetSynth(freqMultiplyer / lastFreqMultiplyer);//scale back to original and scale to desired pitch
         
@@ -153,9 +145,11 @@ public:
         clearCurrentNote();
     }
     
-    void setup(Loris::PartialList &partials)
+    void setup(Loris::PartialList &partials, double pitch)
     {
-        synth.setupRealtime(partials);
+        this->partials = partials;
+        this->defaultPitch = pitch;
+        synth.setupRealtime(this->partials);
     }
 
 private:
@@ -165,8 +159,10 @@ private:
     int sampleIndex;
     double lastFreqMultiplyer;
     bool play;
+    double defaultPitch;
     
     Loris::RealTimeSynthesizer synth;
+    Loris::PartialList partials;
 };
 
 
@@ -203,21 +199,24 @@ void ParaphrasisAudioProcessor::loadSample()
 {
     analyzer.setSamplePath(parameters[kParameterLastSamplePath_name]->getDisplayText());
     analyzer.setFrequencyResolution(parameters[kParameterFrequencyResolution_name]->getValue());
-    analyzer.setPitch(parameters[kParameterSamplePitch_name]->getValue());
-    //        analyzer.startThread();
+    double pitch = parameters[kParameterSamplePitch_name]->getValue();
+    analyzer.setPitch(pitch);
+//  analyzer.startThread();
     analyzer.runThread();
-//    analyzer.run();
+//  analyzer.run();
     
     analyzerSync.wait();
     
     int numVoices = synth.getNumVoices();
     Loris::PartialList partials = analyzer.partials();
+    resamplePartials(getSampleRate());
+    
     LorisVoice* voice;
     for (int i = 0; i < numVoices; i++)
     {
         voice = dynamic_cast<LorisVoice *>(synth.getVoice(i));
         if (voice)
-            voice->setup(partials);
+            voice->setup(partials, pitch);
     }
 }
 
@@ -228,7 +227,22 @@ void ParaphrasisAudioProcessor::prepareToPlay(double sampleRate, int samplesPerB
     // initialisation that you need..
     TeragonPluginBase::prepareToPlay(sampleRate, samplesPerBlock);
     synth.setCurrentPlaybackSampleRate(sampleRate);
+    resamplePartials(sampleRate);
 }
+
+//==============================================================================
+void ParaphrasisAudioProcessor::resamplePartials(double sampleRate)
+{
+    //  use a Resampler to quantize the Breakpoint times and
+    //  correct the phases:
+    Loris::Resampler quantizer( 1.0 / sampleRate );
+    quantizer.setPhaseCorrect( true );
+    for ( auto p = partials.begin(); p != partials.end(); ++p )
+    {
+        quantizer.quantize( *p );
+    }
+}
+
 //==============================================================================
 void ParaphrasisAudioProcessor::releaseResources()
 {

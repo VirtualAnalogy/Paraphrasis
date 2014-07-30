@@ -156,20 +156,7 @@ void RealTimeSynthesizer::setupRealtime(PartialList & partials)
     
     //  better to compute this only once:
     OneOverSrate = 1. / m_srateHz;
-    
-    //  use a Resampler to quantize the Breakpoint times and
-    //  correct the phases:
-    Resampler quantizer( OneOverSrate );
-    quantizer.setPhaseCorrect( true );
-    for ( auto p = partials.begin(); p != partials.end(); ++p )
-    {
-        quantizer.quantize( *p );
-    }
-    
-    // partials in partial list will be sorted by start time
-    partials.sort(PartialUtils::compareStartTimeLess());
-    
-    
+        
     // assuming I am getting sorted partials by time
     this->partials.clear();
     for (auto it : partials)

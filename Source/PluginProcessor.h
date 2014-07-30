@@ -45,6 +45,7 @@ public:
     void loadSample();
 
 private:
+    void resamplePartials(double sampleRate);
     Loris::PartialList partials;
 
     // the synth!

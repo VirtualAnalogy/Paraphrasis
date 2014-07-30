@@ -14,6 +14,7 @@
 #include "Channelizer.h"
 #include "PartialUtils.h"
 #include "AiffFile.h"
+#include "PartialUtils.h" 
 
 SampleAnalyzer::SampleAnalyzer(AudioFormatManager &formatManager, WaitableEvent& syncObj, const String &name)
     : ThreadWithProgressWindow(name, true, true),
@@ -126,4 +127,7 @@ void SampleAnalyzer::analyze()
     // chanelize - mark partial
     Loris::Channelizer channelizer(m_pitch);
     channelizer.channelize(m_partials.begin(), m_partials.end());
+    
+    // partials in partial list will be sorted by start time
+    m_partials.sort(Loris::PartialUtils::compareStartTimeLess());
 }
