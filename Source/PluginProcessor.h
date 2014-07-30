@@ -44,16 +44,21 @@ public:
 
     void loadSample();
 
+    virtual void setStateInformation(const void *data, int sizeInBytes);
+
 private:
     void resamplePartials(double sampleRate);
+    void processPartialChange();
     Loris::PartialList partials;
+    String loadedSamplePath;
 
     // the synth!
     Synthesiser synth;
-
+    double sampleRate = 44100;
     SampleAnalyzer analyzer;
     WaitableEvent analyzerSync;
     AudioFormatManager  formatManager;
+    bool waitingForInitialSetState;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParaphrasisAudioProcessor)
 };

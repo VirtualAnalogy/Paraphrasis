@@ -212,24 +212,23 @@ void ParaphrasisAudioProcessor::loadSample()
 {
     analyzer.setSamplePath(parameters[kParameterLastSamplePath_name]->getDisplayText());
     analyzer.setFrequencyResolution(parameters[kParameterFrequencyResolution_name]->getValue());
-    double pitch = parameters[kParameterSamplePitch_name]->getValue();
-    analyzer.setPitch(pitch);
+    analyzer.setPitch(parameters[kParameterSamplePitch_name]->getValue());
 //  analyzer.startThread();
     analyzer.runThread();
-//  analyzer.run();
     
     analyzerSync.wait();
     
+    
     int numVoices = synth.getNumVoices();
     Loris::PartialList partials = analyzer.partials();
-    resamplePartials(getSampleRate());
+    resamplePartials(sampleRate);
     
     LorisVoice* voice;
     for (int i = 0; i < numVoices; i++)
     {
         voice = dynamic_cast<LorisVoice *>(synth.getVoice(i));
         if (voice)
-            voice->setup(partials, pitch);
+            voice->setup(partials, parameters[kParameterSamplePitch_name]->getValue());
     }
 }
 
@@ -238,6 +237,7 @@ void ParaphrasisAudioProcessor::prepareToPlay(double sampleRate, int samplesPerB
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    this->sampleRate = sampleRate;
     TeragonPluginBase::prepareToPlay(sampleRate, samplesPerBlock);
     synth.setCurrentPlaybackSampleRate(sampleRate);
     resamplePartials(sampleRate);
@@ -268,6 +268,13 @@ void ParaphrasisAudioProcessor::releaseResources()
 void ParaphrasisAudioProcessor::onParameterUpdated(const Parameter *parameter)
 {
 
+}
+
+//==============================================================================
+void ParaphrasisAudioProcessor::setStateInformation(const void *data, int sizeInBytes)
+{
+    TeragonPluginBase::setStateInformation(data, sizeInBytes);
+    loadSample();
 }
 
 //==============================================================================
