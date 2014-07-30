@@ -7,8 +7,7 @@
 // My stuff
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-// Juce
-#include "juce_FileLogger.h"
+#include "ParameterDefitions.h"
 // Loris
 #include "Analyzer.h"
 #include "AiffFile.h"
@@ -47,13 +46,10 @@ public:
 class LorisVoice  : public SynthesiserVoice
 {
 public:
-    LorisVoice(Loris::PartialList partials) :
+    LorisVoice() :
         tailOff(0.0), sampleIndex(0), synth(buffer)
     {
-        Logger::getCurrentLogger()->writeToLog(String(":: new voice initialized "));
         secPerSample = 1.0 / 44100;
-    
-        synth.setupRealtime(partials);
 
         lastFreqMultiplyer = 1.0;
         play = false;
@@ -156,23 +152,29 @@ public:
         sampleIndex = 0;
         clearCurrentNote();
     }
+    
+    void setup(Loris::PartialList &partials)
+    {
+        synth.setupRealtime(partials);
+    }
 
 private:
-    double level, tailOff;
-    int sampleIndex;
     std::vector<double> buffer;
     double secPerSample;
-    
-    Loris::PartialList partials;
-    Loris::PartialList filteredPartials;
-    Loris::RealTimeSynthesizer synth;
+    double level, tailOff;
+    int sampleIndex;
     double lastFreqMultiplyer;
     bool play;
+    
+    Loris::RealTimeSynthesizer synth;
 };
 
 
 //==============================================================================
-ParaphrasisAudioProcessor::ParaphrasisAudioProcessor() : TeragonPluginBase(), ParameterObserver()
+ParaphrasisAudioProcessor::ParaphrasisAudioProcessor()
+    : TeragonPluginBase(),
+      ParameterObserver(),
+      analyzer(formatManager, analyzerSync)
 {
     parameters.add(new teragon::FrequencyParameter(kParameterSamplePitch_name, kParameterSamplePitch_minValue,
                                                    kParameterSamplePitch_maxValue, kParameterSamplePitch_defaultValue));
@@ -182,100 +184,42 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor() : TeragonPluginBase(), Pa
     
     parameters.pause();
 
-    initLogging();
-
-    initLoris();
-
     for (int i = 10; --i >= 0;)
-        synth.addVoice(new LorisVoice(partials));    // These voices will play our custom sine-wave sounds..
+        synth.addVoice(new LorisVoice());
 
     synth.addSound(new LorisSound());
     
+    formatManager.registerBasicFormats();
 }
 
 //==============================================================================
 ParaphrasisAudioProcessor::~ParaphrasisAudioProcessor()
 {
-    deleteLogger();
-}
-//==============================================================================
-void ParaphrasisAudioProcessor::deleteLogger()
-{
-    Logger* logger = Logger::getCurrentLogger();
-    Logger::setCurrentLogger(nullptr);
-    delete logger;
-}
-//==============================================================================
-void ParaphrasisAudioProcessor::initLogging()
-{
-    deleteLogger();
-    Logger* logger = FileLogger::createDefaultAppLogger(String("/Users/tomasmedek/Documents/"), String("Paraphrasis.log"), String("Paraphrasis Log"));
-    Logger::setCurrentLogger(logger);
-    
-}
-//==============================================================================
-void ParaphrasisAudioProcessor::initLoris()
-{
-    decltype(std::chrono::high_resolution_clock::now()) begin, end;
-    
-#define LOAD_FROM_AIFF 1
-#if LOAD_FROM_AIFF
 
-#ifdef PAD
-    Loris::AiffFile inputFile("/Users/tomasmedek/Documents/Tmp/LorisTest/pad-quater.aiff");
-#else
-    Loris::AiffFile inputFile("/Users/tomasmedek/Documents/Tmp/LorisTest/Piano.ff.C3.mono.cropped.aiff");
-#endif
-    
-    Loris::AiffFile::samples_type samples = inputFile.samples();
-    Loris::AiffFile::markers_type markers = inputFile.markers();
-    double analysisRate = inputFile.sampleRate();
-    
-    Logger::getCurrentLogger()->writeToLog(String(":: File loaded and has samples ") + String((int) samples.size()));
-    
-    Loris::Analyzer analyzer(FUNDAMENTAL_FREQUENCY * 0.85);
-    Logger::getCurrentLogger()->writeToLog(String(":: Analyzing"));
-    begin = std::chrono::high_resolution_clock::now();
-    analyzer.analyze(samples, analysisRate);
-    end = std::chrono::high_resolution_clock::now();
-    Logger::getCurrentLogger()->writeToLog(String(":: Analysis done in ") + String((int)std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count()) + String(" ms"));
-    partials = analyzer.partials();
-    
-    Logger::getCurrentLogger()->writeToLog(String(":: Partials found ") + String((int) partials.size()));
-    
-    Loris::Channelizer channelizer(FUNDAMENTAL_FREQUENCY);
-    channelizer.channelize(partials.begin(), partials.end());
-    
-#else
-    Loris::SdifFile sdifFile("/Users/tomasmedek/Downloads/loris-1.8/utils/partials.sdif");
-    
-    Logger::getCurrentLogger()->writeToLog(String(":: SDIF file "));
-    partials = sdifFile.partials();
-#endif
-    
-#if 0
-    Logger::getCurrentLogger()->writeToLog(String(":: Filtering partials for first 10 harmonics"));
-    auto it = partials.begin();
-    Loris::PartialList filteredPartials;
-    while ( it != partials.end() )
-        {
-        if ( it->label() <= 10 )
-            {
-            filteredPartials.push_back( *it );
-            }
-        it++;
-        }
-    partials = filteredPartials;
-#endif
-    
-#if WRITE_SDIF
-    Loris::SdifFile sdifFileWrite(partials.begin(), partials.end());
-    sdifFileWrite.write("/Users/tomasmedek/Documents/Tmp/LorisTest/pad-cropped.sdif");
-#endif
-    //Loris::PartialUtils::scaleNoiseRatio(partials.begin(), partials.end(), 0);
-    Loris::PartialUtils::scaleBandwidth(partials.begin(), partials.end(), 0);
-    Logger::getCurrentLogger()->writeToLog(String(":: Final partials count ") + String((int) partials.size()));
 }
+
+//==============================================================================
+void ParaphrasisAudioProcessor::loadSample()
+{
+    analyzer.setSamplePath(parameters[kParameterLastSamplePath_name]->getDisplayText());
+    analyzer.setFrequencyResolution(parameters[kParameterFrequencyResolution_name]->getValue());
+    analyzer.setPitch(parameters[kParameterSamplePitch_name]->getValue());
+    //        analyzer.startThread();
+    analyzer.runThread();
+    
+    analyzerSync.wait();
+    
+    int numVoices = synth.getNumVoices();
+    Loris::PartialList partials = analyzer.partials();
+    LorisVoice* voice;
+    for (int i = 0; i < numVoices; i++)
+    {
+        voice = dynamic_cast<LorisVoice *>(synth.getVoice(i));
+        if (voice)
+            voice->setup(partials);
+    }
+}
+
 //==============================================================================
 void ParaphrasisAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
@@ -333,7 +277,7 @@ bool ParaphrasisAudioProcessor::hasEditor() const
 //==============================================================================
 AudioProcessorEditor* ParaphrasisAudioProcessor::createEditor()
 {
-    return new ParaphrasisAudioProcessorEditor(this, parameters, Resources::getCache());
+    return new ParaphrasisAudioProcessorEditor(this, parameters, Resources::getCache(), formatManager);
 }
 //==============================================================================
 // This creates new instances of the plugin..

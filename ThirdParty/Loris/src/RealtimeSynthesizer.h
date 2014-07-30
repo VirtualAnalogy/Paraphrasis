@@ -159,13 +159,15 @@ public:
     void resetSynth(double freqScale)
     {
         partialIdx = 0;
-        
+        // clear buffer
         std::fill (m_sampleBuffer->begin(), m_sampleBuffer->end(), 0);
         processedSamples = 0;
         
+        // init partials
         int sizeP = partials.size();
         for (int i = 0; i < sizeP; i++)
         {
+            // setup first breakpoint
             partials[i].state.currentSamp = index_type( (partials[i].startTime * m_srateHz) + 0.5 );   //  cheap rounding
             partials[i].state.lastBreakpoint = PartialStruct::NoBreakpointProcessed;
             
@@ -173,10 +175,10 @@ public:
             double endPhase = 0; // first is null breakpoint
             for (int j = 0; j < sizeB; j++)
             {
-                double newFrequency = partials[i].breakpoints[j].second._frequency *= freqScale;
-                partials[i].breakpoints[j].second._phase = endPhase; // synchronize phase with previous wave, beginig is previous ending
+                double newFrequency = partials[i].breakpoints[j].second._frequency *= freqScale;// pitch shifting
+                partials[i].breakpoints[j].second._phase = endPhase; // synchronize phase with previous wave (beginig is previous ending)
                 
-                //  calculate end phase which will be begging for the next one
+                //  calculate end phase which will be beginig for the next one
                 if (j + 1 < sizeB)
                     endPhase = wrapPi( 2. * Pi * (partials[i].breakpoints[j + 1].first - partials[i].breakpoints[j].first) * newFrequency + partials[i].breakpoints[j].second._phase);
             }
@@ -222,7 +224,7 @@ private:
     void initInstance();
     
     
-    double OneOverSrate;
+    double OneOverSrate = 0;
     typedef unsigned long index_type;
     index_type tgtSamp;
     double * bufferBegin;

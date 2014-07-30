@@ -231,6 +231,12 @@
       <FILE id="SoAiLb" name="Resources.h" compile="0" resource="0" file="Resources/Resources.h"/>
     </GROUP>
     <GROUP id="{D622DAE1-E1E0-6CCD-1959-8382BD645EB0}" name="Source">
+      <FILE id="MYCl9Q" name="ParameterDefitions.h" compile="0" resource="0"
+            file="Source/ParameterDefitions.h"/>
+      <FILE id="YFqy6e" name="SampleAnalyzer.cpp" compile="1" resource="0"
+            file="Source/SampleAnalyzer.cpp"/>
+      <FILE id="V7nj5c" name="SampleAnalyzer.h" compile="0" resource="0"
+            file="Source/SampleAnalyzer.h"/>
       <FILE id="X5nnNL" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="q8ur18" name="PluginProcessor.h" compile="0" resource="0"

@@ -68,7 +68,7 @@ namespace Loris {
 RealTimeSynthesizer::RealTimeSynthesizer( std::vector<double> & buffer ) :
     Synthesizer( buffer )
 {
-    initInstance();
+
 }
 // ---------------------------------------------------------------------------
 //  RealTimeSynthesizer constructor
@@ -90,7 +90,7 @@ RealTimeSynthesizer::RealTimeSynthesizer( std::vector<double> & buffer ) :
 RealTimeSynthesizer::RealTimeSynthesizer( Parameters params, std::vector<double> & buffer ) :
     Synthesizer( params, buffer )
 {
-    initInstance();
+
 }
 // ---------------------------------------------------------------------------
 //  RealTimeSynthesizer constructor
@@ -111,7 +111,7 @@ RealTimeSynthesizer::RealTimeSynthesizer( Parameters params, std::vector<double>
 RealTimeSynthesizer::RealTimeSynthesizer( double samplerate, std::vector<double> & buffer ) :
     Synthesizer( samplerate, buffer )
 {
-    initInstance();
+
 }
 // ---------------------------------------------------------------------------
 //  RealTimeSynthesizer constructor
@@ -136,13 +136,9 @@ RealTimeSynthesizer::RealTimeSynthesizer( double samplerate, std::vector<double>
                           double fade ) :
     Synthesizer( samplerate, buffer, fade )
 {
-    initInstance();
+
 }
-//	-- synthesis --
-void RealTimeSynthesizer::initInstance()
-{
-    OneOverSrate = 0;
-}
+
     
 void RealTimeSynthesizer::setupRealtime(PartialList & partials)
 {
@@ -206,11 +202,9 @@ void RealTimeSynthesizer::setupRealtime(PartialList & partials)
     }
     
     resetSynth(1.0);
-
 }
 
-void
-    RealTimeSynthesizer::synthesizeNext( int samples )
+void RealTimeSynthesizer::synthesizeNext( int samples )
 {
     int size = partialsBeingProcessed.size();
     PartialStruct *partial;

@@ -13,21 +13,10 @@
 #include "PluginParameters.h"
 // Loris
 #include "PartialList.h"
+// My
+#include "SampleAnalyzer.h"
 
 using namespace teragon;
-
-static const char* kParameterSamplePitch_name = "Sample Pitch";
-static const  int kParameterSamplePitch_minValue = 50;
-static const  int kParameterSamplePitch_maxValue = 10000;
-static const  int kParameterSamplePitch_defaultValue = 440;
-
-
-static const char* kParameterFrequencyResolution_name = "Frequency Resolution";
-static const  int kParameterFrequencyResolution_minValue = 30;
-static const  int kParameterFrequencyResolution_maxValue = 10000;
-static const  int kParameterFrequencyResolution_defaultValue = 40;
-
-static const char* kParameterLastSamplePath_name = "Last Sample Path";
 
 //==============================================================================
 /**
@@ -53,15 +42,17 @@ public:
     virtual bool isRealtimePriority() const override { return true; }
     virtual void onParameterUpdated(const Parameter *parameter) override;
 
+    void loadSample();
+
 private:
     Loris::PartialList partials;
 
     // the synth!
     Synthesiser synth;
 
-    void initLoris();
-    void initLogging();
-    void deleteLogger();
+    SampleAnalyzer analyzer;
+    WaitableEvent analyzerSync;
+    AudioFormatManager  formatManager;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParaphrasisAudioProcessor)
 };

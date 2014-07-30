@@ -23,7 +23,9 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
+
 #include "TeragonGuiComponents.h"
+
 #include "Resources.h"
 //[/Headers]
 
@@ -44,7 +46,7 @@ class ParaphrasisAudioProcessorEditor  : public AudioProcessorEditor,
 {
 public:
     //==============================================================================
-    ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet& p, teragon::ResourceCache *r);
+    ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet& p, teragon::ResourceCache *r, AudioFormatManager &formatManager);
     ~ParaphrasisAudioProcessorEditor();
 
     //==============================================================================
@@ -52,6 +54,11 @@ public:
     virtual bool isRealtimePriority() const
     {
         return false;
+    }
+    
+    ParaphrasisAudioProcessor* getProcessor() const
+    {
+        return static_cast <ParaphrasisAudioProcessor*>(getAudioProcessor());
     }
 
     virtual void onParameterUpdated(const Parameter *parameter) ;
@@ -71,8 +78,9 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    teragon::ConcurrentParameterSet &parameters;
+    teragon::ConcurrentParameterSet& parameters;
     teragon::ResourceCache *resources;
+    AudioFormatManager& formatManager;
     //[/UserVariables]
 
     //==============================================================================

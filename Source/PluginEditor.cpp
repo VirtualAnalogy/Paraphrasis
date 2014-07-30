@@ -19,6 +19,8 @@
 
 //[Headers] You can add your own extra header files here...
 #include "Resources.h"
+#include "SampleAnalyzer.h"
+#include "ParameterDefitions.h"
 //[/Headers]
 
 #include "PluginEditor.h"
@@ -28,10 +30,11 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet& p, teragon::ResourceCache *r)
+ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet& p, teragon::ResourceCache *r, AudioFormatManager &formatManager)
     : AudioProcessorEditor(ownerFilter),
       parameters(p),
-      resources(r)
+      resources(r),
+      formatManager(formatManager)
 {
     addAndMakeVisible (knob = new teragon::ImageKnobLarge (parameters, "Sample Pitch", r));
     knob->setName ("knob");
@@ -195,8 +198,8 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
             lastFile = File::getSpecialLocation (File::userHomeDirectory);
         else
             lastFile = File(filePath);
-        
-        FileChooser myChooser ("Please select the sample file you want to load...", lastFile, "*.aiff");
+
+        FileChooser myChooser ("Please select the sample file you want to load...", lastFile, formatManager.getWildcardForAllFormats());
         if (myChooser.browseForFileToOpen())
         {
             File sampleFile (myChooser.getResult());
@@ -213,6 +216,7 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
     else if (buttonThatWasClicked == analyzeBtn)
     {
         //[UserButtonCode_analyzeBtn] -- add your button handler code here..
+        getProcessor()->loadSample();
         //[/UserButtonCode_analyzeBtn]
     }
 
@@ -296,8 +300,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ParaphrasisAudioProcessorEditor"
                  componentName="" parentClasses="public AudioProcessorEditor, public ParameterObserver"
-                 constructorParams="ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet&amp; p, teragon::ResourceCache *r"
-                 variableInitialisers="AudioProcessorEditor(ownerFilter),&#10;    parameters(p),&#10;    resources(r)"
+                 constructorParams="ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet&amp; p, teragon::ResourceCache *r, AudioFormatManager &amp;formatManager"
+                 variableInitialisers="AudioProcessorEditor(ownerFilter),&#10;    parameters(p),&#10;    resources(r),&#10;    formatManager(formatManager)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="300" initialHeight="300">
   <BACKGROUND backgroundColour="ffbdbdbd">
