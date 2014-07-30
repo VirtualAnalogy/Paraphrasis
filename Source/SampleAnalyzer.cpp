@@ -34,7 +34,7 @@ void SampleAnalyzer::run()
     buffer.clear();
     sampleRate = 0;
     
-    if ( ! readViaJuce() && ! readViaLoris() )
+    if ( ! readViaJuce() )// && ! readViaLoris() )
     {
         NativeMessageBox::showMessageBoxAsync(AlertWindow::WarningIcon, "Ooops...", "Paraphrasis can not load file, sorry...");
         analyzerSync.signal();
@@ -75,7 +75,7 @@ bool SampleAnalyzer::readViaJuce()
     // read samples
     setStatusMessage("Reading file...");
     AudioSampleBuffer fileSamples(1, reader->lengthInSamples);
-    reader->read(&fileSamples, 0, reader->lengthInSamples, 0, true, false);
+    reader->read(&fileSamples, 0, reader->lengthInSamples, 0, true, true);
     
     // delete reader ASAP so we dont forget and prevent memory leaks
     int64 lengthInSamples = reader->lengthInSamples;
