@@ -17,7 +17,7 @@
 #include "PartialUtils.h" 
 
 SampleAnalyzer::SampleAnalyzer(AudioFormatManager &formatManager, WaitableEvent& syncObj, const String &name)
-    : ThreadWithProgressWindow(name, true, true),
+    : ThreadWithProgressWindow(name, false, false),
       formatManager(formatManager),
       analyzerSync(syncObj)
 {
