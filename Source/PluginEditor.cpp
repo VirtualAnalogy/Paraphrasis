@@ -19,6 +19,8 @@
 
 //[Headers] You can add your own extra header files here...
 #include "Resources.h"
+#include "SampleAnalyzer.h"
+#include "ParameterDefitions.h"
 //[/Headers]
 
 #include "PluginEditor.h"
@@ -28,10 +30,11 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet& p, teragon::ResourceCache *r)
+ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet& p, teragon::ResourceCache *r, AudioFormatManager &formatManager)
     : AudioProcessorEditor(ownerFilter),
       parameters(p),
-      resources(r)
+      resources(r),
+      formatManager(formatManager)
 {
     addAndMakeVisible (knob = new teragon::ImageKnobLarge (parameters, "Sample Pitch", r));
     knob->setName ("knob");
@@ -39,14 +42,14 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
     addAndMakeVisible (knob2 = new teragon::ImageKnobLarge (parameters, "Frequency Resolution", r));
     knob2->setName ("knob");
 
-    addAndMakeVisible (label = new Label ("new label",
-                                          TRANS("Load file")));
-    label->setFont (Font (15.40f, Font::plain));
-    label->setJustificationType (Justification::centredLeft);
-    label->setEditable (false, false, false);
-    label->setColour (Label::backgroundColourId, Colour (0x009f9d9d));
-    label->setColour (TextEditor::textColourId, Colours::black);
-    label->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible (sampleLbl = new Label ("sampleLbl",
+                                              String::empty));
+    sampleLbl->setFont (Font (Font::getDefaultMonospacedFontName(), 13.50f, Font::plain));
+    sampleLbl->setJustificationType (Justification::centredLeft);
+    sampleLbl->setEditable (false, false, false);
+    sampleLbl->setColour (Label::backgroundColourId, Colour (0x009f9d9d));
+    sampleLbl->setColour (TextEditor::textColourId, Colours::black);
+    sampleLbl->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (selectBtn = new ImageButton ("selectBtn"));
     selectBtn->setButtonText (TRANS("new button"));
@@ -68,7 +71,7 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
                                              TRANS("20k")));
     pitchLbl->setFont (Font (13.00f, Font::plain));
     pitchLbl->setJustificationType (Justification::centred);
-    pitchLbl->setEditable (false, true, false);
+    pitchLbl->setEditable (true, true, false);
     pitchLbl->setColour (Label::textColourId, Colour (0xf2c3c3c3));
     pitchLbl->setColour (TextEditor::textColourId, Colours::black);
     pitchLbl->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
@@ -79,7 +82,7 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
                                                   TRANS("20k")));
     resolutionLbl->setFont (Font (13.00f, Font::plain));
     resolutionLbl->setJustificationType (Justification::centred);
-    resolutionLbl->setEditable (false, true, false);
+    resolutionLbl->setEditable (true, true, false);
     resolutionLbl->setColour (Label::textColourId, Colour (0xffc3c3c3));
     resolutionLbl->setColour (Label::outlineColourId, Colour (0x00ffffff));
     resolutionLbl->setColour (TextEditor::textColourId, Colours::black);
@@ -87,6 +90,14 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
     resolutionLbl->setColour (TextEditor::highlightColourId, Colour (0x40ffffff));
     resolutionLbl->addListener (this);
 
+    addAndMakeVisible (resolutionBtn = new ImageButton ("analyzeBtn"));
+    resolutionBtn->setButtonText (TRANS("new button"));
+    resolutionBtn->addListener (this);
+
+    resolutionBtn->setImages (false, true, true,
+                              Image(), 1.000f, Colour (0x00000000),
+                              Image(), 1.000f, Colour (0x00000000),
+                              Image(), 1.000f, Colour (0x00000000));
     cachedImage_background2_png = ImageCache::getFromMemory (background2_png, background2_pngSize);
 
     //[UserPreSize]
@@ -112,13 +123,19 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
                           ImageCache::getFromMemory (Resources::button_analyze_normal_png, Resources::button_analyze_normal_pngSize), 1.000f, Colour (0x00000000),
                           Image(), 1.000f, Colour (0x00000000),
                           ImageCache::getFromMemory (Resources::button_analyze_down_png, Resources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
+    resolutionBtn->setImages (false, true, true,
+                           ImageCache::getFromMemory (Resources::button_analyze_normal_png, Resources::button_analyze_normal_pngSize), 1.000f, Colour (0x00000000),
+                           Image(), 1.000f, Colour (0x00000000),
+                           ImageCache::getFromMemory (Resources::button_analyze_down_png, Resources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
 
     // register this as parameter observer
     parameters.get(kParameterSamplePitch_name)->addObserver(this);
     parameters.get(kParameterFrequencyResolution_name)->addObserver(this);
 
+    // set last values
     onParameterUpdated(parameters.get(kParameterFrequencyResolution_name));
     onParameterUpdated(parameters.get(kParameterSamplePitch_name));
+    onParameterUpdated(parameters.get(kParameterLastSamplePath_name));
     //[/UserPreSize]
 
     setSize (300, 300);
@@ -138,11 +155,12 @@ ParaphrasisAudioProcessorEditor::~ParaphrasisAudioProcessorEditor()
 
     knob = nullptr;
     knob2 = nullptr;
-    label = nullptr;
+    sampleLbl = nullptr;
     selectBtn = nullptr;
     analyzeBtn = nullptr;
     pitchLbl = nullptr;
     resolutionLbl = nullptr;
+    resolutionBtn = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -170,11 +188,12 @@ void ParaphrasisAudioProcessorEditor::resized()
 {
     knob->setBounds (60, 129, 64, 64);
     knob2->setBounds (176, 129, 64, 64);
-    label->setBounds (30, 45, 150, 20);
+    sampleLbl->setBounds (24, 45, 176, 20);
     selectBtn->setBounds (194, 41, 88, 30);
     analyzeBtn->setBounds (105, 233, 92, 48);
     pitchLbl->setBounds (57, 192, 70, 24);
     resolutionLbl->setBounds (173, 192, 70, 24);
+    resolutionBtn->setBounds (128, 146, 44, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -187,12 +206,38 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
     if (buttonThatWasClicked == selectBtn)
     {
         //[UserButtonCode_selectBtn] -- add your button handler code here..
+        String filePath = parameters.get(kParameterLastSamplePath_name)->getDisplayText();
+        File lastFile;
+        if ( filePath.isEmpty() )
+            lastFile = File::getSpecialLocation (File::userHomeDirectory);
+        else
+            lastFile = File(filePath);
+
+        FileChooser myChooser ("Please select the sample file you want to load...", lastFile, formatManager.getWildcardForAllFormats());
+        if (myChooser.browseForFileToOpen())
+        {
+            File sampleFile (myChooser.getResult());
+            if ( sampleFile.exists() )
+            {
+                sampleLbl->setText(sampleFile.getFileName(), juce::dontSendNotification);
+                path = sampleFile.getFullPathName().toRawUTF8();
+                parameters.setData(kParameterLastSamplePath_name, path.c_str(), path.length());
+            }
+
+        }
         //[/UserButtonCode_selectBtn]
     }
     else if (buttonThatWasClicked == analyzeBtn)
     {
         //[UserButtonCode_analyzeBtn] -- add your button handler code here..
+        getProcessor()->loadSample();
         //[/UserButtonCode_analyzeBtn]
+    }
+    else if (buttonThatWasClicked == resolutionBtn)
+    {
+        //[UserButtonCode_resolutionBtn] -- add your button handler code here..
+        parameters.set(kParameterFrequencyResolution_name, 0.8 * parameters.get(kParameterSamplePitch_name)->getValue());
+        //[/UserButtonCode_resolutionBtn]
     }
 
     //[UserbuttonClicked_Post]
@@ -236,13 +281,18 @@ void ParaphrasisAudioProcessorEditor::labelTextChanged (Label* labelThatHasChang
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void ParaphrasisAudioProcessorEditor::onParameterUpdated(const Parameter *parameter)
 {
-    if(parameter->getName() == kParameterFrequencyResolution_name)
+    if ( parameter->getName() == kParameterFrequencyResolution_name )
     {
-        resolutionLbl->setText(String(parameter->getValue(), 2), juce::dontSendNotification);
+        resolutionLbl->setText( String( parameter->getValue(), 2 ), juce::dontSendNotification );
     }
-    else if(parameter->getName() == kParameterSamplePitch_name)
+    else if ( parameter->getName() == kParameterSamplePitch_name )
     {
-        pitchLbl->setText(String(parameter->getValue(), 2), juce::dontSendNotification);
+        pitchLbl->setText( String( parameter->getValue() , 2) , juce::dontSendNotification );
+    }
+    else if ( parameter->getName() == kParameterLastSamplePath_name )
+    {
+        File file( parameter->getDisplayText() );
+        sampleLbl->setText( String( file.getFileName() ), juce::dontSendNotification );
     }
 }
 
@@ -252,7 +302,7 @@ double ParaphrasisAudioProcessorEditor::checkParameterBoundaries(const Parameter
         value = parameter->getMinValue();
     else if (value > parameter->getMaxValue())
         value = parameter->getMaxValue();
-    
+
     return value;
 }
 
@@ -270,8 +320,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ParaphrasisAudioProcessorEditor"
                  componentName="" parentClasses="public AudioProcessorEditor, public ParameterObserver"
-                 constructorParams="ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet&amp; p, teragon::ResourceCache *r"
-                 variableInitialisers="AudioProcessorEditor(ownerFilter),&#10;    parameters(p),&#10;    resources(r)"
+                 constructorParams="ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet&amp; p, teragon::ResourceCache *r, AudioFormatManager &amp;formatManager"
+                 variableInitialisers="AudioProcessorEditor(ownerFilter),&#10;    parameters(p),&#10;    resources(r),&#10;    formatManager(formatManager)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="300" initialHeight="300">
   <BACKGROUND backgroundColour="ffbdbdbd">
@@ -282,11 +332,11 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="knob" id="675ee145463a99df" memberName="knob2" virtualName="teragon::ImageKnobLarge"
                     explicitFocusOrder="0" pos="176 129 64 64" class="Component"
                     params="parameters, &quot;Frequency Resolution&quot;, r"/>
-  <LABEL name="new label" id="f5aa6f6cb476ff84" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="30 45 150 20" bkgCol="9f9d9d" edTextCol="ff000000"
-         edBkgCol="0" labelText="Load file" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15.400000000000000355"
-         bold="0" italic="0" justification="33"/>
+  <LABEL name="sampleLbl" id="f5aa6f6cb476ff84" memberName="sampleLbl"
+         virtualName="" explicitFocusOrder="0" pos="24 45 176 20" bkgCol="9f9d9d"
+         edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default monospaced font"
+         fontsize="13.5" bold="0" italic="0" justification="33"/>
   <IMAGEBUTTON name="selectBtn" id="63e2e3bfd7cbefd5" memberName="selectBtn"
                virtualName="" explicitFocusOrder="0" pos="194 41 88 30" buttonText="new button"
                connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
@@ -302,14 +352,20 @@ BEGIN_JUCER_METADATA
   <LABEL name="pitchLbl" id="400eaffd0e2f9582" memberName="pitchLbl" virtualName=""
          explicitFocusOrder="0" pos="57 192 70 24" textCol="f2c3c3c3"
          edTextCol="ff000000" edBkgCol="0" hiliteCol="40ffffff" labelText="20k"
-         editableSingleClick="0" editableDoubleClick="1" focusDiscardsChanges="0"
+         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
          fontname="Default font" fontsize="13" bold="0" italic="0" justification="36"/>
   <LABEL name="resolutionLbl" id="c17f4e0142be49bf" memberName="resolutionLbl"
          virtualName="" explicitFocusOrder="0" pos="173 192 70 24" textCol="ffc3c3c3"
          outlineCol="ffffff" edTextCol="ff000000" edBkgCol="0" hiliteCol="40ffffff"
-         labelText="20k" editableSingleClick="0" editableDoubleClick="1"
+         labelText="20k" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="Default font" fontsize="13"
          bold="0" italic="0" justification="36"/>
+  <IMAGEBUTTON name="analyzeBtn" id="5822ed37b120e159" memberName="resolutionBtn"
+               virtualName="" explicitFocusOrder="0" pos="128 146 44 32" buttonText="new button"
+               connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
+               resourceNormal="" opacityNormal="1" colourNormal="0" resourceOver=""
+               opacityOver="1" colourOver="0" resourceDown="" opacityDown="1"
+               colourDown="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

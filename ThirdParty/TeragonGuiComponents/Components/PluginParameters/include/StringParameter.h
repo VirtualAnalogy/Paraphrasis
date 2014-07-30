@@ -47,7 +47,7 @@ protected:
 #endif
 
     virtual void setValue(const void *inData, const size_t inDataSize = 0) {
-        stringValue = (const char *)inData;
+        stringValue = std::string((const char *)inData, inDataSize);
         notifyObservers();
     }
 
