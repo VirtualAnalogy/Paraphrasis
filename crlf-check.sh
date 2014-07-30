@@ -4,3 +4,8 @@ dos2unix JuceLibraryCode/JuceHeader.h
 dos2unix JuceLibraryCode/AppConfig.h
 dos2unix JuceLibraryCode/ReadMe.txt
 dos2unix Paraphrasis.jucer
+dos2unix ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/tinythread/source/fast_mutex.h
+dos2unix ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/tinythread/source/tinythread.cpp
+dos2unix ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/tinythread/source/tinythread.h
+dos2unix ThirdParty/TeragonGuiComponents/Components/Source/PluginParameterComponent.h
+dos2unix ThirdParty/TeragonGuiComponents/Components/Source/TeragonGuiComponents.h
