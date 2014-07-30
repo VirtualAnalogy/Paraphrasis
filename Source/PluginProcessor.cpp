@@ -206,6 +206,7 @@ void ParaphrasisAudioProcessor::loadSample()
     analyzer.setPitch(parameters[kParameterSamplePitch_name]->getValue());
     //        analyzer.startThread();
     analyzer.runThread();
+//    analyzer.run();
     
     analyzerSync.wait();
     

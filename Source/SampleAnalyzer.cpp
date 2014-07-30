@@ -39,7 +39,7 @@ void SampleAnalyzer::run()
         analyzerSync.signal();
         return;
     }
-    
+        
     if (threadShouldExit())
     {
         analyzerSync.signal();
@@ -83,7 +83,6 @@ bool SampleAnalyzer::readViaJuce()
     reader = nullptr;
     
     // transform data from JUCE to Loris
-    std::vector<double> buffer;
     buffer.reserve(lengthInSamples);
     const float *sample = fileSamples.getReadPointer(0);
     for (int i = 0; i < lengthInSamples; i++)

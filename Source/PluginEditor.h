@@ -55,7 +55,7 @@ public:
     {
         return false;
     }
-    
+
     ParaphrasisAudioProcessor* getProcessor() const
     {
         return static_cast <ParaphrasisAudioProcessor*>(getAudioProcessor());
@@ -81,6 +81,7 @@ private:
     teragon::ConcurrentParameterSet& parameters;
     teragon::ResourceCache *resources;
     AudioFormatManager& formatManager;
+    std::string path;
     //[/UserVariables]
 
     //==============================================================================
@@ -91,6 +92,7 @@ private:
     ScopedPointer<ImageButton> analyzeBtn;
     ScopedPointer<Label> pitchLbl;
     ScopedPointer<Label> resolutionLbl;
+    ScopedPointer<ImageButton> resolutionBtn;
     Image cachedImage_background2_png;
 
 

@@ -90,6 +90,14 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
     resolutionLbl->setColour (TextEditor::highlightColourId, Colour (0x40ffffff));
     resolutionLbl->addListener (this);
 
+    addAndMakeVisible (resolutionBtn = new ImageButton ("analyzeBtn"));
+    resolutionBtn->setButtonText (TRANS("new button"));
+    resolutionBtn->addListener (this);
+
+    resolutionBtn->setImages (false, true, true,
+                              Image(), 1.000f, Colour (0x00000000),
+                              Image(), 1.000f, Colour (0x00000000),
+                              Image(), 1.000f, Colour (0x00000000));
     cachedImage_background2_png = ImageCache::getFromMemory (background2_png, background2_pngSize);
 
     //[UserPreSize]
@@ -115,6 +123,10 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
                           ImageCache::getFromMemory (Resources::button_analyze_normal_png, Resources::button_analyze_normal_pngSize), 1.000f, Colour (0x00000000),
                           Image(), 1.000f, Colour (0x00000000),
                           ImageCache::getFromMemory (Resources::button_analyze_down_png, Resources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
+    resolutionBtn->setImages (false, true, true,
+                           ImageCache::getFromMemory (Resources::button_analyze_normal_png, Resources::button_analyze_normal_pngSize), 1.000f, Colour (0x00000000),
+                           Image(), 1.000f, Colour (0x00000000),
+                           ImageCache::getFromMemory (Resources::button_analyze_down_png, Resources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
 
     // register this as parameter observer
     parameters.get(kParameterSamplePitch_name)->addObserver(this);
@@ -148,6 +160,7 @@ ParaphrasisAudioProcessorEditor::~ParaphrasisAudioProcessorEditor()
     analyzeBtn = nullptr;
     pitchLbl = nullptr;
     resolutionLbl = nullptr;
+    resolutionBtn = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -180,6 +193,7 @@ void ParaphrasisAudioProcessorEditor::resized()
     analyzeBtn->setBounds (105, 233, 92, 48);
     pitchLbl->setBounds (57, 192, 70, 24);
     resolutionLbl->setBounds (173, 192, 70, 24);
+    resolutionBtn->setBounds (128, 146, 44, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -206,7 +220,7 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
             if ( sampleFile.exists() )
             {
                 sampleLbl->setText(sampleFile.getFileName(), juce::dontSendNotification);
-                std::string path = sampleFile.getFullPathName().toRawUTF8();
+                path = sampleFile.getFullPathName().toRawUTF8();
                 parameters.setData(kParameterLastSamplePath_name, path.c_str(), path.length());
             }
 
@@ -218,6 +232,12 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
         //[UserButtonCode_analyzeBtn] -- add your button handler code here..
         getProcessor()->loadSample();
         //[/UserButtonCode_analyzeBtn]
+    }
+    else if (buttonThatWasClicked == resolutionBtn)
+    {
+        //[UserButtonCode_resolutionBtn] -- add your button handler code here..
+        parameters.set(kParameterFrequencyResolution_name, 0.8 * parameters.get(kParameterSamplePitch_name)->getValue());
+        //[/UserButtonCode_resolutionBtn]
     }
 
     //[UserbuttonClicked_Post]
@@ -340,6 +360,12 @@ BEGIN_JUCER_METADATA
          labelText="20k" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="Default font" fontsize="13"
          bold="0" italic="0" justification="36"/>
+  <IMAGEBUTTON name="analyzeBtn" id="5822ed37b120e159" memberName="resolutionBtn"
+               virtualName="" explicitFocusOrder="0" pos="128 146 44 32" buttonText="new button"
+               connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
+               resourceNormal="" opacityNormal="1" colourNormal="0" resourceOver=""
+               opacityOver="1" colourOver="0" resourceDown="" opacityDown="1"
+               colourDown="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
