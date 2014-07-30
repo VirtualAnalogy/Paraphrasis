@@ -197,6 +197,14 @@ public:
         const double TwoPi = 2.0*Pi;
         return x + ( TwoPi * ROUND(-x/TwoPi) );
     }
+    
+    void clear()
+    {
+        this->partials.clear();
+        
+        while (partialsBeingProcessed.empty())
+            partialsBeingProcessed.pop();
+    }
 	 	
 //	-- parameter access and mutation --
 //	-- implementation --

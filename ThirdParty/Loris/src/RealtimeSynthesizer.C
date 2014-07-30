@@ -247,8 +247,6 @@ void
     if ( p.numBreakpoints <= 0 || p.startTime < 0 )
         return;
     
-    assert(p.breakpoints.size() != 0);
-    
     if ( p.state.lastBreakpoint >= p.numBreakpoints - 1 )// || p.breakpoints[p.state.lastBreakpoint].first > endTime) )
         return;
 

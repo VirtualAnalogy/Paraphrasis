@@ -147,8 +147,21 @@ public:
     
     void setup(Loris::PartialList &partials, double pitch)
     {
-        this->partials = partials;
+        this->partials.clear();
+        
+        // make copy of partials for frequency scaling and prevent
+        // strange transpositions
+        auto it = partials.begin();
+        while (it != partials.end()) {
+            this->partials.push_back(*it);
+            it++;
+        }
+        
+        this->lastFreqMultiplyer = 1.;
+
         this->defaultPitch = pitch;
+        
+        synth.clear();
         synth.setupRealtime(this->partials);
     }
 
