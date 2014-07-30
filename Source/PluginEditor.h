@@ -23,6 +23,8 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
+#include "TeragonGuiComponents.h"
+#include "Resources.h"
 //[/Headers]
 
 
@@ -36,38 +38,56 @@
                                                                     //[/Comments]
 */
 class ParaphrasisAudioProcessorEditor  : public AudioProcessorEditor,
-    public Timer,
-    public ButtonListener
+                                         public ParameterObserver,
+                                         public ButtonListener,
+                                         public LabelListener
 {
 public:
     //==============================================================================
-    ParaphrasisAudioProcessorEditor(ParaphrasisAudioProcessor* ownerFilter);
+    ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet& p, teragon::ResourceCache *r);
     ~ParaphrasisAudioProcessorEditor();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void timerCallback();
-    ParaphrasisAudioProcessor* getProcessor() const
+    virtual bool isRealtimePriority() const
     {
-        return static_cast <ParaphrasisAudioProcessor*>(getAudioProcessor());
+        return false;
     }
+
+    virtual void onParameterUpdated(const Parameter *parameter) ;
+    static double checkParameterBoundaries(const Parameter *parameter, double value);
+    
     //[/UserMethods]
 
-    void paint(Graphics& g);
+    void paint (Graphics& g);
     void resized();
-    void buttonClicked(Button* buttonThatWasClicked);
+    void buttonClicked (Button* buttonThatWasClicked);
+    void labelTextChanged (Label* labelThatHasChanged);
+
+    // Binary resources:
+    static const char* background2_png;
+    static const int background2_pngSize;
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    teragon::ConcurrentParameterSet &parameters;
+    teragon::ResourceCache *resources;
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<TextButton> bypassBtn;
+    ScopedPointer<teragon::ImageKnobLarge> knob;
+    ScopedPointer<teragon::ImageKnobLarge> knob2;
+    ScopedPointer<Label> label;
+    ScopedPointer<ImageButton> selectBtn;
+    ScopedPointer<ImageButton> analyzeBtn;
+    ScopedPointer<Label> pitchLbl;
+    ScopedPointer<Label> resolutionLbl;
+    Image cachedImage_background2_png;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParaphrasisAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParaphrasisAudioProcessorEditor)
 };
 
 //[EndFile] You can add extra defines here...

@@ -1,0 +1,26 @@
+# Files from various IDE's
+Demo/Builds/*
+project.xcworkspace
+workspace.xml
+*.aps
+*.idb
+*.ilk
+*.ipch
+*.lastbuildstate
+*.lib
+*.log
+*.manifest
+*.obj
+*.opensdf
+*.pch
+*.pdb
+*.res
+*.sdf
+*.suo
+*.tlog
+*.user
+
+# Android temp stuff
+LCDMaker/gen/*
+LCDMaker/out/*
+local.properties

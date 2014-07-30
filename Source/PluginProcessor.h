@@ -6,73 +6,52 @@
 */
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
+
 #include "../JuceLibraryCode/JuceHeader.h"
+// teragon
+#include "TeragonPluginBase.h"
+#include "PluginParameters.h"
+// Loris
 #include "PartialList.h"
+
+using namespace teragon;
+
+static const char* kParameterSamplePitch_name = "Sample Pitch";
+static const  int kParameterSamplePitch_minValue = 50;
+static const  int kParameterSamplePitch_maxValue = 10000;
+static const  int kParameterSamplePitch_defaultValue = 440;
+
+
+static const char* kParameterFrequencyResolution_name = "Frequency Resolution";
+static const  int kParameterFrequencyResolution_minValue = 30;
+static const  int kParameterFrequencyResolution_maxValue = 10000;
+static const  int kParameterFrequencyResolution_defaultValue = 40;
 
 //==============================================================================
 /**
 */
-class ParaphrasisAudioProcessor  : public AudioProcessor
+class ParaphrasisAudioProcessor  : public TeragonPluginBase, ParameterObserver
 {
+
 public:
     //==============================================================================
     ParaphrasisAudioProcessor();
     ~ParaphrasisAudioProcessor();
-    //==============================================================================
-    void prepareToPlay(double sampleRate, int samplesPerBlock);
-    void releaseResources();
-    void processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
-    //==============================================================================
-    AudioProcessorEditor* createEditor();
-    bool hasEditor() const;
-    //==============================================================================
-    const String getName() const;
-    int getNumParameters();
-    float getParameter(int index);
-    void setParameter(int index, float newValue);
-    const String getParameterName(int index);
-    const String getParameterText(int index);
-    const String getInputChannelName(int channelIndex) const;
-    const String getOutputChannelName(int channelIndex) const;
-    bool isInputChannelStereoPair(int index) const;
-    bool isOutputChannelStereoPair(int index) const;
-    bool acceptsMidi() const;
-    bool producesMidi() const;
-    bool silenceInProducesSilenceOut() const;
-    double getTailLengthSeconds() const;
-    //==============================================================================
-    int getNumPrograms();
-    int getCurrentProgram();
-    void setCurrentProgram(int index);
-    const String getProgramName(int index);
-    void changeProgramName(int index, const String& newName);
-    //==============================================================================
-    void getStateInformation(MemoryBlock& destData);
-    void setStateInformation(const void* data, int sizeInBytes);
-
-    enum Parameters
-    {
-        masterBypass = 0,
-        /*otherParams...,*/
-        totalNumParam
-    };
-
-    bool needsUIUpdate() const
-    {
-        return uiUpdateFlag;
-    };
-    void requestUIUpdate()
-    {
-        uiUpdateFlag=true;
-    };
-    void clearUIUpdateFlag()
-    {
-        uiUpdateFlag=false;
-    };
-private:
-    float userParams[totalNumParam];
-    bool uiUpdateFlag;
     
+    const String getName() const override { return JucePlugin_Name; }
+    
+    AudioProcessorEditor* createEditor() override;
+    bool hasEditor() const override;
+    
+    void prepareToPlay(double sampleRate, int samplesPerBlock) override;
+    void releaseResources() override;
+    void processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages) override;
+    
+    // PluginParameterObserver methods
+    virtual bool isRealtimePriority() const override { return true; }
+    virtual void onParameterUpdated(const Parameter *parameter) override;
+
+private:
     Loris::PartialList partials;
 
     // the synth!

@@ -1,0 +1,51 @@
+# Temporary files
+*.swp
+*~
+*.o
+*.so
+*.obj
+
+# Build products
+test/pluginparameterstest
+pluginparameterstest.exe
+
+# Test output
+test/out/*
+Debug/*
+test/Debug/*
+Release/*
+test/Release/*
+
+# Stuff from various IDE's
+*.build
+test/*.build
+.idea/*
+*.xcodeproj
+*.perspectivev3
+*.pbxuser
+*.user
+*.sdf
+*.opensdf
+*.suo
+nbproject/*
+*.log
+*.tlog
+*.lastbuildstate
+*.sln
+*.vcxproj
+*.filters
+*.pdb
+*.ilk
+*.cache
+
+# Vim helpers
+tags
+cscope.out
+
+# CMake
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+Makefile.in
+*.cmake

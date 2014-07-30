@@ -1,0 +1,3 @@
+Button and handle graphics is based whiteknob_4.knob by tonebytes © 2013, which is licensed under a Creative Commons CC-BY. http://creativecommons.org/licenses/by/3.0/
+
+Knob is based on knob_64_white.knob by az (c) 2011, which is licensed under Creative Commons CC-BY.

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:padding="10dp"
+    android:background="@drawable/texture_tiled">
+
+    <!--suppress AndroidLintPxUsage -->
+    <View
+        android:id="@+id/lcd_big"
+        android:layout_width="wrap_content"
+        android:layout_height="120px"
+        android:background="@drawable/lcd" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"/>
+
+    <!--suppress AndroidLintPxUsage -->
+    <View
+        android:id="@+id/lcd_small"
+        android:layout_width="1000px"
+        android:layout_height="70px"
+        android:background="@drawable/lcd_singleline" />
+
+</LinearLayout>

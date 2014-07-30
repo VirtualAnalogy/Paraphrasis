@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="background2.svg"
+   inkscape:export-filename="/Users/tomasmedek/Documents/VirtualAnalogy/Paraphrasis/Resources/Graphics/background.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3880">
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="0"
+         id="stop3882" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0.70940173;"
+         offset="1"
+         id="stop3884" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3877">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="0"
+         id="stop3879" />
+      <stop
+         style="stop-color:#f9f9f9;stop-opacity:0;"
+         offset="1"
+         id="stop3881" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3877"
+       id="linearGradient3889"
+       x1="439.96341"
+       y1="280.86218"
+       x2="444.03656"
+       y2="834.86218"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.28788767,0,0,0.53148852,14.404916,100.7442)" />
+    <inkscape:perspective
+       id="perspective4194"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       inkscape:collect="always"
+       id="filter4147"
+       x="-0.020304839"
+       width="1.0406097"
+       y="-0.14406869"
+       height="1.2881374">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.0885413"
+         id="feGaussianBlur4149" />
+    </filter>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3880"
+       id="radialGradient3886"
+       cx="351.42169"
+       cy="-344.03043"
+       fx="351.42169"
+       fy="-344.03043"
+       r="130.005"
+       gradientTransform="matrix(1.5691081,1.6757383e-8,-3.0891051e-8,2.8925399,-401.73164,741.0093)"
+       gradientUnits="userSpaceOnUse" />
+    <filter
+       id="filter3107"
+       inkscape:label="Metallized paint"
+       inkscape:menu="Materials"
+       inkscape:menu-tooltip="Metallized effect with a soft lighting, slightly translucent at the edges"
+       height="1.1"
+       y="-0.05"
+       width="1.1"
+       x="-0.05"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur3109"
+         stdDeviation="5"
+         result="result8" />
+      <feTurbulence
+         id="feTurbulence3111"
+         seed="25"
+         result="result7"
+         type="turbulence"
+         numOctaves="2"
+         baseFrequency="0.03" />
+      <feComposite
+         id="feComposite3113"
+         in2="result8"
+         result="result6"
+         operator="in"
+         in="result8" />
+      <feDisplacementMap
+         id="feDisplacementMap3115"
+         in2="result6"
+         in="result7"
+         xChannelSelector="A"
+         yChannelSelector="A"
+         scale="120"
+         result="result4" />
+      <feComposite
+         id="feComposite3117"
+         in2="result4"
+         result="result2"
+         operator="arithmetic"
+         in="SourceGraphic"
+         k1="2"
+         k3="2.5"
+         k2="0.25" />
+      <feComposite
+         id="feComposite3119"
+         in2="SourceGraphic"
+         result="fbSourceGraphic"
+         in="result2"
+         operator="in" />
+      <feBlend
+         id="feBlend3121"
+         in2="fbSourceGraphic"
+         mode="screen"
+         result="result91" />
+      <feBlend
+         id="feBlend3123"
+         in2="result91"
+         mode="multiply"
+         result="fbSourceGraphic" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix3125" />
+      <feGaussianBlur
+         id="feGaussianBlur3127"
+         stdDeviation="1"
+         result="result1"
+         in="fbSourceGraphic" />
+      <feComposite
+         id="feComposite3129"
+         in2="result1"
+         in="result1"
+         result="result4"
+         operator="in" />
+      <feBlend
+         id="feBlend3131"
+         in2="result4"
+         in="result1"
+         mode="screen"
+         result="result5" />
+      <feGaussianBlur
+         id="feGaussianBlur3133"
+         stdDeviation="8"
+         result="result6"
+         in="result5" />
+      <feComposite
+         id="feComposite3135"
+         in2="result5"
+         operator="atop"
+         in="result6"
+         result="result8" />
+      <feComposite
+         id="feComposite3137"
+         in2="result8"
+         operator="in"
+         result="fbSourceGraphic"
+         in="result6" />
+      <feGaussianBlur
+         id="feGaussianBlur3139"
+         result="result0"
+         in="fbSourceGraphic"
+         stdDeviation="2.5" />
+      <feSpecularLighting
+         id="feSpecularLighting3141"
+         specularExponent="45"
+         specularConstant="1.5"
+         surfaceScale="1"
+         lighting-color="rgb(255,255,255)"
+         result="result1"
+         in="result0">
+        <fePointLight
+           id="fePointLight3143"
+           z="21000"
+           y="-9000"
+           x="-6000" />
+      </feSpecularLighting>
+      <feComposite
+         id="feComposite3145"
+         in2="fbSourceGraphic"
+         operator="in"
+         result="result2"
+         in="result1" />
+      <feComposite
+         id="feComposite3147"
+         in2="result2"
+         k3="1"
+         k2="1"
+         operator="arithmetic"
+         result="result4"
+         in="fbSourceGraphic" />
+      <feComposite
+         id="feComposite3149"
+         in2="result4"
+         operator="in"
+         in="result9"
+         result="result91" />
+      <feBlend
+         id="feBlend3151"
+         in2="result91"
+         mode="multiply" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="156.96964"
+     inkscape:cy="661.40282"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="752"
+     inkscape:window-x="120"
+     inkscape:window-y="7"
+     inkscape:window-maximized="0">
+    <sodipodi:guide
+       orientation="1,0"
+       position="0,810.5"
+       id="guide3190" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="8.8388348,800.09132"
+       id="guide3192" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="20,717"
+       id="guide3196" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="131.75,780"
+       id="guide3198" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="279.30718,705"
+       id="guide3200" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="300,943"
+       id="guide3204" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="800.5,633.5"
+       id="guide3206" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="780.5,637"
+       id="guide3208" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="754,500"
+       id="guide3210" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="779,520"
+       id="guide3212" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="30,721.5"
+       id="guide3214" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="152.375,725"
+       id="guide3218" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="154.67961,770.03929"
+       id="guide3220" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="15.026019,759.96301"
+       id="guide3990" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="149.55308,735.0375"
+       id="guide3994" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="201.5,705"
+       id="guide4023" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="20,694.75"
+       id="guide4025" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="105.5,684.5"
+       id="guide4027" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="138.5,539.5"
+       id="guide3154" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="270.11479,584.0702"
+       id="guide3156" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="130.4612,529.97653"
+       id="guide3158" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="197.5,745.87498"
+       id="guide3142" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="273.62499,756.12498"
+       id="guide3144" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="257.12499,762.49998"
+       id="guide3146" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="235.49999,745.87498"
+       id="guide3148" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="112.375,582.12499"
+       id="guide3150" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="150.5,575.87499"
+       id="guide3152" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="188.5,577.87499"
+       id="guide3155" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="145.625,590.62499"
+       id="guide3157" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="217.62499,764.43748"
+       id="guide3159" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="147.3125,593.99999"
+       id="guide3161" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="150.5,590.62499"
+       id="guide3163" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="157.68481,639.22453"
+       id="guide3211" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="91.570328,649.83113"
+       id="guide3213" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="207.88939,639.22453"
+       id="guide3215" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="132.58252,670.69078"
+       id="guide3217" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="150.5,666.09459"
+       id="guide3219" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="134.2619,664.32682"
+       id="guide3221" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="140.71425,611.29381"
+       id="guide4068" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="77.25,618"
+       id="guide4070" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="105.75,611.29381"
+       id="guide4072" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="193.5,599.375"
+       id="guide4074" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="223.5,603.5"
+       id="guide4076" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       id="rect3067"
+       width="421.23361"
+       height="410.12195"
+       x="-100.36829"
+       y="205.45808"
+       ry="11.111678" />
+    <rect
+       style="fill:#f9f9f9;fill-opacity:1;stroke:none;opacity:1"
+       id="rect3063"
+       width="300.01001"
+       height="300"
+       x="0"
+       y="252.27086"
+       inkscape:export-filename="/Users/tomasmedek/Documents/VirtualAnalogy/Paraphrasis/Resources/Graphics/background.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#cccccc;fill-opacity:1;stroke:none"
+       id="rect3065"
+       width="260"
+       height="185.00003"
+       x="19.934137"
+       y="-532.55457"
+       ry="3.3746948"
+       transform="scale(1,-1)" />
+    <text
+       xml:space="preserve"
+       style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
+       x="30.707108"
+       y="367.86218"
+       id="text3863"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3865"
+         x="30.707108"
+         y="367.86218"
+         style="font-size:13px;fill:#4d4d4d">Analysis</tspan></text>
+    <rect
+       style="fill:#cccccc;fill-opacity:1;stroke:none"
+       id="rect3065-8"
+       width="260.01001"
+       height="55"
+       x="20"
+       y="-327.36218"
+       ry="3.062331"
+       transform="scale(1,-1)" />
+    <text
+       xml:space="preserve"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
+       x="30.353554"
+       y="292.04559"
+       id="text3863-5"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3865-7"
+         x="30.353554"
+         y="292.04559"
+         style="font-size:13px;fill:#4d4d4d;fill-opacity:1">Source</tspan></text>
+    <image
+       y="242.77371"
+       x="-16.936514"
+       id="image3162"
+       xlink:href="file:///Users/tomasmedek/Documents/VirtualAnalogy/Paraphrasis/Resources/Graphics/metal.png"
+       height="328"
+       width="345"
+       style="opacity:0.29" />
+    <g
+       id="g3088"
+       transform="matrix(0.75151245,0,0,0.75151245,69.229299,-56.618762)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text4135"
+         y="531.16003"
+         x="148.36081"
+         style="font-size:7.37251759px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.57758622;fill:#000000;fill-opacity:1;stroke:none;filter:url(#filter4147);font-family:Sans"
+         xml:space="preserve"><tspan
+           style="font-size:19.66004562px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
+           y="531.16003"
+           x="148.36081"
+           id="tspan4137"
+           sodipodi:role="line"><tspan
+             id="tspan4139"
+             style="fill:#333333">Para</tspan><tspan
+             style="fill:#1a1a1a"
+             id="tspan4141">phrasis</tspan></tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:7.37251759px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="148.86081"
+         y="529.66003"
+         id="text4290"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4292"
+           x="148.86081"
+           y="529.66003"
+           style="font-size:19.66004562px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"><tspan
+             style="fill:#333333"
+             id="tspan4128">Para</tspan><tspan
+             id="tspan4294"
+             style="fill:#00ccff">phrasis</tspan></tspan></text>
+      <rect
+         y="515.54205"
+         x="261.85324"
+         height="2.1534362"
+         width="2.2412055"
+         id="rect4296"
+         style="opacity:0.98999999;fill:#1a1a1a;fill-opacity:1;stroke:none" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:1.5px;word-spacing:0px;text-anchor:middle;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Sans"
+       x="236.06139"
+       y="292.19208"
+       id="text3049"
+       sodipodi:linespacing="125%"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3051"
+         x="236.81139"
+         y="292.19208"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;letter-spacing:1.5px;text-anchor:middle;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'">Select</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:1.5px;word-spacing:0px;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Sans"
+       x="113.62868"
+       y="482.44189"
+       id="text3134"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3136"
+         x="113.62868"
+         y="482.44189"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:1.5px;word-spacing:0px;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'">ANALYZE</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:15px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Sans"
+       x="171.05078"
+       y="386.26758"
+       id="text3203"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3205"
+         x="171.05078"
+         y="386.26758"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'">Resolution</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text3207"
+       y="386.17142"
+       x="74.25"
+       style="font-size:15px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"><tspan
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
+         y="386.17142"
+         x="74.25"
+         id="tspan3209"
+         sodipodi:role="line">Pitch</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:15px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="63.478447"
+       y="444.60388"
+       id="text4056"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="63.478447"
+         y="444.60388"
+         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
+         id="tspan4060">50</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:15px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="105.75"
+       y="444.81836"
+       id="text4064"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4066"
+         x="105.75"
+         y="444.81836"
+         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'">10k</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4078"
+       y="444.81836"
+       x="179.625"
+       style="font-size:15px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"><tspan
+         id="tspan4080"
+         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
+         y="444.81836"
+         x="179.625"
+         sodipodi:role="line">50</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:15px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="223.63672"
+       y="444.81836"
+       id="text4064-8"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4066-6"
+         x="223.63672"
+         y="444.81836"
+         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'">10k</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:15px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="84.852837"
+       y="447.60413"
+       id="text4056-1"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="84.852837"
+         y="447.60413"
+         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
+         id="tspan4060-9">Hz</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4124"
+       y="447.60413"
+       x="201.2932"
+       style="font-size:15px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"><tspan
+         id="tspan4126"
+         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#f9f9f9;font-family:'Anita  Semi-square';-inkscape-font-specification:'Anita  Semi-square'"
+         y="447.60413"
+         x="201.2932"
+         sodipodi:role="line">Hz</tspan></text>
+    <rect
+       transform="scale(1,-1)"
+       ry="0"
+       y="-552.36218"
+       x="0"
+       height="300.09131"
+       width="299.93463"
+       id="rect3110"
+       style="opacity:0.56034479999999998;fill:url(#radialGradient3886);fill-opacity:1;stroke:none" />
+  </g>
+</svg>
