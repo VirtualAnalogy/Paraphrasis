@@ -56,7 +56,7 @@ public:
 
     virtual void onParameterUpdated(const Parameter *parameter) ;
     static double checkParameterBoundaries(const Parameter *parameter, double value);
-    
+
     //[/UserMethods]
 
     void paint (Graphics& g);
@@ -78,7 +78,7 @@ private:
     //==============================================================================
     ScopedPointer<teragon::ImageKnobLarge> knob;
     ScopedPointer<teragon::ImageKnobLarge> knob2;
-    ScopedPointer<Label> label;
+    ScopedPointer<Label> sampleLbl;
     ScopedPointer<ImageButton> selectBtn;
     ScopedPointer<ImageButton> analyzeBtn;
     ScopedPointer<Label> pitchLbl;

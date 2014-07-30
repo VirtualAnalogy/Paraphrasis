@@ -174,6 +174,14 @@ private:
 //==============================================================================
 ParaphrasisAudioProcessor::ParaphrasisAudioProcessor() : TeragonPluginBase(), ParameterObserver()
 {
+    parameters.add(new teragon::FrequencyParameter(kParameterSamplePitch_name, kParameterSamplePitch_minValue,
+                                                   kParameterSamplePitch_maxValue, kParameterSamplePitch_defaultValue));
+    parameters.add(new teragon::FrequencyParameter(kParameterFrequencyResolution_name, kParameterFrequencyResolution_minValue,
+                                                   kParameterFrequencyResolution_maxValue, kParameterFrequencyResolution_defaultValue));
+    parameters.add(new teragon::StringParameter(kParameterLastSamplePath_name));
+    
+    parameters.pause();
+
     initLogging();
 
     initLoris();
@@ -183,12 +191,6 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor() : TeragonPluginBase(), Pa
 
     synth.addSound(new LorisSound());
     
-    parameters.add(new teragon::FrequencyParameter(kParameterSamplePitch_name, kParameterSamplePitch_minValue,
-                                                   kParameterSamplePitch_maxValue, kParameterSamplePitch_defaultValue));
-    parameters.add(new teragon::FrequencyParameter(kParameterFrequencyResolution_name, kParameterFrequencyResolution_minValue,
-                                                   kParameterFrequencyResolution_maxValue, kParameterFrequencyResolution_defaultValue));
-        
-    parameters.pause();
 }
 
 //==============================================================================
@@ -291,13 +293,9 @@ void ParaphrasisAudioProcessor::releaseResources()
 }
 
 //==============================================================================
-void ParaphrasisAudioProcessor::onParameterUpdated(const Parameter *parameter) {
-    if(parameter->getName() == "Name") {
+void ParaphrasisAudioProcessor::onParameterUpdated(const Parameter *parameter)
+{
 
-    }
-    else if(parameter->getName() == "Another name") {
-
-    }
 }
 
 //==============================================================================
