@@ -58,16 +58,18 @@ public:
     void resized();
 
     // Binary resources:
+    static const char* anitaSemiSquare_ttf;
+    static const int anitaSemiSquare_ttfSize;
     static const char* large_knob_png;
     static const int large_knob_pngSize;
-    static const char* push_button_normal_png;
-    static const int push_button_normal_pngSize;
-    static const char* push_button_pressed_png;
-    static const int push_button_pressed_pngSize;
-    static const char* slider_well_png;
-    static const int slider_well_pngSize;
-    static const char* slider_thumb_png;
-    static const int slider_thumb_pngSize;
+    static const char* button_select_down_png;
+    static const int button_select_down_pngSize;
+    static const char* button_select_normal_png;
+    static const int button_select_normal_pngSize;
+    static const char* button_analyze_down_png;
+    static const int button_analyze_down_pngSize;
+    static const char* button_analyze_normal_png;
+    static const int button_analyze_normal_pngSize;
 
 
 private:

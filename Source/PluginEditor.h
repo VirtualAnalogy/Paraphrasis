@@ -37,7 +37,10 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class ParaphrasisAudioProcessorEditor  : public AudioProcessorEditor
+class ParaphrasisAudioProcessorEditor  : public AudioProcessorEditor,
+                                         public ParameterObserver,
+                                         public ButtonListener,
+                                         public LabelListener
 {
 public:
     //==============================================================================
@@ -46,14 +49,22 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    virtual bool isRealtimePriority() const
+    {
+        return false;
+    }
+
+    virtual void onParameterUpdated(const Parameter *parameter) ;
     //[/UserMethods]
 
     void paint (Graphics& g);
     void resized();
+    void buttonClicked (Button* buttonThatWasClicked);
+    void labelTextChanged (Label* labelThatHasChanged);
 
     // Binary resources:
-    static const char* background_png;
-    static const int background_pngSize;
+    static const char* background2_png;
+    static const int background2_pngSize;
 
 
 private:
@@ -64,11 +75,13 @@ private:
 
     //==============================================================================
     ScopedPointer<teragon::ImageKnobLarge> knob;
-    ScopedPointer<teragon::ToggleButton> button;
     ScopedPointer<teragon::ImageKnobLarge> knob2;
-    ScopedPointer<teragon::ToggleButton> button2;
     ScopedPointer<Label> label;
-    Image cachedImage_background_png;
+    ScopedPointer<ImageButton> selectBtn;
+    ScopedPointer<ImageButton> analyzeBtn;
+    ScopedPointer<Label> pitchLbl;
+    ScopedPointer<Label> resolutionLbl;
+    Image cachedImage_background2_png;
 
 
     //==============================================================================
