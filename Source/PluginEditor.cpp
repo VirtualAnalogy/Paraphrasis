@@ -210,7 +210,8 @@ void ParaphrasisAudioProcessorEditor::labelTextChanged (Label* labelThatHasChang
         if ( ! pitchLbl->isBeingEdited() )
         {
             float newValue = pitchLbl->getText().getFloatValue();
-            parameters.set(kParameterSamplePitch_name, newValue);
+            teragon::Parameter* par = parameters.get(kParameterSamplePitch_name);
+            parameters.set(kParameterSamplePitch_name, checkParameterBoundaries(par, newValue));
         }
         //[/UserLabelCode_pitchLbl]
     }
@@ -220,7 +221,8 @@ void ParaphrasisAudioProcessorEditor::labelTextChanged (Label* labelThatHasChang
         if ( ! resolutionLbl->isBeingEdited() )
         {
             float newValue = resolutionLbl->getText().getFloatValue();
-            parameters.set(kParameterFrequencyResolution_name, newValue);
+            teragon::Parameter* par = parameters.get(kParameterFrequencyResolution_name);
+            parameters.set(kParameterFrequencyResolution_name, checkParameterBoundaries(par, newValue));
         }
         //[/UserLabelCode_resolutionLbl]
     }
@@ -236,13 +238,24 @@ void ParaphrasisAudioProcessorEditor::onParameterUpdated(const Parameter *parame
 {
     if(parameter->getName() == kParameterFrequencyResolution_name)
     {
-        resolutionLbl->setText(String(parameter->getValue()), juce::dontSendNotification);
+        resolutionLbl->setText(String(parameter->getValue(), 2), juce::dontSendNotification);
     }
     else if(parameter->getName() == kParameterSamplePitch_name)
     {
-        pitchLbl->setText(String(parameter->getValue()), juce::dontSendNotification);
+        pitchLbl->setText(String(parameter->getValue(), 2), juce::dontSendNotification);
     }
 }
+
+double ParaphrasisAudioProcessorEditor::checkParameterBoundaries(const Parameter *parameter, double value)
+{
+    if (value < parameter->getMinValue())
+        value = parameter->getMinValue();
+    else if (value > parameter->getMaxValue())
+        value = parameter->getMaxValue();
+    
+    return value;
+}
+
 //[/MiscUserCode]
 
 

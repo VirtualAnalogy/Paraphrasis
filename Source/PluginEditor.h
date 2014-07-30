@@ -55,6 +55,8 @@ public:
     }
 
     virtual void onParameterUpdated(const Parameter *parameter) ;
+    static double checkParameterBoundaries(const Parameter *parameter, double value);
+    
     //[/UserMethods]
 
     void paint (Graphics& g);
