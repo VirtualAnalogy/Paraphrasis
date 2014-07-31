@@ -34,21 +34,23 @@ void SampleAnalyzer::run()
     buffer.clear();
     sampleRate = 0;
     
-    if ( ! readViaJuce() )// && ! readViaLoris() )
+    if ( !samplePath.isEmpty() )
     {
-        NativeMessageBox::showMessageBoxAsync(AlertWindow::WarningIcon, "Ooops...", "Paraphrasis can not load file, sorry...");
-        analyzerSync.signal();
-        return;
-    }
+        if ( ! readViaJuce() )// && ! readViaLoris() )
+        {
+            NativeMessageBox::showMessageBoxAsync(AlertWindow::WarningIcon, "Ooops...", "Paraphrasis can not load file, sorry...");
+            analyzerSync.signal();
+            return;
+        }
+            
+        if (threadShouldExit())
+        {
+            analyzerSync.signal();
+            return;
+        }
         
-    if (threadShouldExit())
-    {
-        analyzerSync.signal();
-        return;
+        analyze();
     }
-    
-    analyze();
-    
     analyzerSync.signal();
 }
 //==============================================================================
