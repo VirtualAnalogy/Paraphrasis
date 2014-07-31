@@ -227,18 +227,6 @@
          in2="result91"
          mode="multiply" />
     </filter>
-    <filter
-       height="1.8905703"
-       y="-0.44528517"
-       width="1.2067517"
-       x="-0.10337584"
-       id="filter4388"
-       inkscape:collect="always">
-      <feGaussianBlur
-         id="feGaussianBlur4390"
-         stdDeviation="25.908699"
-         inkscape:collect="always" />
-    </filter>
     <radialGradient
        r="300.7515"
        fy="706.56952"
@@ -950,7 +938,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1028,7 +1016,7 @@
        style="opacity:0.29" />
     <g
        id="g4827"
-       transform="matrix(0.17812762,0,0,0.17812762,278.59749,385.03391)"
+       transform="matrix(0.17812762,0,0,0.17812762,128.59749,385.03391)"
        style="opacity:0.79599986;fill:#ffffff">
       <g
          transform="translate(-1469.7264,56.254876)"
