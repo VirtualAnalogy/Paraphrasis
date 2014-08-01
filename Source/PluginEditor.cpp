@@ -139,6 +139,9 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
     //[/UserPreSize]
 
     setSize (300, 300);
+    
+    detector.setMinMaxFrequency(kParameterSamplePitch_minValue, kParameterSamplePitch_maxValue);
+    detector.setDetectionMethod(drow::PitchDetector::squareDifferenceFunction);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -222,6 +225,21 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
                 sampleLbl->setText(sampleFile.getFileName(), juce::dontSendNotification);
                 path = sampleFile.getFullPathName().toRawUTF8();
                 parameters.setData(kParameterLastSamplePath_name, path.c_str(), path.length());
+                
+                AudioFormatReader* reader = formatManager.createReaderFor(sampleFile);
+                if (reader)
+                {
+                    detector.setSampleRate(reader->sampleRate);
+                    AudioSampleBuffer buffer(reader->numChannels, reader->lengthInSamples);
+                    reader->read(&buffer, 0, reader->lengthInSamples, 0, true, true);
+                    double pitch = detector.detectPitch(buffer.getWritePointer(0), reader->lengthInSamples);
+                
+                    parameters.set(kParameterSamplePitch_name, pitch);
+                    parameters.set(kParameterFrequencyResolution_name, kDefaultPitchResolutionRation * pitch);
+                    
+                    delete reader;
+                }
+                
             }
 
         }
@@ -236,7 +254,7 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
     else if (buttonThatWasClicked == resolutionBtn)
     {
         //[UserButtonCode_resolutionBtn] -- add your button handler code here..
-        parameters.set(kParameterFrequencyResolution_name, 0.8 * parameters.get(kParameterSamplePitch_name)->getValue());
+        parameters.set(kParameterFrequencyResolution_name, kDefaultPitchResolutionRation * parameters.get(kParameterSamplePitch_name)->getValue());
         //[/UserButtonCode_resolutionBtn]
     }
 

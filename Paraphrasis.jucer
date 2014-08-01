@@ -269,10 +269,12 @@
         <MODULEPATH id="juce_audio_plugin_client" path="../../Tmp/JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../Tmp/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="dRowAudio" path="../../Tmp/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
   <MODULES>
+    <MODULES id="dRowAudio" showAllCode="1" useLocalCopy="1"/>
     <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="1"/>
     <MODULES id="juce_audio_devices" showAllCode="1" useLocalCopy="1"/>
     <MODULES id="juce_audio_formats" showAllCode="1" useLocalCopy="1"/>
@@ -286,5 +288,6 @@
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="1"/>
     <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="1"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" DROWAUDIO_USE_FFTREAL="disabled" DROWAUDIO_USE_SOUNDTOUCH="disabled"
+               DROWAUDIO_USE_CURL="disabled"/>
 </JUCERPROJECT>

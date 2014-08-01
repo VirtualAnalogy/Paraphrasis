@@ -27,6 +27,8 @@
 #include "TeragonGuiComponents.h"
 
 #include "Resources.h"
+
+#include "dRowAudio_PitchDetector.h"
 //[/Headers]
 
 
@@ -82,6 +84,7 @@ private:
     teragon::ResourceCache *resources;
     AudioFormatManager& formatManager;
     std::string path;
+    drow::PitchDetector detector;
     //[/UserVariables]
 
     //==============================================================================
