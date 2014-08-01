@@ -55,7 +55,7 @@ public:
     void startNote(int midiNoteNumber, float velocity,
                    SynthesiserSound* /*sound*/, int /*currentPitchWheelPosition*/)
     {
-        level = velocity * 0.15;
+        level = velocity;
         sampleIndex = 0;
         tailOff = 0.0;
         
@@ -116,7 +116,7 @@ public:
                 }
 
                 for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-                    outputBuffer.addSample(i, startSample, currentSample);
+                    outputBuffer.addSample(i, startSample, level * currentSample);
 
                 ++startSample;
                 ++sampleIndex;
@@ -129,7 +129,7 @@ public:
                 double currentSample = sampleIndex < buffer.size() ? buffer[sampleIndex] : 0.0;
                 
                 for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-                    outputBuffer.addSample(i, startSample, currentSample);
+                    outputBuffer.addSample(i, startSample, level * currentSample);
                 
                 ++startSample;
                 ++sampleIndex;
