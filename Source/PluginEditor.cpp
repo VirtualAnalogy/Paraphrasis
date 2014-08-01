@@ -98,6 +98,14 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
                               Image(), 1.000f, Colour (0x00000000),
                               Image(), 1.000f, Colour (0x00000000),
                               Image(), 1.000f, Colour (0x00000000));
+    addAndMakeVisible (ledBtn = new ImageButton ("ledBtn"));
+    ledBtn->setButtonText (TRANS("new button"));
+    ledBtn->addListener (this);
+
+    ledBtn->setImages (false, true, true,
+                       ImageCache::getFromMemory (led_off_png, led_off_pngSize), 1.000f, Colour (0x00000000),
+                       Image(), 1.000f, Colour (0x00000000),
+                       ImageCache::getFromMemory (led_on_png, led_on_pngSize), 1.000f, Colour (0x00000000));
     cachedImage_background2_png = ImageCache::getFromMemory (background2_png, background2_pngSize);
 
     //[UserPreSize]
@@ -136,12 +144,14 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
     onParameterUpdated(parameters.get(kParameterFrequencyResolution_name));
     onParameterUpdated(parameters.get(kParameterSamplePitch_name));
     onParameterUpdated(parameters.get(kParameterLastSamplePath_name));
+    
+    ledBtn->setClickingTogglesState(false);
+    ParaphrasisAudioProcessor *processor = dynamic_cast<ParaphrasisAudioProcessor *>(getProcessor());
+    if (processor)
+        lightOn(processor->isReady());
     //[/UserPreSize]
 
     setSize (300, 300);
-    
-    detector.setMinMaxFrequency(kParameterSamplePitch_minValue, kParameterSamplePitch_maxValue);
-    detector.setDetectionMethod(drow::PitchDetector::squareDifferenceFunction);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -164,6 +174,7 @@ ParaphrasisAudioProcessorEditor::~ParaphrasisAudioProcessorEditor()
     pitchLbl = nullptr;
     resolutionLbl = nullptr;
     resolutionBtn = nullptr;
+    ledBtn = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -197,6 +208,7 @@ void ParaphrasisAudioProcessorEditor::resized()
     pitchLbl->setBounds (57, 192, 70, 24);
     resolutionLbl->setBounds (173, 192, 70, 24);
     resolutionBtn->setBounds (128, 155, 44, 32);
+    ledBtn->setBounds (240, 240, 24, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -225,7 +237,7 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
                 sampleLbl->setText(sampleFile.getFileName(), juce::dontSendNotification);
                 path = sampleFile.getFullPathName().toRawUTF8();
                 parameters.setData(kParameterLastSamplePath_name, path.c_str(), path.length());
-                
+
                 AudioFormatReader* reader = formatManager.createReaderFor(sampleFile);
                 if (reader)
                 {
@@ -233,13 +245,13 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
                     AudioSampleBuffer buffer(reader->numChannels, reader->lengthInSamples);
                     reader->read(&buffer, 0, reader->lengthInSamples, 0, true, true);
                     double pitch = detector.detectPitch(buffer.getWritePointer(0), reader->lengthInSamples);
-                
+
                     parameters.set(kParameterSamplePitch_name, pitch);
                     parameters.set(kParameterFrequencyResolution_name, kDefaultPitchResolutionRation * pitch);
-                    
+
                     delete reader;
                 }
-                
+
             }
 
         }
@@ -256,6 +268,11 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
         //[UserButtonCode_resolutionBtn] -- add your button handler code here..
         parameters.set(kParameterFrequencyResolution_name, kDefaultPitchResolutionRation * parameters.get(kParameterSamplePitch_name)->getValue());
         //[/UserButtonCode_resolutionBtn]
+    }
+    else if (buttonThatWasClicked == ledBtn)
+    {
+        //[UserButtonCode_ledBtn] -- add your button handler code here..
+        //[/UserButtonCode_ledBtn]
     }
 
     //[UserbuttonClicked_Post]
@@ -384,6 +401,12 @@ BEGIN_JUCER_METADATA
                resourceNormal="" opacityNormal="1" colourNormal="0" resourceOver=""
                opacityOver="1" colourOver="0" resourceDown="" opacityDown="1"
                colourDown="0"/>
+  <IMAGEBUTTON name="ledBtn" id="53d3b450ed60b4e0" memberName="ledBtn" virtualName=""
+               explicitFocusOrder="0" pos="240 240 24 24" buttonText="new button"
+               connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
+               resourceNormal="led_off_png" opacityNormal="1" colourNormal="0"
+               resourceOver="" opacityOver="1" colourOver="0" resourceDown="led_on_png"
+               opacityDown="1" colourDown="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
@@ -1305,6 +1328,48 @@ static const unsigned char resource_ParaphrasisAudioProcessorEditor_background2_
 
 const char* ParaphrasisAudioProcessorEditor::background2_png = (const char*) resource_ParaphrasisAudioProcessorEditor_background2_png;
 const int ParaphrasisAudioProcessorEditor::background2_pngSize = 50787;
+
+// JUCER_RESOURCE: led_off_png, 599, "../Resources/Graphics/led_off.png"
+static const unsigned char resource_ParaphrasisAudioProcessorEditor_led_off_png[] = { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,24,0,0,0,24,8,6,0,0,0,224,119,61,248,0,0,0,6,98,75,71,68,0,255,
+0,255,0,255,160,189,167,147,0,0,0,9,112,72,89,115,0,0,11,19,0,0,11,19,1,0,154,156,24,0,0,0,7,116,73,77,69,7,222,8,1,3,49,1,223,48,114,38,0,0,1,228,73,68,65,84,72,199,237,148,189,111,82,97,20,198,127,84,
+168,151,143,98,239,5,241,22,27,196,6,155,152,24,219,193,193,218,205,196,205,196,24,23,157,140,137,97,114,112,114,102,50,38,110,174,254,39,20,227,228,226,32,105,117,211,5,241,35,90,240,250,190,220,239,
+123,225,186,220,129,165,20,232,226,192,147,156,229,205,115,62,242,60,239,57,176,192,2,255,61,78,77,67,106,52,26,75,103,117,253,193,249,114,249,117,161,80,120,154,203,231,205,126,175,183,63,77,110,226,
+56,66,189,94,95,51,12,227,75,173,86,203,172,170,42,142,109,179,127,112,64,179,217,196,50,205,117,224,251,164,252,228,113,3,152,150,245,99,107,123,27,253,92,145,173,171,87,184,123,239,62,158,235,114,99,
+103,135,86,171,245,57,138,162,21,96,56,151,68,213,106,245,209,165,205,205,59,237,118,27,211,28,240,252,197,75,132,16,24,134,65,183,219,69,211,180,148,109,219,223,128,15,71,213,88,154,228,207,122,165,242,
+76,74,73,191,223,167,245,230,45,82,74,6,82,178,187,123,157,108,54,131,16,2,224,201,164,65,39,53,80,76,41,253,78,167,131,16,2,41,37,50,74,130,186,6,217,85,42,149,139,248,190,15,144,3,78,207,35,81,222,243,
+188,244,112,52,186,41,132,192,73,42,148,54,54,40,95,174,178,162,230,121,255,233,35,12,67,8,135,175,98,137,156,89,127,81,17,168,170,154,246,110,224,250,203,97,58,71,170,120,134,72,81,8,131,0,76,19,122,
+135,96,59,215,128,14,208,155,85,34,15,112,140,63,226,113,152,82,32,189,76,144,128,48,12,33,8,192,117,2,108,231,97,204,243,230,217,131,20,80,2,46,0,101,224,22,186,126,155,40,242,17,98,15,215,221,139,119,
+224,43,240,11,8,102,109,144,136,13,44,1,58,160,142,153,233,1,127,129,159,192,111,192,4,162,89,23,45,2,44,224,48,158,206,26,107,224,2,70,220,196,58,170,248,84,167,34,246,41,5,100,0,37,126,115,226,8,128,
+209,137,110,209,24,47,49,198,143,198,98,129,147,225,31,221,7,191,132,145,124,92,114,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
+
+const char* ParaphrasisAudioProcessorEditor::led_off_png = (const char*) resource_ParaphrasisAudioProcessorEditor_led_off_png;
+const int ParaphrasisAudioProcessorEditor::led_off_pngSize = 599;
+
+// JUCER_RESOURCE: led_on_png, 1195, "../Resources/Graphics/led_on.png"
+static const unsigned char resource_ParaphrasisAudioProcessorEditor_led_on_png[] = { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,24,0,0,0,24,8,6,0,0,0,224,119,61,248,0,0,0,6,98,75,71,68,0,255,
+0,255,0,255,160,189,167,147,0,0,0,9,112,72,89,115,0,0,11,19,0,0,11,19,1,0,154,156,24,0,0,0,7,116,73,77,69,7,222,8,1,3,49,32,147,89,98,120,0,0,4,56,73,68,65,84,72,199,181,150,205,139,149,85,28,199,63,231,
+60,231,121,187,47,58,218,140,142,86,76,42,76,121,163,23,84,106,209,155,67,65,17,25,212,78,130,218,245,15,212,162,217,105,17,4,10,17,181,136,8,220,148,109,35,55,69,144,211,162,69,89,144,134,55,8,180,113,
+28,25,156,25,188,175,207,251,121,206,105,49,87,175,183,209,52,168,7,158,213,57,231,251,229,247,253,254,206,239,123,4,183,250,172,21,204,225,144,224,208,71,2,80,195,16,82,178,159,18,33,236,63,29,23,55,
+93,57,100,37,13,20,41,46,14,30,2,15,131,11,128,164,192,146,83,146,19,80,208,68,115,72,152,219,39,56,105,21,43,184,20,4,24,2,20,62,14,62,57,30,0,30,57,37,25,154,12,73,138,75,202,4,5,51,66,223,154,224,164,
+85,244,241,72,8,40,9,16,132,48,248,13,254,160,130,12,72,128,4,75,130,67,74,72,74,141,252,239,36,98,157,44,83,120,64,128,34,196,165,130,166,130,67,69,73,42,86,19,2,8,69,162,13,49,37,49,138,152,130,24,77,
+2,164,92,32,191,94,46,57,98,230,54,28,170,40,170,184,72,60,36,62,138,64,73,42,214,82,69,80,67,80,179,150,170,146,84,80,4,72,124,36,30,85,92,170,40,182,225,96,173,88,79,112,24,129,135,3,56,100,40,92,92,
+10,60,44,129,181,4,64,136,160,130,160,2,132,214,18,96,9,40,240,112,113,201,80,128,131,135,195,225,161,50,234,26,65,3,65,136,36,193,65,161,48,184,56,184,202,226,61,243,219,199,65,59,43,103,122,121,249,
+92,20,39,129,179,227,145,175,230,119,204,124,173,4,185,118,112,49,184,168,1,193,56,146,234,144,64,140,152,123,17,31,69,136,165,138,67,29,67,253,192,217,15,239,185,18,235,99,141,93,83,254,150,205,99,20,
+121,206,217,249,37,190,59,125,142,68,219,87,56,248,238,159,72,122,148,244,16,68,104,18,238,38,187,106,182,188,166,255,31,8,2,4,26,9,3,169,222,121,202,237,37,217,241,71,119,239,244,31,152,222,197,139,79,
+60,196,231,173,45,156,234,6,60,190,231,126,164,227,30,227,237,39,189,107,251,53,146,128,53,172,129,15,114,164,139,124,4,10,129,131,160,68,220,213,216,247,252,198,208,103,238,146,225,84,186,129,151,190,
+92,34,210,208,221,120,39,223,175,74,198,119,52,60,38,166,95,160,28,156,81,8,252,209,206,28,18,108,26,44,40,4,18,193,236,94,103,243,134,250,193,152,10,217,246,105,230,46,68,196,198,161,23,222,193,236,179,
+211,76,221,215,160,51,54,129,216,189,231,101,102,247,58,200,1,193,245,88,235,42,24,185,33,198,143,113,245,66,234,16,69,125,122,50,164,51,54,137,153,28,131,49,151,253,15,111,32,159,242,96,123,37,68,88,
+239,102,48,195,46,106,97,153,4,52,22,137,69,8,247,242,226,249,147,245,201,123,119,102,26,212,228,24,175,54,124,170,97,134,231,20,124,186,184,2,166,143,253,118,238,155,193,156,178,24,44,254,0,107,29,1,
+64,134,69,99,113,214,54,244,46,158,251,81,205,76,190,214,173,143,43,227,106,78,180,250,152,229,152,78,183,13,81,31,162,8,174,156,255,1,128,18,75,137,37,195,174,247,64,8,203,52,150,20,139,194,0,37,58,75,
+41,243,168,115,226,163,247,77,13,168,103,180,226,46,157,110,111,13,188,219,46,197,241,207,142,82,20,9,58,75,129,18,133,33,101,13,107,48,198,135,21,172,96,217,132,37,193,80,98,192,196,148,69,219,244,86,
+23,229,7,111,28,177,59,247,238,227,233,199,246,16,199,154,95,127,57,35,126,63,253,179,137,187,139,24,211,6,19,35,49,56,24,234,88,86,110,36,81,19,203,20,134,42,37,26,77,150,167,72,221,161,204,151,77,153,
+187,114,225,204,79,124,113,190,9,64,218,239,155,60,93,165,204,151,209,121,155,44,79,209,104,28,74,86,49,92,24,18,136,145,97,247,9,138,77,248,64,72,65,133,183,26,117,252,234,56,65,109,43,126,125,43,110,
+88,91,243,42,234,81,68,203,164,253,203,100,209,42,239,53,123,184,196,64,66,139,140,215,209,87,37,26,182,169,16,150,37,74,34,52,17,5,134,156,35,205,132,36,105,17,39,151,72,251,243,36,209,2,73,180,64,158,
+204,19,39,151,72,146,22,71,154,9,134,156,136,130,8,205,210,104,140,222,94,224,188,249,96,133,208,171,64,117,45,112,136,50,146,60,230,232,153,248,223,5,206,255,16,153,55,190,201,51,66,211,36,195,37,194,
+210,197,208,65,211,6,90,64,11,77,27,67,7,75,23,151,136,230,112,122,222,254,171,226,63,122,182,252,5,191,178,14,53,194,182,244,166,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
+
+const char* ParaphrasisAudioProcessorEditor::led_on_png = (const char*) resource_ParaphrasisAudioProcessorEditor_led_on_png;
+const int ParaphrasisAudioProcessorEditor::led_on_pngSize = 1195;
 
 
 //[EndFile] You can add extra defines here...

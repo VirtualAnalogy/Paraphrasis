@@ -62,6 +62,11 @@ public:
     {
         return static_cast <ParaphrasisAudioProcessor*>(getAudioProcessor());
     }
+    
+    void lightOn(bool on)
+    {
+        ledBtn->setToggleState(on, false);
+    }
 
     virtual void onParameterUpdated(const Parameter *parameter) ;
     static double checkParameterBoundaries(const Parameter *parameter, double value);
@@ -76,6 +81,10 @@ public:
     // Binary resources:
     static const char* background2_png;
     static const int background2_pngSize;
+    static const char* led_off_png;
+    static const int led_off_pngSize;
+    static const char* led_on_png;
+    static const int led_on_pngSize;
 
 
 private:
@@ -96,6 +105,7 @@ private:
     ScopedPointer<Label> pitchLbl;
     ScopedPointer<Label> resolutionLbl;
     ScopedPointer<ImageButton> resolutionBtn;
+    ScopedPointer<ImageButton> ledBtn;
     Image cachedImage_background2_png;
 
 

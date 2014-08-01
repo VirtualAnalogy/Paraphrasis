@@ -46,6 +46,11 @@ public:
 
     virtual void setStateInformation(const void *data, int sizeInBytes);
 
+    bool isReady()
+    {
+        return !partials.empty();
+    }
+
 private:
     void resamplePartials(double sampleRate);
     void processPartialChange();

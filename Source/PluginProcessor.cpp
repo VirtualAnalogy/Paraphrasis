@@ -230,6 +230,10 @@ void ParaphrasisAudioProcessor::loadSample()
         if (voice)
             voice->setup(partials, parameters[kParameterSamplePitch_name]->getValue());
     }
+    
+            ParaphrasisAudioProcessorEditor* editor = dynamic_cast<ParaphrasisAudioProcessorEditor *>(getActiveEditor());
+            if (editor)
+                editor->lightOn(! partials.empty() );
 }
 
 //==============================================================================
