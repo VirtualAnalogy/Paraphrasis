@@ -76,8 +76,19 @@ bool SampleAnalyzer::readViaJuce()
     
     // read samples
     setStatusMessage("Reading file...");
-    AudioSampleBuffer fileSamples(1, reader->lengthInSamples);
+    AudioSampleBuffer fileSamples(2, reader->lengthInSamples);
     reader->read(&fileSamples, 0, reader->lengthInSamples, 0, true, true);
+    
+    if (reader->numChannels == 2 && fileSamples.getNumChannels() == 2)
+    {
+        // huh strange stereo to mono algorith witch seems to be working...
+        // credits or inspiration is from here: http://www.dsprelated.com/showmessage/106421/2.php
+        int64 numSamples = fileSamples.getNumSamples();
+        for (int i = 0; i < numSamples; i++)
+        {
+            *fileSamples.getWritePointer(0, i) = std::max(*fileSamples.getReadPointer(0, i), *fileSamples.getReadPointer(1, i));
+        }
+    }
     
     // delete reader ASAP so we dont forget and prevent memory leaks
     int64 lengthInSamples = reader->lengthInSamples;
