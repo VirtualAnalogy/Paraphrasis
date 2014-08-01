@@ -62,7 +62,7 @@ public:
     {
         return static_cast <ParaphrasisAudioProcessor*>(getAudioProcessor());
     }
-    
+
     void lightOn(bool on)
     {
         ledBtn->setToggleState(on, false);
@@ -106,6 +106,7 @@ private:
     ScopedPointer<Label> resolutionLbl;
     ScopedPointer<ImageButton> resolutionBtn;
     ScopedPointer<ImageButton> ledBtn;
+    ScopedPointer<ImageButton> reverseBtn;
     Image cachedImage_background2_png;
 
 

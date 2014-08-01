@@ -55,6 +55,11 @@ public:
         return m_partials;
     }
     
+    void setReverse(bool reverse)
+    {
+        this->reverse = reverse;
+    }
+    
 private:
     
     bool readViaJuce();
@@ -64,6 +69,7 @@ private:
     String samplePath;
     double m_resolution = kParameterFrequencyResolution_defaultValue;
     double m_pitch = kParameterSamplePitch_defaultValue;
+    bool reverse = false;
     
     AudioFormatManager& formatManager;
     WaitableEvent& analyzerSync;

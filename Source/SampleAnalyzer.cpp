@@ -77,8 +77,10 @@ bool SampleAnalyzer::readViaJuce()
     // read samples
     setStatusMessage("Reading file...");
     AudioSampleBuffer fileSamples(2, reader->lengthInSamples);
+
     reader->read(&fileSamples, 0, reader->lengthInSamples, 0, true, true);
-    
+    if (reverse)
+        fileSamples.reverse(0, reader->lengthInSamples);    
     if (reader->numChannels == 2 && fileSamples.getNumChannels() == 2)
     {
         // huh strange stereo to mono algorith witch seems to be working...

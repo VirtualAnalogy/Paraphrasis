@@ -191,6 +191,8 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor()
                                                    kParameterFrequencyResolution_maxValue, kParameterFrequencyResolution_defaultValue));
     parameters.add(new teragon::StringParameter(kParameterLastSamplePath_name));
     
+    parameters.add(new teragon::BooleanParameter(kParameterReverse_name, kParameterReverse_defaultValue));
+    
     parameters.pause();
 
     for (int i = 16; --i >= 0;)
@@ -213,6 +215,7 @@ void ParaphrasisAudioProcessor::loadSample()
     analyzer.setSamplePath(parameters[kParameterLastSamplePath_name]->getDisplayText());
     analyzer.setFrequencyResolution(parameters[kParameterFrequencyResolution_name]->getValue());
     analyzer.setPitch(parameters[kParameterSamplePitch_name]->getValue());
+    analyzer.setReverse(parameters[kParameterReverse_name]->getValue());
 //  analyzer.startThread();
     analyzer.runThread();
     
