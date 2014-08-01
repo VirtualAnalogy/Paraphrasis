@@ -21,6 +21,8 @@ static const  int kParameterFrequencyResolution_minValue = 30;
 static const  int kParameterFrequencyResolution_maxValue = 10000;
 static const  int kParameterFrequencyResolution_defaultValue = 40;
 
+static const double kDefaultPitchResolutionRation = 0.8;
+
 static const char* kParameterLastSamplePath_name = "Last Sample Path";
 
 
