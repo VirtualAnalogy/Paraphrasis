@@ -202,7 +202,7 @@ public:
     {
         this->partials.clear();
         
-        while (partialsBeingProcessed.empty())
+        while ( !partialsBeingProcessed.empty() )
             partialsBeingProcessed.pop();
     }
 	 	
