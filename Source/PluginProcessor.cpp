@@ -193,7 +193,7 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor()
     
     parameters.pause();
 
-    for (int i = 10; --i >= 0;)
+    for (int i = 16; --i >= 0;)
         synth.addVoice(new LorisVoice());
 
     synth.addSound(new LorisSound());
