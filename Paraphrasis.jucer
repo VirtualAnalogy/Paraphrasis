@@ -97,6 +97,8 @@
         </GROUP>
       </GROUP>
       <GROUP id="{DE6F4A8B-68A2-96DE-A6AE-E9A269A646BB}" name="Loris">
+        <FILE id="DdeY3O" name="LorisExceptions.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/LorisExceptions.cpp"/>
         <FILE id="c66uqp" name="AiffData.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/AiffData.cpp"/>
         <FILE id="jJMH1C" name="AiffData.h" compile="0" resource="0" file="ThirdParty/Loris/src/AiffData.h"/>
         <FILE id="kjhe6H" name="AiffFile.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/AiffFile.cpp"/>
@@ -267,19 +269,19 @@
                        isDebug="0" optimisation="3" targetName="Paraphrasis" headerPath="..\..\Resources;&#10;..\..\ThirdParty\Loris\src;&#10;..\..\ThirdParty\Loris\;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Plugin;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Plugin\arduino-base64;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Source;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\PluginParameters\include;&#10;..\..\ThirdParty\sse2math\;&#10;..\..\JuceLibraryCode\modules\dRowAudio\audio;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_gui_extra" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_core" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../Tmp/JUCE/modules"/>
-        <MODULEPATH id="dRowAudio" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="C:/JUCE/modules"/>
+        <MODULEPATH id="dRowAudio" path="C:/JUCE/modules"/>
       </MODULEPATHS>
     </VS2013>
   </EXPORTFORMATS>
