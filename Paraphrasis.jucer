@@ -97,132 +97,118 @@
         </GROUP>
       </GROUP>
       <GROUP id="{DE6F4A8B-68A2-96DE-A6AE-E9A269A646BB}" name="Loris">
-        <FILE id="tUhaVU" name="AiffData.C" compile="1" resource="0" file="ThirdParty/Loris/src/AiffData.C"/>
-        <FILE id="IRfZaW" name="AiffData.h" compile="0" resource="0" file="ThirdParty/Loris/src/AiffData.h"/>
-        <FILE id="n83WZ0" name="AiffFile.C" compile="1" resource="0" file="ThirdParty/Loris/src/AiffFile.C"/>
-        <FILE id="SwP12E" name="AiffFile.h" compile="0" resource="0" file="ThirdParty/Loris/src/AiffFile.h"/>
-        <FILE id="LVzSiX" name="Analyzer.C" compile="1" resource="0" file="ThirdParty/Loris/src/Analyzer.C"/>
-        <FILE id="lkOpw4" name="Analyzer.h" compile="0" resource="0" file="ThirdParty/Loris/src/Analyzer.h"/>
-        <FILE id="mgYf8l" name="AssociateBandwidth.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/AssociateBandwidth.C"/>
-        <FILE id="A96wjM" name="AssociateBandwidth.h" compile="0" resource="0"
+        <FILE id="c66uqp" name="AiffData.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/AiffData.cpp"/>
+        <FILE id="jJMH1C" name="AiffData.h" compile="0" resource="0" file="ThirdParty/Loris/src/AiffData.h"/>
+        <FILE id="kjhe6H" name="AiffFile.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/AiffFile.cpp"/>
+        <FILE id="y6Vu2a" name="AiffFile.h" compile="0" resource="0" file="ThirdParty/Loris/src/AiffFile.h"/>
+        <FILE id="ZUt2i4" name="Analyzer.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Analyzer.cpp"/>
+        <FILE id="h8lZUa" name="Analyzer.h" compile="0" resource="0" file="ThirdParty/Loris/src/Analyzer.h"/>
+        <FILE id="p79Ykp" name="AssociateBandwidth.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/AssociateBandwidth.cpp"/>
+        <FILE id="sAqaMC" name="AssociateBandwidth.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/AssociateBandwidth.h"/>
-        <FILE id="LMwmpi" name="BigEndian.C" compile="1" resource="0" file="ThirdParty/Loris/src/BigEndian.C"/>
-        <FILE id="yi8HWU" name="BigEndian.h" compile="0" resource="0" file="ThirdParty/Loris/src/BigEndian.h"/>
-        <FILE id="fRihlm" name="Breakpoint.C" compile="1" resource="0" file="ThirdParty/Loris/src/Breakpoint.C"/>
-        <FILE id="zPd53v" name="Breakpoint.h" compile="0" resource="0" file="ThirdParty/Loris/src/Breakpoint.h"/>
-        <FILE id="gmBhZk" name="BreakpointEnvelope.h" compile="0" resource="0"
+        <FILE id="RNJLaV" name="BigEndian.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/BigEndian.cpp"/>
+        <FILE id="A3Ci6C" name="BigEndian.h" compile="0" resource="0" file="ThirdParty/Loris/src/BigEndian.h"/>
+        <FILE id="On167z" name="Breakpoint.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Breakpoint.cpp"/>
+        <FILE id="sQ5VqB" name="Breakpoint.h" compile="0" resource="0" file="ThirdParty/Loris/src/Breakpoint.h"/>
+        <FILE id="U7Z2ZQ" name="BreakpointEnvelope.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/BreakpointEnvelope.h"/>
-        <FILE id="wHjzqd" name="BreakpointUtils.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/BreakpointUtils.C"/>
-        <FILE id="pqxm1Z" name="BreakpointUtils.h" compile="0" resource="0"
+        <FILE id="dRAnih" name="BreakpointUtils.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/BreakpointUtils.cpp"/>
+        <FILE id="YOcSGr" name="BreakpointUtils.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/BreakpointUtils.h"/>
-        <FILE id="UchJ7L" name="Channelizer.C" compile="1" resource="0" file="ThirdParty/Loris/src/Channelizer.C"/>
-        <FILE id="uywr2I" name="Channelizer.h" compile="0" resource="0" file="ThirdParty/Loris/src/Channelizer.h"/>
-        <FILE id="UEnu37" name="Collator.C" compile="1" resource="0" file="ThirdParty/Loris/src/Collator.C"/>
-        <FILE id="TIdiuS" name="Collator.h" compile="0" resource="0" file="ThirdParty/Loris/src/Collator.h"/>
-        <FILE id="Ai6lPd" name="Dilator.C" compile="1" resource="0" file="ThirdParty/Loris/src/Dilator.C"/>
-        <FILE id="mCnIUn" name="Dilator.h" compile="0" resource="0" file="ThirdParty/Loris/src/Dilator.h"/>
-        <FILE id="UNKm3g" name="Distiller.C" compile="1" resource="0" file="ThirdParty/Loris/src/Distiller.C"/>
-        <FILE id="Jz89Es" name="Distiller.h" compile="0" resource="0" file="ThirdParty/Loris/src/Distiller.h"/>
-        <FILE id="xj3wqU" name="Envelope.C" compile="1" resource="0" file="ThirdParty/Loris/src/Envelope.C"/>
-        <FILE id="ypbYG9" name="Envelope.h" compile="0" resource="0" file="ThirdParty/Loris/src/Envelope.h"/>
-        <FILE id="zbF59s" name="Exception.h" compile="0" resource="0" file="ThirdParty/Loris/src/Exception.h"/>
-        <FILE id="F7s9LC" name="F0Estimate.C" compile="1" resource="0" file="ThirdParty/Loris/src/F0Estimate.C"/>
-        <FILE id="G4QSVn" name="F0Estimate.h" compile="0" resource="0" file="ThirdParty/Loris/src/F0Estimate.h"/>
-        <FILE id="xr76QV" name="fftsg.c" compile="1" resource="0" file="ThirdParty/Loris/src/fftsg.c"/>
-        <FILE id="SEpiHM" name="Filter.C" compile="1" resource="0" file="ThirdParty/Loris/src/Filter.C"/>
-        <FILE id="DH1D3W" name="Filter.h" compile="0" resource="0" file="ThirdParty/Loris/src/Filter.h"/>
-        <FILE id="x6JZlS" name="FourierTransform.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/FourierTransform.C"/>
-        <FILE id="tjGpqA" name="FourierTransform.h" compile="0" resource="0"
+        <FILE id="GQwjW8" name="Channelizer.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Channelizer.cpp"/>
+        <FILE id="eYPxmE" name="Channelizer.h" compile="0" resource="0" file="ThirdParty/Loris/src/Channelizer.h"/>
+        <FILE id="sQBlip" name="Collator.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Collator.cpp"/>
+        <FILE id="qP9pCm" name="Collator.h" compile="0" resource="0" file="ThirdParty/Loris/src/Collator.h"/>
+        <FILE id="k2G4QT" name="Dilator.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Dilator.cpp"/>
+        <FILE id="GEy694" name="Dilator.h" compile="0" resource="0" file="ThirdParty/Loris/src/Dilator.h"/>
+        <FILE id="WMogVX" name="Distiller.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Distiller.cpp"/>
+        <FILE id="bNeP4K" name="Distiller.h" compile="0" resource="0" file="ThirdParty/Loris/src/Distiller.h"/>
+        <FILE id="uxgnrg" name="Envelope.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Envelope.cpp"/>
+        <FILE id="tEXVwj" name="Envelope.h" compile="0" resource="0" file="ThirdParty/Loris/src/Envelope.h"/>
+        <FILE id="hYQIUr" name="Exception.h" compile="0" resource="0" file="ThirdParty/Loris/src/Exception.h"/>
+        <FILE id="pkeKj1" name="F0Estimate.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/F0Estimate.cpp"/>
+        <FILE id="X8oayl" name="F0Estimate.h" compile="0" resource="0" file="ThirdParty/Loris/src/F0Estimate.h"/>
+        <FILE id="DA9Mub" name="fftsg.c" compile="1" resource="0" file="ThirdParty/Loris/src/fftsg.c"/>
+        <FILE id="hCYxJi" name="Filter.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Filter.cpp"/>
+        <FILE id="hfN9gU" name="Filter.h" compile="0" resource="0" file="ThirdParty/Loris/src/Filter.h"/>
+        <FILE id="nEQZAX" name="FourierTransform.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/FourierTransform.cpp"/>
+        <FILE id="zZdRK2" name="FourierTransform.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/FourierTransform.h"/>
-        <FILE id="CjCyJO" name="FrequencyReference.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/FrequencyReference.C"/>
-        <FILE id="ZfsbFG" name="FrequencyReference.h" compile="0" resource="0"
+        <FILE id="Htudl1" name="FrequencyReference.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/FrequencyReference.cpp"/>
+        <FILE id="DORXon" name="FrequencyReference.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/FrequencyReference.h"/>
-        <FILE id="oGLiKb" name="Fundamental.C" compile="1" resource="0" file="ThirdParty/Loris/src/Fundamental.C"/>
-        <FILE id="U2a6Ef" name="Fundamental.h" compile="0" resource="0" file="ThirdParty/Loris/src/Fundamental.h"/>
-        <FILE id="Nrw0cN" name="Harmonifier.C" compile="1" resource="0" file="ThirdParty/Loris/src/Harmonifier.C"/>
-        <FILE id="NU3OMj" name="Harmonifier.h" compile="0" resource="0" file="ThirdParty/Loris/src/Harmonifier.h"/>
-        <FILE id="SVARP3" name="ImportLemur.C" compile="1" resource="0" file="ThirdParty/Loris/src/ImportLemur.C"/>
-        <FILE id="vMvPl6" name="ImportLemur.h" compile="0" resource="0" file="ThirdParty/Loris/src/ImportLemur.h"/>
-        <FILE id="DufhEa" name="KaiserWindow.C" compile="1" resource="0" file="ThirdParty/Loris/src/KaiserWindow.C"/>
-        <FILE id="tz0oT7" name="KaiserWindow.h" compile="0" resource="0" file="ThirdParty/Loris/src/KaiserWindow.h"/>
-        <FILE id="YpTADY" name="LinearEnvelope.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/LinearEnvelope.C"/>
-        <FILE id="sqLZx5" name="LinearEnvelope.h" compile="0" resource="0"
+        <FILE id="oZd9Ah" name="Fundamental.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Fundamental.cpp"/>
+        <FILE id="nL7Kjz" name="Fundamental.h" compile="0" resource="0" file="ThirdParty/Loris/src/Fundamental.h"/>
+        <FILE id="bTIY8w" name="Harmonifier.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Harmonifier.cpp"/>
+        <FILE id="N1rjcx" name="Harmonifier.h" compile="0" resource="0" file="ThirdParty/Loris/src/Harmonifier.h"/>
+        <FILE id="x3wHnN" name="ImportLemur.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/ImportLemur.cpp"/>
+        <FILE id="KBH474" name="ImportLemur.h" compile="0" resource="0" file="ThirdParty/Loris/src/ImportLemur.h"/>
+        <FILE id="l0jefU" name="KaiserWindow.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/KaiserWindow.cpp"/>
+        <FILE id="mlBmBY" name="KaiserWindow.h" compile="0" resource="0" file="ThirdParty/Loris/src/KaiserWindow.h"/>
+        <FILE id="Xv3xvD" name="LinearEnvelope.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/LinearEnvelope.cpp"/>
+        <FILE id="vgSE1n" name="LinearEnvelope.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/LinearEnvelope.h"/>
-        <FILE id="a1NMRU" name="loris.h" compile="0" resource="0" file="ThirdParty/Loris/src/loris.h"/>
-        <FILE id="fzZofs" name="lorisAnalyzer_pi.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/lorisAnalyzer_pi.C"/>
-        <FILE id="AT3YTw" name="lorisBpEnvelope_pi.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/lorisBpEnvelope_pi.C"/>
-        <FILE id="Q7qft9" name="lorisException_pi.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/lorisException_pi.C"/>
-        <FILE id="u63UvH" name="lorisException_pi.h" compile="0" resource="0"
-              file="ThirdParty/Loris/src/lorisException_pi.h"/>
-        <FILE id="TJJoyd" name="LorisExceptions.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/LorisExceptions.C"/>
-        <FILE id="QqbC4c" name="LorisExceptions.h" compile="0" resource="0"
+        <FILE id="G9nVtd" name="loris.h" compile="0" resource="0" file="ThirdParty/Loris/src/loris.h"/>
+        <FILE id="mx1FNq" name="LorisExceptions.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/LorisExceptions.h"/>
-        <FILE id="OE92w0" name="lorisNonObj_pi.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/lorisNonObj_pi.C"/>
-        <FILE id="S8WaLO" name="lorisPartialList_pi.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/lorisPartialList_pi.C"/>
-        <FILE id="QQnZoz" name="lorisUtilities_pi.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/lorisUtilities_pi.C"/>
-        <FILE id="deqxLu" name="Marker.C" compile="1" resource="0" file="ThirdParty/Loris/src/Marker.C"/>
-        <FILE id="tfDInR" name="Marker.h" compile="0" resource="0" file="ThirdParty/Loris/src/Marker.h"/>
-        <FILE id="TNf8VG" name="Morpher.C" compile="1" resource="0" file="ThirdParty/Loris/src/Morpher.C"/>
-        <FILE id="MWq4ud" name="Morpher.h" compile="0" resource="0" file="ThirdParty/Loris/src/Morpher.h"/>
-        <FILE id="HH7AH2" name="NoiseGenerator.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/NoiseGenerator.C"/>
-        <FILE id="nWpNQT" name="NoiseGenerator.h" compile="0" resource="0"
+        <FILE id="LmUuzM" name="Marker.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Marker.cpp"/>
+        <FILE id="RD6dzo" name="Marker.h" compile="0" resource="0" file="ThirdParty/Loris/src/Marker.h"/>
+        <FILE id="fsuDt5" name="Morpher.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Morpher.cpp"/>
+        <FILE id="MyGJRy" name="Morpher.h" compile="0" resource="0" file="ThirdParty/Loris/src/Morpher.h"/>
+        <FILE id="vIASio" name="NoiseGenerator.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/NoiseGenerator.cpp"/>
+        <FILE id="BoJX7L" name="NoiseGenerator.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/NoiseGenerator.h"/>
-        <FILE id="yJ0Ie1" name="Notifier.C" compile="1" resource="0" file="ThirdParty/Loris/src/Notifier.C"/>
-        <FILE id="K9dm2n" name="Notifier.h" compile="0" resource="0" file="ThirdParty/Loris/src/Notifier.h"/>
-        <FILE id="LBuqXk" name="Oscillator.C" compile="1" resource="0" file="ThirdParty/Loris/src/Oscillator.C"/>
-        <FILE id="DWIcKW" name="Oscillator.h" compile="0" resource="0" file="ThirdParty/Loris/src/Oscillator.h"/>
-        <FILE id="CEISy5" name="Partial.C" compile="1" resource="0" file="ThirdParty/Loris/src/Partial.C"/>
-        <FILE id="wsdTD2" name="Partial.h" compile="0" resource="0" file="ThirdParty/Loris/src/Partial.h"/>
-        <FILE id="sRJQBr" name="PartialBuilder.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/PartialBuilder.C"/>
-        <FILE id="judKZO" name="PartialBuilder.h" compile="0" resource="0"
+        <FILE id="SDwYpW" name="Notifier.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Notifier.cpp"/>
+        <FILE id="X0ciRo" name="Notifier.h" compile="0" resource="0" file="ThirdParty/Loris/src/Notifier.h"/>
+        <FILE id="iJYwZ7" name="Oscillator.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Oscillator.cpp"/>
+        <FILE id="iMfwo0" name="Oscillator.h" compile="0" resource="0" file="ThirdParty/Loris/src/Oscillator.h"/>
+        <FILE id="HFQC6o" name="Partial.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Partial.cpp"/>
+        <FILE id="XnDP9p" name="Partial.h" compile="0" resource="0" file="ThirdParty/Loris/src/Partial.h"/>
+        <FILE id="hEpTOH" name="PartialBuilder.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/PartialBuilder.cpp"/>
+        <FILE id="J838tl" name="PartialBuilder.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/PartialBuilder.h"/>
-        <FILE id="bq4Zph" name="PartialList.h" compile="0" resource="0" file="ThirdParty/Loris/src/PartialList.h"/>
-        <FILE id="Apn8iQ" name="PartialPtrs.h" compile="0" resource="0" file="ThirdParty/Loris/src/PartialPtrs.h"/>
-        <FILE id="vQt3uA" name="PartialUtils.C" compile="1" resource="0" file="ThirdParty/Loris/src/PartialUtils.C"/>
-        <FILE id="sTs16c" name="PartialUtils.h" compile="0" resource="0" file="ThirdParty/Loris/src/PartialUtils.h"/>
-        <FILE id="GmvV6G" name="phasefix.C" compile="1" resource="0" file="ThirdParty/Loris/src/phasefix.C"/>
-        <FILE id="GsGbJX" name="phasefix.h" compile="0" resource="0" file="ThirdParty/Loris/src/phasefix.h"/>
-        <FILE id="IJZJF8" name="RealtimeSynthesizer.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/RealtimeSynthesizer.C"/>
-        <FILE id="foOQx5" name="RealtimeSynthesizer.h" compile="0" resource="0"
+        <FILE id="MNYt8s" name="PartialList.h" compile="0" resource="0" file="ThirdParty/Loris/src/PartialList.h"/>
+        <FILE id="eYA5cU" name="PartialPtrs.h" compile="0" resource="0" file="ThirdParty/Loris/src/PartialPtrs.h"/>
+        <FILE id="pTlSKU" name="PartialUtils.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/PartialUtils.cpp"/>
+        <FILE id="x6OWiR" name="PartialUtils.h" compile="0" resource="0" file="ThirdParty/Loris/src/PartialUtils.h"/>
+        <FILE id="cRJwrK" name="phasefix.C" compile="1" resource="0" file="ThirdParty/Loris/src/phasefix.C"/>
+        <FILE id="OwQD9T" name="phasefix.h" compile="0" resource="0" file="ThirdParty/Loris/src/phasefix.h"/>
+        <FILE id="BiKTNE" name="RealtimeSynthesizer.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/RealtimeSynthesizer.cpp"/>
+        <FILE id="xIXjoh" name="RealtimeSynthesizer.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/RealtimeSynthesizer.h"/>
-        <FILE id="UAIuSo" name="ReassignedSpectrum.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/ReassignedSpectrum.C"/>
-        <FILE id="caXuxV" name="ReassignedSpectrum.h" compile="0" resource="0"
+        <FILE id="NlFYZZ" name="ReassignedSpectrum.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/ReassignedSpectrum.cpp"/>
+        <FILE id="F11qI2" name="ReassignedSpectrum.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/ReassignedSpectrum.h"/>
-        <FILE id="EZXcT9" name="Resampler.C" compile="1" resource="0" file="ThirdParty/Loris/src/Resampler.C"/>
-        <FILE id="aX1DeN" name="Resampler.h" compile="0" resource="0" file="ThirdParty/Loris/src/Resampler.h"/>
-        <FILE id="m1jRuk" name="SdifFile.C" compile="1" resource="0" file="ThirdParty/Loris/src/SdifFile.C"/>
-        <FILE id="mDYMGE" name="SdifFile.h" compile="0" resource="0" file="ThirdParty/Loris/src/SdifFile.h"/>
-        <FILE id="YO7map" name="Sieve.C" compile="1" resource="0" file="ThirdParty/Loris/src/Sieve.C"/>
-        <FILE id="enPOdz" name="Sieve.h" compile="0" resource="0" file="ThirdParty/Loris/src/Sieve.h"/>
-        <FILE id="DVAMnj" name="SpcFile.C" compile="1" resource="0" file="ThirdParty/Loris/src/SpcFile.C"/>
-        <FILE id="iekyyJ" name="SpcFile.h" compile="0" resource="0" file="ThirdParty/Loris/src/SpcFile.h"/>
-        <FILE id="f3TLyE" name="SpectralPeaks.h" compile="0" resource="0" file="ThirdParty/Loris/src/SpectralPeaks.h"/>
-        <FILE id="xHNVBx" name="SpectralPeakSelector.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/SpectralPeakSelector.C"/>
-        <FILE id="iJ5fbX" name="SpectralPeakSelector.h" compile="0" resource="0"
+        <FILE id="uWRTLf" name="Resampler.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Resampler.cpp"/>
+        <FILE id="CKw8WG" name="Resampler.h" compile="0" resource="0" file="ThirdParty/Loris/src/Resampler.h"/>
+        <FILE id="swoETH" name="SdifFile.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/SdifFile.cpp"/>
+        <FILE id="L2KdPI" name="SdifFile.h" compile="0" resource="0" file="ThirdParty/Loris/src/SdifFile.h"/>
+        <FILE id="MmMyBW" name="Sieve.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Sieve.cpp"/>
+        <FILE id="pS4paE" name="Sieve.h" compile="0" resource="0" file="ThirdParty/Loris/src/Sieve.h"/>
+        <FILE id="CtA6PC" name="SpcFile.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/SpcFile.cpp"/>
+        <FILE id="iBOrr0" name="SpcFile.h" compile="0" resource="0" file="ThirdParty/Loris/src/SpcFile.h"/>
+        <FILE id="q2ZuuX" name="SpectralPeaks.h" compile="0" resource="0" file="ThirdParty/Loris/src/SpectralPeaks.h"/>
+        <FILE id="uE8DVC" name="SpectralPeakSelector.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/SpectralPeakSelector.cpp"/>
+        <FILE id="Cg87dA" name="SpectralPeakSelector.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/SpectralPeakSelector.h"/>
-        <FILE id="mHW6kQ" name="SpectralSurface.C" compile="1" resource="0"
-              file="ThirdParty/Loris/src/SpectralSurface.C"/>
-        <FILE id="qZhGfQ" name="SpectralSurface.h" compile="0" resource="0"
+        <FILE id="vLtnYt" name="SpectralSurface.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/SpectralSurface.cpp"/>
+        <FILE id="C7j1o1" name="SpectralSurface.h" compile="0" resource="0"
               file="ThirdParty/Loris/src/SpectralSurface.h"/>
-        <FILE id="qQljKW" name="Synthesizer.C" compile="1" resource="0" file="ThirdParty/Loris/src/Synthesizer.C"/>
-        <FILE id="g6eHv5" name="Synthesizer.h" compile="0" resource="0" file="ThirdParty/Loris/src/Synthesizer.h"/>
+        <FILE id="o9pug8" name="Synthesizer.cpp" compile="1" resource="0" file="ThirdParty/Loris/src/Synthesizer.cpp"/>
+        <FILE id="gdDzji" name="Synthesizer.h" compile="0" resource="0" file="ThirdParty/Loris/src/Synthesizer.h"/>
       </GROUP>
     </GROUP>
     <GROUP id="{9192CF98-9223-5DB9-2150-93920664B3B5}" name="Resources">
@@ -253,7 +239,7 @@
                        isDebug="1" optimisation="1" targetName="Paraphrasis" headerPath="../../ThirdParty/Loris/src&#10;../../ThirdParty/Loris/&#10;/opt/local/include/&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64&#10;../../ThirdParty/TeragonGuiComponents/Components/Source ../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include&#10;../../ThirdParty/sse2math/"
                        cppLibType="" libraryPath="/opt/local/lib"/>
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="default" osxArchitecture="64BitUniversal"
-                       isDebug="0" optimisation="2" targetName="Paraphrasis" headerPath="../../ThirdParty/Loris/src&#10;../../ThirdParty/Loris/&#10;/opt/local/include/&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64&#10;../../ThirdParty/TeragonGuiComponents/Components/Source ../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include&#10;../../ThirdParty/sse2math/"
+                       isDebug="0" optimisation="3" targetName="Paraphrasis" headerPath="../../ThirdParty/Loris/src&#10;../../ThirdParty/Loris/&#10;/opt/local/include/&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64&#10;../../ThirdParty/TeragonGuiComponents/Components/Source ../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include&#10;../../ThirdParty/sse2math/"
                        cppLibType="" libraryPath="/opt/local/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
