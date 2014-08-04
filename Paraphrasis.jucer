@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="BtAXsm" name="Paraphrasis" projectType="audioplug" version="1.0.0"
+<JUCERPROJECT id="BtAXsm" name="Paraphrasis" projectType="audioplug" version="1.0.1"
               bundleIdentifier="com.VirtualAnalogy.Paraphrasis" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="1" buildAU="1" buildRTAS="0" buildAAX="0"
               pluginName="Paraphrasis" pluginDesc="Spectral modeling synthesizer"
