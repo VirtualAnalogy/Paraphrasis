@@ -71,8 +71,6 @@ public:
     asyncDispatcher(this, false), realtimeDispatcher(this, true),
     asyncDispatcherThread(asyncDispatcherCallback, &asyncDispatcher),
     realtimeEventLoopPaused(false) {
-        asyncDispatcherThread.set_name("PluginParametersAsyncDispatcher");
-        asyncDispatcherThread.set_low_priority();
 
         // Wait for the async dispatcher thread to be fully started.
         while(!asyncDispatcher.isStarted()) {
@@ -328,11 +326,7 @@ public:
     }
 
     static void sleep(const unsigned long milliseconds) {
-#if WIN32
-        Sleep(milliseconds);
-#else
-        usleep(((useconds_t)milliseconds * 1000));
-#endif
+        std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
     }
 
 protected:

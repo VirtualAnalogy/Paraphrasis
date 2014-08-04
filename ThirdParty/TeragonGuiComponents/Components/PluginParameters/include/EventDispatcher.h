@@ -29,7 +29,8 @@
 
 #if PLUGINPARAMETERS_MULTITHREADED
 #include "readerwriterqueue/readerwriterqueue.h"
-#include "tinythread/source/tinythread.h"
+#include <thread>
+#include <mutex>
 #endif
 
 #include "Event.h"
@@ -38,10 +39,10 @@
 namespace teragon {
 
 #if PLUGINPARAMETERS_MULTITHREADED
-typedef tthread::thread EventDispatcherThread;
-typedef tthread::lock_guard<tthread::mutex> EventDispatcherLockGuard;
-typedef tthread::mutex EventDispatcherMutex;
-typedef tthread::condition_variable EventDispatcherConditionVariable;
+typedef std::thread EventDispatcherThread;
+typedef std::lock_guard<std::mutex> EventDispatcherLockGuard;
+typedef std::mutex EventDispatcherMutex;
+typedef std::condition_variable EventDispatcherConditionVariable;
 #endif
 
 class EventScheduler {
@@ -120,11 +121,12 @@ public:
     }
 
     void wait() {
-        waitLock.wait(mutex);
+        std::unique_lock<std::mutex> lock(mutex);
+        waitLock.wait(lock);
     }
 
 private:
-    tthread::condition_variable waitLock;
+    std::condition_variable waitLock;
     EventDispatcherMutex mutex;
     moodycamel::ReaderWriterQueue<Event *> eventQueue;
 
