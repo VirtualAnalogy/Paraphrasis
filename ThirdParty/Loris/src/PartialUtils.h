@@ -45,6 +45,10 @@
 
 #include <functional>
 #include <utility>
+#include <algorithm>
+
+#undef min
+#undef max
 
 //	begin namespace
 namespace Loris {

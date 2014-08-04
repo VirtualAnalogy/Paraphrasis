@@ -41,6 +41,7 @@
 #include <algorithm>
 #include <deque>
 #include <vector>
+#include <functional>
 
 //  begin namespace
 namespace Loris {
