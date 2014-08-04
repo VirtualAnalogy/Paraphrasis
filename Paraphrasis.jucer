@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="BtAXsm" name="Paraphrasis" projectType="audioplug" version="1.0.0"
               bundleIdentifier="com.VirtualAnalogy.Paraphrasis" includeBinaryInAppConfig="1"
-              buildVST="0" buildVST3="0" buildAU="1" buildRTAS="0" buildAAX="0"
+              buildVST="1" buildVST3="1" buildAU="1" buildRTAS="0" buildAAX="0"
               pluginName="Paraphrasis" pluginDesc="Spectral modeling synthesizer"
               pluginManufacturer="Virtual Analogy" pluginManufacturerCode="ViAn"
               pluginCode="Para" pluginChannelConfigs="{2, 2}" pluginIsSynth="1"
@@ -258,6 +258,30 @@
         <MODULEPATH id="dRowAudio" path="../../Tmp/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
+    <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="c:\SDKs\vstsdk2.4"
+            vst3Folder="c:\SDKs\VST3 SDK">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="Paraphrasis" headerPath="..\..\Resources;&#10;..\..\ThirdParty\Loris\src;&#10;..\..\ThirdParty\Loris\;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Plugin;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Plugin\arduino-base64;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Source;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\PluginParameters\include;&#10;..\..\ThirdParty\sse2math\;&#10;..\..\JuceLibraryCode\modules\dRowAudio\audio;"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="3" targetName="Paraphrasis" headerPath="..\..\Resources;&#10;..\..\ThirdParty\Loris\src;&#10;..\..\ThirdParty\Loris\;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Plugin;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Plugin\arduino-base64;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Source;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\PluginParameters\include;&#10;..\..\ThirdParty\sse2math\;&#10;..\..\JuceLibraryCode\modules\dRowAudio\audio;"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../Tmp/JUCE/modules"/>
+        <MODULEPATH id="dRowAudio" path="../../Tmp/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2013>
   </EXPORTFORMATS>
   <MODULES>
     <MODULES id="dRowAudio" showAllCode="1" useLocalCopy="1"/>
