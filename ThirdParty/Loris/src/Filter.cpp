@@ -41,6 +41,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <functional>
 
 //  begin namespace
 namespace Loris {
