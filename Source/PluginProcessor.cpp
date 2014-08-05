@@ -99,8 +99,6 @@ public:
     {
 		if (!play)
 		{
-			// VST3 version needs that. If the buffer is not clear some crap apears.
-			//outputBuffer.clear(startSample, numSamples);
 			return;
 		}
         
