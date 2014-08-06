@@ -97,7 +97,10 @@ public:
 
     void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples)
     {
-        if ( !play ) return;
+		if (!play)
+		{
+			return;
+		}
         
         synth.synthesizeNext(numSamples);
         
@@ -306,6 +309,13 @@ void ParaphrasisAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuff
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
     TeragonPluginBase::processBlock(buffer, midiMessages);
+
+	// In case we have more outputs than inputs, we'll clear any output
+	// channels that didn't contain input data, (because these aren't
+	// guaranteed to be empty - they may contain garbage).
+	for (int i = 0; i < getNumInputChannels(); ++i) {
+		buffer.clear(i, 0, buffer.getNumSamples());
+	}
     
     const int numSamples = buffer.getNumSamples();
 
