@@ -240,7 +240,7 @@ private:
     
     std::vector<PartialStruct> partials;
     int partialIdx;
-    double processedSamples = 0;
+    int processedSamples = 0;
     std::queue<PartialStruct* > partialsBeingProcessed;
 };	//	end of class RealTimeSynthesizer
 

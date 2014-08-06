@@ -194,6 +194,7 @@ void RealTimeSynthesizer::setupRealtime(PartialList & partials)
 void RealTimeSynthesizer::synthesizeNext( int samples )
 {
     int size = partialsBeingProcessed.size();
+    processedSamples += samples;
     PartialStruct *partial;
     
     // partials being processed
@@ -213,6 +214,8 @@ void RealTimeSynthesizer::synthesizeNext( int samples )
     for (; partialIdx < partialSize; partialIdx++)
     {
         partial = &(partials[partialIdx]);
+        if (partial->state.currentSamp > processedSamples)
+            break;
         synthesize( *partial, samples );
         
         if ( partial->state.lastBreakpoint < partial->numBreakpoints - 1)
@@ -256,7 +259,7 @@ void
     //  there aren't any more Breakpoints to make segments:
     bufferBegin = &( m_sampleBuffer->front() );
     const Breakpoint *bp;
-    int processedSamples = 0;
+    int sampleCounter = 0;
     int i;
     for (i = p.state.lastBreakpoint + 1;  i < p.numBreakpoints; ++i )
     {
@@ -287,14 +290,14 @@ void
         
         m_osc.oscillate( bufferBegin + p.state.currentSamp, bufferBegin + tgtSamp, *bp, m_srateHz );
         
-        processedSamples += tgtSamp - p.state.currentSamp;
+        sampleCounter += tgtSamp - p.state.currentSamp;
         p.state.currentSamp = tgtSamp;
         
         //  remember the frequency, may need it to reset the 
         //  phase if a Null Breakpoint is encountered:
         p.state.prevFrequency = bp->frequency();
         
-        if (processedSamples >= samples)
+        if (sampleCounter >= samples)
             break;
     }
     
