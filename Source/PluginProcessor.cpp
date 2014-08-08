@@ -226,7 +226,7 @@ void ParaphrasisAudioProcessor::loadSample()
     
     
     int numVoices = synth.getNumVoices();
-    Loris::PartialList partials = analyzer.partials();
+    partials = analyzer.partials();
     resamplePartials(sampleRate);
     
     LorisVoice* voice;

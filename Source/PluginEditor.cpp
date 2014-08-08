@@ -149,11 +149,12 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
                               Image(), 1.000f, Colour (0x00000000),
                               ImageCache::getFromMemory (Resources::button_analyze_down_png, Resources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
     reverseBtn->setClickingTogglesState(true);
-    reverseBtn->setToggleState(parameters[kParameterReverse_name]->getValue(), false);
+    reverseBtn->setToggleState(parameters[kParameterReverse_name]->getValue(), juce::dontSendNotification);
 
     // register this as parameter observer
     parameters.get(kParameterSamplePitch_name)->addObserver(this);
     parameters.get(kParameterFrequencyResolution_name)->addObserver(this);
+    parameters.get(kParameterReverse_name)->addObserver(this);
 
     // set last values
     onParameterUpdated(parameters.get(kParameterFrequencyResolution_name));
@@ -354,7 +355,7 @@ void ParaphrasisAudioProcessorEditor::onParameterUpdated(const Parameter *parame
     }
     else if (parameter->getName() == kParameterReverse_name )
     {
-        reverseBtn->setToggleState(parameters[kParameterReverse_name]->getValue(), false);
+        reverseBtn->setToggleState(parameters[kParameterReverse_name]->getValue(), juce::dontSendNotification);
     }
 
     lightOn(false);
