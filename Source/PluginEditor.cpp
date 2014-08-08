@@ -149,7 +149,7 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
                               Image(), 1.000f, Colour (0x00000000),
                               ImageCache::getFromMemory (Resources::button_analyze_down_png, Resources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
     reverseBtn->setClickingTogglesState(true);
-    reverseBtn->setToggleState(parameters[kParameterReverse_name], false);
+    reverseBtn->setToggleState(parameters[kParameterReverse_name]->getValue(), false);
 
     // register this as parameter observer
     parameters.get(kParameterSamplePitch_name)->addObserver(this);
