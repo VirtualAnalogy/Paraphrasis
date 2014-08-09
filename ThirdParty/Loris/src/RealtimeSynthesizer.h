@@ -159,9 +159,12 @@ public:
     void resetSynth(double freqScale)
     {
         partialIdx = 0;
+
         // clear buffer
         std::fill (m_sampleBuffer->begin(), m_sampleBuffer->end(), 0);
         processedSamples = 0;
+
+		clearPartialsBeingProcessed();
         
         // init partials
         int sizeP = partials.size();
@@ -202,10 +205,15 @@ public:
     {
         this->partials.clear();
         
-        while ( !partialsBeingProcessed.empty() )
-            partialsBeingProcessed.pop();
+		clearPartialsBeingProcessed();
     }
-	 	
+
+	void clearPartialsBeingProcessed()
+	{
+		while (!partialsBeingProcessed.empty())
+			partialsBeingProcessed.pop();
+	}
+ 	
 //	-- parameter access and mutation --
 //	-- implementation --
 private:
