@@ -149,11 +149,12 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
                               Image(), 1.000f, Colour (0x00000000),
                               ImageCache::getFromMemory (Resources::button_analyze_down_png, Resources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
     reverseBtn->setClickingTogglesState(true);
-    reverseBtn->setToggleState(parameters[kParameterReverse_name], false);
+    reverseBtn->setToggleState(parameters[kParameterReverse_name]->getValue(), juce::dontSendNotification);
 
     // register this as parameter observer
     parameters.get(kParameterSamplePitch_name)->addObserver(this);
     parameters.get(kParameterFrequencyResolution_name)->addObserver(this);
+    parameters.get(kParameterReverse_name)->addObserver(this);
 
     // set last values
     onParameterUpdated(parameters.get(kParameterFrequencyResolution_name));
@@ -225,7 +226,7 @@ void ParaphrasisAudioProcessorEditor::resized()
     resolutionLbl->setBounds (173, 192, 70, 24);
     resolutionBtn->setBounds (128, 155, 44, 32);
     ledBtn->setBounds (240, 240, 24, 24);
-    reverseBtn->setBounds (32, 240, 88, 30);
+    reverseBtn->setBounds (23, 238, 88, 30);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -354,7 +355,7 @@ void ParaphrasisAudioProcessorEditor::onParameterUpdated(const Parameter *parame
     }
     else if (parameter->getName() == kParameterReverse_name )
     {
-        reverseBtn->setToggleState(parameters[kParameterReverse_name]->getValue(), false);
+        reverseBtn->setToggleState(parameters[kParameterReverse_name]->getValue(), juce::dontSendNotification);
     }
 
     lightOn(false);
@@ -437,7 +438,7 @@ BEGIN_JUCER_METADATA
                resourceOver="" opacityOver="1" colourOver="0" resourceDown="led_on_png"
                opacityDown="1" colourDown="0"/>
   <IMAGEBUTTON name="reverseBtn" id="22e0e6c1d2a68619" memberName="reverseBtn"
-               virtualName="" explicitFocusOrder="0" pos="32 240 88 30" buttonText="new button"
+               virtualName="" explicitFocusOrder="0" pos="23 238 88 30" buttonText="new button"
                connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
                resourceNormal="" opacityNormal="1" colourNormal="0" resourceOver=""
                opacityOver="1" colourOver="0" resourceDown="" opacityDown="1"
