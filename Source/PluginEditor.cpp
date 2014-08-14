@@ -180,6 +180,7 @@ ParaphrasisAudioProcessorEditor::~ParaphrasisAudioProcessorEditor()
     // unregister observer
     parameters.get(kParameterSamplePitch_name)->removeObserver(this);
     parameters.get(kParameterFrequencyResolution_name)->removeObserver(this);
+    parameters.get(kParameterReverse_name)->removeObserver(this);
     //[/Destructor_pre]
 
     knob = nullptr;
