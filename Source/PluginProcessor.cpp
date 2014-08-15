@@ -155,7 +155,8 @@ public:
         // make copy of partials for frequency scaling and prevent
         // strange transpositions
         auto it = partials.begin();
-        while (it != partials.end()) {
+        while (it != partials.end())
+        {
             this->partials.push_back(*it);
             it++;
         }
@@ -219,16 +220,16 @@ void ParaphrasisAudioProcessor::loadSample()
     analyzer.setFrequencyResolution(parameters[kParameterFrequencyResolution_name]->getValue());
     analyzer.setPitch(parameters[kParameterSamplePitch_name]->getValue());
     analyzer.setReverse(parameters[kParameterReverse_name]->getValue());
-//  analyzer.startThread();
+
     analyzer.runThread();
-    
     analyzerSync.wait();
     
+    partials = std::move(analyzer.partials());
+    analyzer.partials().clear();// object after move is in unspecified state, make it specified one
     
-    int numVoices = synth.getNumVoices();
-    partials = analyzer.partials();
     resamplePartials(sampleRate);
     
+    int numVoices = synth.getNumVoices();    
     LorisVoice* voice;
     for (int i = 0; i < numVoices; i++)
     {
@@ -237,9 +238,9 @@ void ParaphrasisAudioProcessor::loadSample()
             voice->setup(partials, parameters[kParameterSamplePitch_name]->getValue());
     }
     
-            ParaphrasisAudioProcessorEditor* editor = dynamic_cast<ParaphrasisAudioProcessorEditor *>(getActiveEditor());
-            if (editor)
-                editor->lightOn(! partials.empty() );
+    ParaphrasisAudioProcessorEditor* editor = dynamic_cast<ParaphrasisAudioProcessorEditor *>(getActiveEditor());
+    if (editor)
+        editor->lightOn(! partials.empty() );
 }
 
 //==============================================================================
