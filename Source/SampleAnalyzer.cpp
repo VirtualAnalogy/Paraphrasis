@@ -34,7 +34,7 @@ void SampleAnalyzer::run()
     buffer.clear();
     sampleRate = 0;
     
-    if ( !samplePath.isEmpty() )
+    if ( !m_samplePath.isEmpty() )
     {
         if ( ! readViaJuce() )// && ! readViaLoris() )
         {
@@ -56,7 +56,7 @@ void SampleAnalyzer::run()
 //==============================================================================
 bool SampleAnalyzer::readViaJuce()
 {
-    AudioFormatReader* reader = formatManager.createReaderFor (File(samplePath));
+    AudioFormatReader* reader = formatManager.createReaderFor (File(m_samplePath));
     
     if (reader == nullptr)
     {
@@ -83,7 +83,7 @@ bool SampleAnalyzer::readViaJuce()
         fileSamples.reverse(0, reader->lengthInSamples);    
     if (reader->numChannels == 2 && fileSamples.getNumChannels() == 2)
     {
-        // huh strange stereo to mono algorith witch seems to be working...
+        // huh strange stereo to mono algorith which seems to be working...
         // credits or inspiration is from here: http://www.dsprelated.com/showmessage/106421/2.php
         int64 numSamples = fileSamples.getNumSamples();
         for (int i = 0; i < numSamples; i++)
@@ -113,7 +113,7 @@ bool SampleAnalyzer::readViaLoris()
 {
     try
     {
-        Loris::AiffFile inputFile(samplePath.toStdString());
+        Loris::AiffFile inputFile(m_samplePath.toStdString());
         
         buffer = inputFile.samples();
         Loris::AiffFile::markers_type markers = inputFile.markers();
@@ -136,7 +136,7 @@ void SampleAnalyzer::analyze()
     analyzer.analyze(buffer, sampleRate);
     
     m_partials.clear();
-    m_partials = analyzer.partials();
+    m_partials = std::move(analyzer.partials());
     
     setStatusMessage("Processing partials...");
     // chanelize - mark partial

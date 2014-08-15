@@ -226,7 +226,8 @@ void ParaphrasisAudioProcessor::loadSample()
     
     
     int numVoices = synth.getNumVoices();
-    partials = analyzer.partials();
+
+    partials = std::move(analyzer.partials());
     resamplePartials(sampleRate);
     
     LorisVoice* voice;
@@ -237,9 +238,9 @@ void ParaphrasisAudioProcessor::loadSample()
             voice->setup(partials, parameters[kParameterSamplePitch_name]->getValue());
     }
     
-            ParaphrasisAudioProcessorEditor* editor = dynamic_cast<ParaphrasisAudioProcessorEditor *>(getActiveEditor());
-            if (editor)
-                editor->lightOn(! partials.empty() );
+    ParaphrasisAudioProcessorEditor* editor = dynamic_cast<ParaphrasisAudioProcessorEditor *>(getActiveEditor());
+    if (editor)
+        editor->lightOn(! partials.empty() );
 }
 
 //==============================================================================

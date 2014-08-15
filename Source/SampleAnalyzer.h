@@ -25,11 +25,11 @@ public:
     
     void setSamplePath(const String & path)
     {
-        this->samplePath = path;
+        this->m_samplePath = path;
     }
-    String samplaPath() const
+    String samplePath() const
     {
-        return samplePath;
+        return m_samplePath;
     }
     
     void setFrequencyResolution(double resolutionHz)
@@ -50,7 +50,7 @@ public:
         return m_pitch;
     }
     
-    Loris::PartialList partials() const
+    Loris::PartialList& partials()
     {
         return m_partials;
     }
@@ -66,7 +66,7 @@ private:
     bool readViaLoris();
     void analyze();
     
-    String samplePath;
+    String m_samplePath;
     double m_resolution = kParameterFrequencyResolution_defaultValue;
     double m_pitch = kParameterSamplePitch_defaultValue;
     bool reverse = false;
