@@ -61,7 +61,7 @@ public:
         
         double freqMultiplyer = MidiMessage::getMidiNoteInHertz (midiNoteNumber) / defaultPitch;
     
-        synth.resetSynth(freqMultiplyer / lastFreqMultiplyer);//scale back to original and scale to desired pitch
+        synth.prepareForNote(freqMultiplyer / lastFreqMultiplyer);//scale back to original and scale to desired pitch
         
         lastFreqMultiplyer = freqMultiplyer;
         play = true;
@@ -153,17 +153,19 @@ public:
         this->lastFreqMultiplyer = 1.;
         this->defaultPitch = pitch;
 
-        synth.clear();
-        synth.setupRealtime(partials);
+        synth.setup(partials);
     }
 
 private:
     std::vector<double> buffer;
-    double secPerSample;
-    double level, tailOff;
     int sampleIndex;
-    double lastFreqMultiplyer;
     bool play;
+    
+    double secPerSample;
+    double level;
+    double tailOff;
+
+    double lastFreqMultiplyer;
     double defaultPitch;
     
     Loris::RealTimeSynthesizer synth;

@@ -152,46 +152,11 @@ public:
 	//	~RealTimeSynthesizer( void );
 	//	RealTimeSynthesizer & operator= ( const RealTimeSynthesizer & other );
     
-    void setupRealtime(PartialList & partials);
+    void setup(PartialList & partials);
     
     void synthesizeNext(int samples);
     
-    void resetSynth(double freqScale)
-    {
-        partialIdx = 0;
-
-        // clear buffer
-        std::fill (m_sampleBuffer->begin(), m_sampleBuffer->end(), 0);
-        processedSamples = 0;
-
-		clearPartialsBeingProcessed();
-        
-        // init partials
-        int sizeP = partials.size();
-        for (int i = 0; i < sizeP; i++)
-        {
-            // setup first breakpoint
-            partials[i].state.currentSamp = index_type( (partials[i].startTime * m_srateHz) + 0.5 );   //  cheap rounding
-            partials[i].state.lastBreakpoint = PartialStruct::NoBreakpointProcessed;
-            
-            int sizeB = partials[i].breakpoints.size();
-            double endPhase = 0; // first is null breakpoint
-            for (int j = 0; j < sizeB; j++)
-            {
-                double newFrequency = partials[i].breakpoints[j].second._frequency *= freqScale;// pitch shifting
-                partials[i].breakpoints[j].second._phase = endPhase; // synchronize phase with previous wave (beginig is previous ending)
-                
-                //  calculate end phase which will be beginig for the next one
-                if (j + 1 < sizeB)
-                    endPhase = wrapPi( 2. * Pi * (partials[i].breakpoints[j + 1].first - partials[i].breakpoints[j].first) * newFrequency + partials[i].breakpoints[j].second._phase);
-            }
-            
-            //  cache the previous frequency (in Hz) so that it
-            //  can be used to reset the phase when necessary
-            partials[i].state.prevFrequency = partials[i].breakpoints[1].second._frequency;// 0 is null breakpoint
-        }
-        
-    }
+    void prepareForNote(double freqScale);
     
     static inline double wrapPi( double x )
     {
@@ -201,13 +166,6 @@ public:
         return x + ( TwoPi * ROUND(-x/TwoPi) );
     }
     
-    void clear()
-    {
-        this->partials.clear();
-        
-		clearPartialsBeingProcessed();
-    }
-
 	void clearPartialsBeingProcessed()
 	{
 		while (!partialsBeingProcessed.empty())

@@ -139,9 +139,12 @@ RealTimeSynthesizer::RealTimeSynthesizer( double samplerate, std::vector<double>
 
 }
 
-    
-void RealTimeSynthesizer::setupRealtime(PartialList & partials)
+// ---------------------------------------------------------------------------    
+void RealTimeSynthesizer::setup(PartialList & partials)
 {
+    this->partials.clear();
+    clearPartialsBeingProcessed();
+    
     //	grow the sample buffer, if necessary, to accommodate the latest
     //  Partial, with the fade time tacked on the end
     double duration = PartialUtils::timeSpan( partials.begin(), partials.end() ).second + m_fadeTimeSec;
@@ -158,7 +161,6 @@ void RealTimeSynthesizer::setupRealtime(PartialList & partials)
     OneOverSrate = 1. / m_srateHz;
         
     // assuming I am getting sorted partials by time
-    this->partials.clear();
     for (auto it : partials)
     {
         if (it.numBreakpoints() <= 0) continue;
@@ -184,13 +186,50 @@ void RealTimeSynthesizer::setupRealtime(PartialList & partials)
         jt--;
         pStruct.breakpoints.push_back(std::make_pair(jt.time() + m_fadeTimeSec, BreakpointUtils::makeNullAfter( jt.breakpoint(), m_fadeTimeSec )));
         
-        assert(pStruct.breakpoints.size() != 0);
         this->partials.push_back(pStruct);
     }
     
-    resetSynth(1.0);
+    prepareForNote(1.0);
+}
+ 
+// ---------------------------------------------------------------------------
+void RealTimeSynthesizer::prepareForNote(double freqScale)
+{
+    partialIdx = 0;
+    processedSamples = 0;
+    clearPartialsBeingProcessed();
+    
+    // clear buffer - optimized version
+    memset(m_sampleBuffer->data(), 0, m_sampleBuffer->size() * sizeof(decltype(*m_sampleBuffer->data())));
+    
+    // init partials
+    int sizeP = partials.size();
+    for (int i = 0; i < sizeP; i++)
+    {
+        // setup first breakpoint
+        partials[i].state.currentSamp = index_type( (partials[i].startTime * m_srateHz) + 0.5 );   //  cheap rounding
+        partials[i].state.lastBreakpoint = PartialStruct::NoBreakpointProcessed;
+        
+        int sizeB = partials[i].breakpoints.size();
+        double endPhase = 0; // first is null breakpoint
+        for (int j = 0; j < sizeB; j++)
+        {
+            double newFrequency = partials[i].breakpoints[j].second._frequency *= freqScale;// pitch shifting
+            partials[i].breakpoints[j].second._phase = endPhase; // synchronize phase with previous wave (beginig is previous ending)
+            
+            //  calculate end phase which will be beginig for the next one
+            if (j + 1 < sizeB)
+                endPhase = wrapPi( 2. * Pi * (partials[i].breakpoints[j + 1].first - partials[i].breakpoints[j].first) * newFrequency + partials[i].breakpoints[j].second._phase);
+        }
+        
+        //  cache the previous frequency (in Hz) so that it
+        //  can be used to reset the phase when necessary
+        partials[i].state.prevFrequency = partials[i].breakpoints[1].second._frequency;// 0 is null breakpoint
+    }
 }
 
+
+// ---------------------------------------------------------------------------
 void RealTimeSynthesizer::synthesizeNext( int samples )
 {
     int size = partialsBeingProcessed.size();
