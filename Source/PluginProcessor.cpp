@@ -61,7 +61,7 @@ public:
         
         double freqMultiplyer = MidiMessage::getMidiNoteInHertz (midiNoteNumber) / defaultPitch;
     
-        synth.resetSynth(freqMultiplyer / lastFreqMultiplyer);//scale back to original and scale to desired pitch
+        synth.prepareForNote(freqMultiplyer / lastFreqMultiplyer);//scale back to original and scale to desired pitch
         
         lastFreqMultiplyer = freqMultiplyer;
         play = true;
@@ -153,17 +153,19 @@ public:
         this->lastFreqMultiplyer = 1.;
         this->defaultPitch = pitch;
 
-        synth.clear();
-        synth.setupRealtime(partials);
+        synth.setup(partials);
     }
 
 private:
     std::vector<double> buffer;
-    double secPerSample;
-    double level, tailOff;
     int sampleIndex;
-    double lastFreqMultiplyer;
     bool play;
+    
+    double secPerSample;
+    double level;
+    double tailOff;
+
+    double lastFreqMultiplyer;
     double defaultPitch;
     
     Loris::RealTimeSynthesizer synth;
@@ -216,13 +218,14 @@ void ParaphrasisAudioProcessor::loadSample()
     
     resamplePartials(sampleRate);
     
-    int numVoices = synth.getNumVoices();    
     LorisVoice* voice;
+    double samplePitch = parameters[kParameterSamplePitch_name]->getValue();
+    int numVoices = synth.getNumVoices();
     for (int i = 0; i < numVoices; i++)
     {
         voice = dynamic_cast<LorisVoice *>(synth.getVoice(i));
         if (voice)
-            voice->setup(partials, parameters[kParameterSamplePitch_name]->getValue());
+            voice->setup(partials, samplePitch);
     }
     
     ParaphrasisAudioProcessorEditor* editor = dynamic_cast<ParaphrasisAudioProcessorEditor *>(getActiveEditor());
