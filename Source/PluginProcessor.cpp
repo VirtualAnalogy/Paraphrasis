@@ -216,8 +216,6 @@ void ParaphrasisAudioProcessor::loadSample()
     partials = std::move(analyzer.partials());
     analyzer.partials().clear();// object after move is in unspecified state, make it specified one
     
-    resamplePartials(sampleRate);
-    
     LorisVoice* voice;
     double samplePitch = parameters[kParameterSamplePitch_name]->getValue();
     int numVoices = synth.getNumVoices();
@@ -241,21 +239,8 @@ void ParaphrasisAudioProcessor::prepareToPlay(double sampleRate, int samplesPerB
     this->sampleRate = sampleRate;
     TeragonPluginBase::prepareToPlay(sampleRate, samplesPerBlock);
     synth.setCurrentPlaybackSampleRate(sampleRate);
-    resamplePartials(sampleRate);
 }
 
-//==============================================================================
-void ParaphrasisAudioProcessor::resamplePartials(double sampleRate)
-{
-    //  use a Resampler to quantize the Breakpoint times and
-    //  correct the phases:
-    Loris::Resampler quantizer( 1.0 / sampleRate );
-    quantizer.setPhaseCorrect( true );
-    for ( auto p = partials.begin(); p != partials.end(); ++p )
-    {
-        quantizer.quantize( *p );
-    }
-}
 
 //==============================================================================
 void ParaphrasisAudioProcessor::releaseResources()

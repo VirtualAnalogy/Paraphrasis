@@ -52,7 +52,6 @@ public:
     }
 
 private:
-    void resamplePartials(double sampleRate);
     void processPartialChange();
     Loris::PartialList partials;
     String loadedSamplePath;
