@@ -53,8 +53,11 @@ public:
     }
 
     void startNote(int midiNoteNumber, float velocity,
-                   SynthesiserSound* /*sound*/, int /*currentPitchWheelPosition*/)
+                   SynthesiserSound* /*sound*/, int /*currentPitchWheelPosition*/) override
     {
+        // This will be called during the rendering callback, so must be fast and thread-safe.
+        const ScopedLock sl(lock);
+        
         level = velocity;
         sampleIndex = 0;
         tailOff = 0.0;
@@ -67,8 +70,10 @@ public:
         play = true;
     }
 
-    void stopNote(bool allowTailOff)
+    void stopNote(bool allowTailOff) override
     {
+        // This will be called during the rendering callback, so must be fast and thread-safe.
+        
         if (allowTailOff)
         {
             // start a tail-off by setting this flag. The render callback will pick up on
@@ -85,22 +90,32 @@ public:
         }
     }
 
-    void pitchWheelMoved(int /*newValue*/)
+    void pitchWheelMoved(int /*newValue*/) override
     {
-        // can't be bothered implementing this for the demo!
+        // This will be called during the rendering callback, so must be fast and thread-safe.
+
     }
 
-    void controllerMoved(int /*controllerNumber*/, int /*newValue*/)
+    void controllerMoved(int /*controllerNumber*/, int /*newValue*/) override
     {
-        // not interested in controllers in this case.
+        // This will be called during the rendering callback, so must be fast and thread-safe.
+
     }
 
-    void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples)
+    void aftertouchChanged(int /*newAftertouchValue*/) override
+    {
+        // This will be called during the rendering callback, so must be fast and thread-safe.
+
+    }
+    
+    void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
     {
 		if (!play)
 		{
 			return;
 		}
+        
+        const ScopedLock sl(lock);
         
         synth.synthesizeNext(numSamples);
         
@@ -150,6 +165,8 @@ public:
     
     void setup(Loris::PartialList &partials, double pitch)
     {
+        const ScopedLock sl(lock);
+
         this->lastFreqMultiplyer = 1.;
         this->defaultPitch = pitch;
 
@@ -169,6 +186,7 @@ private:
     double defaultPitch;
     
     Loris::RealTimeSynthesizer synth;
+    CriticalSection lock;
 };
 
 
