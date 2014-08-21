@@ -216,6 +216,8 @@ void ParaphrasisAudioProcessor::loadSample()
     partials = std::move(analyzer.partials());
     analyzer.partials().clear();// object after move is in unspecified state, make it specified one
     
+    
+    synth.allNotesOff(0, false); // clear all notes before setting new partials
     LorisVoice* voice;
     double samplePitch = parameters[kParameterSamplePitch_name]->getValue();
     int numVoices = synth.getNumVoices();
