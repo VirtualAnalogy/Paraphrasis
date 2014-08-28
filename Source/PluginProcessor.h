@@ -53,16 +53,16 @@ public:
     }
 
 private:
-    void processPartialChange();
     String loadedSamplePath;
     bool m_isReady = false;
 
     // the synth!
     LorisSynthesiser synth;
-    double sampleRate = 44100;
     SampleAnalyzer analyzer;
     WaitableEvent analyzerSync;
+
     AudioFormatManager  formatManager;
+
     bool waitingForInitialSetState;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParaphrasisAudioProcessor)

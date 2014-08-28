@@ -60,8 +60,7 @@ void ParaphrasisAudioProcessor::loadSample()
     double samplePitch = parameters[kParameterSamplePitch_name]->getValue();
 
     m_isReady = analyzer.partials().empty() == false;
-    synth.setup(analyzer.partials(), samplePitch);
-    analyzer.partials().clear();// object after move is in unspecified state, make it specified one
+    synth.setup(analyzer.partials(), samplePitch);// partials will be moved from analyzer to synth
     
     ParaphrasisAudioProcessorEditor* editor = dynamic_cast<ParaphrasisAudioProcessorEditor *>(getActiveEditor());
     if (editor)
@@ -73,7 +72,6 @@ void ParaphrasisAudioProcessor::prepareToPlay(double sampleRate, int samplesPerB
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    this->sampleRate = sampleRate;
     TeragonPluginBase::prepareToPlay(sampleRate, samplesPerBlock);
     synth.setCurrentPlaybackSampleRate(sampleRate);
 }

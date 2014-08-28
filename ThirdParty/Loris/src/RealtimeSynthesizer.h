@@ -64,7 +64,6 @@ struct PartialStruct
     struct SynthesizerState
     {
         int currentSamp = 0;
-        int endSamp = 0;
         int lastBreakpoint = NoBreakpointProcessed;
         double prevFrequency;
     } state;
@@ -153,6 +152,8 @@ public:
 	//	RealTimeSynthesizer & operator= ( const RealTimeSynthesizer & other );
     
     void setup(PartialList & partials);
+
+    void setSampleRate(double rate) override;
     
     void synthesizeNext(int samples);
     

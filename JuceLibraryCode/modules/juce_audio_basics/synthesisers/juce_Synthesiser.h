@@ -188,7 +188,7 @@ public:
         This method is called by the synth, and subclasses can access the current rate with
         the currentSampleRate member.
     */
-    void setCurrentPlaybackSampleRate (double newRate);
+    virtual void setCurrentPlaybackSampleRate (double newRate);
 
     /** Returns true if the key that triggered this voice is still held down.
         Note that the voice may still be playing after the key was released (e.g because the

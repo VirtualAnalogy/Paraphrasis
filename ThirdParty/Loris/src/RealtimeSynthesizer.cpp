@@ -145,34 +145,19 @@ void RealTimeSynthesizer::setup(PartialList & partials)
     this->partials.clear();
     clearPartialsBeingProcessed();
     
-    //	grow the sample buffer, if necessary, to accommodate the latest
-    //  Partial, with the fade time tacked on the end
-    double duration = PartialUtils::timeSpan( partials.begin(), partials.end() ).second + m_fadeTimeSec;
-    
-    // resize buffer to contain all samples
-    typedef std::vector< double >::size_type Sz_Type;
-    Sz_Type Nsamps = 1 + Sz_Type( duration * m_srateHz );
-    if ( m_sampleBuffer->size() < Nsamps )
-    {
-        m_sampleBuffer->resize( Nsamps );
-    }
-    
-    //  better to compute this only once:
-    OneOverSrate = 1. / m_srateHz;
-        
     // assuming I am getting sorted partials by time
     for (auto it : partials)
     {
         if (it.numBreakpoints() <= 0) continue;
+        
         PartialStruct pStruct;
+        
         pStruct.numBreakpoints = it.numBreakpoints() + 2;// + fade in + fade out
         pStruct.breakpoints.reserve(pStruct.numBreakpoints);
         
         pStruct.startTime = ( m_fadeTimeSec < it.startTime() ) ? ( it.startTime() - m_fadeTimeSec ) : 0.;// compute fade in bp time
         pStruct.endTime = it.endTime() + m_fadeTimeSec;// compute fade out bp time
         pStruct.duration = pStruct.endTime - pStruct.startTime;// new duration based on fade in and out
-
-        pStruct.state.endSamp = index_type( pStruct.endTime * m_srateHz );
         
         Partial::const_iterator jt = it.begin();
         // fade in breakpoint, compute fade in time
@@ -189,9 +174,34 @@ void RealTimeSynthesizer::setup(PartialList & partials)
         this->partials.push_back(pStruct);
     }
     
+    setSampleRate(sampleRate());// set sample rate specific stuff
     prepareForNote(1.0);
 }
- 
+
+// ---------------------------------------------------------------------------
+void RealTimeSynthesizer::setSampleRate(double rate)
+{
+    Synthesizer::setSampleRate(rate);
+
+    //  better to compute this only once:
+    OneOverSrate = 1. / m_srateHz;
+    
+    if (partials.empty()) return;
+    
+    //	grow the sample buffer, if necessary, to accommodate the latest
+    //  Partial, with the fade time tacked on the end
+    // Partials have to be sorted by start time!!!
+    double duration = partials.back().endTime;
+    
+    // resize buffer to contain all samples
+    typedef std::vector< double >::size_type Sz_Type;
+    Sz_Type Nsamps = 1 + Sz_Type( duration * m_srateHz );
+    if ( m_sampleBuffer->size() < Nsamps )
+    {
+        m_sampleBuffer->resize( Nsamps );
+    }
+}
+    
 // ---------------------------------------------------------------------------
 void RealTimeSynthesizer::prepareForNote(double freqScale)
 {

@@ -55,7 +55,8 @@ public:
     void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override;
     
     void setup(Loris::PartialList &partials, double pitch);
-    void setup();
+    void setCurrentPlaybackSampleRate(double rate) override;
+    
     
 private:
     
@@ -92,19 +93,7 @@ public:
         }
         this->partials.clear();
         this->partials = std::move(partials);
-    }
-    
-    void setup()
-    {
-        allNotesOff(0, false); // clear all notes before setting new partials
-        LorisVoice* voice;
-        int numVoices = getNumVoices();
-        for (int i = 0; i < numVoices; i++)
-        {
-            voice = dynamic_cast<LorisVoice *>(getVoice(i));
-            if (voice)
-                voice->setup();
-        }
+        partials.clear();
     }
 
 private:

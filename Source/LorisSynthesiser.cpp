@@ -153,8 +153,9 @@ void LorisVoice::setup(Loris::PartialList &partials, double pitch)
 }
 
 //==============================================================================
-void LorisVoice::setup()
+void LorisVoice::setCurrentPlaybackSampleRate(double rate)
 {
     const ScopedLock sl(lock);
-    
+    SynthesiserVoice::setCurrentPlaybackSampleRate(rate);
+    synth.setSampleRate(getSampleRate());
 }
