@@ -15,6 +15,7 @@
 #include "PartialList.h"
 // My
 #include "SampleAnalyzer.h"
+#include "LorisSynthesiser.h"
 
 using namespace teragon;
 
@@ -48,16 +49,16 @@ public:
 
     bool isReady()
     {
-        return !partials.empty();
+        return m_isReady;
     }
 
 private:
     void processPartialChange();
-    Loris::PartialList partials;
     String loadedSamplePath;
+    bool m_isReady = false;
 
     // the synth!
-    Synthesiser synth;
+    LorisSynthesiser synth;
     double sampleRate = 44100;
     SampleAnalyzer analyzer;
     WaitableEvent analyzerSync;

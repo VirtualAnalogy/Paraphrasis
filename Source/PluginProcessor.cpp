@@ -14,180 +14,6 @@
 #include "PartialUtils.h"
 #include "Resampler.h"
 #include "SdifFile.h"
-#include "Synthesizer.h"
-#include "RealTimeSynthesizer.h"
-
-//==============================================================================
-class LorisSound : public SynthesiserSound
-{
-public:
-    LorisSound() {}
-
-    bool appliesToNote(const int /*midiNoteNumber*/)
-    {
-        return true;
-    }
-    bool appliesToChannel(const int /*midiChannel*/)
-    {
-        return true;
-    }
-};
-
-//==============================================================================
-/** A simple demo synth voice that just plays a sine wave.. */
-class LorisVoice  : public SynthesiserVoice
-{
-public:
-    LorisVoice() :
-        tailOff(0.0), sampleIndex(0), synth(buffer)
-    {
-        secPerSample = 1.0 / getSampleRate();
-
-        lastFreqMultiplyer = 1.0;
-        play = false;
-    }
-
-    bool canPlaySound(SynthesiserSound* sound)
-    {
-        return dynamic_cast <LorisSound*>(sound) != 0;
-    }
-
-    void startNote(int midiNoteNumber, float velocity,
-                   SynthesiserSound* /*sound*/, int /*currentPitchWheelPosition*/) override
-    {
-        // This will be called during the rendering callback, so must be fast and thread-safe.
-        const ScopedLock sl(lock);
-        
-        level = velocity;
-        sampleIndex = 0;
-        tailOff = 0.0;
-        
-        double freqMultiplyer = MidiMessage::getMidiNoteInHertz (midiNoteNumber) / defaultPitch;
-    
-        synth.prepareForNote(freqMultiplyer / lastFreqMultiplyer);//scale back to original and scale to desired pitch
-        
-        lastFreqMultiplyer = freqMultiplyer;
-        play = true;
-    }
-
-    void stopNote(bool allowTailOff) override
-    {
-        // This will be called during the rendering callback, so must be fast and thread-safe.
-        
-        if (allowTailOff)
-        {
-            // start a tail-off by setting this flag. The render callback will pick up on
-            // this and do a fade out, calling clearCurrentNote() when it's finished.
-            
-            if (tailOff == 0.0) // we only need to begin a tail-off if it's not already doing so - the
-                // stopNote method could be called more than once.
-                tailOff = 1.0;
-        }
-        else
-        {
-            // we're being told to stop playing immediately, so reset everything..
-            stop();
-        }
-    }
-
-    void pitchWheelMoved(int /*newValue*/) override
-    {
-        // This will be called during the rendering callback, so must be fast and thread-safe.
-
-    }
-
-    void controllerMoved(int /*controllerNumber*/, int /*newValue*/) override
-    {
-        // This will be called during the rendering callback, so must be fast and thread-safe.
-
-    }
-
-    void aftertouchChanged(int /*newAftertouchValue*/) override
-    {
-        // This will be called during the rendering callback, so must be fast and thread-safe.
-
-    }
-    
-    void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
-    {
-		if (!play)
-		{
-			return;
-		}
-        
-        const ScopedLock sl(lock);
-        
-        synth.synthesizeNext(numSamples);
-        
-        if (tailOff > 0.)
-        {
-            while (--numSamples >= 0)
-            {
-                double currentSample = sampleIndex < buffer.size() ? buffer[sampleIndex] * tailOff : 0.0;
-                
-                tailOff *= 0.99;
-                
-                if (tailOff <= 0.005)
-                {
-                    stop();
-                    break;
-                }
-
-                for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-                    outputBuffer.addSample(i, startSample, level * currentSample);
-
-                ++startSample;
-                ++sampleIndex;
-            }
-        }
-        else
-        {
-            while (--numSamples >= 0)
-            {
-                double currentSample = sampleIndex < buffer.size() ? buffer[sampleIndex] : 0.0;
-                
-                for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-                    outputBuffer.addSample(i, startSample, level * currentSample);
-                
-                ++startSample;
-                ++sampleIndex;
-            }
-        }
-    }
-    
-    void stop()
-    {
-        play = false;
-        tailOff = 0.;
-        sampleIndex = 0;
-        clearCurrentNote();
-    }
-    
-    void setup(Loris::PartialList &partials, double pitch)
-    {
-        const ScopedLock sl(lock);
-
-        this->lastFreqMultiplyer = 1.;
-        this->defaultPitch = pitch;
-
-        synth.setup(partials);
-    }
-
-private:
-    std::vector<double> buffer;
-    int sampleIndex;
-    bool play;
-    
-    double secPerSample;
-    double level;
-    double tailOff;
-
-    double lastFreqMultiplyer;
-    double defaultPitch;
-    
-    Loris::RealTimeSynthesizer synth;
-    CriticalSection lock;
-};
 
 
 //==============================================================================
@@ -231,24 +57,15 @@ void ParaphrasisAudioProcessor::loadSample()
     analyzer.runThread();
     analyzerSync.wait();
     
-    partials = std::move(analyzer.partials());
-    analyzer.partials().clear();// object after move is in unspecified state, make it specified one
-    
-    
-    synth.allNotesOff(0, false); // clear all notes before setting new partials
-    LorisVoice* voice;
     double samplePitch = parameters[kParameterSamplePitch_name]->getValue();
-    int numVoices = synth.getNumVoices();
-    for (int i = 0; i < numVoices; i++)
-    {
-        voice = dynamic_cast<LorisVoice *>(synth.getVoice(i));
-        if (voice)
-            voice->setup(partials, samplePitch);
-    }
+
+    m_isReady = analyzer.partials().empty() == false;
+    synth.setup(analyzer.partials(), samplePitch);
+    analyzer.partials().clear();// object after move is in unspecified state, make it specified one
     
     ParaphrasisAudioProcessorEditor* editor = dynamic_cast<ParaphrasisAudioProcessorEditor *>(getActiveEditor());
     if (editor)
-        editor->lightOn(! partials.empty() );
+        editor->lightOn( m_isReady );
 }
 
 //==============================================================================
