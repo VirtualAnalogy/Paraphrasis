@@ -159,14 +159,6 @@ public:
     
     void prepareForNote(double freqScale);
     
-    static inline double wrapPi( double x )
-    {
-        using namespace std; // floor should be in std
-#define ROUND(x) (floor(.5 + (x)))
-        const double TwoPi = 2.0*Pi;
-        return x + ( TwoPi * ROUND(-x/TwoPi) );
-    }
-    
 	void clearPartialsBeingProcessed()
 	{
 		while (!partialsBeingProcessed.empty())

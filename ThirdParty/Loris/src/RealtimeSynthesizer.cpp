@@ -221,16 +221,8 @@ void RealTimeSynthesizer::prepareForNote(double freqScale)
         partials[i].state.lastBreakpoint = PartialStruct::NoBreakpointProcessed;
         
         int sizeB = partials[i].breakpoints.size();
-        double endPhase = 0; // first is null breakpoint
         for (int j = 0; j < sizeB; j++)
-        {
-            double newFrequency = partials[i].breakpoints[j].second._frequency *= freqScale;// pitch shifting
-            partials[i].breakpoints[j].second._phase = endPhase; // synchronize phase with previous wave (beginig is previous ending)
-            
-            //  calculate end phase which will be beginig for the next one
-            if (j + 1 < sizeB)
-                endPhase = wrapPi( 2. * Pi * (partials[i].breakpoints[j + 1].first - partials[i].breakpoints[j].first) * newFrequency + partials[i].breakpoints[j].second._phase);
-        }
+            partials[i].breakpoints[j].second._frequency *= freqScale;// pitch shifting
         
         //  cache the previous frequency (in Hz) so that it
         //  can be used to reset the phase when necessary
@@ -307,7 +299,7 @@ void
     //  synthesize linear-frequency segments until 
     //  there aren't any more Breakpoints to make segments:
     bufferBegin = &( m_sampleBuffer->front() );
-    const Breakpoint *bp;
+    Breakpoint *bp;
     int sampleCounter = 0;
     int i;
     for (i = p.state.lastBreakpoint + 1;  i < p.numBreakpoints; ++i )
@@ -338,6 +330,8 @@ void
         }
         
         m_osc.oscillate( bufferBegin + p.state.currentSamp, bufferBegin + tgtSamp, *bp, m_srateHz );
+        
+        bp->_phase = m_osc.phase(); // store ending phase
         
         sampleCounter += tgtSamp - p.state.currentSamp;
         p.state.currentSamp = tgtSamp;
