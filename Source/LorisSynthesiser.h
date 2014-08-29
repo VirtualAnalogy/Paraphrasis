@@ -68,10 +68,7 @@ private:
     
     double level;
     double tailOff;
-    
-    double lastFreqMultiplyer;
-    double defaultPitch;
-    
+        
     Loris::RealTimeSynthesizer synth;
     CriticalSection lock;
 };

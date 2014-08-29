@@ -13,7 +13,6 @@
 //==============================================================================
 LorisVoice::LorisVoice() : tailOff(0.0), sampleIndex(0), synth(buffer)
 {
-    lastFreqMultiplyer = 1.0;
     play = false;
 }
 
@@ -34,11 +33,9 @@ void LorisVoice::startNote(int midiNoteNumber, float velocity,
     sampleIndex = 0;
     tailOff = 0.0;
     
-    double freqMultiplyer = MidiMessage::getMidiNoteInHertz (midiNoteNumber) / defaultPitch;
+    synth.reset();
+    synth.playNote(MidiMessage::getMidiNoteInHertz (midiNoteNumber));
     
-    synth.prepareForNote(freqMultiplyer / lastFreqMultiplyer);//scale back to original and scale to desired pitch
-    
-    lastFreqMultiplyer = freqMultiplyer;
     play = true;
 }
 
@@ -145,11 +142,7 @@ void LorisVoice::stop()
 void LorisVoice::setup(Loris::PartialList &partials, double pitch)
 {
     const ScopedLock sl(lock);
-    
-    this->lastFreqMultiplyer = 1.;
-    this->defaultPitch = pitch;
-    
-    synth.setup(partials);
+    synth.setup(partials, pitch);
 }
 
 //==============================================================================

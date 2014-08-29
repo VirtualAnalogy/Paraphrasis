@@ -65,7 +65,8 @@ namespace Loris {
     m_instfrequency( 0 ),
     m_instamplitude( 0 ),
     m_instbandwidth( 0 ),
-    m_determphase( 0 )
+    m_determphase( 0 ),
+    m_frequencyScaling ( 1 )
     {
     }
     // ---------------------------------------------------------------------------
@@ -81,7 +82,7 @@ namespace Loris {
     {
         //  Remember that the oscillator only knows about
         //  radian frequency! Convert!
-        m_instfrequency = bp.frequency() * TwoPi / srate;
+        m_instfrequency = m_frequencyScaling * bp.frequency() * TwoPi / srate;
         m_instamplitude = bp.amplitude();
         m_instbandwidth = bp.bandwidth();
         m_determphase = bp.phase();
@@ -134,6 +135,12 @@ namespace Loris {
     {
         m_determphase = m2pi(ph);
     }
+
+    void
+    Oscillator::setFrequencyScaling(double scaling)
+    {
+        m_frequencyScaling = scaling;
+    }
     // ---------------------------------------------------------------------------
     //  oscillate
     // ---------------------------------------------------------------------------
@@ -147,9 +154,9 @@ namespace Loris {
     //
     void
     Oscillator::oscillate( double * begin, double * end,
-                          const Breakpoint & bp, double srate )
+                          const Breakpoint & bp, double srate)
     {
-        double targetFreq = bp.frequency() * TwoPi / srate;     //  radians per sample
+        double targetFreq = m_frequencyScaling * bp.frequency() * TwoPi / srate;     //  radians per sample
         double targetAmp = bp.amplitude();
         double targetBw = bp.bandwidth();
         

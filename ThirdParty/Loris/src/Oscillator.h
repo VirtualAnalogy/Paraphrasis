@@ -68,6 +68,8 @@ class Oscillator
     
     //  accumulating phase state:
     double m_determphase;       //! deterministic phase in radians
+    
+    double m_frequencyScaling;
 
 //  --- interface ---
 public:
@@ -95,6 +97,8 @@ public:
     //! goes to zero, so that onsets are preserved in distilled
     //! and collated Partials.
     void setPhase( double ph );
+    
+    void setFrequencyScaling( double scaling );
 
     //! Accumulate bandwidth-enhanced sinusoidal samples modulating the
     //! oscillator state from its current values of radian frequency, amplitude,
@@ -104,7 +108,7 @@ public:
     //! insure that the indices are valid. Target frequency and bandwidth are
     //! checked to prevent aliasing and bogus bandwidth enhancement.
     void oscillate( double * begin, double * end,
-                    const Breakpoint & bp, double srate );
+                    const Breakpoint & bp, double srate);
 
 // --- accessors ---
 
@@ -119,6 +123,8 @@ public:
     
     //! Return the instantaneous radian frequency of the Oscillator.
     double radianFreq( void ) const { return m_instfrequency; }
+    
+    double frequencyScalig( void ) const { return m_frequencyScaling; }
     
     //! Return access to the Filter used by this oscillator to 
     //! implement bandwidth-enhanced sinusoidal synthesis.

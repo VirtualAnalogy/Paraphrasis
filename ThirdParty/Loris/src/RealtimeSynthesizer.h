@@ -151,13 +151,15 @@ public:
 	//	~RealTimeSynthesizer( void );
 	//	RealTimeSynthesizer & operator= ( const RealTimeSynthesizer & other );
     
-    void setup(PartialList & partials);
+    void setup(PartialList & partials, double pitch);
 
     void setSampleRate(double rate) override;
     
     void synthesizeNext(int samples);
     
-    void prepareForNote(double freqScale);
+    void reset();
+    
+    void playNote(double frequency);
     
 	void clearPartialsBeingProcessed()
 	{
@@ -196,6 +198,9 @@ private:
     index_type tgtSamp;
     double * bufferBegin;
     double dphase;
+    
+    double duration;
+    double pitch = 0.;
     
     std::vector<PartialStruct> partials;
     int partialIdx;
