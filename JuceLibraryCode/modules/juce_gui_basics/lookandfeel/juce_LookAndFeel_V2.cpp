@@ -1001,6 +1001,16 @@ void LookAndFeel_V2::drawPopupMenuItem (Graphics& g, const Rectangle<int>& area,
     }
 }
 
+void LookAndFeel_V2::drawPopupMenuSectionHeader (Graphics& g, const Rectangle<int>& area, const String& sectionName)
+{
+    g.setFont (getPopupMenuFont().boldened());
+    g.setColour (findColour (PopupMenu::headerTextColourId));
+
+    g.drawFittedText (sectionName,
+                      area.getX() + 12, area.getY(), area.getWidth() - 16, (int) (area.getHeight() * 0.8f),
+                      Justification::bottomLeft, 1);
+}
+
 //==============================================================================
 int LookAndFeel_V2::getMenuWindowFlags()
 {
@@ -2357,6 +2367,10 @@ void LookAndFeel_V2::drawCallOutBoxBackground (CallOutBox& box, Graphics& g,
     g.strokePath (path, PathStrokeType (2.0f));
 }
 
+int LookAndFeel_V2::getCallOutBoxBorderSize (const CallOutBox&)
+{
+    return 20;
+}
 
 //==============================================================================
 AttributedString LookAndFeel_V2::createFileChooserHeaderText (const String& title,

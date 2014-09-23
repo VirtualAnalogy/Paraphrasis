@@ -70,7 +70,7 @@ public:
     void startNote(int midiNoteNumber, float velocity,
                    SynthesiserSound* /*sound*/, int /*currentPitchWheelPosition*/) override;
     
-    void stopNote(bool allowTailOff) override;
+    void stopNote(float /*velocity*/, bool allowTailOff) override;
     
     void pitchWheelMoved(int /*newValue*/) override;
     void controllerMoved(int /*controllerNumber*/, int /*newValue*/) override;

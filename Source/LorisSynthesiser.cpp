@@ -58,7 +58,7 @@ void LorisVoice::startNote(int midiNoteNumber, float velocity,
 }
 
 //==============================================================================
-void LorisVoice::stopNote(bool allowTailOff)
+void LorisVoice::stopNote(float /*velocity*/, bool allowTailOff)
 {
     // This will be called during the rendering callback, so must be fast and thread-safe.
     
