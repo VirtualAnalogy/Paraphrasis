@@ -28,5 +28,7 @@ static const double kDefaultPitchResolutionRation = 0.8;
 
 static const char* kParameterLastSamplePath_name = "Last Sample Path";
 
+static const int kDefaultSynthesiserVoiceNumbers = 16;
+
 
 #endif  // PARAMETERDEFITIONS_H_INCLUDED

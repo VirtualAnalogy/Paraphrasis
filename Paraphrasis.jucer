@@ -179,6 +179,10 @@
               file="ThirdParty/Loris/src/PartialUtils.cpp"/>
         <FILE id="x6OWiR" name="PartialUtils.h" compile="0" resource="0" file="ThirdParty/Loris/src/PartialUtils.h"/>
         <FILE id="OwQD9T" name="phasefix.h" compile="0" resource="0" file="ThirdParty/Loris/src/phasefix.h"/>
+        <FILE id="e7Cn2m" name="RealtimeOscillator.cpp" compile="1" resource="0"
+              file="ThirdParty/Loris/src/RealtimeOscillator.cpp"/>
+        <FILE id="Z6UIJ7" name="RealtimeOscillator.h" compile="0" resource="0"
+              file="ThirdParty/Loris/src/RealtimeOscillator.h"/>
         <FILE id="BiKTNE" name="RealtimeSynthesizer.cpp" compile="1" resource="0"
               file="ThirdParty/Loris/src/RealtimeSynthesizer.cpp"/>
         <FILE id="xIXjoh" name="RealtimeSynthesizer.h" compile="0" resource="0"
