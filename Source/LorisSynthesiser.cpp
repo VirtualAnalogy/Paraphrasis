@@ -1,19 +1,38 @@
 /*
-  ==============================================================================
-
-    LorisSynthesiser.cpp
-    Created: 28 Aug 2014 4:31:27pm
-    Author:  Tomas Medek
-
-  ==============================================================================
+  This is Paraphrasis synthesiser.
+ 
+  Paraphrasis is Copyright (c) 2014 by Tomas Medek
+ 
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+ 
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY, without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+ 
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include "LorisSynthesiser.h"
+#include "ParameterDefitions.h"
 
 //==============================================================================
-LorisVoice::LorisVoice() : tailOff(0.0), sampleIndex(0), synth(buffer)
+/** Create new instance.
+    @param tailTimeSec lenght of tail of the sound
+ */
+LorisVoice::LorisVoice(double tailTimeSec) :  tailTimeSec(tailTimeSec), synth(buffer)
 {
-    play = false;
+    synthesise = false;
+    tailOff = false;
+    
+    tailSamples = tailTimeSec * getSampleRate();
+    
+    buffer.reserve(kDefaultSynthesiserBufferSize);
 }
 
 //==============================================================================
@@ -30,13 +49,12 @@ void LorisVoice::startNote(int midiNoteNumber, float velocity,
     const ScopedLock sl(lock);
     
     level = velocity;
-    sampleIndex = 0;
-    tailOff = 0.0;
+    tailOff = false;
     
     synth.reset();
-    synth.playNote(MidiMessage::getMidiNoteInHertz (midiNoteNumber));
+    synth.setPitch(MidiMessage::getMidiNoteInHertz (midiNoteNumber));
     
-    play = true;
+    synthesise = true;
 }
 
 //==============================================================================
@@ -48,10 +66,8 @@ void LorisVoice::stopNote(bool allowTailOff)
     {
         // start a tail-off by setting this flag. The render callback will pick up on
         // this and do a fade out, calling clearCurrentNote() when it's finished.
-        
-        if (tailOff == 0.0) // we only need to begin a tail-off if it's not already doing so - the
-            // stopNote method could be called more than once.
-            tailOff = 1.0;
+        if (tailOff == false)
+            tailOff = true;
     }
     else
     {
@@ -82,59 +98,41 @@ void LorisVoice::aftertouchChanged(int /*newAftertouchValue*/)
 }
 
 //==============================================================================
+/** Setup voice to imitate sound with given partials. */
 void LorisVoice::renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples)
 {
-    if (!play)
-    {
-        return;
-    }
+    if (!synthesise) return;
     
     const ScopedLock sl(lock);
     
     synth.synthesizeNext(numSamples);
     
-    if (tailOff > 0.)
+    double tailDiff = 0.;
+    
+    if (tailOff)
     {
-        while (--numSamples >= 0)
-        {
-            double currentSample = sampleIndex < buffer.size() ? buffer[sampleIndex] * tailOff : 0.0;
-            
-            tailOff *= 0.99;
-            
-            if (tailOff <= 0.005)
-            {
-                stop();
-                break;
-            }
-            
-            for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-                outputBuffer.addSample(i, startSample, level * currentSample);
-            
-            ++startSample;
-            ++sampleIndex;
-        }
+        tailDiff = level * (double) numSamples / (double) tailSamples;// change level due to tail position
+        if (level < tailDiff) // prevent negative gain
+            tailDiff = level;
     }
-    else
+
+    outputBuffer.addFromWithRamp(0, startSample, buffer.data(), numSamples, level, level - tailDiff);
+    
+    if (tailOff)
     {
-        while (--numSamples >= 0)
-        {
-            double currentSample = sampleIndex < buffer.size() ? buffer[sampleIndex] : 0.0;
-            
-            for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-                outputBuffer.addSample(i, startSample, level * currentSample);
-            
-            ++startSample;
-            ++sampleIndex;
-        }
+        level -= tailDiff;
+
+        if (level <= 0.005) // this number is from Juce synthesiser tutorial.
+            stop();
     }
 }
 
 //==============================================================================
+/** Stop current note. */
 void LorisVoice::stop()
 {
-    play = false;
-    tailOff = 0.;
-    sampleIndex = 0;
+    synthesise = false;
+    tailOff = false;
     clearCurrentNote();
 }
 
@@ -149,6 +147,10 @@ void LorisVoice::setup(Loris::PartialList &partials, double pitch)
 void LorisVoice::setCurrentPlaybackSampleRate(double rate)
 {
     const ScopedLock sl(lock);
+    
     SynthesiserVoice::setCurrentPlaybackSampleRate(rate);
+    
     synth.setSampleRate(getSampleRate());
+    
+    tailSamples = tailTimeSec * getSampleRate();
 }
