@@ -194,19 +194,16 @@ namespace Loris {
         //  clamp bandwidth:
         if ( targetBw > 1. )
         {
-            debugger << "clamping bandwidth at 1." << endl;
             targetBw = 1.;
         }
         else if ( targetBw < 0. )
         {
-            debugger << "clamping bandwidth at 0." << endl;
             targetBw = 0.;
         }
         
         //  don't alias:
         if ( targetFreq > Pi )  //  radian Nyquist rate
         {
-            debugger << "fading out Partial above Nyquist rate" << endl;
             targetAmp = 0.;
         }
         //  compute trajectories:
