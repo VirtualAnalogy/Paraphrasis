@@ -269,10 +269,12 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
                        isDebug="1" optimisation="1" targetName="Paraphrasis" headerPath="..\..\Resources;&#10;..\..\ThirdParty\Loris\src;&#10;..\..\ThirdParty\Loris\;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Plugin;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Plugin\arduino-base64;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Source;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\PluginParameters\include;&#10;..\..\ThirdParty\sse2math\;&#10;..\..\JuceLibraryCode\modules\dRowAudio\audio;"
-                       postbuildCommand="copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;&#10;copy &quot;$(OutDir)\$(TargetName).vst3&quot; /B /Y &quot;C:\Program Files (x86)\Common Files\VST3&quot;&#10;"/>
+                       postbuildCommand="copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;&#10;copy &quot;$(OutDir)\$(TargetName).vst3&quot; /B /Y &quot;C:\Program Files (x86)\Common Files\VST3&quot;&#10;"
+                       defines=""/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
                        isDebug="0" optimisation="3" targetName="Paraphrasis" headerPath="..\..\Resources;&#10;..\..\ThirdParty\Loris\src;&#10;..\..\ThirdParty\Loris\;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Plugin;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Plugin\arduino-base64;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\Source;&#10;..\..\ThirdParty\TeragonGuiComponents\Components\PluginParameters\include;&#10;..\..\ThirdParty\sse2math\;&#10;..\..\JuceLibraryCode\modules\dRowAudio\audio;"
-                       postbuildCommand="copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;&#10;copy &quot;$(OutDir)\$(TargetName).vst3&quot; /B /Y &quot;C:\Program Files (x86)\Common Files\VST3&quot;&#10;copy &quot;$(OutDir)\$(TargetName).dll&quot; /B /Y &quot;C:\VST&quot;&#10;"/>
+                       postbuildCommand="copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;&#10;copy &quot;$(OutDir)\$(TargetName).vst3&quot; /B /Y &quot;C:\Program Files (x86)\Common Files\VST3&quot;&#10;copy &quot;$(OutDir)\$(TargetName).dll&quot; /B /Y &quot;C:\VST&quot;&#10;"
+                       defines=""/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="C:/JUCE/modules"/>

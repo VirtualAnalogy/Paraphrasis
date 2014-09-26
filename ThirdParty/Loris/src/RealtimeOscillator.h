@@ -34,6 +34,18 @@
 
 #include "Oscillator.h"
 
+
+// from juce_PlatformDefs.h
+#ifdef _MSC_VER
+	#ifdef noexcept
+		#undef noexcept
+	#endif
+	#define noexcept  throw()
+	#if defined (_MSC_VER) && _MSC_VER > 1600
+		#define _ALLOW_KEYWORD_MACROS 1 // (to stop VC2012 complaining)
+	#endif
+#endif
+
 //  begin namespace
 namespace Loris {
 

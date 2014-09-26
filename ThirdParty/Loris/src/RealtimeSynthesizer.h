@@ -46,7 +46,6 @@ const double Pi = M_PI;
 const double Pi = 3.14159265358979324;
 #endif
 
-
 //	begin namespace
 namespace Loris {
 // Using this struct because iterating over partials and especially Breakpoint is very
