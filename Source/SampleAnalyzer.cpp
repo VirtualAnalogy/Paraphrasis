@@ -1,12 +1,25 @@
 /*
-  ==============================================================================
-
-    ;
-    Created: 30 Jul 2014 6:40:21am
-    Author:  Tomas Medek
-
-  ==============================================================================
-*/
+ This is Paraphrasis synthesiser.
+ 
+ Copyright (c) 2014 by Tomas Medek
+ 
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY, without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ tom@virtualanalogy.com
+ 
+ */
 
 #include "SampleAnalyzer.h"
 
@@ -28,15 +41,16 @@ SampleAnalyzer::~SampleAnalyzer()
 {
     
 }
+
 //==============================================================================
-void SampleAnalyzer::run()
+void SampleAnalyzer::run() noexcept
 {
     buffer.clear();
     sampleRate = 0;
     
     if ( !m_samplePath.isEmpty() )
     {
-        if ( ! readViaJuce() )// && ! readViaLoris() )
+        if ( ! readViaJuce() )
         {
             NativeMessageBox::showMessageBoxAsync(AlertWindow::WarningIcon, "Ooops...", "Paraphrasis can not load file, sorry...");
             analyzerSync.signal();
@@ -53,8 +67,9 @@ void SampleAnalyzer::run()
     }
     analyzerSync.signal();
 }
+
 //==============================================================================
-bool SampleAnalyzer::readViaJuce()
+bool SampleAnalyzer::readViaJuce() noexcept
 {
     AudioFormatReader* reader = formatManager.createReaderFor (File(m_samplePath));
     
@@ -63,6 +78,7 @@ bool SampleAnalyzer::readViaJuce()
         return false;
     }
     
+    // check if user really wants to load a long sample
     if (reader->lengthInSamples / reader->sampleRate > 20)
     {
         bool result = NativeMessageBox::showOkCancelBox(AlertWindow::QuestionIcon, "Do you...?", "Do you REALLY want to load sample longer than 20 sec?");
@@ -77,14 +93,17 @@ bool SampleAnalyzer::readViaJuce()
     // read samples
     setStatusMessage("Reading file...");
     AudioSampleBuffer fileSamples(2, reader->lengthInSamples);
-
     reader->read(&fileSamples, 0, reader->lengthInSamples, 0, true, true);
+    
+    // reverse
     if (reverse)
-        fileSamples.reverse(0, reader->lengthInSamples);    
+        fileSamples.reverse(0, reader->lengthInSamples);
+    
+    // mono -> stereo
     if (reader->numChannels == 2 && fileSamples.getNumChannels() == 2)
     {
         // huh strange stereo to mono algorith which seems to be working...
-        // credits or inspiration is from here: http://www.dsprelated.com/showmessage/106421/2.php
+        // credits or inspiration: http://www.dsprelated.com/showmessage/106421/2.php
         int64 numSamples = fileSamples.getNumSamples();
         for (int i = 0; i < numSamples; i++)
         {
@@ -98,7 +117,7 @@ bool SampleAnalyzer::readViaJuce()
     delete reader;
     reader = nullptr;
     
-    // transform data from JUCE to Loris
+    // transform data from JUCE to Loris (from float to double)
     buffer.reserve(lengthInSamples);
     const float *sample = fileSamples.getReadPointer(0);
     for (int i = 0; i < lengthInSamples; i++)
@@ -108,27 +127,9 @@ bool SampleAnalyzer::readViaJuce()
     
     return true;
 }
+
 //==============================================================================
-bool SampleAnalyzer::readViaLoris()
-{
-    try
-    {
-        Loris::AiffFile inputFile(m_samplePath.toStdString());
-        
-        buffer = inputFile.samples();
-        Loris::AiffFile::markers_type markers = inputFile.markers();
-        sampleRate = inputFile.sampleRate();
-        return true;
-    }
-    catch (...)
-    {
-        return false;
-    }
-   
-    return false;
-}
-//==============================================================================
-void SampleAnalyzer::analyze()
+void SampleAnalyzer::analyze() noexcept
 {
     // analyze
     setStatusMessage("Anayzing sample...");
@@ -139,9 +140,9 @@ void SampleAnalyzer::analyze()
     m_partials = std::move(analyzer.partials());
     
     setStatusMessage("Processing partials...");
-    // chanelize - mark partial
-    Loris::Channelizer channelizer(m_pitch);
-    channelizer.channelize(m_partials.begin(), m_partials.end());
+    // chanelize - mark partial - not needed now
+//    Loris::Channelizer channelizer(m_pitch);
+//    channelizer.channelize(m_partials.begin(), m_partials.end());
     
     // partials in partial list will be sorted by start time
     m_partials.sort(Loris::PartialUtils::compareStartTimeLess());

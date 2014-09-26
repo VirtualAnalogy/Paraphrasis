@@ -1,7 +1,7 @@
 /*
   This is Paraphrasis synthesiser.
  
-  Paraphrasis is Copyright (c) 2014 by Tomas Medek
+  Copyright (c) 2014 by Tomas Medek
  
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -16,6 +16,9 @@
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+  tom@virtualanalogy.com
+ 
 */
 
 #include "LorisSynthesiser.h"
@@ -36,14 +39,14 @@ LorisVoice::LorisVoice(double tailTimeSec) :  tailTimeSec(tailTimeSec), synth(bu
 }
 
 //==============================================================================
-bool LorisVoice::canPlaySound(SynthesiserSound* sound)
+bool LorisVoice::canPlaySound(SynthesiserSound* sound) noexcept
 {
     return dynamic_cast <LorisSound*>(sound) != 0;
 }
 
 //==============================================================================
 void LorisVoice::startNote(int midiNoteNumber, float velocity,
-               SynthesiserSound* /*sound*/, int /*currentPitchWheelPosition*/)
+               SynthesiserSound* /*sound*/, int /*currentPitchWheelPosition*/) noexcept
 {
     // This will be called during the rendering callback, so must be fast and thread-safe.
     const ScopedLock sl(lock);
@@ -58,7 +61,7 @@ void LorisVoice::startNote(int midiNoteNumber, float velocity,
 }
 
 //==============================================================================
-void LorisVoice::stopNote(float /*velocity*/, bool allowTailOff)
+void LorisVoice::stopNote(float /*velocity*/, bool allowTailOff) noexcept
 {
     // This will be called during the rendering callback, so must be fast and thread-safe.
     
@@ -77,21 +80,21 @@ void LorisVoice::stopNote(float /*velocity*/, bool allowTailOff)
 }
 
 //==============================================================================
-void LorisVoice::pitchWheelMoved(int /*newValue*/)
+void LorisVoice::pitchWheelMoved(int /*newValue*/) noexcept
 {
     // This will be called during the rendering callback, so must be fast and thread-safe.
     
 }
 
 //==============================================================================
-void LorisVoice::controllerMoved(int /*controllerNumber*/, int /*newValue*/)
+void LorisVoice::controllerMoved(int /*controllerNumber*/, int /*newValue*/) noexcept
 {
     // This will be called during the rendering callback, so must be fast and thread-safe.
     
 }
 
 //==============================================================================
-void LorisVoice::aftertouchChanged(int /*newAftertouchValue*/)
+void LorisVoice::aftertouchChanged(int /*newAftertouchValue*/) noexcept
 {
     // This will be called during the rendering callback, so must be fast and thread-safe.
     
@@ -99,7 +102,7 @@ void LorisVoice::aftertouchChanged(int /*newAftertouchValue*/)
 
 //==============================================================================
 /** Setup voice to imitate sound with given partials. */
-void LorisVoice::renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples)
+void LorisVoice::renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) noexcept
 {
     if (!synthesise) return;
     
@@ -129,7 +132,7 @@ void LorisVoice::renderNextBlock(AudioSampleBuffer& outputBuffer, int startSampl
 
 //==============================================================================
 /** Stop current note. */
-void LorisVoice::stop()
+void LorisVoice::stop() noexcept
 {
     synthesise = false;
     tailOff = false;
@@ -137,14 +140,14 @@ void LorisVoice::stop()
 }
 
 //==============================================================================
-void LorisVoice::setup(Loris::PartialList &partials, double pitch)
+void LorisVoice::setup(Loris::PartialList &partials, double pitch) noexcept
 {
     const ScopedLock sl(lock);
     synth.setup(partials, pitch);
 }
 
 //==============================================================================
-void LorisVoice::setCurrentPlaybackSampleRate(double rate)
+void LorisVoice::setCurrentPlaybackSampleRate(double rate) noexcept
 {
     const ScopedLock sl(lock);
     

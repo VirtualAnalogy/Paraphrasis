@@ -1,7 +1,7 @@
 /*
  This is Paraphrasis synthesiser.
  
- Paraphrasis is Copyright (c) 2014 by Tomas Medek
+ Copyright (c) 2014 by Tomas Medek
  
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
+ tom@virtualanalogy.com
+ 
 */
 
 #ifndef LORISSYNTHESISER_H_INCLUDED
@@ -30,67 +32,53 @@
 using namespace juce;
 
 //==============================================================================
-/**
- * Describes the sounds that LorisSynthesiser can play.
- *
- */
+/** Describes the sounds that LorisSynthesiser can play. */
 class LorisSound : public SynthesiserSound
 {
 public:
     LorisSound() {}
     
-    bool appliesToNote(const int /*midiNoteNumber*/)
-    {
-        return true;
-    }
-    bool appliesToChannel(const int /*midiChannel*/)
-    {
-        return true;
-    }
+    bool appliesToNote(const int /*midiNoteNumber*/)  noexcept override { return true; }
+    bool appliesToChannel(const int /*midiChannel*/)  noexcept override { return true; }
 };
 
 //==============================================================================
 /**
  * Loris synthesiser voice for LorisSynthesiser. It makes a sound based on Partials
- * generated from Loris analysis.
+ * generated from Loris analysis. It synthesise only in mono!
  */
 class LorisVoice : public SynthesiserVoice
 {
     enum BufferSize { kDefaultSynthesiserBufferSize = 8192 };
     
 public:
-    /**
-     *  Create new instance.
-     *  \param tailTimeSec lenght of tail of the sound
+    /** Create new instance.
+       @param tailTimeSec lenght of tail of the sound
      */
     LorisVoice(double tailTimeSec = 0.01);
     
-    bool canPlaySound(SynthesiserSound* sound);
+    bool canPlaySound(SynthesiserSound* sound) noexcept override;
     
     void startNote(int midiNoteNumber, float velocity,
-                   SynthesiserSound* /*sound*/, int /*currentPitchWheelPosition*/) override;
+                   SynthesiserSound* /*sound*/, int /*currentPitchWheelPosition*/) noexcept override;
     
-    void stopNote(float /*velocity*/, bool allowTailOff) override;
+    void stopNote(float /*velocity*/, bool allowTailOff) noexcept override;
     
-    void pitchWheelMoved(int /*newValue*/) override;
-    void controllerMoved(int /*controllerNumber*/, int /*newValue*/) override;
-    void aftertouchChanged(int /*newAftertouchValue*/) override;
+    void pitchWheelMoved(int /*newValue*/)  noexcept override;
+    void controllerMoved(int /*controllerNumber*/, int /*newValue*/) noexcept override;
+    void aftertouchChanged(int /*newAftertouchValue*/)  noexcept override;
     
-    void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override;
+    void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples) noexcept override;
     
-    void setCurrentPlaybackSampleRate(double rate) override;
+    void setCurrentPlaybackSampleRate(double rate) noexcept override;
     
-    /**
-     * Setup voice to imitate sound with given partials.
-     */
-    void setup(Loris::PartialList &partials, double pitch);
+    /** Setup voice to imitate sound with given partials. */
+    void setup(Loris::PartialList &partials, double pitch) noexcept;
     
 private:
     
-    /**
-     * Stop current note.
-     */
-    void stop();
+    /** Stop current note. */
+    void stop() noexcept;
     
     bool synthesise;      // Flag to determine if synthesiser should synthesise
     
@@ -108,17 +96,17 @@ private:
 
 //==============================================================================
 /**
- * LorisSynthesiser voice for LorisSynthesiser. It makes a sound based on Partials
- * generated from Loris analysis.
+   LorisSynthesiser voice for LorisSynthesiser. It makes a sound based on Partials
+   generated from Loris analysis.
  */
 class LorisSynthesiser : public Synthesiser
 {
 public:
     
     /**
-     * Setup synthesiser's voices using partials.
-     * \param partials data gathered at analysis stage
-     * \param samplePitch original pitch of partils data.
+       Setup synthesiser's voices using partials.
+       @param partials data gathered at analysis stage
+       @param samplePitch original pitch of partils data.
      */
     void setup(Loris::PartialList &partials, double samplePitch)
     {

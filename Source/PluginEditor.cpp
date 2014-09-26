@@ -18,6 +18,28 @@
 */
 
 //[Headers] You can add your own extra header files here...
+/*
+ This is Paraphrasis synthesiser.
+ 
+ Copyright (c) 2014 by Tomas Medek
+ 
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY, without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ tom@virtualanalogy.com
+ */
+
 #include "Resources.h"
 #include "SampleAnalyzer.h"
 #include "ParameterDefitions.h"
@@ -27,6 +49,7 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -161,6 +184,7 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
     onParameterUpdated(parameters.get(kParameterSamplePitch_name));
     onParameterUpdated(parameters.get(kParameterLastSamplePath_name));
 
+    // set default LED state
     ledBtn->setClickingTogglesState(false);
     ParaphrasisAudioProcessor *processor = dynamic_cast<ParaphrasisAudioProcessor *>(getProcessor());
     if (processor)
@@ -177,7 +201,7 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
 ParaphrasisAudioProcessorEditor::~ParaphrasisAudioProcessorEditor()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
-    // unregister observer
+    // unregister observers
     parameters.get(kParameterSamplePitch_name)->removeObserver(this);
     parameters.get(kParameterFrequencyResolution_name)->removeObserver(this);
     parameters.get(kParameterReverse_name)->removeObserver(this);
@@ -240,8 +264,11 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
     if (buttonThatWasClicked == selectBtn)
     {
         //[UserButtonCode_selectBtn] -- add your button handler code here..
-        String filePath = parameters.get(kParameterLastSamplePath_name)->getDisplayText();
+        // select sample file
         File lastFile;
+        
+        // load last location
+        String filePath = parameters.get(kParameterLastSamplePath_name)->getDisplayText();
         if ( filePath.isEmpty() )
             lastFile = File::getSpecialLocation (File::userHomeDirectory);
         else
@@ -253,10 +280,12 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
             File sampleFile (myChooser.getResult());
             if ( sampleFile.exists() )
             {
+                // set parameter
                 sampleLbl->setText(sampleFile.getFileName(), juce::dontSendNotification);
                 path = sampleFile.getFullPathName().toRawUTF8();
                 parameters.setData(kParameterLastSamplePath_name, path.c_str(), path.length());
 
+                // dectect pitch
                 AudioFormatReader* reader = formatManager.createReaderFor(sampleFile);
                 if (reader)
                 {
@@ -279,12 +308,13 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
     else if (buttonThatWasClicked == analyzeBtn)
     {
         //[UserButtonCode_analyzeBtn] -- add your button handler code here..
-        getProcessor()->loadSample();
+        getProcessor()->analyzeSample();
         //[/UserButtonCode_analyzeBtn]
     }
     else if (buttonThatWasClicked == resolutionBtn)
     {
         //[UserButtonCode_resolutionBtn] -- add your button handler code here..
+        // set default resolution freq defined by actual pitch frequency
         parameters.set(kParameterFrequencyResolution_name, kDefaultPitchResolutionRation * parameters.get(kParameterSamplePitch_name)->getValue());
         //[/UserButtonCode_resolutionBtn]
     }
@@ -296,6 +326,7 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
     else if (buttonThatWasClicked == reverseBtn)
     {
         //[UserButtonCode_reverseBtn] -- add your button handler code here..
+        // change reverse name.
         parameters.set(kParameterReverse_name, reverseBtn->getToggleState());
         //[/UserButtonCode_reverseBtn]
     }
@@ -341,6 +372,7 @@ void ParaphrasisAudioProcessorEditor::labelTextChanged (Label* labelThatHasChang
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void ParaphrasisAudioProcessorEditor::onParameterUpdated(const Parameter *parameter)
 {
+    // update editor due to parameter changes
     if ( parameter->getName() == kParameterFrequencyResolution_name )
     {
         resolutionLbl->setText( String( parameter->getValue(), 2 ), juce::dontSendNotification );
@@ -359,7 +391,7 @@ void ParaphrasisAudioProcessorEditor::onParameterUpdated(const Parameter *parame
         reverseBtn->setToggleState(parameters[kParameterReverse_name]->getValue(), juce::dontSendNotification);
     }
 
-    lightOn(false);
+    lightOn(false);// when any parameter changes - set light off
 }
 
 double ParaphrasisAudioProcessorEditor::checkParameterBoundaries(const Parameter *parameter, double value)

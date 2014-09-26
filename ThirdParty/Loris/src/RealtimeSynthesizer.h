@@ -118,7 +118,7 @@ public:
     //! \return Nothing.
     //! \post   This RealTimeSynthesizer's is ready for synthesise the sound specified
     //!         by given partials.
-    void setup(PartialList & partials, double pitch);
+    void setup(PartialList & partials, double pitch) noexcept;
 
     //!	Set sample rate.
     //!
@@ -134,19 +134,19 @@ public:
     //! \return Nothing.
     //! \post   Internal state of synthesizer changes - it is ready to synthesize
     //!         next block of samples starting at 'previous count of samples' + samples.
-    void synthesizeNext(int samples);
+    void synthesizeNext(int samples) noexcept;
     
     //!	Reset RealtimeSynthesizer to render sound from the beging.
     //!
     //! \post   Sound is rendered in original pitch.
     //! \return Nothing.
-    void reset();
+    void reset() noexcept;
     
     //!	Change pitch of sound.
     //!
     //! \param  New pitch in frequency of the sound.
     //! \return Nothing.
-    void setPitch(double frequency);
+    void setPitch(double frequency) noexcept;
     
  	
 //	-- parameter access and mutation --
@@ -164,9 +164,9 @@ private:
     //! \post   This RealTimeSynthesizer's sample buffer (vector) contain synthesised
     //!         partials and storeed inner state of synthesiser.
     //!
-    void synthesize( PartialStruct &p, float * buffer, const int samples);
+    void synthesize( PartialStruct &p, float * buffer, const int samples) noexcept;
     
-    void clearPartialsBeingProcessed()
+    void clearPartialsBeingProcessed() noexcept
 	{
 		while (!partialsBeingProcessed.empty())
 			partialsBeingProcessed.pop();

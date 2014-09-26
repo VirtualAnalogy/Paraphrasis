@@ -65,7 +65,7 @@ namespace Loris {
     //  (frequency, amplitude, bandwidth, and phase).
     //  The Breakpoint frequency (Hz) is in radians per sample.
     void
-    RealtimeOscillator::restoreEnvelopes( const Breakpoint & bp)
+    RealtimeOscillator::restoreEnvelopes( const Breakpoint & bp) noexcept
     {
         //  Remember that the oscillator only knows about
         //  radian frequency! Convert!
@@ -77,18 +77,15 @@ namespace Loris {
         //  clamp bandwidth:
         if ( m_instbandwidth > 1. )
         {
-            debugger << "clamping bandwidth at 1." << endl;
             m_instbandwidth = 1.;
         }
         else if ( m_instbandwidth < 0. )
         {
-            debugger << "clamping bandwidth at 0." << endl;
             m_instbandwidth = 0.;
         }
         //  don't alias:
         if ( m_instfrequency > Pi )
         {
-            debugger << "fading out aliasing Partial" << endl;
             m_instamplitude = 0.;
         }
         
@@ -105,7 +102,7 @@ namespace Loris {
     //  Breakpoint frequency (Hz) to radians per sample.
     //
     void
-    RealtimeOscillator::resetEnvelopes( const Breakpoint & bp, double srate )
+    RealtimeOscillator::resetEnvelopes( const Breakpoint & bp, double srate ) noexcept
     {
         //  Remember that the oscillator only knows about
         //  radian frequency! Convert!
@@ -117,18 +114,15 @@ namespace Loris {
         //  clamp bandwidth:
         if ( m_instbandwidth > 1. )
         {
-            debugger << "clamping bandwidth at 1." << endl;
             m_instbandwidth = 1.;
         }
         else if ( m_instbandwidth < 0. )
         {
-            debugger << "clamping bandwidth at 0." << endl;
             m_instbandwidth = 0.;
         }
         //  don't alias:
         if ( m_instfrequency > Pi )
         {
-            debugger << "fading out aliasing Partial" << endl;
             m_instamplitude = 0.;
         }
         
@@ -141,7 +135,7 @@ namespace Loris {
     // ---------------------------------------------------------------------------
     //  Get envelopes state. Frequency is in radian per sec.
     //
-    Breakpoint RealtimeOscillator::envelopes()
+    Breakpoint RealtimeOscillator::envelopes() noexcept
     {
         Breakpoint bp(m_instfrequency, m_instamplitude, m_instbandwidth);
         bp.setPhase(m_determphase);
@@ -167,7 +161,7 @@ namespace Loris {
     // Set internal frequency scaling.
     //
     void
-    RealtimeOscillator::setFrequencyScaling(double scaling)
+    RealtimeOscillator::setFrequencyScaling(double scaling) noexcept
     {
         m_frequencyScaling = scaling;
     }
@@ -185,7 +179,7 @@ namespace Loris {
     //
     void
     RealtimeOscillator::oscillate( float * begin, float * end,
-                          const Breakpoint & bp, double srate)
+                          const Breakpoint & bp, double srate) noexcept
     {
         double targetFreq = m_frequencyScaling * bp.frequency() * TwoPi / srate;     //  radians per sample
         double targetAmp = bp.amplitude();

@@ -77,16 +77,16 @@ public:
     //! (frequency, amplitude, bandwidth, and phase).
     //! The sample rate is needed to convert the 
     //! Breakpoint frequency (Hz) to radians per sample.
-    void resetEnvelopes( const Breakpoint & bp, double srate );
+    void resetEnvelopes( const Breakpoint & bp, double srate ) noexcept override;
 
     //! Reset the instantaneous envelope parameters
     //! (frequency, amplitude, bandwidth, and phase).
     //! The Breakpoint frequency (Hz) is in radians per sample
     //! and is scaled by frequency scaling.
-    void restoreEnvelopes( const Breakpoint & bp);
+    void restoreEnvelopes( const Breakpoint & bp) noexcept;
     
     //! Set internal frequency scaling.
-    void setFrequencyScaling( double scaling );
+    void setFrequencyScaling( double scaling ) noexcept;
 
     //! Accumulate bandwidth-enhanced sinusoidal samples modulating the
     //! oscillator state from its current values of radian frequency, amplitude,
@@ -95,8 +95,7 @@ public:
     //! ending before end (no sample is accumulated at end). The caller must
     //! insure that the indices are valid. Target frequency and bandwidth are
     //! checked to prevent aliasing and bogus bandwidth enhancement.
-    void oscillate( float * begin, float * end,
-                    const Breakpoint & bp, double srate);
+    void oscillate( float * begin, float * end, const Breakpoint & bp, double srate) noexcept;
 
 // --- accessors ---
 
@@ -104,10 +103,10 @@ public:
     //! (frequency, amplitude, bandwidth, and phase).
     //! The Breakpoint frequency (Hz) is in radians per sample
     //! and is scaled by frequency scaling.
-    Breakpoint envelopes();
+    Breakpoint envelopes() noexcept;
     
     //! Retun thr frequency scaling factor.
-    double frequencyScaling( void ) const { return m_frequencyScaling; }
+    double frequencyScaling( void ) const noexcept{ return m_frequencyScaling; }
     
 };  //  end of class RealtimeOscillator
 

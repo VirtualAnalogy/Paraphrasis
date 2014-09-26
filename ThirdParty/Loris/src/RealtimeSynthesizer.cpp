@@ -85,7 +85,7 @@ RealTimeSynthesizer::RealTimeSynthesizer( std::vector<float> & buffer ) :
 //! \return Nothing.
 //! \post   This RealTimeSynthesizer's is ready for synthesise the sound specified
 //!         by given partials.
-void RealTimeSynthesizer::setup(PartialList & partials, double pitch)
+void RealTimeSynthesizer::setup(PartialList & partials, double pitch) noexcept
 {
     this->partials.clear();
     this->pitch = pitch;
@@ -103,7 +103,6 @@ void RealTimeSynthesizer::setup(PartialList & partials, double pitch)
         
         pStruct.startTime = ( m_fadeTimeSec < it.startTime() ) ? ( it.startTime() - m_fadeTimeSec ) : 0.;// compute fade in bp time
         pStruct.endTime = it.endTime() + m_fadeTimeSec;// compute fade out bp time
-        
         
         // breakpoints
         Partial::const_iterator jt = it.begin();
@@ -145,7 +144,7 @@ void RealTimeSynthesizer::setSampleRate(double rate)
 //!
 //! \post   Sound is rendered in original pitch.
 //! \return Nothing.
-void RealTimeSynthesizer::reset()
+void RealTimeSynthesizer::reset() noexcept
 {
     partialIdx = 0;
     processedSamples = 0;
@@ -159,7 +158,7 @@ void RealTimeSynthesizer::reset()
 //!
 //! \param  New pitch in frequency of the sound.
 //! \return Nothing.
-void RealTimeSynthesizer::setPitch(double frequency)
+void RealTimeSynthesizer::setPitch(double frequency) noexcept
 {
     m_osc.setFrequencyScaling(frequency / pitch);
 }
@@ -175,7 +174,7 @@ void RealTimeSynthesizer::setPitch(double frequency)
 //! \return Nothing.
 //! \post   Internal state of synthesizer changes - it is ready to synthesize
 //!         next block of samples starting at 'previous count of samples' + samples.
-void RealTimeSynthesizer::synthesizeNext( int samples )
+void RealTimeSynthesizer::synthesizeNext( int samples ) noexcept
 {
     processedSamples += samples;// for performance reason this is computed at the beginning
     PartialStruct *partial;
@@ -236,7 +235,7 @@ void RealTimeSynthesizer::synthesizeNext( int samples )
 //! \post   This RealTimeSynthesizer's sample buffer (vector) contain synthesised
 //!         partials and storeed inner state of synthesiser.
 //!
-void RealTimeSynthesizer::synthesize( PartialStruct &p, float * buffer, const int samples)
+void RealTimeSynthesizer::synthesize( PartialStruct &p, float * buffer, const int samples) noexcept
 {
     if ( p.numBreakpoints <= 0 || p.startTime < 0 )
         return;
