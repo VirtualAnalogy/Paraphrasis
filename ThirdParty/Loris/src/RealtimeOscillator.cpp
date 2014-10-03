@@ -207,14 +207,14 @@ namespace Loris {
         //	frequency, after adding only half the frequency step
         
         const double dAmp = (targetAmp - m_instamplitude)  * dTime;
-        const double dBw = (targetBw - m_instbandwidth)  * dTime;
+//        const double dBw = (targetBw - m_instbandwidth)  * dTime;
         //  Use temporary local variables for speed.
         //  Probably not worth it when I am computing square roots
         //  and cosines...
         double ph = m_determphase;
-        double f = m_instfrequency;
-        double a = m_instamplitude;
-        double bw = m_instbandwidth;
+//        double f = m_instfrequency;
+//        double a = m_instamplitude;
+//        double bw = m_instbandwidth;
         
         // Ignore bandwidth
         //	Also use a more efficient sample loop when the bandwidth is zero.
@@ -311,6 +311,8 @@ namespace Loris {
             }   // end of
 
             ph = ph4.f[0];
+            targetAmp = a4[0];
+            targetFreq = f4[0];
             
         }
         

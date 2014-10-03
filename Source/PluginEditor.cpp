@@ -274,7 +274,11 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
         else
             lastFile = File(filePath);
 
-        FileChooser myChooser ("Please select the sample file you want to load...", lastFile, formatManager.getWildcardForAllFormats());
+        String formats = formatManager.getWildcardForAllFormats();
+#ifdef ENABLE_SDIF_FILES
+        formats += ";*.sdif";
+#endif
+        FileChooser myChooser ("Please select the sample file you want to load...", lastFile, formats);
         if (myChooser.browseForFileToOpen())
         {
             File sampleFile (myChooser.getResult());

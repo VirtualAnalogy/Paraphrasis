@@ -107,7 +107,7 @@ public:
     //! ending before end (no sample is accumulated at end). The caller must
     //! insure that the indices are valid. Target frequency and bandwidth are
     //! checked to prevent aliasing and bogus bandwidth enhancement.
-    void oscillate( float * begin, float * end, const Breakpoint & bp, double srate) noexcept;
+    void oscillate( float * begin, float * end, const Breakpoint & bp, double srate ) noexcept;
 
 // --- accessors ---
 

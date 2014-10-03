@@ -26,7 +26,7 @@
 #include "Analyzer.h"
 #include "Channelizer.h"
 #include "PartialUtils.h"
-#include "AiffFile.h"
+#include "SdifFile.h"
 #include "PartialUtils.h" 
 
 SampleAnalyzer::SampleAnalyzer(AudioFormatManager &formatManager, WaitableEvent& syncObj, const String &name)
@@ -50,26 +50,57 @@ void SampleAnalyzer::run() noexcept
     
     if ( !m_samplePath.isEmpty() )
     {
-        if ( ! readViaJuce() )
+        if (File(m_samplePath).getFileExtension().toUpperCase() == ".SDIF")
         {
-            NativeMessageBox::showMessageBoxAsync(AlertWindow::WarningIcon, "Ooops...", "Paraphrasis can not load file, sorry...");
-            analyzerSync.signal();
-            return;
+            if (loadSdif())
+                postProcessPartials();
         }
-            
-        if (threadShouldExit())
+        else if ( loadAudioFile() )
         {
-            analyzerSync.signal();
-            return;
+            postProcessPartials();
         }
-        
-        analyze();
+        else
+        {
+             NativeMessageBox::showMessageBoxAsync(AlertWindow::WarningIcon, "Ooops...", "Paraphrasis can not load file, sorry...");
+        }
     }
     analyzerSync.signal();
 }
 
 //==============================================================================
-bool SampleAnalyzer::readViaJuce() noexcept
+bool SampleAnalyzer::loadSdif() noexcept
+{
+    try
+    {
+        Loris::SdifFile sdifFile(m_samplePath.toStdString());
+    
+        m_partials.clear();
+        m_partials = std::move(sdifFile.partials());
+        return true;
+    }
+    catch (...) { }
+    
+    return false;
+}
+
+//==============================================================================
+bool SampleAnalyzer::postProcessPartials() noexcept
+{
+    setStatusMessage("Processing partials...");
+
+    // partials in partial list will be sorted by start time
+    m_partials.sort(Loris::PartialUtils::compareStartTimeLess());
+    
+    for (auto i = m_partials.begin(); i != m_partials.end(); i++)
+        Loris::PartialUtils::fixPhaseAfter(*i, i->startTime());
+    
+    // chanelize - mark partial - not needed now
+    //    Loris::Channelizer channelizer(m_pitch);
+    //    channelizer.channelize(m_partials.begin(), m_partials.end());
+}
+
+//==============================================================================
+bool SampleAnalyzer::loadAudioFile() noexcept
 {
     AudioFormatReader* reader = formatManager.createReaderFor (File(m_samplePath));
     
@@ -125,6 +156,8 @@ bool SampleAnalyzer::readViaJuce() noexcept
         buffer.push_back(sample[i]);
     }
     
+    analyze();
+    
     return true;
 }
 
@@ -139,11 +172,4 @@ void SampleAnalyzer::analyze() noexcept
     m_partials.clear();
     m_partials = std::move(analyzer.partials());
     
-    setStatusMessage("Processing partials...");
-    // chanelize - mark partial - not needed now
-//    Loris::Channelizer channelizer(m_pitch);
-//    channelizer.channelize(m_partials.begin(), m_partials.end());
-    
-    // partials in partial list will be sorted by start time
-    m_partials.sort(Loris::PartialUtils::compareStartTimeLess());
 }

@@ -66,6 +66,7 @@ struct PartialStruct
         int lastBreakpointIdx = NoBreakpointProcessed;
         Breakpoint envelope;
         double prevFrequency;
+        bool breakpointFinished = true;
     } state;
 };
 // ---------------------------------------------------------------------------
