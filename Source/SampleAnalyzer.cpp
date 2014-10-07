@@ -48,14 +48,18 @@ void SampleAnalyzer::run() noexcept
     buffer.clear();
     sampleRate = 0;
     
+    //TODO: loading should be controlled by exceptions not by bool functions...
     if ( !m_samplePath.isEmpty() )
     {
+#ifdef ENABLE_SDIF_FILES
         if (File(m_samplePath).getFileExtension().toUpperCase() == ".SDIF")
         {
             if (loadSdif())
                 postProcessPartials();
         }
-        else if ( loadAudioFile() )
+        else
+#endif
+            if ( loadAudioFile() )
         {
             postProcessPartials();
         }
@@ -76,6 +80,7 @@ bool SampleAnalyzer::loadSdif() noexcept
     
         m_partials.clear();
         m_partials = std::move(sdifFile.partials());
+        
         return true;
     }
     catch (...) { }
@@ -84,16 +89,13 @@ bool SampleAnalyzer::loadSdif() noexcept
 }
 
 //==============================================================================
-bool SampleAnalyzer::postProcessPartials() noexcept
+void SampleAnalyzer::postProcessPartials() noexcept
 {
     setStatusMessage("Processing partials...");
 
     // partials in partial list will be sorted by start time
     m_partials.sort(Loris::PartialUtils::compareStartTimeLess());
-    
-    for (auto i = m_partials.begin(); i != m_partials.end(); i++)
-        Loris::PartialUtils::fixPhaseAfter(*i, i->startTime());
-    
+        
     // chanelize - mark partial - not needed now
     //    Loris::Channelizer channelizer(m_pitch);
     //    channelizer.channelize(m_partials.begin(), m_partials.end());

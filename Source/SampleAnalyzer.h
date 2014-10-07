@@ -67,7 +67,7 @@ private:
     /** Read SDIF file using Loris. */
     bool loadSdif() noexcept;
     /** Fix phases and order partials by time. */
-    bool postProcessPartials() noexcept;
+    void postProcessPartials() noexcept;
     
     String m_samplePath;
     double m_resolution = kParameterFrequencyResolution_defaultValue;
