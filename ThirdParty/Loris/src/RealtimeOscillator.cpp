@@ -179,7 +179,7 @@ namespace Loris {
     //
     void
     RealtimeOscillator::oscillate( float * begin, float * end,
-                          const Breakpoint & bp, double srate) noexcept
+                          const Breakpoint & bp, double srate, int dSample) noexcept
     {
         double targetFreq = m_frequencyScaling * bp.frequency() * TwoPi / srate;     //  radians per sample
         double targetAmp = bp.amplitude();
@@ -201,7 +201,7 @@ namespace Loris {
             targetAmp = 0.;
         }
         //  compute trajectories:
-        const double dTime = 1. / (end - begin);
+        const double dTime = 1. / dSample; //(end - begin);
         const double dFreqOver2 = 0.5 * (targetFreq - m_instfrequency) * dTime;
         //	split frequency update in two steps, update phase using average
         //	frequency, after adding only half the frequency step

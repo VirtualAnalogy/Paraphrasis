@@ -118,6 +118,7 @@ void RealTimeSynthesizer::setup(PartialList & partials, double pitch) noexcept
         
         this->partials.push_back(pStruct);
     }
+
     
     reset();
 }
@@ -216,7 +217,7 @@ void RealTimeSynthesizer::synthesizeNext( int samples ) noexcept
         partial->state.breakpointFinished = true;
 
         //  cache the previous frequency (in Hz) so that it can be used to reset the phase when necessary
-        partial->state.prevFrequency = partial->breakpoints[1].second._frequency;// 0 is null breakpoint
+        partial->state.prevFrequency = m_osc.frequencyScaling() * partial->breakpoints[1].second._frequency;// 0 is null breakpoint
         
 
         int sampleCount = processedSamples - partial->state.currentSamp; // how much sample to be processed during this call
@@ -283,11 +284,12 @@ void RealTimeSynthesizer::synthesize( PartialStruct &p, float * buffer, const in
             //  double favg = 0.5 * ( prevFrequency + it.breakpoint().frequency() );
             //  double dphase = 2 * Pi * favg * ( tgtSamp - currentSamp ) / m_srateHz;
             
-            double dphase = Pi * ( p.state.prevFrequency + bp->frequency() ) * ( tgtSamp - p.state.currentSamp ) * OneOverSrate;
+            double dphase = Pi * ( p.state.prevFrequency + m_osc.frequencyScaling() * bp->frequency() ) * ( tgtSamp - p.state.currentSamp ) * OneOverSrate;
             m_osc.setPhase( bp->phase() - dphase );
         }
         
-        m_osc.oscillate( buffer, buffer + sampleDiff, *bp, m_srateHz );
+        int dSample = tgtSamp - p.state.currentSamp;
+        m_osc.oscillate( buffer, buffer + sampleDiff, *bp, m_srateHz, dSample );
 
 		buffer += sampleDiff;// move buffer pointer
         
@@ -298,8 +300,11 @@ void RealTimeSynthesizer::synthesize( PartialStruct &p, float * buffer, const in
         {
             //  remember the frequency, may need it to reset the
             //  phase if a Null Breakpoint is encountered:
-            m_osc.resetEnvelopes(*bp, m_srateHz);
-            p.state.prevFrequency = bp->frequency();
+//            m_osc.resetEnvelopes(*bp, m_srateHz);
+//            p.state.prevFrequency = bp->frequency();
+            
+            p.state.prevFrequency = m_osc.envelopes().frequency();
+//                m_osc.setPhase(bp->phase());
         }
         
         if (sampleCounter == samples)
