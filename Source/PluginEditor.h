@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Introjucer version: 3.1.0
+  Created with Introjucer version: 3.1.1
 
   ------------------------------------------------------------------------------
 
@@ -23,23 +23,23 @@
 //[Headers]     -- You can add your own extra header files here --
 /**
  This is Paraphrasis synthesiser.
- 
+
  Copyright (c) 2014 by Tomas Medek
- 
+
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY, without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+
  tom@virtualanalogy.com
  */
 #include "JuceHeader.h"
@@ -85,12 +85,12 @@ public:
         @param parameter Parameter to be updated.
      */
     virtual void onParameterUpdated(const Parameter *parameter) ;
-    
-    /** teragon::ParameterObserver method. 
+
+    /** teragon::ParameterObserver method.
      */
     virtual bool isRealtimePriority() const { return false; }
 
-    
+
     /** Check if value is in interval defined by parameter.
         @parameter parameter Parameter object with interval definition.
         @parameter value Value to be checked.

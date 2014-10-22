@@ -57,6 +57,8 @@ struct PartialStruct
     double startTime = 0.0;
     double endTime = 0.0;
     int numBreakpoints = 0;
+    int label = 0;
+    float avgFrequency = 0;
 
     std::vector<std::pair<double, Breakpoint>> breakpoints;
     

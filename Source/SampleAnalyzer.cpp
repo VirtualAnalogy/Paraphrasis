@@ -25,6 +25,7 @@
 
 #include "Analyzer.h"
 #include "Channelizer.h"
+#include "Distiller.h"
 #include "PartialUtils.h"
 #include "SdifFile.h"
 #include "PartialUtils.h" 
@@ -97,8 +98,11 @@ void SampleAnalyzer::postProcessPartials() noexcept
     m_partials.sort(Loris::PartialUtils::compareStartTimeLess());
         
     // chanelize - mark partial - not needed now
-    //    Loris::Channelizer channelizer(m_pitch);
-    //    channelizer.channelize(m_partials.begin(), m_partials.end());
+    Loris::Channelizer channelizer(m_pitch);
+    channelizer.channelize(m_partials.begin(), m_partials.end());
+    
+//    Loris::Distiller dist;
+//    dist.distill(m_partials);
 }
 
 //==============================================================================

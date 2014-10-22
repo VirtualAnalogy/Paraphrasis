@@ -99,24 +99,37 @@ void RealTimeSynthesizer::setup(PartialList & partials, double pitch) noexcept
         PartialStruct pStruct;
         
         pStruct.numBreakpoints = it.numBreakpoints() + 2;// + fade in + fade out
+
         pStruct.breakpoints.reserve(pStruct.numBreakpoints);
+        pStruct.label = it.label();
         
         pStruct.startTime = ( m_fadeTimeSec < it.startTime() ) ? ( it.startTime() - m_fadeTimeSec ) : 0.;// compute fade in bp time
         pStruct.endTime = it.endTime() + m_fadeTimeSec;// compute fade out bp time
+
         
         // breakpoints
         Partial::const_iterator jt = it.begin();
         // fade in breakpoint, compute fade in time
         pStruct.breakpoints.push_back(std::make_pair(pStruct.startTime, BreakpointUtils::makeNullBefore( jt.breakpoint(), it.startTime() - pStruct.startTime)));
         
+
+        
+        double sumF = 0;
+        
         for (; jt != it.end(); jt++)
+        {
+            sumF += jt->frequency();
             pStruct.breakpoints.push_back(std::make_pair(jt.time(), jt.breakpoint()));
+        }
+        
+        pStruct.avgFrequency = sumF / (float) it.numBreakpoints();
         
         // fade out breakpoint
         jt--;
         pStruct.breakpoints.push_back(std::make_pair(jt.time() + m_fadeTimeSec, BreakpointUtils::makeNullAfter( jt.breakpoint(), m_fadeTimeSec )));
         
         this->partials.push_back(pStruct);
+//        pStruct.breakpoints[0].second.setAmplitude(pStruct.breakpoints[1].second.amplitude());
     }
 
     
@@ -219,7 +232,6 @@ void RealTimeSynthesizer::synthesizeNext( int samples ) noexcept
         //  cache the previous frequency (in Hz) so that it can be used to reset the phase when necessary
         partial->state.prevFrequency = m_osc.frequencyScaling() * partial->breakpoints[1].second._frequency;// 0 is null breakpoint
         
-
         int sampleCount = processedSamples - partial->state.currentSamp; // how much sample to be processed during this call
         int sampleDelta = samples - sampleCount; // delta when partial should start
 
@@ -228,7 +240,6 @@ void RealTimeSynthesizer::synthesizeNext( int samples ) noexcept
         if ( partial->state.lastBreakpointIdx < partial->numBreakpoints - 1)
             partialsBeingProcessed.push(partial);
     }
-    
 }
     
 // ---------------------------------------------------------------------------
@@ -273,7 +284,8 @@ void RealTimeSynthesizer::synthesize( PartialStruct &p, float * buffer, const in
         //  is not, reset the oscillator phase so that
         //  it matches exactly the target Breakpoint 
         //  phase at tgtSamp:
-        if ( m_osc.amplitude() == 0. && p.state.breakpointFinished )
+//        if ( m_osc.amplitude() == 0. && p.state.breakpointFinished )
+        if ( i == PartialStruct::NoBreakpointProcessed + 1 && p.state.breakpointFinished )
         {
             //  recompute the phase so that it is correct
             //  at the target Breakpoint (need to do this
@@ -285,11 +297,21 @@ void RealTimeSynthesizer::synthesize( PartialStruct &p, float * buffer, const in
             //  double dphase = 2 * Pi * favg * ( tgtSamp - currentSamp ) / m_srateHz;
             
             double dphase = Pi * ( p.state.prevFrequency + m_osc.frequencyScaling() * bp->frequency() ) * ( tgtSamp - p.state.currentSamp ) * OneOverSrate;
-            m_osc.setPhase( bp->phase() - dphase );
+            
+            // If we transposed/pitch-shifted the sound using sample rate change, the transpose octave above would
+            // mean create new signal with every second sample missing, so the partial would start earlier. If we
+            // would like to have partial transposed but in the same time t0 as original,  what the new phase will be?
+            // It will be the original phase with the phase change during the delta of time. What delta of time is it?
+            // The start time in sample-removing pitch shifted signal would be half of time if we transpose octave up so the
+            // delta time is t0 - t0/transposeFactor. So the new phase goes like this (here we do not have time t0 so we get
+            // it from partial[iSamp]/float(fs)).
+            double phaseFixed = (bp->phase() + 2*Pi*p.avgFrequency*p.state.currentSamp*OneOverSrate*(m_osc.frequencyScaling()-1));
+
+            m_osc.setPhase( phaseFixed - dphase );
         }
         
-        int dSample = tgtSamp - p.state.currentSamp;
-        m_osc.oscillate( buffer, buffer + sampleDiff, *bp, m_srateHz, dSample );
+        int samplesToBp = tgtSamp - p.state.currentSamp;
+        m_osc.oscillate( buffer, buffer + sampleDiff, *bp, m_srateHz, samplesToBp );
 
 		buffer += sampleDiff;// move buffer pointer
         

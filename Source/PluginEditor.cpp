@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Introjucer version: 3.1.0
+  Created with Introjucer version: 3.1.1
 
   ------------------------------------------------------------------------------
 
@@ -20,23 +20,23 @@
 //[Headers] You can add your own extra header files here...
 /*
  This is Paraphrasis synthesiser.
- 
+
  Copyright (c) 2014 by Tomas Medek
- 
+
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY, without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+
  tom@virtualanalogy.com
  */
 
@@ -242,6 +242,9 @@ void ParaphrasisAudioProcessorEditor::paint (Graphics& g)
 
 void ParaphrasisAudioProcessorEditor::resized()
 {
+    //[UserPreResize] Add your own custom resize code here..
+    //[/UserPreResize]
+
     knob->setBounds (60, 129, 64, 64);
     knob2->setBounds (176, 129, 64, 64);
     sampleLbl->setBounds (24, 45, 176, 20);
@@ -266,7 +269,7 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
         //[UserButtonCode_selectBtn] -- add your button handler code here..
         // select sample file
         File lastFile;
-        
+
         // load last location
         String filePath = parameters.get(kParameterLastSamplePath_name)->getDisplayText();
         if ( filePath.isEmpty() )
