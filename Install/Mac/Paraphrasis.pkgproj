@@ -581,13 +581,18 @@
 			<key>BACKGROUND</key>
 			<dict>
 				<key>ALIGNMENT</key>
-				<integer>4</integer>
+				<integer>2</integer>
 				<key>BACKGROUND_PATH</key>
-				<dict/>
+				<dict>
+					<key>PATH</key>
+					<string>background.png</string>
+					<key>PATH_TYPE</key>
+					<integer>3</integer>
+				</dict>
 				<key>CUSTOM</key>
-				<false/>
+				<integer>1</integer>
 				<key>SCALING</key>
-				<integer>0</integer>
+				<integer>2</integer>
 			</dict>
 			<key>INSTALLATION TYPE</key>
 			<dict>
@@ -626,7 +631,7 @@
 				<key>INSTALLATION TYPE</key>
 				<integer>0</integer>
 				<key>MODE</key>
-				<integer>1</integer>
+				<integer>0</integer>
 			</dict>
 			<key>INSTALLATION_STEPS</key>
 			<array>
