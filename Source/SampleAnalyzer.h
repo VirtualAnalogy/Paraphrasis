@@ -61,9 +61,13 @@ public:
 private:
     
     /** Read file specified by samplePath using formatManager passed in constructor */
-    bool readViaJuce() noexcept;
+    bool loadAudioFile() noexcept;
     /** Analyse loaded sampes. */
     void analyze() noexcept;
+    /** Read SDIF file using Loris. */
+    bool loadSdif() noexcept;
+    /** Fix phases and order partials by time. */
+    void postProcessPartials() noexcept;
     
     String m_samplePath;
     double m_resolution = kParameterFrequencyResolution_defaultValue;

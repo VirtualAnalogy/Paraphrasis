@@ -99,25 +99,39 @@ void RealTimeSynthesizer::setup(PartialList & partials, double pitch) noexcept
         PartialStruct pStruct;
         
         pStruct.numBreakpoints = it.numBreakpoints() + 2;// + fade in + fade out
+
         pStruct.breakpoints.reserve(pStruct.numBreakpoints);
+        pStruct.label = it.label();
         
         pStruct.startTime = ( m_fadeTimeSec < it.startTime() ) ? ( it.startTime() - m_fadeTimeSec ) : 0.;// compute fade in bp time
         pStruct.endTime = it.endTime() + m_fadeTimeSec;// compute fade out bp time
+
         
         // breakpoints
         Partial::const_iterator jt = it.begin();
         // fade in breakpoint, compute fade in time
         pStruct.breakpoints.push_back(std::make_pair(pStruct.startTime, BreakpointUtils::makeNullBefore( jt.breakpoint(), it.startTime() - pStruct.startTime)));
         
+
+        
+        double sumF = 0;
+        
         for (; jt != it.end(); jt++)
+        {
+            sumF += jt->frequency();
             pStruct.breakpoints.push_back(std::make_pair(jt.time(), jt.breakpoint()));
+        }
+        
+        pStruct.avgFrequency = sumF / (float) it.numBreakpoints();
         
         // fade out breakpoint
         jt--;
         pStruct.breakpoints.push_back(std::make_pair(jt.time() + m_fadeTimeSec, BreakpointUtils::makeNullAfter( jt.breakpoint(), m_fadeTimeSec )));
         
         this->partials.push_back(pStruct);
+//        pStruct.breakpoints[0].second.setAmplitude(pStruct.breakpoints[1].second.amplitude());
     }
+
     
     reset();
 }
@@ -176,13 +190,15 @@ void RealTimeSynthesizer::setPitch(double frequency) noexcept
 //!         next block of samples starting at 'previous count of samples' + samples.
 void RealTimeSynthesizer::synthesizeNext( int samples ) noexcept
 {
+    //TODO: check processedSamples overflow
     processedSamples += samples;// for performance reason this is computed at the beginning
     PartialStruct *partial;
     
     // prepare buffer for new data
-    if (buffer->size() < samples)
+    if (buffer->capacity() < samples)
         buffer->reserve(samples);
     memset(buffer->data(), 0, samples * sizeof(decltype(buffer->data())));
+    
     
     // process partials being processed
     int size = partialsBeingProcessed.size();
@@ -211,11 +227,15 @@ void RealTimeSynthesizer::synthesizeNext( int samples ) noexcept
         
         partial->state.lastBreakpointIdx = PartialStruct::NoBreakpointProcessed;
         partial->state.envelope = partial->breakpoints[0].second;
+        partial->state.breakpointFinished = true;
 
         //  cache the previous frequency (in Hz) so that it can be used to reset the phase when necessary
-        partial->state.prevFrequency = partial->breakpoints[1].second._frequency;// 0 is null breakpoint
+        partial->state.prevFrequency = m_osc.frequencyScaling() * partial->breakpoints[1].second._frequency;// 0 is null breakpoint
+        
+        int sampleCount = processedSamples - partial->state.currentSamp; // how much sample to be processed during this call
+        int sampleDelta = samples - sampleCount; // delta when partial should start
 
-        synthesize( *partial, buffer->data(), samples );
+        synthesize( *partial, buffer->data() + sampleDelta, sampleCount );
         
         if ( partial->state.lastBreakpointIdx < partial->numBreakpoints - 1)
             partialsBeingProcessed.push(partial);
@@ -237,46 +257,35 @@ void RealTimeSynthesizer::synthesizeNext( int samples ) noexcept
 //!
 void RealTimeSynthesizer::synthesize( PartialStruct &p, float * buffer, const int samples) noexcept
 {
-    if ( p.numBreakpoints <= 0 || p.startTime < 0 )
-        return;
-    
-    if ( p.state.lastBreakpointIdx >= p.numBreakpoints - 1 )
-        return;
-
     if (p.state.lastBreakpointIdx == PartialStruct::NoBreakpointProcessed)
         m_osc.resetEnvelopes( p.state.envelope, m_srateHz );
     else
         m_osc.restoreEnvelopes( p.state.envelope );
-    
-    //  synthesize linear-frequency segments until
-    //  there aren't any more Breakpoints to make segments:
-    Breakpoint *bp;
+        
     int sampleCounter = 0;
 	int sampleDiff = 0;
     int i;
-    index_type tgtSamp;
-
     for (i = p.state.lastBreakpointIdx + 1;  i < p.numBreakpoints; ++i )
     {
-        tgtSamp = index_type( (p.breakpoints[i].first * m_srateHz) + 0.5 );   //  cheap rounding
-        //Assert( tgtSamp >= p.state.currentSamp );
+        index_type tgtSamp = index_type( (p.breakpoints[i].first * m_srateHz) + 0.5 );   //  cheap rounding
         
         sampleCounter += sampleDiff = tgtSamp - p.state.currentSamp;
         
-        if (sampleCounter > samples)
+        if (sampleCounter > samples)// if this breakpoint is longer...
         {
-            sampleDiff -= (sampleCounter - samples);
-            sampleCounter = samples;
-            i--;
+            // cropp it...
+            sampleDiff -= (sampleCounter - samples); // substract the overflowing number of samples to get max possible sample diff
+            sampleCounter = samples; // we can process max "samples" count
         }
         
-        bp = &(p.breakpoints[i].second);
+        Breakpoint *bp = &(p.breakpoints[i].second);
         //  if the current oscillator amplitude is
         //  zero, and the target Breakpoint amplitude
         //  is not, reset the oscillator phase so that
         //  it matches exactly the target Breakpoint 
         //  phase at tgtSamp:
-        if ( m_osc.amplitude() == 0. )
+//        if ( m_osc.amplitude() == 0. && p.state.breakpointFinished )
+        if ( i == PartialStruct::NoBreakpointProcessed + 1 && p.state.breakpointFinished )
         {
             //  recompute the phase so that it is correct
             //  at the target Breakpoint (need to do this
@@ -286,29 +295,49 @@ void RealTimeSynthesizer::synthesize( PartialStruct &p, float * buffer, const in
             //
             //  double favg = 0.5 * ( prevFrequency + it.breakpoint().frequency() );
             //  double dphase = 2 * Pi * favg * ( tgtSamp - currentSamp ) / m_srateHz;
-            //
-            double dphase = Pi * ( p.state.prevFrequency + bp->frequency() ) * ( sampleDiff ) * OneOverSrate;
-            m_osc.setPhase( bp->phase() - dphase );
+            
+            double dphase = Pi * ( p.state.prevFrequency + m_osc.frequencyScaling() * bp->frequency() ) * ( tgtSamp - p.state.currentSamp ) * OneOverSrate;
+            
+            // If we transposed/pitch-shifted the sound using sample rate change, the transpose octave above would
+            // mean create new signal with every second sample missing, so the partial would start earlier. If we
+            // would like to have partial transposed but in the same time t0 as original,  what the new phase will be?
+            // It will be the original phase with the phase change during the delta of time. What delta of time is it?
+            // The start time in sample-removing pitch shifted signal would be half of time if we transpose octave up so the
+            // delta time is t0 - t0/transposeFactor. So the new phase goes like this (here we do not have time t0 so we get
+            // it from partial[iSamp]/float(fs)).
+            double phaseFixed = (bp->phase() + 2*Pi*p.avgFrequency*p.state.currentSamp*OneOverSrate*(m_osc.frequencyScaling()-1));
+
+            m_osc.setPhase( phaseFixed - dphase );
         }
         
-        m_osc.oscillate( buffer, buffer + sampleDiff, *bp, m_srateHz );
+        int samplesToBp = tgtSamp - p.state.currentSamp;
+        m_osc.oscillate( buffer, buffer + sampleDiff, *bp, m_srateHz, samplesToBp );
 
-		buffer += sampleDiff;
+		buffer += sampleDiff;// move buffer pointer
         
-        bp->_phase = m_osc.phase(); // store ending phase
-        
-        //  remember the frequency, may need it to reset the 
-        //  phase if a Null Breakpoint is encountered:
-        p.state.prevFrequency = bp->frequency();
-        p.state.lastBreakpointIdx = i;
 		p.state.currentSamp += sampleDiff;
+        p.state.breakpointFinished = tgtSamp == p.state.currentSamp;
+
+        if (p.state.breakpointFinished)
+        {
+            //  remember the frequency, may need it to reset the
+            //  phase if a Null Breakpoint is encountered:
+//            m_osc.resetEnvelopes(*bp, m_srateHz);
+//            p.state.prevFrequency = bp->frequency();
+            
+            p.state.prevFrequency = m_osc.envelopes().frequency();
+//                m_osc.setPhase(bp->phase());
+        }
         
-        if (sampleCounter >= samples)
+        if (sampleCounter == samples)
+        {
+            i--; // there is still something to be done in this break point
             break;
+        }
 	}
     
-
     p.state.envelope = m_osc.envelopes();
+    p.state.lastBreakpointIdx = i;
 }
     
 }   //  end of namespace Loris

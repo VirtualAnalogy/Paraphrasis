@@ -28,6 +28,7 @@
 
 #include "Synthesizer.h"
 #include "RealTimeSynthesizer.h"
+#include "Resampler.h"
 
 using namespace juce;
 
@@ -112,22 +113,46 @@ public:
     {
         allNotesOff(0, false); // clear all notes before setting new partials
         
-        LorisVoice* voice;
+        this->partials.clear();
+        this->partials = std::move(partials);
+        partials.clear(); // invalidate partials due to std::move
+        
+        this->samplePitch = samplePitch;
+        
+        update(this->partials, this->samplePitch);
+    }
+    
+    void setCurrentPlaybackSampleRate(double newRate) override
+    {
+        juce::Synthesiser::setCurrentPlaybackSampleRate(newRate);
+    
+        update(this->partials, this->samplePitch);
+    }
+
+private:
+    Loris::PartialList partials;
+    double samplePitch;
+    
+    void update(Loris::PartialList &partials, double samplePitch)
+    {
+        Loris::PartialList resampledPartials(partials);
+        
+        if ( ! resampledPartials.empty() )
+        {
+            Loris::Resampler resampler(1 / getSampleRate());
+            resampler.setPhaseCorrect(true);
+            resampler.quantize(resampledPartials.begin(), resampledPartials.end());
+        }
+        
+        LorisVoice *voice;
         int numVoices = getNumVoices();
         for (int i = 0; i < numVoices; i++)
         {
             voice = dynamic_cast<LorisVoice *>(getVoice(i));
             if (voice)
-                voice->setup(partials, samplePitch);
+                voice->setup(resampledPartials, samplePitch);
         }
-        
-        this->partials.clear();
-        this->partials = std::move(partials);
-        partials.clear(); // invalidate partials due to std::move
     }
-
-private:
-    Loris::PartialList partials;
     
 };
 

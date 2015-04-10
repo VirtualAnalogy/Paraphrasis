@@ -179,7 +179,7 @@ namespace Loris {
     //
     void
     RealtimeOscillator::oscillate( float * begin, float * end,
-                          const Breakpoint & bp, double srate) noexcept
+                          const Breakpoint & bp, double srate, int dSample) noexcept
     {
         double targetFreq = m_frequencyScaling * bp.frequency() * TwoPi / srate;     //  radians per sample
         double targetAmp = bp.amplitude();
@@ -201,20 +201,20 @@ namespace Loris {
             targetAmp = 0.;
         }
         //  compute trajectories:
-        const double dTime = 1. / (end - begin);
+        const double dTime = 1. / dSample; //(end - begin);
         const double dFreqOver2 = 0.5 * (targetFreq - m_instfrequency) * dTime;
         //	split frequency update in two steps, update phase using average
         //	frequency, after adding only half the frequency step
         
         const double dAmp = (targetAmp - m_instamplitude)  * dTime;
-        const double dBw = (targetBw - m_instbandwidth)  * dTime;
+//        const double dBw = (targetBw - m_instbandwidth)  * dTime;
         //  Use temporary local variables for speed.
         //  Probably not worth it when I am computing square roots
         //  and cosines...
         double ph = m_determphase;
-        double f = m_instfrequency;
-        double a = m_instamplitude;
-        double bw = m_instbandwidth;
+//        double f = m_instfrequency;
+//        double a = m_instamplitude;
+//        double bw = m_instbandwidth;
         
         // Ignore bandwidth
         //	Also use a more efficient sample loop when the bandwidth is zero.
@@ -311,6 +311,8 @@ namespace Loris {
             }   // end of
 
             ph = ph4.f[0];
+            targetAmp = a4[0];
+            targetFreq = f4[0];
             
         }
         
