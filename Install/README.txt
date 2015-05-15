@@ -1,8 +1,14 @@
+Found a bug? Please contact us at support@virtualanalogy.com.
+Wanna say thank you? Write us at virtualanalogy@virtualanalogy.com. 
+You can express your gratitude via PayPal - check out website www.virtualanalogy.com.
+
 Change Log
 ==========
 
 1.0.3
 -------------
+- Improved: Synthetise engine highly optimized
+- Added: Installer
 - Fixed: Crash in MuLab and potentially in other hosts when pressing analyze when processing is running
 - Improved: Memory usage optimised
 - Fixed: Sound click in FL Studio 11 when notes are tight together

@@ -709,7 +709,7 @@
 						<key>VALUE</key>
 						<dict>
 							<key>PATH</key>
-							<string>../LICENSE.txt</string>
+							<string>../LICENSES.txt</string>
 							<key>PATH_TYPE</key>
 							<integer>3</integer>
 						</dict>
