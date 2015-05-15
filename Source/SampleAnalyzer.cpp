@@ -1,19 +1,33 @@
 /*
-  ==============================================================================
-
-    ;
-    Created: 30 Jul 2014 6:40:21am
-    Author:  Tomas Medek
-
-  ==============================================================================
-*/
+ This is Paraphrasis synthesiser.
+ 
+ Copyright (c) 2014 by Tomas Medek
+ 
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY, without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ tom@virtualanalogy.com
+ 
+ */
 
 #include "SampleAnalyzer.h"
 
 #include "Analyzer.h"
 #include "Channelizer.h"
+#include "Distiller.h"
 #include "PartialUtils.h"
-#include "AiffFile.h"
+#include "SdifFile.h"
 #include "PartialUtils.h" 
 
 SampleAnalyzer::SampleAnalyzer(AudioFormatManager &formatManager, WaitableEvent& syncObj, const String &name)
@@ -28,41 +42,80 @@ SampleAnalyzer::~SampleAnalyzer()
 {
     
 }
+
 //==============================================================================
-void SampleAnalyzer::run()
+void SampleAnalyzer::run() noexcept
 {
     buffer.clear();
     sampleRate = 0;
     
-    if ( !samplePath.isEmpty() )
+    //TODO: loading should be controlled by exceptions not by bool functions...
+    if ( !m_samplePath.isEmpty() )
     {
-        if ( ! readViaJuce() )// && ! readViaLoris() )
+#ifdef ENABLE_SDIF_FILES
+        if (File(m_samplePath).getFileExtension().toUpperCase() == ".SDIF")
         {
-            NativeMessageBox::showMessageBoxAsync(AlertWindow::WarningIcon, "Ooops...", "Paraphrasis can not load file, sorry...");
-            analyzerSync.signal();
-            return;
+            if (loadSdif())
+                postProcessPartials();
         }
-            
-        if (threadShouldExit())
+        else
+#endif
+            if ( loadAudioFile() )
         {
-            analyzerSync.signal();
-            return;
+            postProcessPartials();
         }
-        
-        analyze();
+        else
+        {
+             NativeMessageBox::showMessageBoxAsync(AlertWindow::WarningIcon, "Ooops...", "Paraphrasis can not load file, sorry...");
+        }
     }
     analyzerSync.signal();
 }
+
 //==============================================================================
-bool SampleAnalyzer::readViaJuce()
+bool SampleAnalyzer::loadSdif() noexcept
 {
-    AudioFormatReader* reader = formatManager.createReaderFor (File(samplePath));
+    try
+    {
+        Loris::SdifFile sdifFile(m_samplePath.toStdString());
+    
+        m_partials.clear();
+        m_partials = std::move(sdifFile.partials());
+        
+        return true;
+    }
+    catch (...) { }
+    
+    return false;
+}
+
+//==============================================================================
+void SampleAnalyzer::postProcessPartials() noexcept
+{
+    setStatusMessage("Processing partials...");
+
+    // partials in partial list will be sorted by start time
+    m_partials.sort(Loris::PartialUtils::compareStartTimeLess());
+        
+    // chanelize - mark partial - not needed now
+    Loris::Channelizer channelizer(m_pitch);
+    channelizer.channelize(m_partials.begin(), m_partials.end());
+    
+//    Loris::Distiller dist;
+//    dist.distill(m_partials);
+}
+
+//==============================================================================
+bool SampleAnalyzer::loadAudioFile() noexcept
+{
+    AudioFormatReader* reader = formatManager.createReaderFor (File(m_samplePath));
     
     if (reader == nullptr)
     {
         return false;
     }
     
+    // check if user really wants to load a long sample
     if (reader->lengthInSamples / reader->sampleRate > 20)
     {
         bool result = NativeMessageBox::showOkCancelBox(AlertWindow::QuestionIcon, "Do you...?", "Do you REALLY want to load sample longer than 20 sec?");
@@ -77,14 +130,17 @@ bool SampleAnalyzer::readViaJuce()
     // read samples
     setStatusMessage("Reading file...");
     AudioSampleBuffer fileSamples(2, reader->lengthInSamples);
-
     reader->read(&fileSamples, 0, reader->lengthInSamples, 0, true, true);
+    
+    // reverse
     if (reverse)
-        fileSamples.reverse(0, reader->lengthInSamples);    
+        fileSamples.reverse(0, reader->lengthInSamples);
+    
+    // mono -> stereo
     if (reader->numChannels == 2 && fileSamples.getNumChannels() == 2)
     {
-        // huh strange stereo to mono algorith witch seems to be working...
-        // credits or inspiration is from here: http://www.dsprelated.com/showmessage/106421/2.php
+        // huh strange stereo to mono algorith which seems to be working...
+        // credits or inspiration: http://www.dsprelated.com/showmessage/106421/2.php
         int64 numSamples = fileSamples.getNumSamples();
         for (int i = 0; i < numSamples; i++)
         {
@@ -98,7 +154,7 @@ bool SampleAnalyzer::readViaJuce()
     delete reader;
     reader = nullptr;
     
-    // transform data from JUCE to Loris
+    // transform data from JUCE to Loris (from float to double)
     buffer.reserve(lengthInSamples);
     const float *sample = fileSamples.getReadPointer(0);
     for (int i = 0; i < lengthInSamples; i++)
@@ -106,29 +162,13 @@ bool SampleAnalyzer::readViaJuce()
         buffer.push_back(sample[i]);
     }
     
+    analyze();
+    
     return true;
 }
+
 //==============================================================================
-bool SampleAnalyzer::readViaLoris()
-{
-    try
-    {
-        Loris::AiffFile inputFile(samplePath.toStdString());
-        
-        buffer = inputFile.samples();
-        Loris::AiffFile::markers_type markers = inputFile.markers();
-        sampleRate = inputFile.sampleRate();
-        return true;
-    }
-    catch (...)
-    {
-        return false;
-    }
-   
-    return false;
-}
-//==============================================================================
-void SampleAnalyzer::analyze()
+void SampleAnalyzer::analyze() noexcept
 {
     // analyze
     setStatusMessage("Anayzing sample...");
@@ -136,13 +176,6 @@ void SampleAnalyzer::analyze()
     analyzer.analyze(buffer, sampleRate);
     
     m_partials.clear();
-    m_partials = analyzer.partials();
+    m_partials = std::move(analyzer.partials());
     
-    setStatusMessage("Processing partials...");
-    // chanelize - mark partial
-    Loris::Channelizer channelizer(m_pitch);
-    channelizer.channelize(m_partials.begin(), m_partials.end());
-    
-    // partials in partial list will be sorted by start time
-    m_partials.sort(Loris::PartialUtils::compareStartTimeLess());
 }

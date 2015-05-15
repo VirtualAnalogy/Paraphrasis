@@ -220,7 +220,7 @@ public:
 	//!
 	//!	\param	rate The new synthesis sample rate.
 	//!	\throw	InvalidArgument if the specified rate is nonpositive.
-	void setSampleRate( double rate );
+	virtual void setSampleRate( double rate );
 	//! Return access to the Filter used by this Synthesizer's 
 	//! Oscillator to implement bandwidth-enhanced sinusoidal 
 	//! synthesis. (Can use this access to make changes to the
