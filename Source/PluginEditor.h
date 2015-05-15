@@ -23,6 +23,12 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
 #include "PluginProcessor.h"
+
+#include "TeragonGuiComponents.h"
+
+#include "Resources.h"
+
+#include "dRowAudio_PitchDetector.h"
 //[/Headers]
 
 
@@ -36,35 +42,72 @@
                                                                     //[/Comments]
 */
 class ParaphrasisAudioProcessorEditor  : public AudioProcessorEditor,
-                                         public Timer,
-                                         public ButtonListener
+                                         public ParameterObserver,
+                                         public ButtonListener,
+                                         public LabelListener
 {
 public:
     //==============================================================================
-    ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter);
+    ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet& p, teragon::ResourceCache *r, AudioFormatManager &formatManager);
     ~ParaphrasisAudioProcessorEditor();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void timerCallback();
+    virtual bool isRealtimePriority() const
+    {
+        return false;
+    }
+
     ParaphrasisAudioProcessor* getProcessor() const
     {
-        return static_cast <ParaphrasisAudioProcessor*> (getAudioProcessor() );
+        return static_cast <ParaphrasisAudioProcessor*>(getAudioProcessor());
     }
+
+    void lightOn(bool on)
+    {
+        ledBtn->setToggleState(on, false);
+    }
+
+    virtual void onParameterUpdated(const Parameter *parameter) ;
+    static double checkParameterBoundaries(const Parameter *parameter, double value);
+
     //[/UserMethods]
 
     void paint (Graphics& g);
     void resized();
     void buttonClicked (Button* buttonThatWasClicked);
+    void labelTextChanged (Label* labelThatHasChanged);
 
+    // Binary resources:
+    static const char* background2_png;
+    static const int background2_pngSize;
+    static const char* led_off_png;
+    static const int led_off_pngSize;
+    static const char* led_on_png;
+    static const int led_on_pngSize;
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    teragon::ConcurrentParameterSet& parameters;
+    teragon::ResourceCache *resources;
+    AudioFormatManager& formatManager;
+    std::string path;
+    drow::PitchDetector detector;
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<TextButton> bypassBtn;
+    ScopedPointer<teragon::ImageKnobLarge> knob;
+    ScopedPointer<teragon::ImageKnobLarge> knob2;
+    ScopedPointer<Label> sampleLbl;
+    ScopedPointer<ImageButton> selectBtn;
+    ScopedPointer<ImageButton> analyzeBtn;
+    ScopedPointer<Label> pitchLbl;
+    ScopedPointer<Label> resolutionLbl;
+    ScopedPointer<ImageButton> resolutionBtn;
+    ScopedPointer<ImageButton> ledBtn;
+    ScopedPointer<ImageButton> reverseBtn;
+    Image cachedImage_background2_png;
 
 
     //==============================================================================

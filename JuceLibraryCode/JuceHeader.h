@@ -14,6 +14,7 @@
 #define __APPHEADERFILE_BTAXSM__
 
 #include "AppConfig.h"
+#include "modules/dRowAudio/dRowAudio.h"
 #include "modules/juce_audio_basics/juce_audio_basics.h"
 #include "modules/juce_audio_devices/juce_audio_devices.h"
 #include "modules/juce_audio_formats/juce_audio_formats.h"
@@ -36,8 +37,8 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "Paraphrasis";
-    const char* const  versionString  = "1.0.0";
-    const int          versionNumber  = 0x10000;
+    const char* const  versionString  = "1.0.2";
+    const int          versionNumber  = 0x10002;
 }
 
 #endif   // __APPHEADERFILE_BTAXSM__
