@@ -1,185 +1,36 @@
 /*
- ==============================================================================
- This file was auto-generated!
- It contains the basic startup code for a Juce application.
- ==============================================================================
- */
+ This is Paraphrasis synthesiser.
+ 
+ Copyright (c) 2014 by Tomas Medek
+ 
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY, without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ tom@virtualanalogy.com
+*/
+
 // My stuff
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "ParameterDefitions.h"
+
 // Loris
 #include "Analyzer.h"
 #include "AiffFile.h"
 #include "PartialUtils.h"
 #include "Resampler.h"
 #include "SdifFile.h"
-#include "Synthesizer.h"
-#include "RealTimeSynthesizer.h"
-
-//==============================================================================
-class LorisSound : public SynthesiserSound
-{
-public:
-    LorisSound() {}
-
-    bool appliesToNote(const int /*midiNoteNumber*/)
-    {
-        return true;
-    }
-    bool appliesToChannel(const int /*midiChannel*/)
-    {
-        return true;
-    }
-};
-
-//==============================================================================
-/** A simple demo synth voice that just plays a sine wave.. */
-class LorisVoice  : public SynthesiserVoice
-{
-public:
-    LorisVoice() :
-        tailOff(0.0), sampleIndex(0), synth(buffer)
-    {
-        secPerSample = 1.0 / getSampleRate();
-
-        lastFreqMultiplyer = 1.0;
-        play = false;
-    }
-
-    bool canPlaySound(SynthesiserSound* sound)
-    {
-        return dynamic_cast <LorisSound*>(sound) != 0;
-    }
-
-    void startNote(int midiNoteNumber, float velocity,
-                   SynthesiserSound* /*sound*/, int /*currentPitchWheelPosition*/)
-    {
-        level = velocity;
-        sampleIndex = 0;
-        tailOff = 0.0;
-        
-        double freqMultiplyer = MidiMessage::getMidiNoteInHertz (midiNoteNumber) / defaultPitch;
-    
-        synth.resetSynth(freqMultiplyer / lastFreqMultiplyer);//scale back to original and scale to desired pitch
-        
-        lastFreqMultiplyer = freqMultiplyer;
-        play = true;
-    }
-
-    void stopNote(bool allowTailOff)
-    {
-        if (allowTailOff)
-        {
-            // start a tail-off by setting this flag. The render callback will pick up on
-            // this and do a fade out, calling clearCurrentNote() when it's finished.
-            
-            if (tailOff == 0.0) // we only need to begin a tail-off if it's not already doing so - the
-                // stopNote method could be called more than once.
-                tailOff = 1.0;
-        }
-        else
-        {
-            // we're being told to stop playing immediately, so reset everything..
-            stop();
-        }
-    }
-
-    void pitchWheelMoved(int /*newValue*/)
-    {
-        // can't be bothered implementing this for the demo!
-    }
-
-    void controllerMoved(int /*controllerNumber*/, int /*newValue*/)
-    {
-        // not interested in controllers in this case.
-    }
-
-    void renderNextBlock(AudioSampleBuffer& outputBuffer, int startSample, int numSamples)
-    {
-		if (!play)
-		{
-			return;
-		}
-        
-        synth.synthesizeNext(numSamples);
-        
-        if (tailOff > 0.)
-        {
-            while (--numSamples >= 0)
-            {
-                double currentSample = sampleIndex < buffer.size() ? buffer[sampleIndex] * tailOff : 0.0;
-                
-                tailOff *= 0.99;
-                
-                if (tailOff <= 0.005)
-                {
-                    stop();
-                    break;
-                }
-
-                for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-                    outputBuffer.addSample(i, startSample, level * currentSample);
-
-                ++startSample;
-                ++sampleIndex;
-            }
-        }
-        else
-        {
-            while (--numSamples >= 0)
-            {
-                double currentSample = sampleIndex < buffer.size() ? buffer[sampleIndex] : 0.0;
-                
-                for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-                    outputBuffer.addSample(i, startSample, level * currentSample);
-                
-                ++startSample;
-                ++sampleIndex;
-            }
-        }
-    }
-    
-    void stop()
-    {
-        play = false;
-        tailOff = 0.;
-        sampleIndex = 0;
-        clearCurrentNote();
-    }
-    
-    void setup(Loris::PartialList &partials, double pitch)
-    {
-        this->partials.clear();
-        
-        // make copy of partials for frequency scaling and prevent
-        // strange transpositions
-        auto it = partials.begin();
-        while (it != partials.end()) {
-            this->partials.push_back(*it);
-            it++;
-        }
-        
-        this->lastFreqMultiplyer = 1.;
-
-        this->defaultPitch = pitch;
-        
-        synth.clear();
-        synth.setupRealtime(this->partials);
-    }
-
-private:
-    std::vector<double> buffer;
-    double secPerSample;
-    double level, tailOff;
-    int sampleIndex;
-    double lastFreqMultiplyer;
-    bool play;
-    double defaultPitch;
-    
-    Loris::RealTimeSynthesizer synth;
-    Loris::PartialList partials;
-};
 
 
 //==============================================================================
@@ -188,21 +39,21 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor()
       ParameterObserver(),
       analyzer(formatManager, analyzerSync)
 {
+    // setup parameters
     parameters.add(new teragon::FrequencyParameter(kParameterSamplePitch_name, kParameterSamplePitch_minValue,
                                                    kParameterSamplePitch_maxValue, kParameterSamplePitch_defaultValue));
     parameters.add(new teragon::FrequencyParameter(kParameterFrequencyResolution_name, kParameterFrequencyResolution_minValue,
                                                    kParameterFrequencyResolution_maxValue, kParameterFrequencyResolution_defaultValue));
     parameters.add(new teragon::StringParameter(kParameterLastSamplePath_name));
-    
     parameters.add(new teragon::BooleanParameter(kParameterReverse_name, kParameterReverse_defaultValue));
-    
-    parameters.pause();
 
-    for (int i = 16; --i >= 0;)
+    // setup synth
+    for (int i = kDefaultSynthesiserVoiceNumbers; --i >= 0;)
         synth.addVoice(new LorisVoice());
 
     synth.addSound(new LorisSound());
     
+    // setup format manager
     formatManager.registerBasicFormats();
 }
 
@@ -213,33 +64,29 @@ ParaphrasisAudioProcessor::~ParaphrasisAudioProcessor()
 }
 
 //==============================================================================
-void ParaphrasisAudioProcessor::loadSample()
+void ParaphrasisAudioProcessor::analyzeSample()
 {
+    // upate analyzer parameters
     analyzer.setSamplePath(parameters[kParameterLastSamplePath_name]->getDisplayText());
     analyzer.setFrequencyResolution(parameters[kParameterFrequencyResolution_name]->getValue());
     analyzer.setPitch(parameters[kParameterSamplePitch_name]->getValue());
     analyzer.setReverse(parameters[kParameterReverse_name]->getValue());
-//  analyzer.startThread();
+
+    // analyze
     analyzer.runThread();
-    
     analyzerSync.wait();
     
+    // setup synth
+    double samplePitch = parameters[kParameterSamplePitch_name]->getValue();
     
-    int numVoices = synth.getNumVoices();
-    partials = analyzer.partials();
-    resamplePartials(sampleRate);
+    m_isReady = analyzer.partials().empty() == false;
     
-    LorisVoice* voice;
-    for (int i = 0; i < numVoices; i++)
-    {
-        voice = dynamic_cast<LorisVoice *>(synth.getVoice(i));
-        if (voice)
-            voice->setup(partials, parameters[kParameterSamplePitch_name]->getValue());
-    }
+    synth.setup(analyzer.partials(), samplePitch);// partials will be moved from analyzer to synth
     
-            ParaphrasisAudioProcessorEditor* editor = dynamic_cast<ParaphrasisAudioProcessorEditor *>(getActiveEditor());
-            if (editor)
-                editor->lightOn(! partials.empty() );
+    // indicate analysis state
+    ParaphrasisAudioProcessorEditor* editor = dynamic_cast<ParaphrasisAudioProcessorEditor *>(getActiveEditor());
+    if (editor)
+        editor->lightOn( m_isReady );
 }
 
 //==============================================================================
@@ -247,24 +94,16 @@ void ParaphrasisAudioProcessor::prepareToPlay(double sampleRate, int samplesPerB
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    this->sampleRate = sampleRate;
+    
+    // From JUCE doc:
+    // The number of samples in these buffers is NOT guaranteed to be the same for
+    // every callback, and may be more or less than the estimated value given to
+    // prepareToPlay(). Your code must be able to cope with variable-sized blocks,
+    // or you're going to get clicks and crashes!
     TeragonPluginBase::prepareToPlay(sampleRate, samplesPerBlock);
     synth.setCurrentPlaybackSampleRate(sampleRate);
-    resamplePartials(sampleRate);
 }
 
-//==============================================================================
-void ParaphrasisAudioProcessor::resamplePartials(double sampleRate)
-{
-    //  use a Resampler to quantize the Breakpoint times and
-    //  correct the phases:
-    Loris::Resampler quantizer( 1.0 / sampleRate );
-    quantizer.setPhaseCorrect( true );
-    for ( auto p = partials.begin(); p != partials.end(); ++p )
-    {
-        quantizer.quantize( *p );
-    }
-}
 
 //==============================================================================
 void ParaphrasisAudioProcessor::releaseResources()
@@ -284,42 +123,31 @@ void ParaphrasisAudioProcessor::onParameterUpdated(const Parameter *parameter)
 void ParaphrasisAudioProcessor::setStateInformation(const void *data, int sizeInBytes)
 {
     TeragonPluginBase::setStateInformation(data, sizeInBytes);
-    loadSample();
+    analyzeSample();// reload sample when state information changes (possible path change)
 }
 
 //==============================================================================
 void ParaphrasisAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    //for (int channel = 0; channel < getNumInputChannels(); ++channel)
-    //{
-    //    float* channelData = buffer.getWritePointer (channel);
-    // ..do something to the data...
-    //}
-    // In case we have more outputs than inputs, we'll clear any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    //for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
-    //{
-    //    buffer.clear (i, 0, buffer.getNumSamples() );
-    //}
-
     // In case we have more outputs than inputs, we'll clear any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
     TeragonPluginBase::processBlock(buffer, midiMessages);
 
-	// In case we have more outputs than inputs, we'll clear any output
-	// channels that didn't contain input data, (because these aren't
-	// guaranteed to be empty - they may contain garbage).
-	for (int i = 0; i < getNumInputChannels(); ++i) {
+	// Clear input channels.
+	for (int i = 0; i < getNumInputChannels(); ++i)
+    {
 		buffer.clear(i, 0, buffer.getNumSamples());
 	}
     
+    // synthesise
     const int numSamples = buffer.getNumSamples();
-
     synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
+    
+    // copy first channel to other(s) (synth is mono)
+    auto synthetisedChannel = buffer.getReadPointer(0);
+    for (int i = buffer.getNumChannels(); --i > 0;)
+        buffer.copyFrom(i, 0, synthetisedChannel, numSamples);
 }
 //==============================================================================
 bool ParaphrasisAudioProcessor::hasEditor() const
