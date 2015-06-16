@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Introjucer version: 3.1.1
+  Created with Introjucer version: 3.1.0
 
   ------------------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
                            Image(), 1.000f, Colour (0x00000000));
     addAndMakeVisible (pitchLbl = new Label ("pitchLbl",
                                              TRANS("20k")));
-    pitchLbl->setFont (Font (13.00f, Font::plain));
+    pitchLbl->setFont (Font (12.00f, Font::plain));
     pitchLbl->setJustificationType (Justification::centred);
     pitchLbl->setEditable (true, true, false);
     pitchLbl->setColour (Label::textColourId, Colour (0xf2c3c3c3));
@@ -103,7 +103,7 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
 
     addAndMakeVisible (resolutionLbl = new Label ("resolutionLbl",
                                                   TRANS("20k")));
-    resolutionLbl->setFont (Font (13.00f, Font::plain));
+    resolutionLbl->setFont (Font (12.00f, Font::plain));
     resolutionLbl->setJustificationType (Justification::centred);
     resolutionLbl->setEditable (true, true, false);
     resolutionLbl->setColour (Label::textColourId, Colour (0xffc3c3c3));
@@ -140,11 +140,6 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
     cachedImage_background2_png = ImageCache::getFromMemory (background2_png, background2_pngSize);
 
     //[UserPreSize]
-    // load custom Paraphrasis font
-    Font font = Font(Typeface::createSystemTypefaceFor(Resources::anitaSemiSquare_ttf, Resources::anitaSemiSquare_ttfSize));
-    font.setHeight(11.5f);
-    pitchLbl->setFont(font);
-    resolutionLbl->setFont(font);
 
     // remove the ugly purple border from label's text edit
     LookAndFeel& laf = LookAndFeel::getDefaultLookAndFeel();
@@ -242,9 +237,6 @@ void ParaphrasisAudioProcessorEditor::paint (Graphics& g)
 
 void ParaphrasisAudioProcessorEditor::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
     knob->setBounds (60, 129, 64, 64);
     knob2->setBounds (176, 129, 64, 64);
     sampleLbl->setBounds (24, 45, 176, 20);
@@ -458,12 +450,12 @@ BEGIN_JUCER_METADATA
          explicitFocusOrder="0" pos="57 192 70 24" textCol="f2c3c3c3"
          edTextCol="ff000000" edBkgCol="0" hiliteCol="40ffffff" labelText="20k"
          editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="13" bold="0" italic="0" justification="36"/>
+         fontname="Default font" fontsize="12" bold="0" italic="0" justification="36"/>
   <LABEL name="resolutionLbl" id="c17f4e0142be49bf" memberName="resolutionLbl"
          virtualName="" explicitFocusOrder="0" pos="173 192 70 24" textCol="ffc3c3c3"
          outlineCol="ffffff" edTextCol="ff000000" edBkgCol="0" hiliteCol="40ffffff"
          labelText="20k" editableSingleClick="1" editableDoubleClick="1"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="13"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="12"
          bold="0" italic="0" justification="36"/>
   <IMAGEBUTTON name="analyzeBtn" id="5822ed37b120e159" memberName="resolutionBtn"
                virtualName="" explicitFocusOrder="0" pos="128 155 44 32" buttonText="new button"
