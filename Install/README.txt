@@ -1,3 +1,9 @@
+Source Coude
+============
+You can get source code at http://github.com/VirtualAnalogy/Paraphrasis.
+
+Contact
+=======
 Found a bug? Please contact us at support@virtualanalogy.com.
 Wanna say thank you? Write us at virtualanalogy@virtualanalogy.com. 
 You can express your gratitude via PayPal - check out website www.virtualanalogy.com.
