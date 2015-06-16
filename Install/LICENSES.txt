@@ -353,8 +353,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 Graphics
 ==============
-Button and handle graphics is based whiteknob_4.knob by tonebytes © 2013, which is licensed under a Creative Commons CC-BY. http://creativecommons.org/licenses/by/3.0/
+Button and slider handle (slider_thumb) graphics is based on white_knob4.knob (http://www.g200kg.com/en/webknobman/gallery.php?m=p&p=144) by tonebytes, which is licensed under CC-BY 3.0 http://creativecommons.org/licenses/by/3.0/
 
-Knob is based on knob_64_white.knob by az (c) 2011, which is licensed under Creative Commons CC-BY. Led is based on led_24_blue.knob by az (c) 2011. Licensed under same license.
+Knob is based on knob_64_white.knob by az (c) 2011 (http://www.g200kg.com/en/webknobman/gallery.php?m=p&p=47), which is licensed under Creative Commons CC-BY 3.0 http://creativecommons.org/licenses/by/3.0/
 
-Other graphic stuff is done by Tomas Medek and is licensed under CC BY-NC-ND 4.0 http://creativecommons.org/licenses/by-nc-nd/4.0/
+Led is based on led_24_blue.knob (http://www.g200kg.com/en/webknobman/gallery.php?m=p&p=53) by az (c) 2011, which is licensed under same license Creative Commons CC-BY 3.0 http://creativecommons.org/licenses/by/3.0/
+
+For Paraphrasis logo and labels GUI is used font Anita semi square Font (http://terran-21.deviantart.com/art/Anita-semi-square-Font-423870881) by Terran-21, which is licensed under CC-BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/)
