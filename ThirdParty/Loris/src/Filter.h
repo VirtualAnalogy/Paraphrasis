@@ -32,6 +32,7 @@
  * loris@cerlsoundgroup.org
  *
  * http://www.cerlsoundgroup.org/Loris/
+ * Modified by Tomas Medek, Aug 4, 2014
  *
  */
 

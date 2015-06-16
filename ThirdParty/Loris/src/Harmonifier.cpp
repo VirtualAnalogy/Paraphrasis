@@ -29,6 +29,7 @@
  *
  * http://www.cerlsoundgroup.org/Loris/
  *
+ * Renamed by Tomas Medek, Aug 4, 2014
  */
 #include "Harmonifier.h"
 

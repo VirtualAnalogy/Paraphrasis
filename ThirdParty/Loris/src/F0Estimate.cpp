@@ -35,6 +35,7 @@
  *
  * http://www.cerlsoundgroup.org/Loris/
  *
+ * Renamed by Tomas Medek, Aug 4, 2014
  */
 
 #if HAVE_CONFIG_H
