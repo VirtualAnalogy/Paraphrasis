@@ -241,11 +241,12 @@
                extraDefs="" externalLibraries="" extraCompilerFlags="-std=c++11"
                vstFolder="../../../SDKs/vstsdk2.4" vst3Folder="../../../SDKs/VST3 SDK">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.7 SDK" osxArchitecture="64BitUniversal"
+        <CONFIGURATION name="Debug" osxSDK="10.9 SDK" osxCompatibility="10.7 SDK" osxArchitecture="64BitUniversal"
                        isDebug="1" optimisation="1" targetName="Paraphrasis" headerPath="../../ThirdParty/Loris/src&#10;../../ThirdParty/Loris/&#10;/opt/local/include/&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64&#10;../../ThirdParty/TeragonGuiComponents/Components/Source ../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include&#10;../../ThirdParty/sse2math/"
                        cppLibType="libc++" libraryPath="/opt/local/lib"/>
-        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.7 SDK" osxArchitecture="64BitUniversal"
-                       isDebug="0" optimisation="3" targetName="Paraphrasis" headerPath="../../ThirdParty/Loris/src&#10;../../ThirdParty/Loris/&#10;/opt/local/include/&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64&#10;../../ThirdParty/TeragonGuiComponents/Components/Source ../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include&#10;../../ThirdParty/sse2math/"
+        <CONFIGURATION name="Release" osxSDK="10.9 SDK" osxCompatibility="10.7 SDK"
+                       osxArchitecture="64BitUniversal" isDebug="0" optimisation="3"
+                       targetName="Paraphrasis" headerPath="../../ThirdParty/Loris/src&#10;../../ThirdParty/Loris/&#10;/opt/local/include/&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64&#10;../../ThirdParty/TeragonGuiComponents/Components/Source ../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include&#10;../../ThirdParty/sse2math/"
                        cppLibType="libc++" libraryPath="/opt/local/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

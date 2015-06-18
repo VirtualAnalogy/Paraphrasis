@@ -34,11 +34,13 @@
  using namespace juce;
 #endif
 
+#if ! JUCE_DONT_DECLARE_PROJECTINFO
 namespace ProjectInfo
 {
     const char* const  projectName    = "Paraphrasis";
     const char* const  versionString  = "1.0.3";
     const int          versionNumber  = 0x10003;
 }
+#endif
 
 #endif   // __APPHEADERFILE_BTAXSM__
