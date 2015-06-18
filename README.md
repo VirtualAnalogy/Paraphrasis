@@ -9,4 +9,4 @@ JUCE (GPLv2, GPLv3, AGPLv3, ISC), Loris (GPLv2), Teragon GUI Components, (GPLv2)
 
 Build
 -----
-To build Paraphrasis you need XCode on Mac. Then copy ThirdParty\CoreAudio to /Applications/Xcode.app/Contents/Developer/Extras/CoreAudio. If Extra directory does not exists create it.
+To build Paraphrasis you need XCode on Mac. Then copy ThirdParty\CoreAudio to /Applications/Xcode.app/Contents/Developer/Extras/CoreAudio. If 'Extras' directory does not exists create it.
