@@ -35,6 +35,7 @@
  *
  *
  * Phase correction added by Kelly 13 Dec 2005.
+ * Renamed by Tomas Medek, Aug 4, 2014
  */
 #if HAVE_CONFIG_H
 	#include "config.h"

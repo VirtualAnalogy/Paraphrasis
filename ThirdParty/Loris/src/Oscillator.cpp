@@ -28,6 +28,8 @@
  * loris@cerlsoundgroup.org
  *
  * http://www.cerlsoundgroup.org/Loris/
+ * Renamed by Tomas Medek, Aug 4, 2014
+ * Modified by Tomas Medek Sep 23 2014
  *
  */
 

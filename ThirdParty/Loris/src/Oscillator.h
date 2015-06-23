@@ -31,6 +31,8 @@
  *
  * http://www.cerlsoundgroup.org/Loris/
  *
+ * Modified: by Tomas Medek, 29, Aug 2014
+ *
  */
 
 #include "NoiseGenerator.h"
@@ -90,6 +92,7 @@ public:
     //! (frequency, amplitude, bandwidth, and phase).
     //! The sample rate is needed to convert the
     //! Breakpoint frequency (Hz) to radians per sample.
+    //TM: virtual added
     virtual void resetEnvelopes(const Breakpoint& bp, double srate);
 
     //! Reset the phase of the Oscillator to the specified
