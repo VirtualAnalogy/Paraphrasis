@@ -15,10 +15,10 @@ Change Log
 -------------
 - Improved: Synthetise engine highly optimized
 - Added: Installer
-- Fixed: Crash in MuLab and potentially in other hosts when pressing analyze when processing is running
+- Fixed: Crash in MuLab and possibly in other hosts when pressing analyze while processing is running
 - Improved: Memory usage optimised
 - Fixed: Sound click in FL Studio 11 when notes are tight together
-- Fixed: Paraphrasis pay attention to sample rate chages
+- Fixed: Paraphrasis pay attention to sample rate changes
 - Improved: Mac OS compatibility is now 10.7+
 
 1.0.2
