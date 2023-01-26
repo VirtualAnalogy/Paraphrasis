@@ -19,71 +19,68 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_ITUNESLIBRARYPARSER_H__
-#define __DROWAUDIO_ITUNESLIBRARYPARSER_H__
+#ifndef DROWAUDIO_ITUNESLIBRARYPARSER_H
+#define DROWAUDIO_ITUNESLIBRARYPARSER_H
 
 #include "dRowAudio_Utility.h"
 
-//==============================================================================
 /** Parses an iTunes Xml library into a ValueTree using a background thread.
- 
+
     If the tree passed in already contains a generated library this will merge
     any new data from the file into it preserving any sub-trees or attributes
     that may have been added.
- 
+
     You shouldn't need to use this directly, use the higher-level iTunesLibrary
     instead.
  */
-class ITunesLibraryParser : public Thread
+class ITunesLibraryParser : public juce::Thread
 {
 public:
-    //==============================================================================
     /** Creates a parser with a given valid library file and a ValueTree with which
         to put the parsed data.
-     */
-	ITunesLibraryParser (const File& iTunesLibraryFileToUse, const ValueTree& elementToFill,
-                         const CriticalSection& lockToUse);
-	
-    /** Destructor.
-     */
-	~ITunesLibraryParser();
+    */
+    ITunesLibraryParser (const juce::File& iTunesLibraryFileToUse,
+                         const juce::ValueTree& elementToFill,
+                         const juce::CriticalSection& lockToUse);
 
-	/** Returns true if the parser has finished.
-     */
-	bool hasFinished()                      {	return finished;    }
+    /** Destructor. */
+    ~ITunesLibraryParser() override;
 
+    //==============================================================================
+    /** Returns true if the parser has finished. */
+    bool hasFinished() const { return finished; }
+
+    /** Returns the lock being used. */
+    const juce::CriticalSection& getLock() const { return lock; }
+
+    //==============================================================================
     /** @internal */
-	void run();
+    void run() override;
 
-    /** Returns the lock being used.
-     */
-    const CriticalSection& getLock ()       {   return lock;        }
-    
 private:
     //==============================================================================
-    const CriticalSection& lock;
-	
-    const File iTunesLibraryFile;
-	ValueTree treeToFill, partialTree;
-	ScopedPointer<XmlElement> iTunesDatabase;
-	XmlElement *iTunesLibraryTracks, *currentElement;
+    const juce::CriticalSection& lock;
+
+    const juce::File iTunesLibraryFile;
+    juce::ValueTree treeToFill, partialTree;
+    std::unique_ptr<juce::XmlElement> iTunesDatabase;
+    juce::XmlElement *iTunesLibraryTracks, *currentElement;
 
     int numAdded;
-	bool finished;
+    bool finished;
 
     //==============================================================================
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ITunesLibraryParser);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ITunesLibraryParser)
 };
 
-
-#endif  // __DROWAUDIO_ITUNESLIBRARYPARSER_H__
+#endif  // DROWAUDIO_ITUNESLIBRARYPARSER_H

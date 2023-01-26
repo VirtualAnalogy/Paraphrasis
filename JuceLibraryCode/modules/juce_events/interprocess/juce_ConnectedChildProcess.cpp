@@ -2,32 +2,38 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-   ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-enum { magicMastSlaveConnectionHeader = 0x712baf04 };
+namespace juce
+{
+
+enum { magicCoordWorkerConnectionHeader = 0x712baf04 };
 
 static const char* startMessage = "__ipc_st";
 static const char* killMessage  = "__ipc_k_";
 static const char* pingMessage  = "__ipc_p_";
 enum { specialMessageSize = 8, defaultTimeoutMs = 8000 };
+
+static bool isMessageType (const MemoryBlock& mb, const char* messageType) noexcept
+{
+    return mb.matches (messageType, (size_t) specialMessageSize);
+}
 
 static String getCommandLinePrefix (const String& commandLineUniqueID)
 {
@@ -45,10 +51,7 @@ struct ChildProcessPingThread  : public Thread,
         pingReceived();
     }
 
-    static bool isPingMessage (const MemoryBlock& m) noexcept
-    {
-        return memcmp (m.getData(), pingMessage, specialMessageSize) == 0;
-    }
+    void startPinging()                     { startThread (Priority::low); }
 
     void pingReceived() noexcept            { countdown = timeoutMs / 1000 + 1; }
     void triggerConnectionLostMessage()     { triggerAsyncUpdate(); }
@@ -57,6 +60,8 @@ struct ChildProcessPingThread  : public Thread,
     virtual void pingFailed() = 0;
 
     int timeoutMs;
+
+    using AsyncUpdater::cancelPendingUpdate;
 
 private:
     Atomic<int> countdown;
@@ -67,7 +72,7 @@ private:
     {
         while (! threadShouldExit())
         {
-            if (--countdown <= 0 || ! sendPingMessage (MemoryBlock (pingMessage, specialMessageSize)))
+            if (--countdown <= 0 || ! sendPingMessage ({ pingMessage, specialMessageSize }))
             {
                 triggerConnectionLostMessage();
                 break;
@@ -81,59 +86,65 @@ private:
 };
 
 //==============================================================================
-struct ChildProcessMaster::Connection  : public InterprocessConnection,
-                                         private ChildProcessPingThread
+struct ChildProcessCoordinator::Connection  : public InterprocessConnection,
+                                              private ChildProcessPingThread
 {
-    Connection (ChildProcessMaster& m, const String& pipeName, int timeout)
-        : InterprocessConnection (false, magicMastSlaveConnectionHeader),
+    Connection (ChildProcessCoordinator& m, const String& pipeName, int timeout)
+        : InterprocessConnection (false, magicCoordWorkerConnectionHeader),
           ChildProcessPingThread (timeout),
           owner (m)
     {
-        if (createPipe (pipeName, timeoutMs))
-            startThread (4);
+        createPipe (pipeName, timeoutMs);
     }
 
-    ~Connection()
+    ~Connection() override
     {
+        cancelPendingUpdate();
         stopThread (10000);
     }
+
+    using ChildProcessPingThread::startPinging;
 
 private:
     void connectionMade() override  {}
     void connectionLost() override  { owner.handleConnectionLost(); }
 
-    bool sendPingMessage (const MemoryBlock& m) override    { return owner.sendMessageToSlave (m); }
+    bool sendPingMessage (const MemoryBlock& m) override    { return owner.sendMessageToWorker (m); }
     void pingFailed() override                              { connectionLost(); }
 
     void messageReceived (const MemoryBlock& m) override
     {
         pingReceived();
 
-        if (m.getSize() != specialMessageSize || ! isPingMessage (m))
-            owner.handleMessageFromSlave (m);
+        if (m.getSize() != specialMessageSize || ! isMessageType (m, pingMessage))
+            owner.handleMessageFromWorker (m);
     }
 
-    ChildProcessMaster& owner;
+    ChildProcessCoordinator& owner;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Connection)
 };
 
 //==============================================================================
-ChildProcessMaster::ChildProcessMaster() {}
+ChildProcessCoordinator::ChildProcessCoordinator() = default;
 
-ChildProcessMaster::~ChildProcessMaster()
+ChildProcessCoordinator::~ChildProcessCoordinator()
 {
-    if (connection != nullptr)
-    {
-        sendMessageToSlave (MemoryBlock (killMessage, specialMessageSize));
-        connection->disconnect();
-        connection = nullptr;
-    }
+    killWorkerProcess();
 }
 
-void ChildProcessMaster::handleConnectionLost() {}
+void ChildProcessCoordinator::handleConnectionLost() {}
 
-bool ChildProcessMaster::sendMessageToSlave (const MemoryBlock& mb)
+void ChildProcessCoordinator::handleMessageFromWorker (const MemoryBlock& mb)
+{
+    JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wdeprecated-declarations")
+    JUCE_BEGIN_IGNORE_WARNINGS_MSVC (4996)
+    handleMessageFromSlave (mb);
+    JUCE_END_IGNORE_WARNINGS_GCC_LIKE
+    JUCE_END_IGNORE_WARNINGS_MSVC
+}
+
+bool ChildProcessCoordinator::sendMessageToWorker (const MemoryBlock& mb)
 {
     if (connection != nullptr)
         return connection->sendMessage (mb);
@@ -142,96 +153,114 @@ bool ChildProcessMaster::sendMessageToSlave (const MemoryBlock& mb)
     return false;
 }
 
-bool ChildProcessMaster::launchSlaveProcess (const File& executable, const String& commandLineUniqueID, int timeoutMs)
+bool ChildProcessCoordinator::launchWorkerProcess (const File& executable, const String& commandLineUniqueID,
+                                                   int timeoutMs, int streamFlags)
 {
-    connection = nullptr;
-    jassert (childProcess.kill());
+    killWorkerProcess();
 
-    const String pipeName ("p" + String::toHexString (Random().nextInt64()));
+    auto pipeName = "p" + String::toHexString (Random().nextInt64());
 
     StringArray args;
     args.add (executable.getFullPathName());
     args.add (getCommandLinePrefix (commandLineUniqueID) + pipeName);
 
-    if (childProcess.start (args))
+    childProcess.reset (new ChildProcess());
+
+    if (childProcess->start (args, streamFlags))
     {
-        connection = new Connection (*this, pipeName, timeoutMs <= 0 ? defaultTimeoutMs : timeoutMs);
+        connection.reset (new Connection (*this, pipeName, timeoutMs <= 0 ? defaultTimeoutMs : timeoutMs));
 
         if (connection->isConnected())
         {
-            sendMessageToSlave (MemoryBlock (startMessage, specialMessageSize));
+            connection->startPinging();
+            sendMessageToWorker ({ startMessage, specialMessageSize });
             return true;
         }
 
-        connection = nullptr;
+        connection.reset();
     }
 
     return false;
 }
 
-//==============================================================================
-struct ChildProcessSlave::Connection  : public InterprocessConnection,
-                                        private ChildProcessPingThread
+void ChildProcessCoordinator::killWorkerProcess()
 {
-    Connection (ChildProcessSlave& p, const String& pipeName, int timeout)
-        : InterprocessConnection (false, magicMastSlaveConnectionHeader),
+    if (connection != nullptr)
+    {
+        sendMessageToWorker ({ killMessage, specialMessageSize });
+        connection->disconnect();
+        connection.reset();
+    }
+
+    childProcess.reset();
+}
+
+//==============================================================================
+struct ChildProcessWorker::Connection  : public InterprocessConnection,
+                                         private ChildProcessPingThread
+{
+    Connection (ChildProcessWorker& p, const String& pipeName, int timeout)
+        : InterprocessConnection (false, magicCoordWorkerConnectionHeader),
           ChildProcessPingThread (timeout),
           owner (p)
     {
         connectToPipe (pipeName, timeoutMs);
-        startThread (4);
     }
 
-    ~Connection()
+    ~Connection() override
     {
+        cancelPendingUpdate();
         stopThread (10000);
+        disconnect();
     }
+
+    using ChildProcessPingThread::startPinging;
 
 private:
-    ChildProcessSlave& owner;
+    ChildProcessWorker& owner;
 
     void connectionMade() override  {}
     void connectionLost() override  { owner.handleConnectionLost(); }
 
-    bool sendPingMessage (const MemoryBlock& m) override    { return owner.sendMessageToMaster (m); }
+    bool sendPingMessage (const MemoryBlock& m) override    { return owner.sendMessageToCoordinator (m); }
     void pingFailed() override                              { connectionLost(); }
 
     void messageReceived (const MemoryBlock& m) override
     {
         pingReceived();
 
-        if (m.getSize() == specialMessageSize)
-        {
-            if (isPingMessage (m))
-                return;
+        if (isMessageType (m, pingMessage))
+            return;
 
-            if (memcmp (m.getData(), killMessage, specialMessageSize) == 0)
-            {
-                triggerConnectionLostMessage();
-                return;
-            }
+        if (isMessageType (m, killMessage))
+            return triggerConnectionLostMessage();
 
-            if (memcmp (m.getData(), startMessage, specialMessageSize) == 0)
-            {
-                owner.handleConnectionMade();
-                return;
-            }
-        }
+        if (isMessageType (m, startMessage))
+            return owner.handleConnectionMade();
 
-        owner.handleMessageFromMaster (m);
+        owner.handleMessageFromCoordinator (m);
     }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Connection)
 };
 
 //==============================================================================
-ChildProcessSlave::ChildProcessSlave() {}
-ChildProcessSlave::~ChildProcessSlave() {}
+ChildProcessWorker::ChildProcessWorker() = default;
+ChildProcessWorker::~ChildProcessWorker() = default;
 
-void ChildProcessSlave::handleConnectionMade() {}
-void ChildProcessSlave::handleConnectionLost() {}
+void ChildProcessWorker::handleConnectionMade() {}
+void ChildProcessWorker::handleConnectionLost() {}
 
-bool ChildProcessSlave::sendMessageToMaster (const MemoryBlock& mb)
+void ChildProcessWorker::handleMessageFromCoordinator (const MemoryBlock& mb)
+{
+    JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wdeprecated-declarations")
+    JUCE_BEGIN_IGNORE_WARNINGS_MSVC (4996)
+    handleMessageFromMaster (mb);
+    JUCE_END_IGNORE_WARNINGS_GCC_LIKE
+    JUCE_END_IGNORE_WARNINGS_MSVC
+}
+
+bool ChildProcessWorker::sendMessageToCoordinator (const MemoryBlock& mb)
 {
     if (connection != nullptr)
         return connection->sendMessage (mb);
@@ -240,25 +269,29 @@ bool ChildProcessSlave::sendMessageToMaster (const MemoryBlock& mb)
     return false;
 }
 
-bool ChildProcessSlave::initialiseFromCommandLine (const String& commandLine,
-                                                   const String& commandLineUniqueID,
-                                                   int timeoutMs)
+bool ChildProcessWorker::initialiseFromCommandLine (const String& commandLine,
+                                                    const String& commandLineUniqueID,
+                                                    int timeoutMs)
 {
-    String prefix (getCommandLinePrefix (commandLineUniqueID));
+    auto prefix = getCommandLinePrefix (commandLineUniqueID);
 
     if (commandLine.trim().startsWith (prefix))
     {
-        String pipeName (commandLine.fromFirstOccurrenceOf (prefix, false, false)
-                                    .upToFirstOccurrenceOf (" ", false, false).trim());
+        auto pipeName = commandLine.fromFirstOccurrenceOf (prefix, false, false)
+                                   .upToFirstOccurrenceOf (" ", false, false).trim();
 
         if (pipeName.isNotEmpty())
         {
-            connection = new Connection (*this, pipeName, timeoutMs <= 0 ? defaultTimeoutMs : timeoutMs);
+            connection.reset (new Connection (*this, pipeName, timeoutMs <= 0 ? defaultTimeoutMs : timeoutMs));
 
-            if (! connection->isConnected())
-                connection = nullptr;
+            if (connection->isConnected())
+                connection->startPinging();
+            else
+                connection.reset();
         }
     }
 
     return connection != nullptr;
 }
+
+} // namespace juce

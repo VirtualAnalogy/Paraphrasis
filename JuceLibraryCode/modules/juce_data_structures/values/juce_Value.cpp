@@ -2,25 +2,29 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
+
+namespace juce
+{
 
 Value::ValueSource::ValueSource()
 {
@@ -72,12 +76,12 @@ public:
     {
     }
 
-    var getValue() const
+    var getValue() const override
     {
         return value;
     }
 
-    void setValue (const var& newValue)
+    void setValue (const var& newValue) override
     {
         if (! newValue.equalsWithSameType (value))
         {
@@ -111,13 +115,6 @@ Value::Value (const Value& other)  : value (other.value)
 {
 }
 
-Value& Value::operator= (const Value& other)
-{
-    value = other.value;
-    return *this;
-}
-
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 Value::Value (Value&& other) noexcept
 {
     // moving a Value with listeners will lose those listeners, which
@@ -125,7 +122,7 @@ Value::Value (Value&& other) noexcept
     jassert (other.listeners.size() == 0);
 
     other.removeFromListenerList();
-    value = static_cast<ReferenceCountedObjectPtr<ValueSource>&&> (other.value);
+    value = std::move (other.value);
 }
 
 Value& Value::operator= (Value&& other) noexcept
@@ -135,10 +132,9 @@ Value& Value::operator= (Value&& other) noexcept
     jassert (other.listeners.size() == 0);
 
     other.removeFromListenerList();
-    value = static_cast<ReferenceCountedObjectPtr<ValueSource>&&> (other.value);
+    value = std::move (other.value);
     return *this;
 }
-#endif
 
 Value::~Value()
 {
@@ -209,7 +205,7 @@ bool Value::operator!= (const Value& other) const
 }
 
 //==============================================================================
-void Value::addListener (ValueListener* const listener)
+void Value::addListener (Value::Listener* listener)
 {
     if (listener != nullptr)
     {
@@ -220,7 +216,7 @@ void Value::addListener (ValueListener* const listener)
     }
 }
 
-void Value::removeListener (ValueListener* const listener)
+void Value::removeListener (Value::Listener* listener)
 {
     listeners.remove (listener);
 
@@ -233,7 +229,7 @@ void Value::callListeners()
     if (listeners.size() > 0)
     {
         Value v (*this); // (create a copy in case this gets deleted by a callback)
-        listeners.call (&ValueListener::valueChanged, v);
+        listeners.call ([&] (Value::Listener& l) { l.valueChanged (v); });
     }
 }
 
@@ -241,3 +237,5 @@ OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const Value& value
 {
     return stream << value.toString();
 }
+
+} // namespace juce

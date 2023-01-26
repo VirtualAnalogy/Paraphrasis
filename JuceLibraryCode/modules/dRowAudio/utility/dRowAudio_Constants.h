@@ -19,33 +19,33 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_CONSTANTS_H__
-#define __DROWAUDIO_CONSTANTS_H__
+#ifndef DROWAUDIO_CONSTANTS_H
+#define DROWAUDIO_CONSTANTS_H
 
 //==============================================================================
-/** @file 
- 
-	This file contains some useful constants for calculations such as reciprocals
-	to avoid using expensive divides in programs.
+/** @file
+
+    This file contains some useful constants for calculations such as reciprocals
+    to avoid using expensive divides in programs.
  */
 
 static const double oneOver60 = 1.0 / 60.0;
 static const double oneOver60Squared = 1.0 / (60.0 * 60.0);
 static const double oneOver180 = 1.0 / 180.0;
-static const double oneOverPi = 1.0 / double_Pi;
-static const double twoTimesPi = 2.0 * double_Pi;
-static const double fourTimesPi = 4.0 * double_Pi;
-static const double sixTimesPi = 6.0 * double_Pi;
+static const double oneOverPi = 1.0 / juce::MathConstants<double>::pi;
+static const double twoTimesPi = 2.0 * juce::MathConstants<double>::pi;
+static const double fourTimesPi = 4.0 * juce::MathConstants<double>::pi;
+static const double sixTimesPi = 6.0 * juce::MathConstants<double>::pi;
 static const double root2 = sqrt (2.0);
 static const double oneOverRoot2 = 1.0 / sqrt (2.0);
 static const double root3 = sqrt (3.0);
@@ -71,4 +71,4 @@ inline Type log2 (Type input)
 }
 #endif
 
-#endif //__DROWAUDIO_CONSTANTS_H__
+#endif //DROWAUDIO_CONSTANTS_H

@@ -19,58 +19,52 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#if JUCE_MAC && ! DROWAUDIO_USE_FFTREAL
-
-
+#if DROWAUDIO_USE_VDSP
 
 FFTOperation::FFTOperation (int fftSizeLog2)
     : fftProperties (fftSizeLog2)
 {
-	fftConfig = vDSP_create_fftsetup (fftProperties.fftSizeLog2, 0);
+    fftConfig = vDSP_create_fftsetup (fftProperties.fftSizeLog2, 0);
 
-	fftBuffer.malloc (fftProperties.fftSize);
-	fftBufferSplit.realp = fftBuffer.getData();
-	fftBufferSplit.imagp = fftBufferSplit.realp + getFFTProperties().fftSizeHalved;	
+    fftBuffer.malloc (fftProperties.fftSize);
+    fftBufferSplit.realp = fftBuffer.getData();
+    fftBufferSplit.imagp = fftBufferSplit.realp + getFFTProperties().fftSizeHalved;
 }
 
 FFTOperation::~FFTOperation()
 {
-	vDSP_destroy_fftsetup (fftConfig);
+    vDSP_destroy_fftsetup (fftConfig);
 }
 
 void FFTOperation::setFFTSizeLog2 (int newFFTSizeLog2)
 {
-	if (newFFTSizeLog2 != fftProperties.fftSizeLog2)
+    if (newFFTSizeLog2 != fftProperties.fftSizeLog2)
     {
-		vDSP_destroy_fftsetup (fftConfig);
-		
-		fftProperties.setFFTSizeLog2 (newFFTSizeLog2);
-		fftBuffer.malloc (fftProperties.fftSize);
-		fftBufferSplit.realp = fftBuffer.getData();
-		fftBufferSplit.imagp = fftBufferSplit.realp + getFFTProperties().fftSizeHalved;	
-		
-		fftConfig = vDSP_create_fftsetup (fftProperties.fftSizeLog2, 0);
-	}
+        vDSP_destroy_fftsetup (fftConfig);
+
+        fftProperties.setFFTSizeLog2 (newFFTSizeLog2);
+        fftBuffer.malloc (fftProperties.fftSize);
+        fftBufferSplit.realp = fftBuffer.getData();
+        fftBufferSplit.imagp = fftBufferSplit.realp + getFFTProperties().fftSizeHalved;
+
+        fftConfig = vDSP_create_fftsetup (fftProperties.fftSizeLog2, 0);
+    }
 }
 
 void FFTOperation::performFFT (float* samples)
 {
-	vDSP_ctoz ((COMPLEX *) samples, 2, &fftBufferSplit, 1, fftProperties.fftSizeHalved);
-	vDSP_fft_zrip (fftConfig, &fftBufferSplit, 1, fftProperties.fftSizeLog2, FFT_FORWARD);
+    vDSP_ctoz ((COMPLEX *) samples, 2, &fftBufferSplit, 1, fftProperties.fftSizeHalved);
+    vDSP_fft_zrip (fftConfig, &fftBufferSplit, 1, fftProperties.fftSizeLog2, FFT_FORWARD);
 }
 
-//============================================================================
-
-
-
-#endif //JUCE_MAC
+#endif // DROWAUDIO_USE_VDSP

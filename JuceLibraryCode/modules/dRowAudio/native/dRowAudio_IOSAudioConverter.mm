@@ -19,11 +19,11 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
@@ -60,7 +60,7 @@ using drow::IOSAudioConverter;
     {
         owner = owner_;
     }
-    
+
     return self;
 }
 
@@ -74,112 +74,112 @@ using drow::IOSAudioConverter;
 {
     cancelConverting = false;
     progress = 0.0;
-    
-	// set up an AVAssetReader to read from the iPod Library
-	AVURLAsset *songAsset = [AVURLAsset URLAssetWithURL: assetURL options: nil];
-    
-	NSError* assetError = nil;
-	AVAssetReader* assetReader = [[AVAssetReader assetReaderWithAsset: songAsset
+
+    // set up an AVAssetReader to read from the iPod Library
+    AVURLAsset *songAsset = [AVURLAsset URLAssetWithURL: assetURL options: nil];
+
+    NSError* assetError = nil;
+    AVAssetReader* assetReader = [[AVAssetReader assetReaderWithAsset: songAsset
                                                                 error: &assetError]
-								  retain];
-	if (assetError)
+                                  retain];
+    if (assetError)
     {
-		NSLog (@"error: %@", assetError);
-		return;
-	}
-    
-	AVAssetReaderOutput* assetReaderOutput = [[AVAssetReaderAudioMixOutput 
+        NSLog (@"error: %@", assetError);
+        return;
+    }
+
+    AVAssetReaderOutput* assetReaderOutput = [[AVAssetReaderAudioMixOutput
                                                assetReaderAudioMixOutputWithAudioTracks: songAsset.tracks
                                                audioSettings: nil]
                                               retain];
-	if (! [assetReader canAddOutput: assetReaderOutput])
+    if (! [assetReader canAddOutput: assetReaderOutput])
     {
-		NSLog (@"can't add reader output... die!");
-		return;
-	}
-	[assetReader addOutput: assetReaderOutput];
-	
-	NSArray* dirs = NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES);
-	NSString* documentsDirectoryPath = [dirs objectAtIndex: 0];
-	NSString* exportPath = [[documentsDirectoryPath stringByAppendingPathComponent: exportName] retain];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: exportPath])
+        NSLog (@"can't add reader output... die!");
+        return;
+    }
+    [assetReader addOutput: assetReaderOutput];
+
+    NSArray* dirs = NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* documentsDirectoryPath = [dirs objectAtIndex: 0];
+    NSString* exportPath = [[documentsDirectoryPath stringByAppendingPathComponent: exportName] retain];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: exportPath])
     {
-		[[NSFileManager defaultManager] removeItemAtPath: exportPath error: nil];
-	}
-	NSURL* exportURL = [NSURL fileURLWithPath: exportPath];
-	AVAssetWriter* assetWriter = [[AVAssetWriter assetWriterWithURL: exportURL
+        [[NSFileManager defaultManager] removeItemAtPath: exportPath error: nil];
+    }
+    NSURL* exportURL = [NSURL fileURLWithPath: exportPath];
+    AVAssetWriter* assetWriter = [[AVAssetWriter assetWriterWithURL: exportURL
                                                            fileType: AVFileTypeCoreAudioFormat
                                                               error: &assetError]
-								  retain];
-	if (assetError) 
+                                  retain];
+    if (assetError)
     {
-		NSLog (@"error: %@", assetError);
-		return;
-	}
-	AudioChannelLayout channelLayout;
-	memset (&channelLayout, 0, sizeof (AudioChannelLayout));
-	channelLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo;
-    
+        NSLog (@"error: %@", assetError);
+        return;
+    }
+    AudioChannelLayout channelLayout;
+    memset (&channelLayout, 0, sizeof (AudioChannelLayout));
+    channelLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo;
+
     AVAssetTrack* avAssetTrack = [songAsset.tracks objectAtIndex: 0];
     CMAudioFormatDescriptionRef formatDescription = (CMAudioFormatDescriptionRef)[avAssetTrack.formatDescriptions objectAtIndex: 0];
     const AudioStreamBasicDescription* audioDesc = CMAudioFormatDescriptionGetStreamBasicDescription (formatDescription);
-    
-    NSDictionary *outputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-									[NSNumber numberWithInt: kAudioFormatLinearPCM],        AVFormatIDKey, 
-									[NSNumber numberWithFloat: 44100.0],                    AVSampleRateKey,
-									[NSNumber numberWithInt: audioDesc->mChannelsPerFrame], AVNumberOfChannelsKey,
-									[NSData dataWithBytes: &channelLayout length: sizeof (AudioChannelLayout)], AVChannelLayoutKey,
-									[NSNumber numberWithInt: 16],                           AVLinearPCMBitDepthKey,
-									[NSNumber numberWithBool: NO],                          AVLinearPCMIsNonInterleaved,
-									[NSNumber numberWithBool: NO],                          AVLinearPCMIsFloatKey,
-									[NSNumber numberWithBool: NO],                          AVLinearPCMIsBigEndianKey,
-									nil];
-	AVAssetWriterInput *assetWriterInput = [[AVAssetWriterInput assetWriterInputWithMediaType: AVMediaTypeAudio
-                                                                               outputSettings: outputSettings]
-											retain];
-	if ([assetWriter canAddInput: assetWriterInput])
-    {
-		[assetWriter addInput: assetWriterInput];
 
-        owner->sendConverstionStartedMessage (self);
-	} 
+    NSDictionary *outputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    [NSNumber numberWithInt: kAudioFormatLinearPCM],        AVFormatIDKey,
+                                    [NSNumber numberWithFloat: 44100.0],                    AVSampleRateKey,
+                                    [NSNumber numberWithInt: (int)audioDesc->mChannelsPerFrame], AVNumberOfChannelsKey,  
+                                    [NSData dataWithBytes: &channelLayout length: sizeof (AudioChannelLayout)], AVChannelLayoutKey,
+                                    [NSNumber numberWithInt: 16],                           AVLinearPCMBitDepthKey,
+                                    [NSNumber numberWithBool: NO],                          AVLinearPCMIsNonInterleaved,
+                                    [NSNumber numberWithBool: NO],                          AVLinearPCMIsFloatKey,
+                                    [NSNumber numberWithBool: NO],                          AVLinearPCMIsBigEndianKey,
+                                    nil];
+    AVAssetWriterInput *assetWriterInput = [[AVAssetWriterInput assetWriterInputWithMediaType: AVMediaTypeAudio
+                                                                               outputSettings: outputSettings]
+                                            retain];
+    if ([assetWriter canAddInput: assetWriterInput])
+    {
+        [assetWriter addInput: assetWriterInput];
+
+        owner->sendConvertionStartedMessage (self);
+    }
     else
     {
-		NSLog (@"can't add asset writer input... die!");
-		return;
-	}
-	
-	assetWriterInput.expectsMediaDataInRealTime = NO;
-    
-	[assetWriter startWriting];
-	[assetReader startReading];
-    
-	AVAssetTrack *soundTrack = [songAsset.tracks objectAtIndex:0];
-	CMTime startTime = CMTimeMake (0, soundTrack.naturalTimeScale);
-	[assetWriter startSessionAtSourceTime: startTime];
-	
+        NSLog (@"can't add asset writer input... die!");
+        return;
+    }
+
+    assetWriterInput.expectsMediaDataInRealTime = NO;
+
+    [assetWriter startWriting];
+    [assetReader startReading];
+
+    AVAssetTrack *soundTrack = [songAsset.tracks objectAtIndex:0];
+    CMTime startTime = CMTimeMake (0, soundTrack.naturalTimeScale);
+    [assetWriter startSessionAtSourceTime: startTime];
+
     NSLog (@"duration: %f", CMTimeGetSeconds (soundTrack.timeRange.duration));
-    double finalSizeByteCount = soundTrack.timeRange.duration.value * 2 * sizeof (SInt16);
-    
-	__block UInt64 convertedByteCount = 0;
-	
+    double finalSizeByteCount = (double) soundTrack.timeRange.duration.value * 2 * sizeof (SInt16);
+
+    __block UInt64 convertedByteCount = 0;
+
     //==============================================================================
     // reading
     //==============================================================================
     dispatch_queue_t mediaInputQueue = dispatch_queue_create ("mediaInputQueue", NULL);
-	[assetWriterInput requestMediaDataWhenReadyOnQueue: mediaInputQueue 
-											usingBlock: ^ 
-	 {
-		 // NSLog (@"top of block");
-		 while (assetWriterInput.readyForMoreMediaData)
+    [assetWriterInput requestMediaDataWhenReadyOnQueue: mediaInputQueue
+                                            usingBlock: ^
+     {
+         // NSLog (@"top of block");
+         while (assetWriterInput.readyForMoreMediaData)
          {
              CMSampleBufferRef nextBuffer = [assetReaderOutput copyNextSampleBuffer];
-             
+
              if (nextBuffer && ! cancelConverting)
              {
                  // append buffer
                  [assetWriterInput appendSampleBuffer: nextBuffer];
-                 
+
                  convertedByteCount += CMSampleBufferGetTotalSampleSize (nextBuffer);
                  progress = (double) convertedByteCount / finalSizeByteCount;
                  NSNumber* progressNumber = [NSNumber numberWithDouble: progress];
@@ -191,7 +191,7 @@ using drow::IOSAudioConverter;
              {
                  // done!
                  [assetWriterInput markAsFinished];
-                 [assetWriter finishWriting];
+                 [assetWriter finishWritingWithCompletionHandler: ^{ }];
                  [assetReader cancelReading];
                  NSDictionary *outputFileAttributes = [[NSFileManager defaultManager]
                                                        attributesOfItemAtPath: exportPath
@@ -204,15 +204,15 @@ using drow::IOSAudioConverter;
                  [assetWriter release];
                  [assetWriterInput release];
                  [exportPath release];
-                 
+
                  [self performSelectorOnMainThread: @selector (finishedConverting:)
                                         withObject: exportURL
                                      waitUntilDone: NO];
-                 
+
                  break;
              }
          }
-	 }];
+     }];
     //==============================================================================
 }
 
@@ -223,18 +223,18 @@ using drow::IOSAudioConverter;
 
 - (void) updateProgress: (NSNumber*) progressFloat
 {
-    owner->sendConverstionUpdatedMessage (self);
+    owner->sendConvertionUpdatedMessage (self);
 }
 
 - (void) finishedConverting: (NSURL*) exportURL
 {
     if (cancelConverting)
     {
-        owner->sendConverstionFinishedMessage (self, exportURL);
+        owner->sendConvertionFinishedMessage (self, exportURL);
     }
     else
     {
-        owner->sendConverstionFinishedMessage (self, exportURL);
+        owner->sendConvertionFinishedMessage (self, exportURL);
     }
 }
 
@@ -252,23 +252,23 @@ IOSAudioConverter::~IOSAudioConverter()
 {
 }
 
-void IOSAudioConverter::startConversion (const String& avAssetUrl, const String& convertedFileName)
+void IOSAudioConverter::startConversion (const juce::String& avAssetUrl, const juce::String& convertedFileName)
 {
     [(JuceIOSAudioConverter*) currentAudioConverter release];
     JuceIOSAudioConverter* audioConverter = [[JuceIOSAudioConverter alloc] initWithOwner: this];
-    
+
     if (audioConverter != nil)
     {
         currentAudioConverter = audioConverter;
         [audioConverter retain];
-        
-        String fileName (convertedFileName);
+
+        juce::String fileName (convertedFileName);
         if (fileName.isEmpty())
             fileName = "convertedFile";
-        
+
         fileName << ".caf";
         audioConverter.exportName = [NSString stringWithUTF8String: fileName.toUTF8()];
-        
+
         NSURL* idUrl = [NSURL URLWithString: [NSString stringWithUTF8String: avAssetUrl.toUTF8()]];
         [audioConverter convertAudioFile: idUrl];
     }
@@ -293,25 +293,26 @@ void IOSAudioConverter::removeListener (Listener* const listener)
 }
 
 //==============================================================================
-void IOSAudioConverter::sendConverstionStartedMessage (void* juceIOSAudioConverter)
+void IOSAudioConverter::sendConvertionStartedMessage (void* juceIOSAudioConverter)
 {
     listeners.call (&Listener::conversionStarted);
 }
 
-void IOSAudioConverter::sendConverstionUpdatedMessage (void* juceIOSAudioConverter)
+void IOSAudioConverter::sendConvertionUpdatedMessage (void* juceIOSAudioConverter)
 {
     JuceIOSAudioConverter* converter = (JuceIOSAudioConverter*) juceIOSAudioConverter;
     progress = converter.progress;
     listeners.call (&Listener::conversionUpdated, converter.progress);
 }
 
-void IOSAudioConverter::sendConverstionFinishedMessage (void* juceIOSAudioConverter, void* convertedUrl)
+void IOSAudioConverter::sendConvertionFinishedMessage (void* juceIOSAudioConverter, void* convertedUrl)
 {
     JuceIOSAudioConverter* converter = (JuceIOSAudioConverter*) juceIOSAudioConverter;
     currentAudioConverter = nullptr;
     [converter release];
-    
-    convertedFile = File (stripFileProtocolForLocal (String ([((NSURL*) convertedUrl).absoluteString UTF8String])));
+
+    URL juceUrl ([((NSURL*) convertedUrl).absoluteString UTF8String]);
+    convertedFile = juceUrl.getLocalFile();
     listeners.call (&Listener::conversionFinished, convertedFile);
 }
 

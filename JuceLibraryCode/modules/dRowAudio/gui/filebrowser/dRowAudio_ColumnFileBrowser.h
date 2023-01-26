@@ -19,18 +19,18 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_COLUMNFILEBROWSER_H__
-#define __DROWAUDIO_COLUMNFILEBROWSER_H__
+#ifndef DROWAUDIO_COLUMNFILEBROWSER_H
+#define DROWAUDIO_COLUMNFILEBROWSER_H
 
 #include "dRowAudio_BasicFileBrowser.h"
 
@@ -39,44 +39,40 @@ class ColumnFileBrowserLookAndFeel;
 
 //==================================================================================
 /** A type of FileBrowser persented in columns.
- 
-    This is similar to OSX's Finder column view. You can navigate around the columns 
-    using the keyboard or the mouse. Highligting a number of files and then dragging 
+
+    This is similar to OSX's Finder column view. You can navigate around the columns
+    using the keyboard or the mouse. Highligting a number of files and then dragging
     them will perform an external drag and drop procedure.
  */
-class ColumnFileBrowser :	public Viewport
+class ColumnFileBrowser :    public juce::Viewport
 {
 public:
-    //==================================================================================
     /** Creates a ColumnFileBrowser with a given file filter.
      */
-	ColumnFileBrowser (WildcardFileFilter* filesToDisplay);
-	
-    /** Destructor.
-     */
-	~ColumnFileBrowser();
-	
+    ColumnFileBrowser (juce::WildcardFileFilter* filesToDisplay);
+
+    //==================================================================================
     /** Sets the highlight colour for the active column.
+
         For the rest of the colours, use the normal DirectoryContentsDisplayComponent
         colourIds.
      */
-    void setActiveColumHighlightColour (const Colour& colour);
-    
+    void setActiveColumHighlightColour (juce::Colour colour);
+
+    //==================================================================================
     /** @internal */
-	void resized();
-		
+    void resized() override;
     /** @internal */
-	void visibleAreaChanged (const Rectangle<int>& newVisibleArea);
-	
+    void visibleAreaChanged (const juce::Rectangle<int>& newVisibleArea) override;
     /** @internal */
-	void mouseWheelMove (const MouseEvent& event, const MouseWheelDetails& wheel);
-	
+    void mouseWheelMove (const juce::MouseEvent& event, const juce::MouseWheelDetails& wheel) override;
+
 private:
     //==================================================================================
-	ScopedPointer<WildcardFileFilter> wildcard;
-	ColumnFileBrowserContents* fileBrowser;
-	
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColumnFileBrowser);
+    std::unique_ptr<juce::WildcardFileFilter> wildcard;
+    std::unique_ptr<ColumnFileBrowserContents> fileBrowser;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColumnFileBrowser)
 };
 
-#endif //__DROWAUDIO_COLUMNFILEBROWSER_H__
+#endif //DROWAUDIO_COLUMNFILEBROWSER_H

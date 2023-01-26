@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist>
+  <dict>
+    <key>CFBundleExecutable</key>
+    <string>${EXECUTABLE_NAME}</string>
+    <key>CFBundleIconFile</key>
+    <string></string>
+    <key>CFBundleIdentifier</key>
+    <string>com.VirtualAnalogy.Paraphrasis</string>
+    <key>CFBundleName</key>
+    <string>Paraphrasis</string>
+    <key>CFBundleDisplayName</key>
+    <string>Paraphrasis</string>
+    <key>CFBundlePackageType</key>
+    <string>BNDL</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.3</string>
+    <key>CFBundleVersion</key>
+    <string>1.0.3</string>
+    <key>NSHumanReadableCopyright</key>
+    <string></string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>AudioComponents</key>
+    <array>
+      <dict>
+        <key>name</key>
+        <string>Virtual Analogy: Paraphrasis</string>
+        <key>description</key>
+        <string>Spectral modeling synthesizer</string>
+        <key>factoryFunction</key>
+        <string>ParaphrasisAUFactory</string>
+        <key>manufacturer</key>
+        <string>ViAn</string>
+        <key>type</key>
+        <string>aumu</string>
+        <key>subtype</key>
+        <string>Para</string>
+        <key>version</key>
+        <integer>65539</integer>
+        <key>resourceUsage</key>
+        <dict>
+          <key>network.client</key>
+          <true/>
+          <key>temporary-exception.files.all.read-write</key>
+          <true/>
+        </dict>
+      </dict>
+    </array>
+  </dict>
+</plist>

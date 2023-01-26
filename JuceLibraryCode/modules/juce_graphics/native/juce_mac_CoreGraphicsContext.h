@@ -2,35 +2,77 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_MAC_COREGRAPHICSCONTEXT_H_INCLUDED
-#define JUCE_MAC_COREGRAPHICSCONTEXT_H_INCLUDED
+namespace juce
+{
+
+namespace detail
+{
+    struct ColorSpaceDelete
+    {
+        void operator() (CGColorSpaceRef ptr) const noexcept { CGColorSpaceRelease (ptr); }
+    };
+
+    struct ContextDelete
+    {
+        void operator() (CGContextRef ptr) const noexcept { CGContextRelease (ptr); }
+    };
+
+    struct DataProviderDelete
+    {
+        void operator() (CGDataProviderRef ptr) const noexcept { CGDataProviderRelease (ptr); }
+    };
+
+    struct ImageDelete
+    {
+        void operator() (CGImageRef ptr) const noexcept { CGImageRelease (ptr); }
+    };
+
+    struct GradientDelete
+    {
+        void operator() (CGGradientRef ptr) const noexcept { CGGradientRelease (ptr); }
+    };
+
+    struct ColorDelete
+    {
+        void operator() (CGColorRef ptr) const noexcept { CGColorRelease (ptr); }
+    };
+
+    //==============================================================================
+    using ColorSpacePtr = std::unique_ptr<CGColorSpace, ColorSpaceDelete>;
+    using ContextPtr = std::unique_ptr<CGContext, ContextDelete>;
+    using DataProviderPtr = std::unique_ptr<CGDataProvider, DataProviderDelete>;
+    using ImagePtr = std::unique_ptr<CGImage, ImageDelete>;
+    using GradientPtr = std::unique_ptr<CGGradient, GradientDelete>;
+    using ColorPtr = std::unique_ptr<CGColor, ColorDelete>;
+}
 
 //==============================================================================
 class CoreGraphicsContext   : public LowLevelGraphicsContext
 {
 public:
-    CoreGraphicsContext (CGContextRef context, const float flipHeight, const float targetScale);
-    ~CoreGraphicsContext();
+    CoreGraphicsContext (CGContextRef context, float flipHeight);
+    ~CoreGraphicsContext() override;
 
     //==============================================================================
     bool isVectorDevice() const override         { return false; }
@@ -59,6 +101,7 @@ public:
     void setInterpolationQuality (Graphics::ResamplingQuality) override;
 
     //==============================================================================
+    void fillAll() override;
     void fillRect (const Rectangle<int>&, bool replaceExistingContents) override;
     void fillRect (const Rectangle<float>&) override;
     void fillRectList (const RectangleList<float>&) override;
@@ -73,13 +116,12 @@ public:
     bool drawTextLayout (const AttributedString&, const Rectangle<float>&) override;
 
 private:
-    CGContextRef context;
+    //==============================================================================
+    detail::ContextPtr context;
     const CGFloat flipHeight;
-    float targetScale;
-    CGColorSpaceRef rgbColourSpace, greyColourSpace;
-    CGFunctionCallbacks gradientCallbacks;
+    detail::ColorSpacePtr rgbColourSpace, greyColourSpace;
     mutable Rectangle<int> lastClipRect;
-    mutable bool lastClipRectIsValid;
+    mutable bool lastClipRectIsValid = false;
 
     struct SavedState
     {
@@ -87,24 +129,18 @@ private:
         SavedState (const SavedState&);
         ~SavedState();
 
-        void setFill (const FillType& newFill);
-        CGShadingRef getShading (CoreGraphicsContext& owner);
-
-        static void gradientCallback (void* info, const CGFloat* inData, CGFloat* outData);
+        void setFill (const FillType&);
 
         FillType fillType;
         Font font;
-        CGFontRef fontRef;
-        CGAffineTransform fontTransform;
-
-    private:
-        CGShadingRef shading;
-        HeapBlock <PixelARGB> gradientLookupTable;
-        int numGradientLookupEntries;
+        CGFontRef fontRef = {};
+        CGAffineTransform textMatrix = CGAffineTransformIdentity,
+                   inverseTextMatrix = CGAffineTransformIdentity;
+        detail::GradientPtr gradient = {};
     };
 
-    ScopedPointer <SavedState> state;
-    OwnedArray <SavedState> stateStack;
+    std::unique_ptr<SavedState> state;
+    OwnedArray<SavedState> stateStack;
 
     void drawGradient();
     void createPath (const Path&) const;
@@ -118,4 +154,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CoreGraphicsContext)
 };
 
-#endif   // JUCE_MAC_COREGRAPHICSCONTEXT_H_INCLUDED
+} // namespace juce

@@ -19,11 +19,11 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
@@ -32,9 +32,8 @@
 
 
 //==============================================================================
-MemoryInputSource::MemoryInputSource (MemoryInputStream* stream, bool useFileTimeInHashGeneration_)
-    : memoryInputStream (stream),
-      useFileTimeInHashGeneration (useFileTimeInHashGeneration_)
+MemoryInputSource::MemoryInputSource (MemoryInputStream* stream)
+    : memoryInputStream (stream)
 {
 }
 
@@ -47,7 +46,7 @@ InputStream* MemoryInputSource::createInputStream()
     return memoryInputStream;
 }
 
-InputStream* MemoryInputSource::createInputStreamFor (const String& /*relatedItemPath*/)
+InputStream* MemoryInputSource::createInputStreamFor (const juce::String& /*relatedItemPath*/)
 {
     return nullptr;
 }
@@ -55,7 +54,6 @@ InputStream* MemoryInputSource::createInputStreamFor (const String& /*relatedIte
 int64 MemoryInputSource::hashCode() const
 {
     int64 h = Time::getCurrentTime().toMilliseconds();
-    
+
     return h;
 }
-

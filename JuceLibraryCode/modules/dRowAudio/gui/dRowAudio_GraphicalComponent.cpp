@@ -19,108 +19,91 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-
-
 GraphicalComponent::GraphicalComponent()
     : paused (false),
-	  needToProcess (true),
+      needToProcess (true),
       sleepTime (5),
-	  numSamples (0)
+      numSamples (0)
 {
-	samples.malloc (numSamples);
+    samples.malloc (numSamples);
 
-	startTimer (30);
-}
-
-GraphicalComponent::~GraphicalComponent()
-{
+    startTimer (30);
 }
 
 int GraphicalComponent::useTimeSlice()
 {
-	if (paused)
+    if (paused)
     {
-		return sleepTime;
-	}
-	else
-	{
-		if (needToProcess)
-        {
-			process();
-            needToProcess = false;
-            
-            return sleepTime;
-        }
-        
-		return sleepTime;
-	}
+        return sleepTime;
+    }
+
+    if (needToProcess)
+    {
+        process();
+        needToProcess = false;
+
+        return sleepTime;
+    }
+
+    return sleepTime;
 }
 
 void GraphicalComponent::copySamples (const float *values, int numSamples_)
 {
-		// allocate new memory only if needed
-		if (numSamples != numSamples_)
-        {
-			numSamples = numSamples_;
-			samples.malloc (numSamples);
-		}
-		
-		// lock whilst copying
-		ScopedLock sl (lock);
-		memcpy (samples, values, numSamples * sizeof (float));
-		
-		needToProcess = true;
+    // allocate new memory only if needed
+    if (numSamples != numSamples_)
+    {
+        numSamples = numSamples_;
+        samples.malloc (numSamples);
+    }
+
+    // lock whilst copying
+    ScopedLock sl (lock);
+    std::memcpy (samples, values, size_t (numSamples) * sizeof (float));
+
+    needToProcess = true;
 }
 
 void GraphicalComponent::copySamples (float **values, int numSamples_, int numChannels)
 {
-	// allocate new memory only if needed
-	if (numSamples != numSamples_) 
+    // allocate new memory only if needed
+    if (numSamples != numSamples_)
     {
-		numSamples = numSamples_;
-		samples.malloc (numSamples);
-	}
-	
-	// lock whilst copying
-	ScopedLock sl (lock);
+        numSamples = numSamples_;
+        samples.malloc (numSamples);
+    }
 
-	if (numChannels == 1)
+    // lock whilst copying
+    ScopedLock sl (lock);
+
+    if (numChannels == 1)
     {
-		memcpy (samples, values[0], numSamples * sizeof (float));
-	}
-	// this is quicker than the generic method below
-	else if (numChannels == 2) 
+        std::memcpy (samples, values[0], size_t (numSamples) * sizeof (float));
+    }
+    else if (numChannels == 2)
+    { //This is quicker than the generic method below
+        for (int i = 0; i < numSamples; ++i)
+            samples[i] = (std::abs (values[0][i]) > std::abs (values[1][i])) ? values[0][i] : values[1][i];
+    }
+    else
     {
-		for (int i = 0; i < numSamples; i++)
-        {
-			samples[i] = (fabsf (values[0][i]) > fabsf (values[1][i])) ? values[0][i] : values[1][i];
-		}
-	}
-	else
-    {
-		samples.clear (numSamples);
-		for (int c = 0; c < numChannels; c++) 
-        {
-			for (int i = 0; i < numSamples; i++) 
-            {
-				if (fabsf (values[c][i]) > samples[i])
-                {
-					samples[i] = values[c][i];
-				}
-			}			
-		}
-	}
-	
-	needToProcess = true;
+        samples.clear (numSamples);
+
+        for (int c = 0; c < numChannels; ++c)
+            for (int i = 0; i < numSamples; ++i)
+                if (std::abs (values[c][i]) > samples[i])
+                    samples[i] = values[c][i];
+    }
+
+    needToProcess = true;
 }
-

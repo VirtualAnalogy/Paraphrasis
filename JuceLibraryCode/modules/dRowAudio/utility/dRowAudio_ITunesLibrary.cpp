@@ -19,11 +19,11 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
@@ -31,7 +31,7 @@
 
 
 
-juce_ImplementSingleton(ITunesLibrary);
+juce_ImplementSingleton(ITunesLibrary)
 
 ITunesLibrary::ITunesLibrary()
     : libraryTree (MusicColumns::libraryIdentifier)
@@ -40,46 +40,47 @@ ITunesLibrary::ITunesLibrary()
 
 ITunesLibrary::~ITunesLibrary()
 {
+    clearSingletonInstance();
 }
 
 void ITunesLibrary::setLibraryFile (File newFile)
 {
-	if (newFile.existsAsFile()) 
-	{
-		listeners.call (&Listener::libraryChanged, this);
-		parser = new ITunesLibraryParser (newFile, libraryTree, parserLock);
-		startTimer(500);
-	}	
+    if (newFile.existsAsFile())
+    {
+        listeners.call (&Listener::libraryChanged, this);
+        parser = std::make_unique<ITunesLibraryParser> (newFile, libraryTree, parserLock);
+        startTimer(500);
+    }
 }
 
 //==============================================================================
 const File ITunesLibrary::getDefaultITunesLibraryFile()
 {
-    return File::getSpecialLocation (File::userMusicDirectory).getChildFile ("iTunes/iTunes Music Library.xml");
+    return juce::File::getSpecialLocation (File::userMusicDirectory).getChildFile ("iTunes/iTunes Music Library.xml");
 }
 
 //==============================================================================
 void ITunesLibrary::setLibraryTree (ValueTree& newTreeToUse)
 {
-    if (! newTreeToUse.isValid()) 
-        newTreeToUse = ValueTree (MusicColumns::libraryIdentifier);
+    if (! newTreeToUse.isValid())
+        newTreeToUse = juce::ValueTree (MusicColumns::libraryIdentifier);
 
     libraryTree = newTreeToUse;
 }
 
 void ITunesLibrary::timerCallback()
 {
-	if (parser != nullptr)
-	{
-		listeners.call (&Listener::libraryUpdated, this);
+    if (parser != nullptr)
+    {
+        listeners.call (&Listener::libraryUpdated, this);
 
-		if (parser->hasFinished())
+        if (parser->hasFinished())
         {
-			stopTimer();
-			parser = nullptr;
-			listeners.call (&Listener::libraryFinished, this);
-		}
-	}
+            stopTimer();
+            parser = nullptr;
+            listeners.call (&Listener::libraryFinished, this);
+        }
+    }
 }
 
 //==============================================================================

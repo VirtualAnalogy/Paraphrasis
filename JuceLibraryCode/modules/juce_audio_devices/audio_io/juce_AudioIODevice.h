@@ -2,48 +2,56 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-   ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_AUDIOIODEVICE_H_INCLUDED
-#define JUCE_AUDIOIODEVICE_H_INCLUDED
+namespace juce
+{
 
 class AudioIODevice;
 
+/** Additional information that may be passed to the AudioIODeviceCallback. */
+struct AudioIODeviceCallbackContext
+{
+    /** If the host provides this information, this field will be set to point to
+        an integer holding the current value; otherwise, this will be nullptr.
+    */
+    const uint64_t* hostTimeNs = nullptr;
+};
 
 //==============================================================================
 /**
     One of these is passed to an AudioIODevice object to stream the audio data
     in and out.
 
-    The AudioIODevice will repeatedly call this class's audioDeviceIOCallback()
+    The AudioIODevice will repeatedly call this class's audioDeviceIOCallbackWithContext()
     method on its own high-priority audio thread, when it needs to send or receive
     the next block of data.
 
     @see AudioIODevice, AudioDeviceManager
+
+    @tags{Audio}
 */
 class JUCE_API  AudioIODeviceCallback
 {
 public:
     /** Destructor. */
-    virtual ~AudioIODeviceCallback()  {}
+    virtual ~AudioIODeviceCallback()  = default;
 
     /** Processes a block of incoming and outgoing audio data.
 
@@ -77,15 +85,20 @@ public:
         @param numSamples           the number of samples in each channel of the input and
                                     output arrays. The number of samples will depend on the
                                     audio device's buffer size and will usually remain constant,
-                                    although this isn't guaranteed, so make sure your code can
-                                    cope with reasonable changes in the buffer size from one
-                                    callback to the next.
+                                    although this isn't guaranteed. For example, on Android,
+                                    on devices which support it, Android will chop up your audio
+                                    processing into several smaller callbacks to ensure higher audio
+                                    performance. So make sure your code can cope with reasonable
+                                    changes in the buffer size from one callback to the next.
+        @param context              Additional information that may be passed to the
+                                    AudioIODeviceCallback.
     */
-    virtual void audioDeviceIOCallback (const float** inputChannelData,
-                                        int numInputChannels,
-                                        float** outputChannelData,
-                                        int numOutputChannels,
-                                        int numSamples) = 0;
+    virtual void audioDeviceIOCallbackWithContext (const float* const* inputChannelData,
+                                                   int numInputChannels,
+                                                   float* const* outputChannelData,
+                                                   int numOutputChannels,
+                                                   int numSamples,
+                                                   const AudioIODeviceCallbackContext& context);
 
     /** Called to indicate that the device is about to start calling back.
 
@@ -113,7 +126,6 @@ public:
     virtual void audioDeviceError (const String& errorMessage);
 };
 
-
 //==============================================================================
 /**
     Base class for an audio device with synchronised input and output channels.
@@ -128,6 +140,8 @@ public:
     AudioDeviceManager class.
 
     @see AudioIODeviceType, AudioDeviceManager
+
+    @tags{Audio}
 */
 class JUCE_API  AudioIODevice
 {
@@ -296,6 +310,19 @@ public:
     virtual bool setAudioPreprocessingEnabled (bool shouldBeEnabled);
 
     //==============================================================================
+    /** Returns the number of under- or over runs reported by the OS since
+        playback/recording has started.
+
+        This number may be different than determining the Xrun count manually (by
+        measuring the time spent in the audio callback) as the OS may be doing
+        some buffering internally - especially on mobile devices.
+
+        Returns -1 if playback/recording has not started yet or if getting the underrun
+        count is not supported for this device (Android SDK 23 and lower).
+    */
+    virtual int getXRunCount() const noexcept;
+
+    //==============================================================================
 protected:
     /** Creates a device, setting its name and type member variables. */
     AudioIODevice (const String& deviceName,
@@ -305,5 +332,4 @@ protected:
     String name, typeName;
 };
 
-
-#endif   // JUCE_AUDIOIODEVICE_H_INCLUDED
+} // namespace juce

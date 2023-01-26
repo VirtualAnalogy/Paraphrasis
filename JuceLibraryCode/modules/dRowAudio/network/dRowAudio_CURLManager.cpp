@@ -19,11 +19,11 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
@@ -39,7 +39,8 @@
  #include <curl/curl.h>
 #endif
 
-namespace drow {
+namespace drow
+{
 
 //==============================================================================
 juce_ImplementSingleton (CURLManager);
@@ -47,15 +48,16 @@ juce_ImplementSingleton (CURLManager);
 CURLManager::CURLManager()
     : TimeSliceThread ("cURL Thread")
 {
-	CURLcode result = curl_global_init (CURL_GLOBAL_ALL);
-    
+    CURLcode result = curl_global_init (CURL_GLOBAL_ALL);
+
     (void) result;
-	jassert (result == CURLE_OK);
+    jassert (result == CURLE_OK);
 }
 
 CURLManager::~CURLManager()
 {
-	curl_global_cleanup();
+    curl_global_cleanup();
+    clearSingletonInstance();
 }
 
 CURL* CURLManager::createEasyCurlHandle()
@@ -65,16 +67,16 @@ CURL* CURLManager::createEasyCurlHandle()
 
 void CURLManager::cleanUpEasyCurlHandle (CURL* handle)
 {
-	curl_easy_cleanup (handle);
-	handle = nullptr;
+    curl_easy_cleanup (handle);
+    handle = nullptr;
 }
 
 StringArray CURLManager::getSupportedProtocols()
 {
     if (curl_version_info_data* info = curl_version_info (CURLVERSION_NOW))
-        return StringArray (info->protocols);
-	
-	return StringArray();
+        return juce::StringArray (info->protocols);
+
+    return juce::StringArray();
 }
 
-#endif
+#endif //DROWAUDIO_USE_CURL

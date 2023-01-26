@@ -19,72 +19,94 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_AUDIOPICKER__
-#define __DROWAUDIO_AUDIOPICKER__
+#ifndef DROWAUDIO_AUDIOPICKER_H
+#define DROWAUDIO_AUDIOPICKER_H
 
 #if JUCE_IOS || DOXYGEN
 
-//==============================================================================
-/**
-    AudioPicker class
- 
-    An iOS-specific class that can be used for choosing audio files on 
+/** AudioPicker class
+
+    An iOS-specific class that can be used for choosing audio files on
     supported devices.
- */
+    
+    Note that this only works on actual devices, not on the simulator.
+    Also, you must add an 'NSAppleMusicUsageDescription' to your Info.plist.
+*/
 class AudioPicker
-{    
+{
 public:
     /** Creates a default AudioPicker.
-     
+
         Register yourself as a listener to this by inheriting from
         AudioPicker::Listener and then call the show method to display the picker.
-     */
+    */
     AudioPicker();
-    
-    /** Destructor.
-     */
+
+    /** Destructor. */
     ~AudioPicker();
-    
+
     //==============================================================================
-    /**	Shows the audio picker user interface.
-     
+    /** Shows the audio picker user interface.
+
         @param allowMultipleSelection   If true multiple items can be selected.
         @param areaToPointTo            On the iPad the picker is shown as a
                                         pop-over, this rectangle represents an area
                                         that the arrow of the pop-over should point to.
-     */
+    */
     void show (bool allowMultipleSelection = false, Rectangle<int> areaToPointTo = Rectangle<int>());
-    
+
     //==============================================================================
     /** This helper method returns the MPMediaItemPropertyAssetURL for a MPMediaItem
         such as those passed to Listener::audioPickerFinished.
-     
+
         To keep the obj-C code behind the scenes the argument is a void* but should
         be a valid MPMediaItem. A String is returned for ease which can then be
         passed to an IOSAudioConverter.
-     
+
         @returns AVAssetUrl String
-     
+
         @see IOSAudioConverter
-     */
-    static String mpMediaItemToAvassetUrl (void* mpMediaItem);
+    */
+    static juce::String mpMediaItemToAvassetUrl (void* mpMediaItem);
+
+    /** This helper method returns the MPMediaItemPropertyTitle for a MPMediaItem
+        such as those passed to Listener::audioPickerFinished.
+
+        To keep the obj-C code behind the scenes the argument is a void* but should
+        be a valid MPMediaItem. 
+
+        @returns String
+    */    
     
+    static juce::String mpMediaItemToTitle (void* mpMediaItem);
+    
+    /** This helper method returns the MPMediaItemPropertyArtist for a MPMediaItem
+        such as those passed to Listener::audioPickerFinished.
+
+        To keep the obj-C code behind the scenes the argument is a void* but should
+        be a valid MPMediaItem. 
+
+        @returns String
+    */     
+    
+    static juce::String mpMediaItemToArtist (void* mpMediaItem);
+
     //==============================================================================
     /** A class for receiving callbacks from a AudioPicker.
-     
-        To be told when an audio picker changes, you can register a 
+
+        To be told when an audio picker changes, you can register a
         AudioPicker::Listener object using AudioPicker::addListener().
-     
+
         @see AudioPicker::addListener, AudioPicker::removeListener
      */
     class Listener
@@ -92,50 +114,48 @@ public:
     public:
         /** Destructor. */
         virtual ~Listener() {}
-        
-        //==============================================================================
+
         /** Called when the audio picker has finished loading the selected track.
-         
+
             This callback recieves an array of MPMediaItems. They are presented as
             void*'s to avoid Obj-C clashes.
-         
+
             @see IOSAudioConverter, mpMediaItemToAvassetUrl, AudioPicker::audioPickerCancelled
-         */
-        virtual void audioPickerFinished (const Array<void*> mpMediaItems) = 0;
-        
+        */
+        virtual void audioPickerFinished (const Array<void*>& mpMediaItems) = 0;
+
         /** Called when the audio picker has been canceled by the user.
-         
+
             @see AudioPicker::audioPickerFinished
-         */
+        */
         virtual void audioPickerCancelled()  {}
     };
-    
-    /**	Description
-        
+
+    /**    Description
+
         @see removeListener
      */
     void addListener (Listener* newListener);
-    
-    /**	Description
 
-    	@see addListener
-     */
+    /** Description
+
+        @see addListener
+    */
     void removeListener (Listener* listener);
-    
+
     //==============================================================================
-    /**	@internal */
+    /** @internal */
     void sendAudioPickerFinishedMessage (void* picker, void* info);
-    
-    /**	@internal */
+    /** @internal */
     void sendAudioPickerCancelledMessage (void* picker);
-    
+
 private:
     //==============================================================================
     ListenerList<Listener> listeners;
-    
+
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPicker);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPicker)
 };
 
-#endif
-#endif   // __DROWAUDIO_AUDIOPICKER__
+#endif //JUCE_IOS || DOXYGEN
+#endif //DROWAUDIO_AUDIOPICKER_H

@@ -19,64 +19,53 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-
-
 Clock::Clock()
 {
-	setTimeDisplayFormat (showTime + show24Hr);
+    setTimeDisplayFormat (showTime + show24Hr);
 }
 
-Clock::~Clock()
+int Clock::getRequiredWidth() const
 {
-	stopTimer();
+    return getFont().getStringWidth (timeAsString) + 10;
 }
 
-int Clock::getRequiredWidth()
+void Clock::setTimeDisplayFormat (const int newFormat)
 {
-	return getFont().getStringWidth (timeAsString) + 10;
-}
+    displayFormat = newFormat;
 
-void Clock::setTimeDisplayFormat(const int newFormat)
-{	
-	displayFormat = newFormat;
-	
-	if ((displayFormat & showDayShort) && (displayFormat & showDayLong))
-		displayFormat -= showDayShort;
-	if ((displayFormat & showTime))
-		startTimer (5900);
-	if ((displayFormat & showSeconds))
-		startTimer (950);
-//	if ((displayFormat & showTenthSeconds))
-//		startTimer(99);
-	
-	timerCallback();
+    if ((displayFormat & showDayShort) != 0 && (displayFormat & showDayLong) != 0)
+        displayFormat -= showDayShort;
+    if ((displayFormat & showTime) != 0)
+        startTimer (5900);
+    if ((displayFormat & showSeconds) != 0)
+        startTimer (950);
+
+    timerCallback();
 }
 
 void Clock::timerCallback()
 {
-	Time currentTime = Time::getCurrentTime();	
-	timeAsString = String::empty;
-	
-	String formatString;
-	formatString    << ((displayFormat & showDayShort)  ? "%a " : "")
-                    << ((displayFormat & showDayLong)   ? "%A " : "")
-                    << ((displayFormat & showDate)      ? "%x " : "")
-                    << ((displayFormat & showTime)      ? ((displayFormat & show24Hr) ? "%H:%M" : "%I:%M") : "")
-                    << ((displayFormat & showSeconds)   ? ":%S " : "");
-	
-	if (formatString != String::empty)
-		timeAsString << currentTime.formatted (formatString);
-	
-	setText (timeAsString, dontSendNotification);
-}
+    timeAsString = juce::String();
 
+    juce::String formatString;
+    formatString << ((displayFormat & showDayShort)  ? "%a " : "")
+                 << ((displayFormat & showDayLong)   ? "%A " : "")
+                 << ((displayFormat & showDate)      ? "%x " : "")
+                 << ((displayFormat & showTime)      ? ((displayFormat & show24Hr) ? "%H:%M" : "%I:%M") : "")
+                 << ((displayFormat & showSeconds)   ? ":%S " : "");
+
+    if (formatString.isNotEmpty())
+        timeAsString << Time::getCurrentTime().formatted (formatString);
+
+    setText (timeAsString, dontSendNotification);
+}

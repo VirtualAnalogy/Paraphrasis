@@ -19,11 +19,11 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
@@ -34,31 +34,27 @@ UnityBuilder::UnityBuilder()
 {
 }
 
-UnityBuilder::~UnityBuilder()
-{
-}
-
 bool UnityBuilder::processDirectory (const File& sourceDirectory)
 {
     if (sourceDirectory.isDirectory())
     {
         Array<File> files;
-        sourceDirectory.findChildFiles (files, File::findFiles + File::ignoreHiddenFiles, true);
-        
-        String includeString, sourceString;
-        
+        sourceDirectory.findChildFiles (files, juce::File::findFiles + juce::File::ignoreHiddenFiles, true);
+
+        juce::String includeString, sourceString;
+
         for (int i = 0; i < files.size(); ++i)
         {
             bool includeFile = true;
-            File& currentFile (files.getReference (i));
+            const File& currentFile = files.getReference (i);
 
             // first check files
             if (! filesToIgnore.contains (currentFile))
             {
                 // now check for directories
-                for (int i = 0; i < filesToIgnore.size(); ++i)
+                for (int f = 0; f < filesToIgnore.size(); ++f)
                 {
-                    File& currentDir (filesToIgnore.getReference (i));
+                    const File& currentDir = filesToIgnore.getReference (f);
 
                     if (currentDir.isDirectory()
                         && currentFile.isAChildOf (currentDir))
@@ -67,10 +63,10 @@ bool UnityBuilder::processDirectory (const File& sourceDirectory)
                         break;
                     }
                 }
-                
+
                 if (includeFile)
                 {
-                    const String relativePath (currentFile.getRelativePathFrom (sourceDirectory));
+                    const juce::String relativePath (currentFile.getRelativePathFrom (sourceDirectory));
 
                     if (currentFile.hasFileExtension (".h"))
                         includeString << "#include \"" << relativePath << "\"" << newLine;
@@ -79,18 +75,18 @@ bool UnityBuilder::processDirectory (const File& sourceDirectory)
                 }
             }
         }
-        
+
         // now write the output files
-        File outputFile (destinationFile == File::nonexistent ? sourceDirectory : destinationFile);
-        
+        File outputFile (destinationFile == File() ? sourceDirectory : destinationFile);
+
         if (outputFile.hasWriteAccess())
         {
             File headerFile, cppFile;
-            
+
             if (outputFile.isDirectory())
             {
-                const String baseName ("UnityBuild");
-                
+                const juce::String baseName ("UnityBuild");
+
                 headerFile = outputFile.getNonexistentChildFile (baseName, ".h");
                 cppFile = outputFile.getNonexistentChildFile (baseName, ".cpp");
             }
@@ -100,20 +96,20 @@ bool UnityBuilder::processDirectory (const File& sourceDirectory)
                 cppFile = outputFile.getNonexistentSibling().withFileExtension (".cpp");
             }
 
-            String headerOutput (preInclusionString);
-            String sourceOutput (preInclusionString);
-            
+            juce::String headerOutput (preInclusionString);
+            juce::String sourceOutput (preInclusionString);
+
             headerOutput << includeString << postInclusionString;
             sourceOutput << "#include \"" << headerFile.getFileName() << "\"" << newLine << newLine
                 << sourceString << postInclusionString;
-            
+
             headerFile.replaceWithText (headerOutput);
             cppFile.replaceWithText (sourceOutput);
-            
+
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -127,8 +123,8 @@ void UnityBuilder::setFilesToIgnore (const Array<File>& filesToIgnore_)
     filesToIgnore = filesToIgnore_;
 }
 
-void UnityBuilder::setPreAndPostString (const String& preInclusionString_,
-                                        const String& postInclusionString_)
+void UnityBuilder::setPreAndPostString (const juce::String& preInclusionString_,
+                                        const juce::String& postInclusionString_)
 {
     preInclusionString = preInclusionString_;
     postInclusionString = postInclusionString_;

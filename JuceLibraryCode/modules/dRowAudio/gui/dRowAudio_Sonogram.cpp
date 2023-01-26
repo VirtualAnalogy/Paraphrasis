@@ -19,41 +19,37 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#if JUCE_MAC || JUCE_IOS || DROWAUDIO_USE_FFTREAL
+#if DROWAUDIO_USE_FFTREAL || DROWAUDIO_USE_VDSP
 
 Sonogram::Sonogram (int fftSizeLog2)
-:	fftEngine       (fftSizeLog2),
-	needsRepaint    (true),
-	tempBlock       (fftEngine.getFFTSize()),
-	circularBuffer  (fftEngine.getMagnitudesBuffer().getSize() * 4),
-	logFrequency    (false),
+:    fftEngine       (fftSizeLog2),
+    needsRepaint    (true),
+    tempBlock       (fftEngine.getFFTSize()),
+    circularBuffer  (int (fftEngine.getMagnitudesBuffer().getSize() * 4)),
+    logFrequency    (false),
     scopeLineW      (1.0f)
 {
-	setOpaque (true);
+    setColour (lineColourId, Colours::white);
+    setColour (backgroundColourId, Colours::transparentBlack);
+    setColour (traceColourId, Colours::white);
 
-	fftEngine.setWindowType (Window::Hann);
-	numBins = fftEngine.getFFTProperties().fftSizeHalved;
-    
+    fftEngine.setWindowType (Window::Hann);
+    numBins = fftEngine.getFFTProperties().fftSizeHalved;
+
     circularBuffer.reset();
-    
-    scopeImage = Image (Image::RGB,
-                        100, 100,
-                        false);
-    scopeImage.clear (scopeImage.getBounds(), Colours::black);
-}
 
-Sonogram::~Sonogram()
-{
+    scopeImage = Image (Image::ARGB, 100, 100, false);
+    scopeImage.clear (scopeImage.getBounds(), Colours::transparentWhite);
 }
 
 void Sonogram::resized()
@@ -65,7 +61,15 @@ void Sonogram::resized()
 void Sonogram::paint(Graphics &g)
 {
     const ScopedLock sl (lock);
+
+    g.setColour (findColour (backgroundColourId));
+    g.fillRect (getLocalBounds());
+
+    g.setOpacity (1.0f);
     g.drawImageAt (scopeImage, 0, 0, false);
+    
+    g.setColour (findColour (lineColourId));
+    g.drawRect (getLocalBounds());
 }
 
 //==============================================================================
@@ -86,10 +90,10 @@ int Sonogram::getBlockWidth() const
 }
 
 //==============================================================================
-void Sonogram::copySamples (const float* samples, int numSamples)
+void Sonogram::copySamples (const float* samplesIn, int numSamplesIn)
 {
-	circularBuffer.writeSamples (samples, numSamples);
-	needToProcess = true;
+    circularBuffer.writeSamples (samplesIn, numSamplesIn);
+    needToProcess = true;
 }
 
 void Sonogram::timerCallback()
@@ -101,21 +105,21 @@ void Sonogram::timerCallback()
 void Sonogram::process()
 {
     jassert (circularBuffer.getNumFree() != 0); // buffer is too small!
-    
+
     while (circularBuffer.getNumAvailable() > fftEngine.getFFTSize())
-	{
-		circularBuffer.readSamples (tempBlock.getData(), fftEngine.getFFTSize());
-		fftEngine.performFFT (tempBlock);
-		fftEngine.findMagnitudes();
+    {
+        circularBuffer.readSamples (tempBlock.getData(), fftEngine.getFFTSize());
+        fftEngine.performFFT (tempBlock);
+        fftEngine.findMagnitudes();
 
         renderScopeLine();
-        
-		needsRepaint = true;
-	}
+
+        needsRepaint = true;
+    }
 }
 
 void Sonogram::flagForRepaint()
-{	
+{
     needsRepaint = true;
     repaint();
 }
@@ -128,43 +132,43 @@ void Sonogram::renderScopeLine()
                                  scopeImage.getWidth(), scopeImage.getHeight());
 
     const int h = scopeImage.getHeight();
-    
+
     Graphics g (scopeImage);
     const int x = scopeImage.getWidth() - (int) scopeLineW;
-        
-    const int numBins = fftEngine.getMagnitudesBuffer().getSize() - 1;
-    const float yScale = (float) h / (numBins + 1);
+
+    const int numBinsX = int (fftEngine.getMagnitudesBuffer().getSize() - 1);
+    const float yScale = (float) h / (numBinsX + 1);
     const float* data = fftEngine.getMagnitudesBuffer().getData();
-    
+
     float amp = jlimit (0.0f, 1.0f, (float) (1 + (toDecibels (data[0]) / 100.0f)));
     float y2, y1 = 0;
-    
+
     if (logFrequency)
     {
-        for (int i = 0; i < numBins; ++i)
+        for (int i = 0; i < numBinsX; ++i)
         {
             amp = jlimit (0.0f, 1.0f, (float) (1 + (toDecibels (data[i]) / 100.0f)));
-            y2 = log10 (1 + 39 * ((i + 1.0f) / numBins)) / log10 (40.0f) * h;
+            y2 = log10 (1 + 39 * ((i + 1.0f) / numBinsX)) / log10 (40.0f) * h;
 
             g.setColour (Colour::greyLevel (amp));
-            g.fillRect ((float)x, h - y2, scopeLineW, y1 - y2);
-            
+            g.fillRect ((float)x, std::abs (h - y2), scopeLineW, std::abs (y1 - y2));
+
             y1 = y2;
-        }	
+        }
     }
     else
     {
-        for (int i = 0; i < numBins; ++i)
+        for (int i = 0; i < numBinsX; ++i)
         {
             amp = jlimit (0.0f, 1.0f, (float) (1 + (toDecibels (data[i]) / 100.0f)));
             y2 = (i + 1) * yScale;
-            
+
             g.setColour (Colour::greyLevel (amp));
             g.fillRect ((float) x, h - y2, scopeLineW, y1 - y2);
 
             y1 = y2;
-        }	
+        }
     }
 }
 
-#endif // JUCE_MAC || JUCE_IOS || DROWAUDIO_USE_FFTREAL
+#endif //DROWAUDIO_USE_FFTREAL

@@ -19,28 +19,26 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_AVASSETAUDIOFORMAT_H__
-#define __DROWAUDIO_AVASSETAUDIOFORMAT_H__
+#ifndef DROWAUDIO_AVASSETAUDIOFORMAT_H
+#define DROWAUDIO_AVASSETAUDIOFORMAT_H
 
 #if JUCE_IOS || DOXYGEN
 
-//==============================================================================
-/**
-    OSX and iOS only - This uses the AVFoundation framework to read any audio
+/** OSX and iOS only - This uses the AVFoundation framework to read any audio
     format that the system has a codec for.
 
     This should be able to understand formats such as mp3, m4a, etc.
- 
+
     Because the underlying AVFoundation framework buffers the reading of the
     audio on a background thread already, it shouldn't be necessarry to use your
     own BufferingAudioSource (unless of course you need to). The other
@@ -59,55 +57,54 @@
     @endcode
 
     @see AudioFormat, AudioPicker, IOSAudioConverter
- */
-class AVAssetAudioFormat    : public AudioFormat
+*/
+class AVAssetAudioFormat : public AudioFormat
 {
 public:
-    //==============================================================================
     /** Creates a format object. */
     AVAssetAudioFormat();
-
-    /** Destructor. */
-    ~AVAssetAudioFormat();
 
     //==============================================================================
     /** Converts an AVAssetURL String to a MemoryInputStream ready to pass to
         createReaderFor().
-        
+
         Because we need a common interface to create the AudioFormatReader this
         helper method converts an AVAssetURL encoded as a String (such as that
         returned by an AudioPicker::mpMediaItemToAvassetUrl) to an InputStream.
-        
+
         The caller is responsible for deleting the stream but this is usually taken
         care of by the createReaderFor method.
-     
+
         @see AudioPicker
      */
-    static MemoryInputStream* avAssetUrlStringToStream (const String& avAssetUrlString);
+    static MemoryInputStream* avAssetUrlStringToStream (const juce::String& avAssetUrlString);
 
     //==============================================================================
-    Array<int> getPossibleSampleRates();
-    Array<int> getPossibleBitDepths();
-    bool canDoStereo();
-    bool canDoMono();
-
-    //==============================================================================
-    AudioFormatReader* createReaderFor (String assetNSURLAsString);
-
+    /** @internal */
+    Array<int> getPossibleSampleRates() override;
+    /** @internal */
+    Array<int> getPossibleBitDepths() override;
+    /** @internal */
+    bool canDoStereo() override;
+    /** @internal */
+    bool canDoMono() override;
+    /** @internal */
+    AudioFormatReader* createReaderFor (const juce::String& assetNSURLAsString);
+    /** @internal */
     AudioFormatReader* createReaderFor (InputStream* sourceStream,
-                                        bool deleteStreamIfOpeningFails);
-
+                                        bool deleteStreamIfOpeningFails) override;
+    /** @internal */
     AudioFormatWriter* createWriterFor (OutputStream* streamToWriteTo,
                                         double sampleRateToUse,
                                         unsigned int numberOfChannels,
                                         int bitsPerSample,
-                                        const StringPairArray& metadataValues,
-                                        int qualityOptionIndex);
+                                        const juce::StringPairArray& metadataValues,
+                                        int qualityOptionIndex) override;
 
 private:
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AVAssetAudioFormat);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AVAssetAudioFormat)
 };
 
-#endif
-#endif   // __DROWAUDIO_AVASSETAUDIOFORMAT_H__
+#endif //JUCE_IOS || DOXYGEN
+#endif //DROWAUDIO_AVASSETAUDIOFORMAT_H

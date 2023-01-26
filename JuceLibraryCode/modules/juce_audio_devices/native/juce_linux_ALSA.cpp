@@ -2,25 +2,26 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-   ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
+
+namespace juce
+{
 
 namespace
 {
@@ -30,7 +31,7 @@ namespace
 #endif
 
 #if JUCE_ALSA_LOGGING
- #define JUCE_ALSA_LOG(dbgtext)   { juce::String tempDbgBuf ("ALSA: "); tempDbgBuf << dbgtext; Logger::writeToLog (tempDbgBuf); DBG (tempDbgBuf) }
+ #define JUCE_ALSA_LOG(dbgtext)   { juce::String tempDbgBuf ("ALSA: "); tempDbgBuf << dbgtext; Logger::writeToLog (tempDbgBuf); DBG (tempDbgBuf); }
  #define JUCE_CHECKED_RESULT(x)   (logErrorMessage (x, __LINE__))
 
  static int logErrorMessage (int err, int lineNum)
@@ -49,17 +50,15 @@ namespace
 
 static void getDeviceSampleRates (snd_pcm_t* handle, Array<double>& rates)
 {
-    const int ratesToTry[] = { 22050, 32000, 44100, 48000, 88200, 96000, 176400, 192000, 0 };
-
     snd_pcm_hw_params_t* hwParams;
     snd_pcm_hw_params_alloca (&hwParams);
 
-    for (int i = 0; ratesToTry[i] != 0; ++i)
+    for (const auto rateToTry : SampleRateHelpers::getAllSampleRates())
     {
         if (snd_pcm_hw_params_any (handle, hwParams) >= 0
-             && snd_pcm_hw_params_test_rate (handle, hwParams, ratesToTry[i], 0) == 0)
+             && snd_pcm_hw_params_test_rate (handle, hwParams, (unsigned int) rateToTry, 0) == 0)
         {
-            rates.addIfNotAlreadyThere ((double) ratesToTry[i]);
+            rates.addIfNotAlreadyThere (rateToTry);
         }
     }
 }
@@ -77,7 +76,7 @@ static void getDeviceNumChannels (snd_pcm_t* handle, unsigned int* minChans, uns
         JUCE_ALSA_LOG ("getDeviceNumChannels: " << (int) *minChans << " " << (int) *maxChans);
 
         // some virtual devices (dmix for example) report 10000 channels , we have to clamp these values
-        *maxChans = jmin (*maxChans, 32u);
+        *maxChans = jmin (*maxChans, 256u);
         *minChans = jmin (*minChans, *maxChans);
     }
     else
@@ -149,7 +148,7 @@ class ALSADevice
 {
 public:
     ALSADevice (const String& devID, bool forInput)
-        : handle (0),
+        : handle (nullptr),
           bitDepth (16),
           numChannelsRunning (0),
           latency (0),
@@ -157,7 +156,7 @@ public:
           isInput (forInput),
           isInterleaved (true)
     {
-        JUCE_ALSA_LOG ("snd_pcm_open (" << deviceID.toUTF8().getAddress() << ", forInput=" << forInput << ")");
+        JUCE_ALSA_LOG ("snd_pcm_open (" << deviceID.toUTF8().getAddress() << ", forInput=" << (int) forInput << ")");
 
         int err = snd_pcm_open (&handle, deviceID.toUTF8(),
                                 forInput ? SND_PCM_STREAM_CAPTURE : SND_PCM_STREAM_PLAYBACK,
@@ -183,16 +182,16 @@ public:
 
     void closeNow()
     {
-        if (handle != 0)
+        if (handle != nullptr)
         {
             snd_pcm_close (handle);
-            handle = 0;
+            handle = nullptr;
         }
     }
 
     bool setParameters (unsigned int sampleRate, int numChannels, int bufferSize)
     {
-        if (handle == 0)
+        if (handle == nullptr)
             return false;
 
         JUCE_ALSA_LOG ("ALSADevice::setParameters(" << deviceID << ", "
@@ -239,11 +238,12 @@ public:
                 const int type = formatsToTry [i + 1];
                 bitDepth = type & 255;
 
-                converter = createConverter (isInput, bitDepth,
-                                             (type & isFloatBit) != 0,
-                                             (type & isLittleEndianBit) != 0,
-                                             (type & onlyUseLower24Bits) != 0,
-                                             numChannels);
+                converter.reset (createConverter (isInput, bitDepth,
+                                                  (type & isFloatBit) != 0,
+                                                  (type & isLittleEndianBit) != 0,
+                                                  (type & onlyUseLower24Bits) != 0,
+                                                  numChannels,
+                                                  isInterleaved));
                 break;
             }
         }
@@ -257,10 +257,10 @@ public:
 
         int dir = 0;
         unsigned int periods = 4;
-        snd_pcm_uframes_t samplesPerPeriod = bufferSize;
+        snd_pcm_uframes_t samplesPerPeriod = (snd_pcm_uframes_t) bufferSize;
 
-        if (JUCE_ALSA_FAILED (snd_pcm_hw_params_set_rate_near (handle, hwParams, &sampleRate, 0))
-            || JUCE_ALSA_FAILED (snd_pcm_hw_params_set_channels (handle, hwParams, numChannels))
+        if (JUCE_ALSA_FAILED (snd_pcm_hw_params_set_rate_near (handle, hwParams, &sampleRate, nullptr))
+            || JUCE_ALSA_FAILED (snd_pcm_hw_params_set_channels (handle, hwParams, (unsigned int ) numChannels))
             || JUCE_ALSA_FAILED (snd_pcm_hw_params_set_periods_near (handle, hwParams, &periods, &dir))
             || JUCE_ALSA_FAILED (snd_pcm_hw_params_set_period_size_near (handle, hwParams, &samplesPerPeriod, &dir))
             || JUCE_ALSA_FAILED (snd_pcm_hw_params (handle, hwParams)))
@@ -274,7 +274,7 @@ public:
              || JUCE_ALSA_FAILED (snd_pcm_hw_params_get_periods (hwParams, &periods, &dir)))
             latency = 0;
         else
-            latency = frames * (periods - 1); // (this is the method JACK uses to guess the latency..)
+            latency = (int) frames * ((int) periods - 1); // (this is the method JACK uses to guess the latency..)
 
         JUCE_ALSA_LOG ("frames: " << (int) frames << ", periods: " << (int) periods
                           << ", samplesPerPeriod: " << (int) samplesPerPeriod);
@@ -308,7 +308,7 @@ public:
     }
 
     //==============================================================================
-    bool writeToOutputDevice (AudioSampleBuffer& outputChannelBuffer, const int numSamples)
+    bool writeToOutputDevice (AudioBuffer<float>& outputChannelBuffer, const int numSamples)
     {
         jassert (numChannelsRunning <= outputChannelBuffer.getNumChannels());
         float* const* const data = outputChannelBuffer.getArrayOfWritePointers();
@@ -316,23 +316,29 @@ public:
 
         if (isInterleaved)
         {
-            scratch.ensureSize (sizeof (float) * numSamples * numChannelsRunning, false);
+            scratch.ensureSize ((size_t) ((int) sizeof (float) * numSamples * numChannelsRunning), false);
 
             for (int i = 0; i < numChannelsRunning; ++i)
                 converter->convertSamples (scratch.getData(), i, data[i], 0, numSamples);
 
-            numDone = snd_pcm_writei (handle, scratch.getData(), numSamples);
+            numDone = snd_pcm_writei (handle, scratch.getData(), (snd_pcm_uframes_t) numSamples);
         }
         else
         {
             for (int i = 0; i < numChannelsRunning; ++i)
                 converter->convertSamples (data[i], data[i], numSamples);
 
-            numDone = snd_pcm_writen (handle, (void**) data, numSamples);
+            numDone = snd_pcm_writen (handle, (void**) data, (snd_pcm_uframes_t) numSamples);
         }
 
-        if (numDone < 0 && JUCE_ALSA_FAILED (snd_pcm_recover (handle, numDone, 1 /* silent */)))
-            return false;
+        if (numDone < 0)
+        {
+            if (numDone == -(EPIPE))
+                underrunCount++;
+
+            if (JUCE_ALSA_FAILED (snd_pcm_recover (handle, (int) numDone, 1 /* silent */)))
+                return false;
+        }
 
         if (numDone < numSamples)
             JUCE_ALSA_LOG ("Did not write all samples: numDone: " << numDone << ", numSamples: " << numSamples);
@@ -340,20 +346,27 @@ public:
         return true;
     }
 
-    bool readFromInputDevice (AudioSampleBuffer& inputChannelBuffer, const int numSamples)
+    bool readFromInputDevice (AudioBuffer<float>& inputChannelBuffer, const int numSamples)
     {
         jassert (numChannelsRunning <= inputChannelBuffer.getNumChannels());
         float* const* const data = inputChannelBuffer.getArrayOfWritePointers();
 
         if (isInterleaved)
         {
-            scratch.ensureSize (sizeof (float) * numSamples * numChannelsRunning, false);
+            scratch.ensureSize ((size_t) ((int) sizeof (float) * numSamples * numChannelsRunning), false);
             scratch.fillWith (0); // (not clearing this data causes warnings in valgrind)
 
-            snd_pcm_sframes_t num = snd_pcm_readi (handle, scratch.getData(), numSamples);
+            auto num = snd_pcm_readi (handle, scratch.getData(), (snd_pcm_uframes_t) numSamples);
 
-            if (num < 0 && JUCE_ALSA_FAILED (snd_pcm_recover (handle, num, 1 /* silent */)))
-                return false;
+            if (num < 0)
+            {
+                if (num == -(EPIPE))
+                    overrunCount++;
+
+                if (JUCE_ALSA_FAILED (snd_pcm_recover (handle, (int) num, 1 /* silent */)))
+                    return false;
+            }
+
 
             if (num < numSamples)
                 JUCE_ALSA_LOG ("Did not read all samples: num: " << num << ", numSamples: " << numSamples);
@@ -363,10 +376,16 @@ public:
         }
         else
         {
-            snd_pcm_sframes_t num = snd_pcm_readn (handle, (void**) data, numSamples);
+            auto num = snd_pcm_readn (handle, (void**) data, (snd_pcm_uframes_t) numSamples);
 
-            if (num < 0 && JUCE_ALSA_FAILED (snd_pcm_recover (handle, num, 1 /* silent */)))
-                return false;
+            if (num < 0)
+            {
+                if (num == -(EPIPE))
+                    overrunCount++;
+
+                if (JUCE_ALSA_FAILED (snd_pcm_recover (handle, (int) num, 1 /* silent */)))
+                    return false;
+            }
 
             if (num < numSamples)
                 JUCE_ALSA_LOG ("Did not read all samples: num: " << num << ", numSamples: " << numSamples);
@@ -382,6 +401,7 @@ public:
     snd_pcm_t* handle;
     String error;
     int bitDepth, numChannelsRunning, latency;
+    int underrunCount = 0, overrunCount = 0;
 
 private:
     //==============================================================================
@@ -389,50 +409,61 @@ private:
     const bool isInput;
     bool isInterleaved;
     MemoryBlock scratch;
-    ScopedPointer<AudioData::Converter> converter;
+    std::unique_ptr<AudioData::Converter> converter;
 
     //==============================================================================
     template <class SampleType>
     struct ConverterHelper
     {
-        static AudioData::Converter* createConverter (const bool forInput, const bool isLittleEndian, const int numInterleavedChannels)
+        static AudioData::Converter* createConverter (const bool forInput, const bool isLittleEndian, const int numInterleavedChannels, bool interleaved)
+        {
+            if (interleaved)
+                return create<AudioData::Interleaved> (forInput, isLittleEndian, numInterleavedChannels);
+
+            return create<AudioData::NonInterleaved> (forInput, isLittleEndian, numInterleavedChannels);
+        }
+
+    private:
+        template <class InterleavedType>
+        static AudioData::Converter* create (const bool forInput, const bool isLittleEndian, const int numInterleavedChannels)
         {
             if (forInput)
             {
-                typedef AudioData::Pointer <AudioData::Float32, AudioData::NativeEndian, AudioData::NonInterleaved, AudioData::NonConst> DestType;
+                using DestType = AudioData::Pointer <AudioData::Float32, AudioData::NativeEndian, AudioData::NonInterleaved, AudioData::NonConst>;
 
                 if (isLittleEndian)
-                    return new AudioData::ConverterInstance <AudioData::Pointer <SampleType, AudioData::LittleEndian, AudioData::Interleaved, AudioData::Const>, DestType> (numInterleavedChannels, 1);
+                    return new AudioData::ConverterInstance <AudioData::Pointer <SampleType, AudioData::LittleEndian, InterleavedType, AudioData::Const>, DestType> (numInterleavedChannels, 1);
 
-                return new AudioData::ConverterInstance <AudioData::Pointer <SampleType, AudioData::BigEndian, AudioData::Interleaved, AudioData::Const>, DestType> (numInterleavedChannels, 1);
+                return new AudioData::ConverterInstance <AudioData::Pointer <SampleType, AudioData::BigEndian, InterleavedType, AudioData::Const>, DestType> (numInterleavedChannels, 1);
             }
 
-            typedef AudioData::Pointer <AudioData::Float32, AudioData::NativeEndian, AudioData::NonInterleaved, AudioData::Const> SourceType;
+            using SourceType = AudioData::Pointer <AudioData::Float32, AudioData::NativeEndian, AudioData::NonInterleaved, AudioData::Const>;
 
             if (isLittleEndian)
-                return new AudioData::ConverterInstance <SourceType, AudioData::Pointer <SampleType, AudioData::LittleEndian, AudioData::Interleaved, AudioData::NonConst> > (1, numInterleavedChannels);
+                return new AudioData::ConverterInstance <SourceType, AudioData::Pointer <SampleType, AudioData::LittleEndian, InterleavedType, AudioData::NonConst>> (1, numInterleavedChannels);
 
-            return new AudioData::ConverterInstance <SourceType, AudioData::Pointer <SampleType, AudioData::BigEndian, AudioData::Interleaved, AudioData::NonConst> > (1, numInterleavedChannels);
+            return new AudioData::ConverterInstance <SourceType, AudioData::Pointer <SampleType, AudioData::BigEndian, InterleavedType, AudioData::NonConst>> (1, numInterleavedChannels);
         }
     };
 
     static AudioData::Converter* createConverter (bool forInput, int bitDepth,
                                                   bool isFloat, bool isLittleEndian, bool useOnlyLower24Bits,
-                                                  int numInterleavedChannels)
+                                                  int numInterleavedChannels,
+                                                  bool interleaved)
     {
-        JUCE_ALSA_LOG ("format: bitDepth=" << bitDepth << ", isFloat=" << isFloat
-                        << ", isLittleEndian=" << isLittleEndian << ", numChannels=" << numInterleavedChannels);
+        JUCE_ALSA_LOG ("format: bitDepth=" << bitDepth << ", isFloat=" << (int) isFloat
+                        << ", isLittleEndian=" << (int) isLittleEndian << ", numChannels=" << numInterleavedChannels);
 
-        if (isFloat)         return ConverterHelper <AudioData::Float32>::createConverter (forInput, isLittleEndian, numInterleavedChannels);
-        if (bitDepth == 16)  return ConverterHelper <AudioData::Int16>  ::createConverter (forInput, isLittleEndian, numInterleavedChannels);
-        if (bitDepth == 24)  return ConverterHelper <AudioData::Int24>  ::createConverter (forInput, isLittleEndian, numInterleavedChannels);
+        if (isFloat)         return ConverterHelper <AudioData::Float32>::createConverter (forInput, isLittleEndian, numInterleavedChannels, interleaved);
+        if (bitDepth == 16)  return ConverterHelper <AudioData::Int16>  ::createConverter (forInput, isLittleEndian, numInterleavedChannels, interleaved);
+        if (bitDepth == 24)  return ConverterHelper <AudioData::Int24>  ::createConverter (forInput, isLittleEndian, numInterleavedChannels, interleaved);
 
         jassert (bitDepth == 32);
 
         if (useOnlyLower24Bits)
-            return ConverterHelper <AudioData::Int24in32>::createConverter (forInput, isLittleEndian, numInterleavedChannels);
+            return ConverterHelper <AudioData::Int24in32>::createConverter (forInput, isLittleEndian, numInterleavedChannels, interleaved);
 
-        return ConverterHelper <AudioData::Int32>::createConverter (forInput, isLittleEndian, numInterleavedChannels);
+        return ConverterHelper <AudioData::Int32>::createConverter (forInput, isLittleEndian, numInterleavedChannels, interleaved);
     }
 
     //==============================================================================
@@ -454,31 +485,22 @@ class ALSAThread  : public Thread
 {
 public:
     ALSAThread (const String& inputDeviceID, const String& outputDeviceID)
-        : Thread ("Juce ALSA"),
-          sampleRate (0),
-          bufferSize (0),
-          outputLatency (0),
-          inputLatency (0),
-          callback (0),
+        : Thread ("JUCE ALSA"),
           inputId (inputDeviceID),
-          outputId (outputDeviceID),
-          numCallbacks (0),
-          audioIoInProgress (false),
-          inputChannelBuffer (1, 1),
-          outputChannelBuffer (1, 1)
+          outputId (outputDeviceID)
     {
         initialiseRatesAndChannels();
     }
 
-    ~ALSAThread()
+    ~ALSAThread() override
     {
         close();
     }
 
     void open (BigInteger inputChannels,
                BigInteger outputChannels,
-               const double newSampleRate,
-               const int newBufferSize)
+               double newSampleRate,
+               int newBufferSize)
     {
         close();
 
@@ -486,14 +508,17 @@ public:
         sampleRate = newSampleRate;
         bufferSize = newBufferSize;
 
-        inputChannelBuffer.setSize (jmax ((int) minChansIn, inputChannels.getHighestBit()) + 1, bufferSize);
+        int maxInputsRequested = inputChannels.getHighestBit() + 1;
+        maxInputsRequested = jmax ((int) minChansIn, jmin ((int) maxChansIn, maxInputsRequested));
+
+        inputChannelBuffer.setSize (maxInputsRequested, bufferSize);
         inputChannelBuffer.clear();
         inputChannelDataForCallback.clear();
         currentInputChans.clear();
 
         if (inputChannels.getHighestBit() >= 0)
         {
-            for (int i = 0; i <= jmax (inputChannels.getHighestBit(), (int) minChansIn); ++i)
+            for (int i = 0; i < maxInputsRequested; ++i)
             {
                 if (inputChannels[i])
                 {
@@ -503,16 +528,48 @@ public:
             }
         }
 
-        ensureMinimumNumBitsSet (outputChannels, minChansOut);
+        ensureMinimumNumBitsSet (outputChannels, (int) minChansOut);
 
-        outputChannelBuffer.setSize (jmax ((int) minChansOut, outputChannels.getHighestBit()) + 1, bufferSize);
+        int maxOutputsRequested = outputChannels.getHighestBit() + 1;
+        maxOutputsRequested = jmax ((int) minChansOut, jmin ((int) maxChansOut, maxOutputsRequested));
+
+        outputChannelBuffer.setSize (maxOutputsRequested, bufferSize);
         outputChannelBuffer.clear();
         outputChannelDataForCallback.clear();
         currentOutputChans.clear();
 
+        // Note that the input device is opened before an output, because we've heard
+        // of drivers where doing it in the reverse order mysteriously fails.. If this
+        // order also causes problems, let us know and we'll see if we can find a compromise!
+
+        if (inputChannelDataForCallback.size() > 0 && inputId.isNotEmpty())
+        {
+            inputDevice.reset (new ALSADevice (inputId, true));
+
+            if (inputDevice->error.isNotEmpty())
+            {
+                error = inputDevice->error;
+                inputDevice.reset();
+                return;
+            }
+
+            ensureMinimumNumBitsSet (currentInputChans, (int) minChansIn);
+
+            if (! inputDevice->setParameters ((unsigned int) sampleRate,
+                                              jlimit ((int) minChansIn, (int) maxChansIn, currentInputChans.getHighestBit() + 1),
+                                              bufferSize))
+            {
+                error = inputDevice->error;
+                inputDevice.reset();
+                return;
+            }
+
+            inputLatency = inputDevice->latency;
+        }
+
         if (outputChannels.getHighestBit() >= 0)
         {
-            for (int i = 0; i <= jmax (outputChannels.getHighestBit(), (int) minChansOut); ++i)
+            for (int i = 0; i < maxOutputsRequested; ++i)
             {
                 if (outputChannels[i])
                 {
@@ -524,12 +581,12 @@ public:
 
         if (outputChannelDataForCallback.size() > 0 && outputId.isNotEmpty())
         {
-            outputDevice = new ALSADevice (outputId, false);
+            outputDevice.reset (new ALSADevice (outputId, false));
 
             if (outputDevice->error.isNotEmpty())
             {
                 error = outputDevice->error;
-                outputDevice = nullptr;
+                outputDevice.reset();
                 return;
             }
 
@@ -539,36 +596,11 @@ public:
                                                bufferSize))
             {
                 error = outputDevice->error;
-                outputDevice = nullptr;
+                outputDevice.reset();
                 return;
             }
 
             outputLatency = outputDevice->latency;
-        }
-
-        if (inputChannelDataForCallback.size() > 0 && inputId.isNotEmpty())
-        {
-            inputDevice = new ALSADevice (inputId, true);
-
-            if (inputDevice->error.isNotEmpty())
-            {
-                error = inputDevice->error;
-                inputDevice = nullptr;
-                return;
-            }
-
-            ensureMinimumNumBitsSet (currentInputChans, minChansIn);
-
-            if (! inputDevice->setParameters ((unsigned int) sampleRate,
-                                              jlimit ((int) minChansIn, (int) maxChansIn, currentInputChans.getHighestBit() + 1),
-                                              bufferSize))
-            {
-                error = inputDevice->error;
-                inputDevice = nullptr;
-                return;
-            }
-
-            inputLatency = inputDevice->latency;
         }
 
         if (outputDevice == nullptr && inputDevice == nullptr)
@@ -586,7 +618,7 @@ public:
         if (outputDevice != nullptr && JUCE_ALSA_FAILED (snd_pcm_prepare (outputDevice->handle)))
             return;
 
-        startThread (9);
+        startThread (Priority::high);
 
         int count = 1000;
 
@@ -625,8 +657,8 @@ public:
 
         stopThread (6000);
 
-        inputDevice = nullptr;
-        outputDevice = nullptr;
+        inputDevice.reset();
+        outputDevice.reset();
 
         inputChannelBuffer.setSize (1, 1);
         outputChannelBuffer.setSize (1, 1);
@@ -644,8 +676,21 @@ public:
     {
         while (! threadShouldExit())
         {
-            if (inputDevice != nullptr && inputDevice->handle)
+            if (inputDevice != nullptr && inputDevice->handle != nullptr)
             {
+                if (outputDevice == nullptr || outputDevice->handle == nullptr)
+                {
+                    JUCE_ALSA_FAILED (snd_pcm_wait (inputDevice->handle, 2000));
+
+                    if (threadShouldExit())
+                        break;
+
+                    auto avail = snd_pcm_avail_update (inputDevice->handle);
+
+                    if (avail < 0)
+                        JUCE_ALSA_FAILED (snd_pcm_recover (inputDevice->handle, (int) avail, 0));
+                }
+
                 audioIoInProgress = true;
 
                 if (! inputDevice->readFromInputDevice (inputChannelBuffer, bufferSize))
@@ -666,30 +711,31 @@ public:
 
                 if (callback != nullptr)
                 {
-                    callback->audioDeviceIOCallback (inputChannelDataForCallback.getRawDataPointer(),
-                                                     inputChannelDataForCallback.size(),
-                                                     outputChannelDataForCallback.getRawDataPointer(),
-                                                     outputChannelDataForCallback.size(),
-                                                     bufferSize);
+                    callback->audioDeviceIOCallbackWithContext (inputChannelDataForCallback.getRawDataPointer(),
+                                                                inputChannelDataForCallback.size(),
+                                                                outputChannelDataForCallback.getRawDataPointer(),
+                                                                outputChannelDataForCallback.size(),
+                                                                bufferSize,
+                                                                {});
                 }
                 else
                 {
                     for (int i = 0; i < outputChannelDataForCallback.size(); ++i)
-                        zeromem (outputChannelDataForCallback[i], sizeof (float) * bufferSize);
+                        zeromem (outputChannelDataForCallback[i], (size_t) bufferSize * sizeof (float));
                 }
             }
 
-            if (outputDevice != nullptr && outputDevice->handle)
+            if (outputDevice != nullptr && outputDevice->handle != nullptr)
             {
                 JUCE_ALSA_FAILED (snd_pcm_wait (outputDevice->handle, 2000));
 
                 if (threadShouldExit())
                     break;
 
-                snd_pcm_sframes_t avail = snd_pcm_avail_update (outputDevice->handle);
+                auto avail = snd_pcm_avail_update (outputDevice->handle);
 
                 if (avail < 0)
-                    JUCE_ALSA_FAILED (snd_pcm_recover (outputDevice->handle, avail, 0));
+                    JUCE_ALSA_FAILED (snd_pcm_recover (outputDevice->handle, (int) avail, 0));
 
                 audioIoInProgress = true;
 
@@ -702,6 +748,7 @@ public:
                 audioIoInProgress = false;
             }
         }
+
         audioIoInProgress = false;
     }
 
@@ -716,31 +763,44 @@ public:
         return 16;
     }
 
+    int getXRunCount() const noexcept
+    {
+        int result = 0;
+
+        if (outputDevice != nullptr)
+            result += outputDevice->underrunCount;
+
+        if (inputDevice != nullptr)
+            result += inputDevice->overrunCount;
+
+        return result;
+    }
+
     //==============================================================================
     String error;
-    double sampleRate;
-    int bufferSize, outputLatency, inputLatency;
+    double sampleRate = 0;
+    int bufferSize = 0, outputLatency = 0, inputLatency = 0;
     BigInteger currentInputChans, currentOutputChans;
 
     Array<double> sampleRates;
     StringArray channelNamesOut, channelNamesIn;
-    AudioIODeviceCallback* callback;
+    AudioIODeviceCallback* callback = nullptr;
 
 private:
     //==============================================================================
     const String inputId, outputId;
-    ScopedPointer<ALSADevice> outputDevice, inputDevice;
-    int numCallbacks;
-    bool audioIoInProgress;
+    std::unique_ptr<ALSADevice> outputDevice, inputDevice;
+    std::atomic<int> numCallbacks { 0 };
+    std::atomic<bool> audioIoInProgress { false };
 
     CriticalSection callbackLock;
 
-    AudioSampleBuffer inputChannelBuffer, outputChannelBuffer;
+    AudioBuffer<float> inputChannelBuffer, outputChannelBuffer;
     Array<const float*> inputChannelDataForCallback;
     Array<float*> outputChannelDataForCallback;
 
-    unsigned int minChansOut, maxChansOut;
-    unsigned int minChansIn, maxChansIn;
+    unsigned int minChansOut = 0, maxChansOut = 0;
+    unsigned int minChansIn = 0, maxChansIn = 0;
 
     bool failed (const int errorNum)
     {
@@ -782,19 +842,17 @@ class ALSAAudioIODevice   : public AudioIODevice
 {
 public:
     ALSAAudioIODevice (const String& deviceName,
-                       const String& typeName,
+                       const String& deviceTypeName,
                        const String& inputDeviceID,
                        const String& outputDeviceID)
-        : AudioIODevice (deviceName, typeName),
+        : AudioIODevice (deviceName, deviceTypeName),
           inputId (inputDeviceID),
           outputId (outputDeviceID),
-          isOpen_ (false),
-          isStarted (false),
           internal (inputDeviceID, outputDeviceID)
     {
     }
 
-    ~ALSAAudioIODevice()
+    ~ALSAAudioIODevice() override
     {
         close();
     }
@@ -875,6 +933,8 @@ public:
     int getOutputLatencyInSamples() override         { return internal.outputLatency; }
     int getInputLatencyInSamples() override          { return internal.inputLatency; }
 
+    int getXRunCount() const noexcept override       { return internal.getXRunCount(); }
+
     void start (AudioIODeviceCallback* callback) override
     {
         if (! isOpen_)
@@ -890,7 +950,7 @@ public:
 
     void stop() override
     {
-        AudioIODeviceCallback* const oldCallback = internal.callback;
+        auto oldCallback = internal.callback;
 
         start (nullptr);
 
@@ -901,7 +961,7 @@ public:
     String inputId, outputId;
 
 private:
-    bool isOpen_, isStarted;
+    bool isOpen_ = false, isStarted = false;
     ALSAThread internal;
 };
 
@@ -910,9 +970,8 @@ private:
 class ALSAAudioIODeviceType  : public AudioIODeviceType
 {
 public:
-    ALSAAudioIODeviceType (bool onlySoundcards, const String &typeName)
-        : AudioIODeviceType (typeName),
-          hasScanned (false),
+    ALSAAudioIODeviceType (bool onlySoundcards, const String& deviceTypeName)
+        : AudioIODeviceType (deviceTypeName),
           listOnlySoundcards (onlySoundcards)
     {
        #if ! JUCE_ALSA_LOGGING
@@ -963,7 +1022,7 @@ public:
     {
         jassert (hasScanned); // need to call scanForDevices() before doing this
 
-        const int idx = (forInput ? inputIds : outputIds).indexOf ("default");
+        auto idx = (forInput ? inputIds : outputIds).indexOf ("default");
         return idx >= 0 ? idx : 0;
     }
 
@@ -973,7 +1032,7 @@ public:
     {
         jassert (hasScanned); // need to call scanForDevices() before doing this
 
-        if (ALSAAudioIODevice* d = dynamic_cast <ALSAAudioIODevice*> (device))
+        if (auto* d = dynamic_cast<ALSAAudioIODevice*> (device))
             return asInput ? inputIds.indexOf (d->inputId)
                            : outputIds.indexOf (d->outputId);
 
@@ -985,8 +1044,8 @@ public:
     {
         jassert (hasScanned); // need to call scanForDevices() before doing this
 
-        const int inputIndex = inputNames.indexOf (inputDeviceName);
-        const int outputIndex = outputNames.indexOf (outputDeviceName);
+        auto inputIndex = inputNames.indexOf (inputDeviceName);
+        auto outputIndex = outputNames.indexOf (outputDeviceName);
 
         String deviceName (outputIndex >= 0 ? outputDeviceName
                                             : inputDeviceName);
@@ -1002,9 +1061,10 @@ public:
 private:
     //==============================================================================
     StringArray inputNames, outputNames, inputIds, outputIds;
-    bool hasScanned, listOnlySoundcards;
+    bool hasScanned = false;
+    const bool listOnlySoundcards;
 
-    bool testDevice (const String &id, const String &outputName, const String &inputName)
+    bool testDevice (const String& id, const String& outputName, const String& inputName)
     {
         unsigned int minChansOut = 0, maxChansOut = 0;
         unsigned int minChansIn = 0, maxChansIn = 0;
@@ -1019,7 +1079,7 @@ private:
         if ((isInput || isOutput) && rates.size() > 0)
         {
             JUCE_ALSA_LOG ("testDevice: '" << id.toUTF8().getAddress() << "' -> isInput: "
-                            << isInput << ", isOutput: " << isOutput);
+                            << (int) isInput << ", isOutput: " << (int) isOutput);
 
             if (isInput)
             {
@@ -1054,7 +1114,7 @@ private:
             if (cardNum < 0)
                 break;
 
-            if (JUCE_CHECKED_RESULT (snd_ctl_open (&handle, ("hw:" + String (cardNum)).toUTF8(), SND_CTL_NONBLOCK)) >= 0)
+            if (JUCE_CHECKED_RESULT (snd_ctl_open (&handle, ("hw:" + String (cardNum)).toRawUTF8(), SND_CTL_NONBLOCK)) >= 0)
             {
                 if (JUCE_CHECKED_RESULT (snd_ctl_card_info (handle, info)) >= 0)
                 {
@@ -1078,9 +1138,9 @@ private:
                         if (snd_ctl_pcm_next_device (handle, &device) < 0 || device < 0)
                             break;
 
-                        snd_pcm_info_set_device (pcmInfo, device);
+                        snd_pcm_info_set_device (pcmInfo, (unsigned int) device);
 
-                        for (int subDevice = 0, nbSubDevice = 1; subDevice < nbSubDevice; ++subDevice)
+                        for (unsigned int subDevice = 0, nbSubDevice = 1; subDevice < nbSubDevice; ++subDevice)
                         {
                             snd_pcm_info_set_subdevice (pcmInfo, subDevice);
                             snd_pcm_info_set_stream (pcmInfo, SND_PCM_STREAM_CAPTURE);
@@ -1104,13 +1164,14 @@ private:
                             }
                             else
                             {
-                                id << "hw:" << cardId << "," << device << "," << subDevice;
+                                id << "hw:" << cardId << "," << device << "," << (int) subDevice;
                                 name << cardName << ", " << snd_pcm_info_get_name (pcmInfo)
                                      << " {" <<  snd_pcm_info_get_subdevice_name (pcmInfo) << "}";
                             }
 
                             JUCE_ALSA_LOG ("Soundcard ID: " << id << ", name: '" << name
-                                            << ", isInput:" << isInput << ", isOutput:" << isOutput << "\n");
+                                            << ", isInput:"  << (int) isInput
+                                            << ", isOutput:" << (int) isOutput << "\n");
 
                             if (isInput)
                             {
@@ -1187,7 +1248,7 @@ private:
             snd_device_name_free_hint (hints);
         }
 
-        // sometimes the "default" device is not listed, but it is nice to see it explicitely in the list
+        // sometimes the "default" device is not listed, but it is nice to see it explicitly in the list
         if (! outputIds.contains ("default"))
             testDevice ("default", "Default ALSA Output", "Default ALSA Input");
 
@@ -1196,7 +1257,7 @@ private:
             testDevice ("pulse", "Pulseaudio output", "Pulseaudio input");
 
         // make sure the default device is listed first, and followed by the pulse device (if present)
-        int idx = outputIds.indexOf ("pulse");
+        auto idx = outputIds.indexOf ("pulse");
         outputIds.move (idx, 0);
         outputNames.move (idx, 0);
 
@@ -1215,8 +1276,8 @@ private:
 
     static String hintToString (const void* hints, const char* type)
     {
-        char* const hint = snd_device_name_get_hint (hints, type);
-        const String s (String::fromUTF8 (hint));
+        char* hint = snd_device_name_get_hint (hints, type);
+        auto s = String::fromUTF8 (hint);
         ::free (hint);
         return s;
     }
@@ -1227,17 +1288,14 @@ private:
 }
 
 //==============================================================================
-AudioIODeviceType* createAudioIODeviceType_ALSA_Soundcards()
+static inline AudioIODeviceType* createAudioIODeviceType_ALSA_Soundcards()
 {
     return new ALSAAudioIODeviceType (true, "ALSA HW");
 }
 
-AudioIODeviceType* createAudioIODeviceType_ALSA_PCMDevices()
+static inline AudioIODeviceType* createAudioIODeviceType_ALSA_PCMDevices()
 {
     return new ALSAAudioIODeviceType (false, "ALSA");
 }
 
-AudioIODeviceType* AudioIODeviceType::createAudioIODeviceType_ALSA()
-{
-    return createAudioIODeviceType_ALSA_PCMDevices();
-}
+} // namespace juce

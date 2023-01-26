@@ -19,103 +19,92 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_AUDIOFILEDROPTARGET_H__
-#define __DROWAUDIO_AUDIOFILEDROPTARGET_H__
+#ifndef DROWAUDIO_AUDIOFILEDROPTARGET_H
+#define DROWAUDIO_AUDIOFILEDROPTARGET_H
 
 #if DROWAUDIO_USE_SOUNDTOUCH
-
-#include "../audio/dRowAudio_AudioFilePlayer.h"
 
 //==============================================================================
 /** A Component that acts as a drag and drop target for audio files and
     MusicLibraryTable drag sources. This will draw a coloured bezel if it can
     read the drag source provided.
  */
-class AudioFileDropTarget : public Component,
-                            public ComponentListener,
-                            public DragAndDropTarget,
-                            public FileDragAndDropTarget
+class AudioFileDropTarget : public juce::Component,
+                            public juce::ComponentListener,
+                            public juce::DragAndDropTarget,
+                            public juce::FileDragAndDropTarget
 {
 public:
     //==============================================================================
     /** Creates an AudioFileDropTarget, which controls an AudioFilePlayer.
-        
+
         If you supply a component to attach itself to, the AudioFileDropTarget
         will automatically position itself around that component and pass any
         mouse events which are not drags onto it.
-     
+
         @see AudioFilePlayer
      */
     AudioFileDropTarget (AudioFilePlayerExt* audioFilePlayerToControl,
-                         Component* componentToAttachTo = nullptr);
-    
+                         juce::Component* componentToAttachTo = nullptr);
+
     /** Destructor.
      */
     ~AudioFileDropTarget();
-    
+
     /** Sets the colour of the bezel to be drawn.
      */
-    void setBezelColour (Colour& newColour);
+    void setBezelColour (juce::Colour newColour);
 
     /** Retruns the current bezel colour being used.
      */
-    const Colour getBezelColour()            {   return bezelColour; }
+    juce::Colour getBezelColour() const { return bezelColour; }
 
     //==============================================================================
     /** @internal */
-    void paint (Graphics& g);
-    
+    void paint (juce::Graphics& g) override;
     /** @internal */
-    bool hitTest (int x, int y);
-
+    bool hitTest (int x, int y) override;
     /** @internal */
-    void mouseEnter (const MouseEvent& e);
-
+    void mouseEnter (const juce::MouseEvent& e) override;
     /** @internal */
-    void mouseExit (const MouseEvent& e);
-    
-    //==============================================================================
+    void mouseExit (const juce::MouseEvent& e) override;
     /** @internal */
-    void componentMovedOrResized (Component& component,
+    void componentMovedOrResized (juce::Component& component,
                                   bool wasMoved,
-                                  bool wasResized);
-
-    //==============================================================================
+                                  bool wasResized) override;
     /** @internal */
-    bool isInterestedInDragSource (const SourceDetails& dragSourceDetails);
+    bool isInterestedInDragSource (const SourceDetails& dragSourceDetails) override;
     /** @internal */
-    void itemDragExit (const SourceDetails& dragSourceDetails);
+    void itemDragExit (const SourceDetails& dragSourceDetails) override;
     /** @internal */
-    void itemDropped (const SourceDetails& dragSourceDetails);
-    
-    //==============================================================================
+    void itemDropped (const SourceDetails& dragSourceDetails) override;
     /** @internal */
-    bool isInterestedInFileDrag (const StringArray& files);
+    bool isInterestedInFileDrag (const juce::StringArray& files) override;
     /** @internal */
-    void fileDragExit (const StringArray& files);
+    void fileDragExit (const juce::StringArray& files) override;
     /** @internal */
-    void filesDropped (const StringArray& files, int x, int y);
+    void filesDropped (const juce::StringArray& files, int x, int y) override;
 
 private:
     //==============================================================================
     AudioFilePlayerExt* audioFilePlayer;
-    SafePointer<Component> attachedComponent;
+    SafePointer<juce::Component> attachedComponent;
     bool dragTested, interestedInDrag;
-    Colour bezelColour;
-    
+    juce::Colour bezelColour;
+
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioFileDropTarget);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioFileDropTarget)
 };
 
 #endif
-#endif  // __DROWAUDIO_AUDIOFILEDROPTARGET_H__
+#endif  // DROWAUDIO_AUDIOFILEDROPTARGET_H

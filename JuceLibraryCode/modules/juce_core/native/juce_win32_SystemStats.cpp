@@ -1,30 +1,27 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
+
+namespace juce
+{
 
 void Logger::outputDebugString (const String& text)
 {
@@ -37,49 +34,73 @@ void Logger::outputDebugString (const String& text)
  JUCE_API void  juceDLL_free (void* block)    { std::free (block); }
 #endif
 
+static int findNumberOfPhysicalCores() noexcept
+{
+   #if JUCE_MINGW
+    // Not implemented in MinGW
+    jassertfalse;
+
+    return 1;
+   #else
+
+    DWORD bufferSize = 0;
+    GetLogicalProcessorInformation (nullptr, &bufferSize);
+
+    const auto numBuffers = (size_t) (bufferSize / sizeof (SYSTEM_LOGICAL_PROCESSOR_INFORMATION));
+
+    if (numBuffers == 0)
+    {
+        jassertfalse;
+        return 0;
+    };
+
+    HeapBlock<SYSTEM_LOGICAL_PROCESSOR_INFORMATION> buffer (numBuffers);
+
+    if (! GetLogicalProcessorInformation (buffer, &bufferSize))
+    {
+        jassertfalse;
+        return 0;
+    }
+
+    return (int) std::count_if (buffer.get(), buffer.get() + numBuffers, [] (const auto& info)
+    {
+        return info.Relationship == RelationProcessorCore;
+    });
+
+   #endif // JUCE_MINGW
+}
+
 //==============================================================================
-#if JUCE_USE_MSVC_INTRINSICS
+#if JUCE_INTEL
+ #if JUCE_MSVC && ! defined (__INTEL_COMPILER)
+  #pragma intrinsic (__cpuid)
+  #pragma intrinsic (__rdtsc)
+ #endif
 
-// CPU info functions using intrinsics...
+ #if JUCE_MINGW || JUCE_CLANG
+static void callCPUID (int result[4], uint32 type)
+{
+  uint32 la = (uint32) result[0], lb = (uint32) result[1],
+         lc = (uint32) result[2], ld = (uint32) result[3];
 
-#pragma intrinsic (__cpuid)
-#pragma intrinsic (__rdtsc)
+  asm ("mov %%ebx, %%esi \n\t"
+       "cpuid \n\t"
+       "xchg %%esi, %%ebx"
+       : "=a" (la), "=S" (lb), "=c" (lc), "=d" (ld) : "a" (type)
+        #if JUCE_64BIT
+     , "b" (lb), "c" (lc), "d" (ld)
+        #endif
+       );
 
+  result[0] = (int) la; result[1] = (int) lb;
+  result[2] = (int) lc; result[3] = (int) ld;
+}
+ #else
 static void callCPUID (int result[4], int infoType)
 {
     __cpuid (result, infoType);
 }
-
-#else
-
-static void callCPUID (int result[4], int infoType)
-{
-   #if ! JUCE_MINGW
-    __try
-   #endif
-    {
-       #if JUCE_GCC
-        __asm__ __volatile__ ("cpuid" : "=a" (result[0]), "=b" (result[1]), "=c" (result[2]),"=d" (result[3]) : "a" (infoType));
-       #else
-        __asm
-        {
-            mov    esi, result
-            mov    eax, infoType
-            xor    ecx, ecx
-            cpuid
-            mov    dword ptr [esi +  0], eax
-            mov    dword ptr [esi +  4], ebx
-            mov    dword ptr [esi +  8], ecx
-            mov    dword ptr [esi + 12], edx
-        }
-       #endif
-    }
-   #if ! JUCE_MINGW
-    __except (EXCEPTION_EXECUTE_HANDLER) {}
-   #endif
-}
-
-#endif
+ #endif
 
 String SystemStats::getCpuVendor()
 {
@@ -94,7 +115,30 @@ String SystemStats::getCpuVendor()
     return String (v, 12);
 }
 
-//==============================================================================
+String SystemStats::getCpuModel()
+{
+    char name[65] = { 0 };
+    int info[4] = { 0 };
+
+    callCPUID (info, 0x80000000);
+
+    const int numExtIDs = info[0];
+
+    if ((unsigned) numExtIDs < 0x80000004)  // if brand string is unsupported
+        return {};
+
+    callCPUID (info, 0x80000002);
+    memcpy (name, info, sizeof (info));
+
+    callCPUID (info, 0x80000003);
+    memcpy (name + 16, info, sizeof (info));
+
+    callCPUID (info, 0x80000004);
+    memcpy (name + 32, info, sizeof (info));
+
+    return String (name).trim();
+}
+
 void CPUInformation::initialise() noexcept
 {
     int info[4] = { 0 };
@@ -105,12 +149,84 @@ void CPUInformation::initialise() noexcept
     hasSSE   = (info[3] & (1 << 25)) != 0;
     hasSSE2  = (info[3] & (1 << 26)) != 0;
     hasSSE3  = (info[2] & (1 <<  0)) != 0;
+    hasAVX   = (info[2] & (1 << 28)) != 0;
+    hasFMA3  = (info[2] & (1 << 12)) != 0;
+    hasSSSE3 = (info[2] & (1 <<  9)) != 0;
+    hasSSE41 = (info[2] & (1 << 19)) != 0;
+    hasSSE42 = (info[2] & (1 << 20)) != 0;
+
+    JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wshift-sign-overflow")
     has3DNow = (info[1] & (1 << 31)) != 0;
+    JUCE_END_IGNORE_WARNINGS_GCC_LIKE
+
+    callCPUID (info, 0x80000001);
+    hasFMA4  = (info[2] & (1 << 16)) != 0;
+
+    callCPUID (info, 7);
+
+    hasAVX2            = ((unsigned int) info[1] & (1 << 5))   != 0;
+    hasAVX512F         = ((unsigned int) info[1] & (1u << 16)) != 0;
+    hasAVX512DQ        = ((unsigned int) info[1] & (1u << 17)) != 0;
+    hasAVX512IFMA      = ((unsigned int) info[1] & (1u << 21)) != 0;
+    hasAVX512PF        = ((unsigned int) info[1] & (1u << 26)) != 0;
+    hasAVX512ER        = ((unsigned int) info[1] & (1u << 27)) != 0;
+    hasAVX512CD        = ((unsigned int) info[1] & (1u << 28)) != 0;
+    hasAVX512BW        = ((unsigned int) info[1] & (1u << 30)) != 0;
+    hasAVX512VL        = ((unsigned int) info[1] & (1u << 31)) != 0;
+    hasAVX512VBMI      = ((unsigned int) info[2] & (1u <<  1)) != 0;
+    hasAVX512VPOPCNTDQ = ((unsigned int) info[2] & (1u << 14)) != 0;
 
     SYSTEM_INFO systemInfo;
     GetNativeSystemInfo (&systemInfo);
-    numCpus = (int) systemInfo.dwNumberOfProcessors;
+    numLogicalCPUs  = (int) systemInfo.dwNumberOfProcessors;
+    numPhysicalCPUs = findNumberOfPhysicalCores();
+
+    if (numPhysicalCPUs <= 0)
+        numPhysicalCPUs = numLogicalCPUs;
 }
+#elif JUCE_ARM
+String SystemStats::getCpuVendor()
+{
+    static const auto cpuVendor = []
+    {
+        static constexpr auto* path = "HKEY_LOCAL_MACHINE\\HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0\\VendorIdentifier";
+        auto vendor = RegistryKeyWrapper::getValue (path, {}, 0).trim();
+
+        return vendor.isEmpty() ? String ("Unknown Vendor") : vendor;
+    }();
+
+    return cpuVendor;
+}
+
+String SystemStats::getCpuModel()
+{
+    static const auto cpuModel = []
+    {
+        static constexpr auto* path = "HKEY_LOCAL_MACHINE\\HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0\\ProcessorNameString";
+        auto model = RegistryKeyWrapper::getValue (path, {}, 0).trim();
+
+        return model.isEmpty() ? String ("Unknown Model") : model;
+    }();
+
+    return cpuModel;
+}
+
+void CPUInformation::initialise() noexcept
+{
+    // Windows for arm requires at least armv7 which has neon support
+    hasNeon = true;
+
+    SYSTEM_INFO systemInfo;
+    GetNativeSystemInfo (&systemInfo);
+    numLogicalCPUs  = (int) systemInfo.dwNumberOfProcessors;
+    numPhysicalCPUs = findNumberOfPhysicalCores();
+
+    if (numPhysicalCPUs <= 0)
+        numPhysicalCPUs = numLogicalCPUs;
+}
+#else
+ #error Unknown CPU architecture type
+#endif
 
 #if JUCE_MSVC && JUCE_CHECK_MEMORY_LEAKS
 struct DebugFlagsInitialiser
@@ -125,55 +241,80 @@ static DebugFlagsInitialiser debugFlagsInitialiser;
 #endif
 
 //==============================================================================
-static bool isWindowsVersionOrLater (SystemStats::OperatingSystemType target)
-{
-    OSVERSIONINFOEX info;
-    zerostruct (info);
-    info.dwOSVersionInfoSize = sizeof (OSVERSIONINFOEX);
+#if JUCE_MINGW
+ static uint64 getWindowsVersion()
+ {
+     auto filename = _T("kernel32.dll");
+     DWORD handle = 0;
 
-    if (target >= SystemStats::WinVista)
-    {
-        info.dwMajorVersion = 6;
+     if (auto size = GetFileVersionInfoSize (filename, &handle))
+     {
+         HeapBlock<char> data (size);
 
-        switch (target)
-        {
-            case SystemStats::WinVista:    break;
-            case SystemStats::Windows7:    info.dwMinorVersion = 1; break;
-            case SystemStats::Windows8_0:  info.dwMinorVersion = 2; break;
-            case SystemStats::Windows8_1:  info.dwMinorVersion = 3; break;
-            default:                       jassertfalse; break;
-        }
-    }
-    else
-    {
-        info.dwMajorVersion = 5;
-        info.dwMinorVersion = target >= SystemStats::WinXP ? 1 : 0;
-    }
+         if (GetFileVersionInfo (filename, handle, size, data))
+         {
+             VS_FIXEDFILEINFO* info = nullptr;
+             UINT verSize = 0;
 
-    DWORDLONG mask = 0;
+             if (VerQueryValue (data, (LPCTSTR) _T("\\"), (void**) &info, &verSize))
+                 if (size > 0 && info != nullptr && info->dwSignature == 0xfeef04bd)
+                     return ((uint64) info->dwFileVersionMS << 32) | (uint64) info->dwFileVersionLS;
+         }
+     }
 
-    VER_SET_CONDITION (mask, VER_MAJORVERSION,     VER_GREATER_EQUAL);
-    VER_SET_CONDITION (mask, VER_MINORVERSION,     VER_GREATER_EQUAL);
-    VER_SET_CONDITION (mask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
-    VER_SET_CONDITION (mask, VER_SERVICEPACKMINOR, VER_GREATER_EQUAL);
+     return 0;
+ }
+#else
+ RTL_OSVERSIONINFOW getWindowsVersionInfo();
+ RTL_OSVERSIONINFOW getWindowsVersionInfo()
+ {
+     RTL_OSVERSIONINFOW versionInfo = {};
 
-    return VerifyVersionInfo (&info,
-                              VER_MAJORVERSION | VER_MINORVERSION
-                               | VER_SERVICEPACKMAJOR | VER_SERVICEPACKMINOR,
-                              mask) != FALSE;
-}
+     if (auto* moduleHandle = ::GetModuleHandleW (L"ntdll.dll"))
+     {
+         using RtlGetVersion = LONG (WINAPI*) (PRTL_OSVERSIONINFOW);
+
+         if (auto* rtlGetVersion = (RtlGetVersion) ::GetProcAddress (moduleHandle, "RtlGetVersion"))
+         {
+             versionInfo.dwOSVersionInfoSize = sizeof (versionInfo);
+             LONG STATUS_SUCCESS = 0;
+
+             if (rtlGetVersion (&versionInfo) != STATUS_SUCCESS)
+                 versionInfo = {};
+         }
+     }
+
+     return versionInfo;
+ }
+#endif
 
 SystemStats::OperatingSystemType SystemStats::getOperatingSystemType()
 {
-    const SystemStats::OperatingSystemType types[]
-            = { Windows8_1, Windows8_0, Windows7, WinVista, WinXP, Win2000 };
+   #if JUCE_MINGW
+    const auto v = getWindowsVersion();
+    const auto major = (v >> 48) & 0xffff;
+    const auto minor = (v >> 32) & 0xffff;
+    const auto build = (v >> 16) & 0xffff;
+   #else
+    const auto versionInfo = getWindowsVersionInfo();
+    const auto major = versionInfo.dwMajorVersion;
+    const auto minor = versionInfo.dwMinorVersion;
+    const auto build = versionInfo.dwBuildNumber;
+   #endif
 
-    for (int i = 0; i < numElementsInArray (types); ++i)
-        if (isWindowsVersionOrLater (types[i]))
-            return types[i];
+    jassert (major <= 10); // need to add support for new version!
 
-    jassertfalse;  // need to support whatever new version is running!
-    return UnknownOS;
+    if (major == 10 && build >= 22000) return Windows11;
+    if (major == 10)                   return Windows10;
+    if (major == 6 && minor == 3)      return Windows8_1;
+    if (major == 6 && minor == 2)      return Windows8_0;
+    if (major == 6 && minor == 1)      return Windows7;
+    if (major == 6 && minor == 0)      return WinVista;
+    if (major == 5 && minor == 1)      return WinXP;
+    if (major == 5 && minor == 0)      return Win2000;
+
+    jassertfalse;
+    return Windows;
 }
 
 String SystemStats::getOperatingSystemName()
@@ -182,12 +323,36 @@ String SystemStats::getOperatingSystemName()
 
     switch (getOperatingSystemType())
     {
+        case Windows11:         name = "Windows 11";        break;
+        case Windows10:         name = "Windows 10";        break;
         case Windows8_1:        name = "Windows 8.1";       break;
         case Windows8_0:        name = "Windows 8.0";       break;
         case Windows7:          name = "Windows 7";         break;
         case WinVista:          name = "Windows Vista";     break;
         case WinXP:             name = "Windows XP";        break;
         case Win2000:           name = "Windows 2000";      break;
+
+        case MacOSX:            JUCE_FALLTHROUGH
+        case Windows:           JUCE_FALLTHROUGH
+        case Linux:             JUCE_FALLTHROUGH
+        case Android:           JUCE_FALLTHROUGH
+        case iOS:               JUCE_FALLTHROUGH
+
+        case MacOSX_10_7:       JUCE_FALLTHROUGH
+        case MacOSX_10_8:       JUCE_FALLTHROUGH
+        case MacOSX_10_9:       JUCE_FALLTHROUGH
+        case MacOSX_10_10:      JUCE_FALLTHROUGH
+        case MacOSX_10_11:      JUCE_FALLTHROUGH
+        case MacOSX_10_12:      JUCE_FALLTHROUGH
+        case MacOSX_10_13:      JUCE_FALLTHROUGH
+        case MacOSX_10_14:      JUCE_FALLTHROUGH
+        case MacOSX_10_15:      JUCE_FALLTHROUGH
+        case MacOS_11:          JUCE_FALLTHROUGH
+        case MacOS_12:          JUCE_FALLTHROUGH
+        case MacOS_13:          JUCE_FALLTHROUGH
+
+        case UnknownOS:         JUCE_FALLTHROUGH
+        case WASM:              JUCE_FALLTHROUGH
         default:                jassertfalse; break; // !! new type of OS?
     }
 
@@ -196,7 +361,24 @@ String SystemStats::getOperatingSystemName()
 
 String SystemStats::getDeviceDescription()
 {
-    return String();
+   #if WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP
+    return "Windows (Desktop)";
+   #elif WINAPI_FAMILY == WINAPI_FAMILY_PC_APP
+    return "Windows (Store)";
+   #elif WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
+    return "Windows (Phone)";
+   #elif WINAPI_FAMILY == WINAPI_FAMILY_SYSTEM
+    return "Windows (System)";
+   #elif WINAPI_FAMILY == WINAPI_FAMILY_SERVER
+    return "Windows (Server)";
+   #else
+    return "Windows";
+   #endif
+}
+
+String SystemStats::getDeviceManufacturer()
+{
+    return {};
 }
 
 bool SystemStats::isOperatingSystem64Bit()
@@ -206,8 +388,16 @@ bool SystemStats::isOperatingSystem64Bit()
    #else
     typedef BOOL (WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
+    const auto moduleHandle = GetModuleHandleA ("kernel32");
+
+    if (moduleHandle == nullptr)
+    {
+        jassertfalse;
+        return false;
+    }
+
     LPFN_ISWOW64PROCESS fnIsWow64Process
-        = (LPFN_ISWOW64PROCESS) GetProcAddress (GetModuleHandleA ("kernel32"), "IsWow64Process");
+        = (LPFN_ISWOW64PROCESS) GetProcAddress (moduleHandle, "IsWow64Process");
 
     BOOL isWow64 = FALSE;
 
@@ -229,8 +419,9 @@ int SystemStats::getMemorySizeInMegabytes()
 //==============================================================================
 String SystemStats::getEnvironmentVariable (const String& name, const String& defaultValue)
 {
-    DWORD len = GetEnvironmentVariableW (name.toWideCharPointer(), nullptr, 0);
-    if (GetLastError() == ERROR_ENVVAR_NOT_FOUND)
+    auto len = GetEnvironmentVariableW (name.toWideCharPointer(), nullptr, 0);
+
+    if (len == 0)
         return String (defaultValue);
 
     HeapBlock<WCHAR> buffer (len);
@@ -266,38 +457,26 @@ public:
        #endif
 
        #if JUCE_WIN32_TIMER_PERIOD > 0
-        const MMRESULT res = timeBeginPeriod (JUCE_WIN32_TIMER_PERIOD);
-        (void) res;
+        [[maybe_unused]] auto res = timeBeginPeriod (JUCE_WIN32_TIMER_PERIOD);
         jassert (res == TIMERR_NOERROR);
        #endif
 
         LARGE_INTEGER f;
         QueryPerformanceFrequency (&f);
         hiResTicksPerSecond = f.QuadPart;
-        hiResTicksScaleFactor = 1000.0 / hiResTicksPerSecond;
+        hiResTicksScaleFactor = 1000.0 / (double) hiResTicksPerSecond;
     }
 
     inline int64 getHighResolutionTicks() noexcept
     {
         LARGE_INTEGER ticks;
         QueryPerformanceCounter (&ticks);
-
-        const int64 mainCounterAsHiResTicks = (juce_millisecondsSinceStartup() * hiResTicksPerSecond) / 1000;
-        const int64 newOffset = mainCounterAsHiResTicks - ticks.QuadPart;
-
-        // fix for a very obscure PCI hardware bug that can make the counter
-        // sometimes jump forwards by a few seconds..
-        const int64 offsetDrift = abs64 (newOffset - hiResTicksOffset);
-
-        if (offsetDrift > (hiResTicksPerSecond >> 1))
-            hiResTicksOffset = newOffset;
-
         return ticks.QuadPart + hiResTicksOffset;
     }
 
     inline double getMillisecondCounterHiRes() noexcept
     {
-        return getHighResolutionTicks() * hiResTicksScaleFactor;
+        return (double) getHighResolutionTicks() * hiResTicksScaleFactor;
     }
 
     int64 hiResTicksPerSecond, hiResTicksOffset;
@@ -313,11 +492,21 @@ double Time::getMillisecondCounterHiRes() noexcept       { return hiResCounterHa
 //==============================================================================
 static int64 juce_getClockCycleCounter() noexcept
 {
-   #if JUCE_USE_MSVC_INTRINSICS
+ #if JUCE_MSVC
+  #if JUCE_INTEL
     // MS intrinsics version...
     return (int64) __rdtsc();
-
-   #elif JUCE_GCC
+  #elif JUCE_ARM
+   #if defined (_M_ARM)
+    return __rdpmccntr64();
+   #elif defined (_M_ARM64)
+    return _ReadStatusReg (ARM64_PMCCNTR_EL0);
+   #else
+    #error Unknown arm architecture
+   #endif
+  #endif
+ #elif JUCE_GCC || JUCE_CLANG
+  #if JUCE_INTEL
     // GNU inline asm version...
     unsigned int hi = 0, lo = 0;
 
@@ -333,27 +522,21 @@ static int64 juce_getClockCycleCounter() noexcept
          : "cc", "eax", "ebx", "ecx", "edx", "memory");
 
     return (int64) ((((uint64) hi) << 32) | lo);
-   #else
-    // MSVC inline asm version...
-    unsigned int hi = 0, lo = 0;
+  #elif JUCE_ARM
+    int64 retval;
 
-    __asm
-    {
-        xor eax, eax
-        xor edx, edx
-        rdtsc
-        mov lo, eax
-        mov hi, edx
-    }
-
-    return (int64) ((((uint64) hi) << 32) | lo);
-   #endif
+    __asm__ __volatile__ ("mrs %0, cntvct_el0" : "=r"(retval));
+    return retval;
+  #endif
+ #else
+  #error "unknown compiler?"
+ #endif
 }
 
-int SystemStats::getCpuSpeedInMegaherz()
+int SystemStats::getCpuSpeedInMegahertz()
 {
-    const int64 cycles = juce_getClockCycleCounter();
-    const uint32 millis = Time::getMillisecondCounter();
+    auto cycles = juce_getClockCycleCounter();
+    auto millis = Time::getMillisecondCounter();
     int lastResult = 0;
 
     for (;;)
@@ -361,12 +544,12 @@ int SystemStats::getCpuSpeedInMegaherz()
         int n = 1000000;
         while (--n > 0) {}
 
-        const uint32 millisElapsed = Time::getMillisecondCounter() - millis;
-        const int64 cyclesNow = juce_getClockCycleCounter();
+        auto millisElapsed = Time::getMillisecondCounter() - millis;
+        auto cyclesNow = juce_getClockCycleCounter();
 
         if (millisElapsed > 80)
         {
-            const int newResult = (int) (((cyclesNow - cycles) / millisElapsed) / 1000);
+            auto newResult = (int) (((cyclesNow - cycles) / millisElapsed) / 1000);
 
             if (millisElapsed > 500 || (lastResult == newResult && newResult > 100))
                 return newResult;
@@ -393,8 +576,10 @@ bool Time::setSystemTimeToThisTime() const
 
     // do this twice because of daylight saving conversion problems - the
     // first one sets it up, the second one kicks it in.
-    return SetLocalTime (&st) != 0
-            && SetLocalTime (&st) != 0;
+    // NB: the local variable is here to avoid analysers warning about having
+    // two identical sub-expressions in the return statement
+    auto firstCallToSetTimezone = SetLocalTime (&st) != 0;
+    return firstCallToSetTimezone && SetLocalTime (&st) != 0;
 }
 
 int SystemStats::getPageSize()
@@ -409,7 +594,7 @@ int SystemStats::getPageSize()
 String SystemStats::getLogonName()
 {
     TCHAR text [256] = { 0 };
-    DWORD len = (DWORD) numElementsInArray (text) - 1;
+    auto len = (DWORD) numElementsInArray (text) - 1;
     GetUserName (text, &len);
     return String (text, len);
 }
@@ -421,9 +606,9 @@ String SystemStats::getFullUserName()
 
 String SystemStats::getComputerName()
 {
-    TCHAR text [MAX_COMPUTERNAME_LENGTH + 1] = { 0 };
-    DWORD len = (DWORD) numElementsInArray (text) - 1;
-    GetComputerName (text, &len);
+    TCHAR text[128] = { 0 };
+    auto len = (DWORD) numElementsInArray (text) - 1;
+    GetComputerNameEx (ComputerNamePhysicalDnsHostname, text, &len);
     return String (text, len);
 }
 
@@ -442,18 +627,65 @@ String SystemStats::getUserRegion()       { return getLocaleValue (LOCALE_USER_D
 String SystemStats::getDisplayLanguage()
 {
     DynamicLibrary dll ("kernel32.dll");
-    JUCE_LOAD_WINAPI_FUNCTION (dll, GetUserDefaultUILanguage, getUserDefaultUILanguage, LANGID, (void))
+    JUCE_LOAD_WINAPI_FUNCTION (dll,
+                               GetUserPreferredUILanguages,
+                               getUserPreferredUILanguages,
+                               BOOL,
+                               (DWORD, PULONG, PZZWSTR, PULONG))
 
-    if (getUserDefaultUILanguage == nullptr)
-        return "en";
+    constexpr auto defaultResult = "en";
 
-    const DWORD langID = MAKELCID (getUserDefaultUILanguage(), SORT_DEFAULT);
+    if (getUserPreferredUILanguages == nullptr)
+        return defaultResult;
 
-    String mainLang (getLocaleValue (langID, LOCALE_SISO639LANGNAME, "en"));
-    String region   (getLocaleValue (langID, LOCALE_SISO3166CTRYNAME, nullptr));
+    ULONG numLanguages = 0;
+    ULONG numCharsInLanguagesBuffer = 0;
 
-    if (region.isNotEmpty())
-        mainLang << '-' << region;
+    // Retrieving the necessary buffer size for storing the list of languages
+    if (! getUserPreferredUILanguages (MUI_LANGUAGE_NAME, &numLanguages, nullptr, &numCharsInLanguagesBuffer))
+        return defaultResult;
 
-    return mainLang;
+    std::vector<WCHAR> languagesBuffer (numCharsInLanguagesBuffer);
+    const auto success = getUserPreferredUILanguages (MUI_LANGUAGE_NAME,
+                                                      &numLanguages,
+                                                      languagesBuffer.data(),
+                                                      &numCharsInLanguagesBuffer);
+
+    if (! success || numLanguages == 0)
+        return defaultResult;
+
+    // The buffer contains a zero delimited list of languages, the first being
+    // the currently displayed language.
+    return languagesBuffer.data();
 }
+
+String SystemStats::getUniqueDeviceID()
+{
+    #define PROVIDER(string) (DWORD) (string[0] << 24 | string[1] << 16 | string[2] << 8 | string[3])
+
+    auto bufLen = GetSystemFirmwareTable (PROVIDER ("RSMB"), PROVIDER ("RSDT"), nullptr, 0);
+
+    if (bufLen > 0)
+    {
+        HeapBlock<uint8_t> buffer { bufLen };
+        GetSystemFirmwareTable (PROVIDER ("RSMB"), PROVIDER ("RSDT"), (void*) buffer.getData(), bufLen);
+
+        return [&]
+        {
+            uint64_t hash = 0;
+            const auto start = buffer.getData();
+            const auto end = start + jmin (1024, (int) bufLen);
+
+            for (auto dataPtr = start; dataPtr != end; ++dataPtr)
+                hash = hash * (uint64_t) 101 + *dataPtr;
+
+            return String (hash);
+        }();
+    }
+
+    // Please tell someone at JUCE if this occurs
+    jassertfalse;
+    return {};
+}
+
+} // namespace juce

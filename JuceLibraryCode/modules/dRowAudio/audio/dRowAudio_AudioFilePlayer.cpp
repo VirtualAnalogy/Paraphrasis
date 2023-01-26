@@ -19,11 +19,11 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
@@ -31,21 +31,21 @@
 
 
 AudioFilePlayer::AudioFilePlayer()
-    : bufferingTimeSliceThread (new TimeSliceThread ("Shared Buffering Thread"), true),
-      formatManager (new AudioFormatManager(), true)
+    : bufferingTimeSliceThread (new juce::TimeSliceThread ("Shared Buffering Thread"), true),
+      formatManager (new juce::AudioFormatManager(), true)
 {
-    bufferingTimeSliceThread->startThread (3);
-	formatManager->registerBasicFormats();
-    
+    bufferingTimeSliceThread->startThread();
+    formatManager->registerBasicFormats();
+
     commonInitialise();
 }
 
-AudioFilePlayer::AudioFilePlayer (TimeSliceThread* threadToUse,
-                                  AudioFormatManager* formatManagerToUse)
-    : bufferingTimeSliceThread ((threadToUse == nullptr ? new TimeSliceThread ("Shared Buffering Thread")
+AudioFilePlayer::AudioFilePlayer (juce::TimeSliceThread* threadToUse,
+                                  juce::AudioFormatManager* formatManagerToUse)
+    : bufferingTimeSliceThread ((threadToUse == nullptr ? new juce::TimeSliceThread ("Shared Buffering Thread")
                                                         : threadToUse),
                                 threadToUse == nullptr),
-      formatManager ((formatManagerToUse == nullptr ? new AudioFormatManager()
+      formatManager ((formatManagerToUse == nullptr ? new juce::AudioFormatManager()
                                                     : formatManagerToUse),
                      formatManagerToUse == nullptr)
 {
@@ -54,7 +54,7 @@ AudioFilePlayer::AudioFilePlayer (TimeSliceThread* threadToUse,
 
 AudioFilePlayer::~AudioFilePlayer()
 {
-	audioTransportSource.setSource (nullptr);
+    audioTransportSource.setSource (nullptr);
     audioTransportSource.removeChangeListener (this);
 }
 
@@ -62,35 +62,35 @@ AudioFilePlayer::~AudioFilePlayer()
 void AudioFilePlayer::start()
 {
     audioTransportSource.start();
-    
+
     listeners.call (&Listener::playerStoppedOrStarted, this);
 }
 
 void AudioFilePlayer::stop()
 {
     audioTransportSource.stop();
-    
+
     listeners.call (&Listener::playerStoppedOrStarted, this);
 }
 
 void AudioFilePlayer::startFromZero()
 {
-	if (audioFormatReaderSource == nullptr)
+    if (audioFormatReaderSource == nullptr)
         return;
-	
-	audioTransportSource.setPosition (0.0);
-	audioTransportSource.start();
-    
+
+    audioTransportSource.setPosition (0.0);
+    audioTransportSource.start();
+
     listeners.call (&Listener::playerStoppedOrStarted, this);
 }
 
 void AudioFilePlayer::pause()
 {
-	if (audioTransportSource.isPlaying())
-		audioTransportSource.stop();
-	else
-		audioTransportSource.start();
-    
+    if (audioTransportSource.isPlaying())
+        audioTransportSource.stop();
+    else
+        audioTransportSource.start();
+
     listeners.call (&Listener::playerStoppedOrStarted, this);
 }
 
@@ -131,9 +131,9 @@ void AudioFilePlayer::getNextAudioBlock (const AudioSourceChannelInfo& bufferToF
 }
 
 void AudioFilePlayer::setLooping (bool shouldLoop)
-{   
+{
     if (audioFormatReaderSource != nullptr)
-        audioFormatReaderSource->setLooping (shouldLoop); 
+        audioFormatReaderSource->setLooping (shouldLoop);
 }
 
 //==============================================================================
@@ -141,16 +141,17 @@ bool AudioFilePlayer::fileChanged (const File& file)
 {
     if (setSourceWithReader (formatManager->createReaderFor (file)))
         return true;
-    
+
     clear();
     return false;
 }
 
 bool AudioFilePlayer::streamChanged (InputStream* inputStream)
 {
-    if (setSourceWithReader (formatManager->createReaderFor (inputStream)))
-        return true;
-    
+    if (auto reader = formatManager->createReaderFor (std::unique_ptr<InputStream> (inputStream)))
+        if (setSourceWithReader (reader))
+            return true;
+
     clear();
     return false;
 }
@@ -176,30 +177,29 @@ void AudioFilePlayer::removeListener (AudioFilePlayer::Listener* const listener)
 bool AudioFilePlayer::setSourceWithReader (AudioFormatReader* reader)
 {
     bool shouldBeLooping = isLooping();
-	audioTransportSource.setSource (nullptr);
+    audioTransportSource.setSource (nullptr);
 
-	if (reader != nullptr)
-	{										
-		// we SHOULD let the AudioFormatReaderSource delete the reader for us..
-		audioFormatReaderSource = new AudioFormatReaderSource (reader, true);
-        audioTransportSource.setSource (audioFormatReaderSource,
-                                        32768,
-                                        bufferingTimeSliceThread);
-        
+    if (reader != nullptr)
+    {
+        // we SHOULD let the AudioFormatReaderSource delete the reader for us..
+        audioFormatReaderSource = std::make_unique<AudioFormatReaderSource> (reader, true);
+        audioTransportSource.setSource (audioFormatReaderSource.get(), 32768,
+                                        bufferingTimeSliceThread, reader->sampleRate);
+
         if (shouldBeLooping)
             audioFormatReaderSource->setLooping (true);
-        
-		// let our listeners know that we have loaded a new file
-		audioTransportSource.sendChangeMessage();
+
+        // let our listeners know that we have loaded a new file
+        audioTransportSource.sendChangeMessage();
         listeners.call (&Listener::fileChanged, this);
 
-		return true;
-	}
-	
+        return true;
+    }
+
     audioTransportSource.sendChangeMessage();
     listeners.call (&Listener::fileChanged, this);
 
-    return false;    
+    return false;
 }
 
 //==============================================================================
