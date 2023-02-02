@@ -146,7 +146,7 @@ void TeragonPluginBase::getStateInformation(MemoryBlock &destData) {
 
 void TeragonPluginBase::setStateInformation(const void *data, int sizeInBytes) {
     // Restore parameter values from serialized XML state
-    ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if(xmlState != 0 && xmlState->hasTagName(getName())) {
         for(size_t i = 0; i < parameters.size(); i++) {
             Parameter *parameter = parameters[i];

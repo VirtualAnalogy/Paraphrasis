@@ -26,7 +26,7 @@ namespace teragon {
 
 IndicatorLight::IndicatorLight(ConcurrentParameterSet &parameters, const ParameterString &name,
                                const ResourceCache *resources) :
-Component(String::empty),
+Component(String()),
 PluginParameterComponent(parameters, name, resources, "indicator_light"),
 lightOn(false), pulse(false) {
     enabledImage = imageStates->normal;

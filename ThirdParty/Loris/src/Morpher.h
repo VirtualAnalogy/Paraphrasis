@@ -35,7 +35,7 @@
 #include "PartialList.h"
 #include "Partial.h"
 
-#include <memory>   // for auto_ptr
+#include <memory>   // for unique_ptr
 
 //  begin namespace
 namespace Loris {
@@ -68,9 +68,9 @@ class Morpher
 {
 //  -- instance variables --
 
-    std::auto_ptr< Envelope > _freqFunction;  //!   frequency morphing function
-    std::auto_ptr< Envelope > _ampFunction;   //!   amplitude morphing function
-    std::auto_ptr< Envelope > _bwFunction;    //!   bandwidth morphing function
+    std::unique_ptr< Envelope > _freqFunction;  //!   frequency morphing function
+    std::unique_ptr< Envelope > _ampFunction;   //!   amplitude morphing function
+    std::unique_ptr< Envelope > _bwFunction;    //!   bandwidth morphing function
     
     PartialList _partials;                    //!   collect Partials here
     

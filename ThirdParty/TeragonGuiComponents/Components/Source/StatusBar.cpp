@@ -110,8 +110,8 @@ void StatusBar::timerCallback() {
     }
     // Fadeout finished, hide the text and stop the timer
     else {
-        parameterNameLabel.setText(String::empty);
-        parameterValueLabel.setText(String::empty);
+        parameterNameLabel.setText(String());
+        parameterValueLabel.setText(String());
         stopTimer();
     }
 }

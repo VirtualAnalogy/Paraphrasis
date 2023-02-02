@@ -51,7 +51,7 @@ public:
         }
         parameter->addObserver(this);
 
-        if(resources == nullptr && imageName != String::empty) {
+        if(resources == nullptr && imageName.isEmpty() == false) {
           String message = "Could not initialize component with NULL ResourceCache";
           Logger::getCurrentLogger()->writeToLog(message);
             return;

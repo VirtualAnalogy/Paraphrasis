@@ -41,8 +41,8 @@ class ResourceCache {
 public:
     class ImageStates {
     public:
-        ImageStates(Image normal = Image::null, Image alternate = Image::null,
-                    Image background = Image::null) :
+        ImageStates(Image normal = Image(), Image alternate = Image(),
+                    Image background = Image()) :
                     normal(normal), alternate(alternate), background(background) {}
         virtual ~ImageStates() {}
 

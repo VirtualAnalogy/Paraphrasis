@@ -44,7 +44,7 @@ public:
 
     virtual void setText(const String &newText) {
         // Minor optimization to save a lot of trouble below
-        if(newText == String::empty) {
+        if(newText.isEmpty()) {
             Label::setText(newText, NotificationType::dontSendNotification);
             return;
         }

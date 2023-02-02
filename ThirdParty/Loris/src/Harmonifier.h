@@ -38,7 +38,7 @@
 #include "PartialUtils.h"
 
 #include <algorithm>    // for find
-#include <memory>       // for auto_ptr
+#include <memory>       // for unique_ptr
 
 //	begin namespace
 namespace Loris {
@@ -63,7 +63,7 @@ class Harmonifier
 									    //!	frequencies are corrected according to
 									    //!	a reference Partial, if specified.
 
-	std::auto_ptr< Envelope > _weight;  //!	weighting function, when 1 harmonic
+	std::unique_ptr< Envelope > _weight;  //!	weighting function, when 1 harmonic
                                         //! frequencies are used, when 0 breakpoint
                                         //! frequencies are unmodified.
     
