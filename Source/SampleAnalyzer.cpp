@@ -118,7 +118,7 @@ bool SampleAnalyzer::loadAudioFile() noexcept
     // check if user really wants to load a long sample
     if (reader->lengthInSamples / reader->sampleRate > 20)
     {
-        bool result = NativeMessageBox::showOkCancelBox(AlertWindow::QuestionIcon, "Do you...?", "Do you REALLY want to load sample longer than 20 sec?");
+        bool result = NativeMessageBox::showOkCancelBox(MessageBoxIconType::QuestionIcon, String("Do you...?"), String("Do you REALLY want to load sample longer than 20 sec?"), nullptr, nullptr);
         
         if ( !result )
         {

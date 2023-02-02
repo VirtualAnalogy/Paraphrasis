@@ -24,6 +24,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "ParameterDefitions.h"
+#include "../Resources/Resources.h"
 
 // Loris
 #include "Analyzer.h"
@@ -73,7 +74,7 @@ void ParaphrasisAudioProcessor::analyzeSample()
     analyzer.setReverse(parameters[kParameterReverse_name]->getValue());
 
     // analyze
-    analyzer.runThread();
+    analyzer.launchThread();
     analyzerSync.wait();
     
     // setup synth
@@ -157,7 +158,7 @@ bool ParaphrasisAudioProcessor::hasEditor() const
 //==============================================================================
 AudioProcessorEditor* ParaphrasisAudioProcessor::createEditor()
 {
-    return new ParaphrasisAudioProcessorEditor(this, parameters, Resources::getCache(), formatManager);
+    return new ParaphrasisAudioProcessorEditor(this, parameters, GraphicsResources::getCache(), formatManager);
 }
 //==============================================================================
 // This creates new instances of the plugin..

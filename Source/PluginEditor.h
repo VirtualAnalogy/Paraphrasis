@@ -1,24 +1,23 @@
 /*
   ==============================================================================
 
-  This is an automatically generated GUI class created by the Introjucer!
+  This is an automatically generated GUI class created by the Projucer!
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Introjucer version: 3.1.0
+  Created with Projucer version: 7.0.5
 
   ------------------------------------------------------------------------------
 
-  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright 2004-13 by Raw Material Software Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
 
-#ifndef __JUCE_HEADER_CA663DA5FEBB7F21__
-#define __JUCE_HEADER_CA663DA5FEBB7F21__
+#pragma once
 
 //[Headers]     -- You can add your own extra header files here --
 /**
@@ -49,7 +48,7 @@
 
 #include "Resources.h"
 
-#include "dRowAudio_PitchDetector.h"
+#include <dRowAudio/audio/dRowAudio_PitchDetector.h>
 //[/Headers]
 
 
@@ -62,47 +61,47 @@
 */
 class ParaphrasisAudioProcessorEditor  : public AudioProcessorEditor,
                                          public ParameterObserver,
-                                         public ButtonListener,
-                                         public LabelListener
+                                         public juce::Button::Listener,
+                                         public juce::Label::Listener
 {
 public:
     //==============================================================================
     ParaphrasisAudioProcessorEditor (ParaphrasisAudioProcessor* ownerFilter, teragon::ConcurrentParameterSet& p, teragon::ResourceCache *r, AudioFormatManager &formatManager);
-    ~ParaphrasisAudioProcessorEditor();
+    ~ParaphrasisAudioProcessorEditor() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    ParaphrasisAudioProcessor* getProcessor() const
-    {
-        return static_cast <ParaphrasisAudioProcessor*>(getAudioProcessor());
-    }
+	ParaphrasisAudioProcessor* getProcessor() const
+	{
+		return static_cast <ParaphrasisAudioProcessor*>(getAudioProcessor());
+	}
 
-    /** Set LED light on
-        @param on true = on, off otherwise. */
-    void lightOn(bool on) { ledBtn->setToggleState(on, false); }
+	/** Set LED light on
+	 @param on true = on, off otherwise. */
+	void lightOn(bool on) { ledBtn->setToggleState(on, false); }
 
-    /** teragon::ParameterObserver method
-        @param parameter Parameter to be updated.
-     */
-    virtual void onParameterUpdated(const Parameter *parameter) ;
+	/** teragon::ParameterObserver method
+	 @param parameter Parameter to be updated.
+	 */
+	virtual void onParameterUpdated(const Parameter *parameter) ;
 
-    /** teragon::ParameterObserver method.
-     */
-    virtual bool isRealtimePriority() const { return false; }
+	/** teragon::ParameterObserver method.
+	 */
+	virtual bool isRealtimePriority() const { return false; }
 
 
-    /** Check if value is in interval defined by parameter.
-        @parameter parameter Parameter object with interval definition.
-        @parameter value Value to be checked.
-     */
-    static double checkParameterBoundaries(const Parameter *parameter, double value);
+	/** Check if value is in interval defined by parameter.
+	 @parameter parameter Parameter object with interval definition.
+	 @parameter value Value to be checked.
+	 */
+	static double checkParameterBoundaries(const Parameter *parameter, double value);
 
     //[/UserMethods]
 
-    void paint (Graphics& g);
-    void resized();
-    void buttonClicked (Button* buttonThatWasClicked);
-    void labelTextChanged (Label* labelThatHasChanged);
+    void paint (juce::Graphics& g) override;
+    void resized() override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
+    void labelTextChanged (juce::Label* labelThatHasChanged) override;
 
     // Binary resources:
     static const char* background2_png;
@@ -115,25 +114,25 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    teragon::ConcurrentParameterSet& parameters; // parameters
-    teragon::ResourceCache *resources;  // pictures, etc.
-    AudioFormatManager& formatManager;  // loads audio files
-    std::string path;                   // path of actual sample (it is class variable - we want it to have live long, string data are send and processed later, it is done so to prevent memory issues if it was local variable)
-    drow::PitchDetector detector;       // to auto-detect sample pitch
+	teragon::ConcurrentParameterSet& parameters; // parameters
+	teragon::ResourceCache *resources;  // pictures, etc.
+	AudioFormatManager& formatManager;  // loads audio files
+	std::string path;                   // path of actual sample (it is class variable - we want it to have live long, string data are send and processed later, it is done so to prevent memory issues if it was local variable)
+	drow::PitchDetector detector;       // to auto-detect sample pitch
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<teragon::ImageKnobLarge> knob;
-    ScopedPointer<teragon::ImageKnobLarge> knob2;
-    ScopedPointer<Label> sampleLbl;
-    ScopedPointer<ImageButton> selectBtn;
-    ScopedPointer<ImageButton> analyzeBtn;
-    ScopedPointer<Label> pitchLbl;
-    ScopedPointer<Label> resolutionLbl;
-    ScopedPointer<ImageButton> resolutionBtn;
-    ScopedPointer<ImageButton> ledBtn;
-    ScopedPointer<ImageButton> reverseBtn;
-    Image cachedImage_background2_png;
+    std::unique_ptr<teragon::ImageKnobLarge> knob;
+    std::unique_ptr<teragon::ImageKnobLarge> knob2;
+    std::unique_ptr<juce::Label> sampleLbl;
+    std::unique_ptr<juce::ImageButton> selectBtn;
+    std::unique_ptr<juce::ImageButton> analyzeBtn;
+    std::unique_ptr<juce::Label> pitchLbl;
+    std::unique_ptr<juce::Label> resolutionLbl;
+    std::unique_ptr<juce::ImageButton> resolutionBtn;
+    std::unique_ptr<juce::ImageButton> ledBtn;
+    std::unique_ptr<juce::ImageButton> reverseBtn;
+    juce::Image cachedImage_background2_png_1;
 
 
     //==============================================================================
@@ -143,4 +142,3 @@ private:
 //[EndFile] You can add extra defines here...
 //[/EndFile]
 
-#endif   // __JUCE_HEADER_CA663DA5FEBB7F21__
