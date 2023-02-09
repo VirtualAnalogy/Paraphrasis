@@ -32,7 +32,6 @@ LorisVoice::LorisVoice(double tailTimeSec) :  tailTimeSec(tailTimeSec), synth(bu
 {
     synthesise = false;
     tailOff = false;
-	setCurrentPlaybackSampleRate(44100);
 	
     tailSamples = tailTimeSec * getSampleRate();
     

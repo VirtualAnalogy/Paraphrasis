@@ -47,6 +47,8 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor()
                                                    kParameterFrequencyResolution_maxValue, kParameterFrequencyResolution_defaultValue));
     parameters.add(new teragon::StringParameter(kParameterLastSamplePath_name));
     parameters.add(new teragon::BooleanParameter(kParameterReverse_name, kParameterReverse_defaultValue));
+	
+	synth.setCurrentPlaybackSampleRate(44100);
 
     // setup synth
     for (int i = kDefaultSynthesiserVoiceNumbers; --i >= 0;)
