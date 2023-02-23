@@ -36,14 +36,21 @@
 #include "Partial.h"
 #include "Notifier.h"
 #include <cmath>
+#include <cstring>
 #include <vector>
+
 #if defined(HAVE_M_PI) && (HAVE_M_PI)
 const double Pi = M_PI;
 #else
 const double Pi = 3.14159265358979324;
 #endif
 const double TwoPi = 2*Pi;
+
+#if defined(__aarch64__)
 #include "../../sse2neon/sse2neon.h"
+#else
+#include <xmmintrin.h>
+#endif
 
 typedef union {
 	__m128 v;    // SSE 4 x float vector
@@ -63,6 +70,7 @@ void vectorSetByIndex(__m128 &V, unsigned int i, float v) {
 	V = c.v;
 }
 
+//TODO:
 __m128 tmp_cos(__m128 v)
 {
 	__m128 out;
