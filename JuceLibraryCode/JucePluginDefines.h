@@ -50,7 +50,7 @@
  #define JucePlugin_Manufacturer           "Virtual Analogy"
 #endif
 #ifndef  JucePlugin_ManufacturerWebsite
- #define JucePlugin_ManufacturerWebsite    "www.virtualanalogy.com"
+ #define JucePlugin_ManufacturerWebsite    "http://www.virtualanalogy.com"
 #endif
 #ifndef  JucePlugin_ManufacturerEmail
  #define JucePlugin_ManufacturerEmail      "virtualanalogy@virtualanalogy.com"

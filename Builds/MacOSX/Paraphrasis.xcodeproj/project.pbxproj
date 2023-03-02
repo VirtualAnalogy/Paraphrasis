@@ -16,7 +16,9 @@
 				71975E832F4FB5B07B30DB9E,
 				0DB2E4356B48A26602B4727E,
 				4253343030EE6E56E821C990,
+				1FB2215AA69D07A4B162FBFF,
 				E6C1BFEFB4147D212308EE28,
+				6AA6DACF434738AD14384E83,
 			);
 			name = "Paraphrasis - All";
 			productName = Paraphrasis;
@@ -55,9 +57,11 @@
 		4F792D15AFA8E65AF5F89EA7 /* include_juce_audio_processors.mm */ = {isa = PBXBuildFile; fileRef = ABF1485CA2A8AEB5A66A1D0F; };
 		4F899834D279C2AE920FE9F5 /* Oscillator.cpp */ = {isa = PBXBuildFile; fileRef = 751834CB3E553D01CDB30FB3; };
 		578C864C356EBC4B8DC3CD35 /* ResourceCache.cpp */ = {isa = PBXBuildFile; fileRef = 9B9C5D3777A8D7F6DBA15BAA; };
+		587425CB4D4A31FE8CBE36F3 /* include_juce_audio_plugin_client_LV2.mm */ = {isa = PBXBuildFile; fileRef = 6620678D8D44FE067083C893; };
 		5AADD01AF3D29DEC8D98D609 /* Resampler.cpp */ = {isa = PBXBuildFile; fileRef = 08A252DA107FA8F1A3AD5708; };
 		5B23B5C2A2862EF21515C5DC /* FourierTransform.cpp */ = {isa = PBXBuildFile; fileRef = 5CB6FAC42B42815FB3A8A1A1; };
 		5F1A43856534E9527347001D /* include_juce_gui_basics.mm */ = {isa = PBXBuildFile; fileRef = 5E0EC4FBC25B87B3A952BFA0; };
+		68039C1FF1268FE03C419C23 /* juce_LV2TurtleDumpProgram.cpp */ = {isa = PBXBuildFile; fileRef = D8228D304BFF5EFE96F4C0A2; settings = { COMPILER_FLAGS = "-std=c++11 -w -DJUCE_SKIP_PRECOMPILED_HEADER"; }; };
 		689E57EB8775A00CC6ABA96F /* Resources.cpp */ = {isa = PBXBuildFile; fileRef = C5C8F47058BD2354DC9D69D4; };
 		6B7E443C0EE67214770DA0DA /* Dilator.cpp */ = {isa = PBXBuildFile; fileRef = 4A4D17A3155F5E84C1DF4915; };
 		6C1FDF7C6A5A42390162142C /* PartialBuilder.cpp */ = {isa = PBXBuildFile; fileRef = 3083B18E6F0352732F35D0DE; };
@@ -111,9 +115,11 @@
 		E7AADAECBCD3E970C69E12A7 /* fftsg.c */ = {isa = PBXBuildFile; fileRef = C2F20FEBAF324B9B2BD008A9; };
 		E8193B4558C8D39653B87C8A /* include_juce_audio_processors_lv2_libs.cpp */ = {isa = PBXBuildFile; fileRef = 49BF196B4852FEF96762DFFB; };
 		E844A91E70307F9F3B834A8D /* WebKit.framework */ = {isa = PBXBuildFile; fileRef = B30D629E9A3B7AC9A236E5F8; };
+		E998915EE6E75DA741EB9E7A /* LV2 Plugin */ = {isa = PBXBuildFile; fileRef = C2657A697EE684B9675AE2CF; };
 		E99A1E8EB8656D3B5ED07EEA /* include_juce_audio_devices.mm */ = {isa = PBXBuildFile; fileRef = 2E3F2671BFE5183B24AC576E; };
 		EBE6AF8FE7AF3DB3F867C8E4 /* PartialUtils.cpp */ = {isa = PBXBuildFile; fileRef = 96191EC14254A341717BCDD4; };
 		EFAC95A059C4D2301208F6D2 /* VST */ = {isa = PBXBuildFile; fileRef = 04692AA22CAD8FAEBBAA16AB; };
+		F4A3D9FE29C3EB824220E954 /* LV2 Manifest Helper */ = {isa = PBXBuildFile; fileRef = C363A6FE85FD9F4D3C8DDDFE; };
 		F8835318B7F808261611F836 /* ImageKnob.cpp */ = {isa = PBXBuildFile; fileRef = 561089CEF6AFFEAC18D86E01; };
 		F9FD1163F3ED0503FA06ECFD /* KaiserWindow.cpp */ = {isa = PBXBuildFile; fileRef = 4B7C908DAE48B3A52412FE3C; };
 		FA69A26A174A041662E2580E /* AU */ = {isa = PBXBuildFile; fileRef = 9153A8678059821A42BCBADA; };
@@ -132,6 +138,7 @@
 		0AF8D31E054A03C323E03D6E /* Info-AU.plist */ /* Info-AU.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-AU.plist"; path = "Info-AU.plist"; sourceTree = SOURCE_ROOT; };
 		0B787CCA2F4D6957AF7617AA /* readerwriterqueue.h */ /* readerwriterqueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = readerwriterqueue.h; path = ../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/readerwriterqueue/readerwriterqueue.h; sourceTree = SOURCE_ROOT; };
 		0D359DBCF71EE66831B4A6FC /* FrequencyReference.h */ /* FrequencyReference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FrequencyReference.h; path = ../../ThirdParty/Loris/src/FrequencyReference.h; sourceTree = SOURCE_ROOT; };
+		0E158F6FC80C20B7E058C2BE /* Info-LV2_Manifest_Helper.plist */ /* Info-LV2_Manifest_Helper.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-LV2_Manifest_Helper.plist"; path = "Info-LV2_Manifest_Helper.plist"; sourceTree = SOURCE_ROOT; };
 		125F82D4E8EBCED3538C1A62 /* include_juce_audio_plugin_client_VST3.cpp */ /* include_juce_audio_plugin_client_VST3.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_plugin_client_VST3.cpp; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_VST3.cpp; sourceTree = SOURCE_ROOT; };
 		1358B7E27F1CBF1D1D7AF634 /* ImportLemur.cpp */ /* ImportLemur.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ImportLemur.cpp; path = ../../ThirdParty/Loris/src/ImportLemur.cpp; sourceTree = SOURCE_ROOT; };
 		13855BB885314890460F0DE5 /* Filter.h */ /* Filter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Filter.h; path = ../../ThirdParty/Loris/src/Filter.h; sourceTree = SOURCE_ROOT; };
@@ -203,6 +210,8 @@
 		64D94A998ADB01EEA6E07BAF /* Breakpoint.cpp */ /* Breakpoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Breakpoint.cpp; path = ../../ThirdParty/Loris/src/Breakpoint.cpp; sourceTree = SOURCE_ROOT; };
 		64F7C8AE3B78A4255B05D2E4 /* Channelizer.h */ /* Channelizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Channelizer.h; path = ../../ThirdParty/Loris/src/Channelizer.h; sourceTree = SOURCE_ROOT; };
 		65C50932C001EB869249ABF2 /* Dilator.h */ /* Dilator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Dilator.h; path = ../../ThirdParty/Loris/src/Dilator.h; sourceTree = SOURCE_ROOT; };
+		6620678D8D44FE067083C893 /* include_juce_audio_plugin_client_LV2.mm */ /* include_juce_audio_plugin_client_LV2.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_plugin_client_LV2.mm; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_LV2.mm; sourceTree = SOURCE_ROOT; };
+		66FCC47DE78D6E1261E63FD3 /* JuceLV2Defines.h */ /* JuceLV2Defines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceLV2Defines.h; path = ../../JuceLibraryCode/JuceLV2Defines.h; sourceTree = SOURCE_ROOT; };
 		67954F3CF2F6B639D42A7E14 /* Channelizer.cpp */ /* Channelizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Channelizer.cpp; path = ../../ThirdParty/Loris/src/Channelizer.cpp; sourceTree = SOURCE_ROOT; };
 		698EE7862D7ED57A679F4C2E /* juce_audio_utils */ /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = ../../JuceLibraryCode/modules/juce_audio_utils; sourceTree = SOURCE_ROOT; };
 		6A82E5E1F91C050E4A1DD726 /* CoreMIDI.framework */ /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
@@ -217,6 +226,7 @@
 		76BBFCFD79990C2B5FEC0CB5 /* Harmonifier.cpp */ /* Harmonifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Harmonifier.cpp; path = ../../ThirdParty/Loris/src/Harmonifier.cpp; sourceTree = SOURCE_ROOT; };
 		7748C70ECB4EC91E69FEE1CC /* Marker.h */ /* Marker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Marker.h; path = ../../ThirdParty/Loris/src/Marker.h; sourceTree = SOURCE_ROOT; };
 		7923F50FD963038AA4FE0DC8 /* juce_audio_processors */ /* juce_audio_processors */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_processors; path = ../../JuceLibraryCode/modules/juce_audio_processors; sourceTree = SOURCE_ROOT; };
+		798962BCE4317E6F842B5F12 /* Info-LV2_Plugin.plist */ /* Info-LV2_Plugin.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-LV2_Plugin.plist"; path = "Info-LV2_Plugin.plist"; sourceTree = SOURCE_ROOT; };
 		7A37EA2DE0411A58A5F309C4 /* ReassignedSpectrum.h */ /* ReassignedSpectrum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ReassignedSpectrum.h; path = ../../ThirdParty/Loris/src/ReassignedSpectrum.h; sourceTree = SOURCE_ROOT; };
 		7CCEE6ED62DF52797DFB4180 /* SpectralPeakSelector.h */ /* SpectralPeakSelector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpectralPeakSelector.h; path = ../../ThirdParty/Loris/src/SpectralPeakSelector.h; sourceTree = SOURCE_ROOT; };
 		7D9D73BF8C6774002407D769 /* juce_graphics */ /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = ../../JuceLibraryCode/modules/juce_graphics; sourceTree = SOURCE_ROOT; };
@@ -275,9 +285,11 @@
 		C0B476684B56A5CE35C87D96 /* AppConfig.h */ /* AppConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppConfig.h; path = ../../JuceLibraryCode/AppConfig.h; sourceTree = SOURCE_ROOT; };
 		C0C0B801131FD35475B17CF9 /* LorisExceptions.cpp */ /* LorisExceptions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LorisExceptions.cpp; path = ../../ThirdParty/Loris/src/LorisExceptions.cpp; sourceTree = SOURCE_ROOT; };
 		C11E66B7B99DC8F153AF6F18 /* include_juce_audio_plugin_client_VST_utils.mm */ /* include_juce_audio_plugin_client_VST_utils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_plugin_client_VST_utils.mm; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_VST_utils.mm; sourceTree = SOURCE_ROOT; };
+		C2657A697EE684B9675AE2CF /* LV2 Plugin */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Paraphrasis.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2F20FEBAF324B9B2BD008A9 /* fftsg.c */ /* fftsg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = fftsg.c; path = ../../ThirdParty/Loris/src/fftsg.c; sourceTree = SOURCE_ROOT; };
 		C307AAE9D0AEE1F17B5232FB /* Envelope.cpp */ /* Envelope.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Envelope.cpp; path = ../../ThirdParty/Loris/src/Envelope.cpp; sourceTree = SOURCE_ROOT; };
 		C316B7156FFEB763F56D845A /* ImageKnob.h */ /* ImageKnob.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImageKnob.h; path = ../../ThirdParty/TeragonGuiComponents/Components/Source/ImageKnob.h; sourceTree = SOURCE_ROOT; };
+		C363A6FE85FD9F4D3C8DDDFE /* LV2 Manifest Helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = juce_lv2_helper; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3AD44F3106AFE1008F3DAAC /* Morpher.cpp */ /* Morpher.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Morpher.cpp; path = ../../ThirdParty/Loris/src/Morpher.cpp; sourceTree = SOURCE_ROOT; };
 		C3FA924EFE63D57FC5B8B3FF /* Notifier.h */ /* Notifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Notifier.h; path = ../../ThirdParty/Loris/src/Notifier.h; sourceTree = SOURCE_ROOT; };
 		C44913762B6E43B9B9F01B38 /* Fundamental.cpp */ /* Fundamental.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Fundamental.cpp; path = ../../ThirdParty/Loris/src/Fundamental.cpp; sourceTree = SOURCE_ROOT; };
@@ -300,6 +312,7 @@
 		D6282083DF0A62DD09E51029 /* include_juce_core.mm */ /* include_juce_core.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_core.mm; path = ../../JuceLibraryCode/include_juce_core.mm; sourceTree = SOURCE_ROOT; };
 		D6A5C2482A734159E5EB3883 /* Synthesizer.cpp */ /* Synthesizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Synthesizer.cpp; path = ../../ThirdParty/Loris/src/Synthesizer.cpp; sourceTree = SOURCE_ROOT; };
 		D7718F5C803DE07A9721AF0F /* PartialPtrs.h */ /* PartialPtrs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PartialPtrs.h; path = ../../ThirdParty/Loris/src/PartialPtrs.h; sourceTree = SOURCE_ROOT; };
+		D8228D304BFF5EFE96F4C0A2 /* juce_LV2TurtleDumpProgram.cpp */ /* juce_LV2TurtleDumpProgram.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_LV2TurtleDumpProgram.cpp; path = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/LV2/juce_LV2TurtleDumpProgram.cpp"; sourceTree = "<absolute>"; };
 		D88A5464EB6DF3EE79323F5E /* atomicops.h */ /* atomicops.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = atomicops.h; path = ../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include/readerwriterqueue/atomicops.h; sourceTree = SOURCE_ROOT; };
 		D9234211E83E11A4CEBF9ADD /* TeragonGuiComponents.h */ /* TeragonGuiComponents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TeragonGuiComponents.h; path = ../../ThirdParty/TeragonGuiComponents/Components/Source/TeragonGuiComponents.h; sourceTree = SOURCE_ROOT; };
 		DA6A6B40891A98DC6CD654C2 /* TeragonPluginBase.cpp */ /* TeragonPluginBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TeragonPluginBase.cpp; path = ../../ThirdParty/TeragonGuiComponents/Components/Plugin/TeragonPluginBase.cpp; sourceTree = SOURCE_ROOT; };
@@ -324,6 +337,24 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		29ECDC5B3A207A9B538C633E = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				867EE953145A6F300CE1F956,
+				1F38EFFC6F4BC3F2100206B1,
+				4D38B45EC76A8BC1C021B019,
+				3EBAA118A5CC76EA1FDBFF17,
+				01C8C5B7D0F9EE2890BEBBA3,
+				83850F0AD7FCEA3E1FD1D11B,
+				3186B89560DB8163F49BBC7C,
+				9E003B0E2B3086AFAD67D1EC,
+				7491C2AA5A7C0A1AD05B15A2,
+				3D3C210FE05245CA29B987F8,
+				E844A91E70307F9F3B834A8D,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3CB33EDFF8BBAAC5FF527D5A = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -406,6 +437,8 @@
 				AC48E01164AF9CA21A1D4E32,
 				26E78E74E834310AE7B765C3,
 				0AF8D31E054A03C323E03D6E,
+				798962BCE4317E6F842B5F12,
+				0E158F6FC80C20B7E058C2BE,
 				40BF88BC793E8C3006BE97B2,
 			);
 			name = Resources;
@@ -571,7 +604,9 @@
 				04692AA22CAD8FAEBBAA16AB,
 				7EB05AEB2D711BE13DB39702,
 				9153A8678059821A42BCBADA,
+				C2657A697EE684B9675AE2CF,
 				944D567B3B04874780123FD0,
+				C363A6FE85FD9F4D3C8DDDFE,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -697,6 +732,7 @@
 				4979CD6D55618BCB8AD3E76E,
 				6161F873C48F5AFFB2000A22,
 				38C0A3F78A7EB892F67C9115,
+				6620678D8D44FE067083C893,
 				487056CFC2B8E2A986C757EB,
 				C11E66B7B99DC8F153AF6F18,
 				CFA1C643213FF97C90AA01A2,
@@ -712,6 +748,7 @@
 				5E0EC4FBC25B87B3A952BFA0,
 				2196F0AF0C8043A01F5FB52F,
 				A2EED4E6F1CFB5C0E1E3AFB1,
+				66FCC47DE78D6E1261E63FD3,
 				31A060EFC8CF03FCBC18B7E9,
 			);
 			name = "JUCE Library Code";
@@ -720,6 +757,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		078BAB9D37E47F164427B0EE /* Paraphrasis - LV2 Plugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5681A4335CDF9748793C3958;
+			buildPhases = (
+				B8F3B008E1ED8044E83DBB70,
+				4FE083A18B6BB065FDB768B9,
+				29ECDC5B3A207A9B538C633E,
+				2FDE2597F5ADED852A446DA5,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FAF359B5681183661AFC5566,
+				076974AAD623781464697134,
+			);
+			name = "Paraphrasis - LV2 Plugin";
+			productName = Paraphrasis;
+			productReference = C2657A697EE684B9675AE2CF;
+			productType = "com.apple.product-type.tool";
+		};
 		09A43ADD02F551B7539F3E1F /* Paraphrasis - Shared Code */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DB1395AB82E5EBB3810D00A7;
@@ -771,6 +828,21 @@
 			productReference = 04692AA22CAD8FAEBBAA16AB;
 			productType = "com.apple.product-type.bundle";
 		};
+		7D3EE32AF8F14346585BBCAD /* Paraphrasis - LV2 Manifest Helper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C23BF940B8DACC716EDBBBF4;
+			buildPhases = (
+				1089E549559CB3E5F6BA0C80,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Paraphrasis - LV2 Manifest Helper";
+			productName = Paraphrasis;
+			productReference = C363A6FE85FD9F4D3C8DDDFE;
+			productType = "com.apple.product-type.tool";
+		};
 		C4F43F603D2D018379D050E2 /* Paraphrasis - VST3 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F7DA7F7F896E88BB9043F75C;
@@ -798,6 +870,28 @@
 				LastUpgradeCheck = 1340;
 				ORGANIZATIONNAME = "Virtual Analogy";
 				TargetAttributes = {
+					078BAB9D37E47F164427B0EE = {
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+							com.apple.HardenedRuntime = {
+								enabled = 0;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+							com.apple.InterAppAudio = {
+								enabled = 0;
+							};
+							com.apple.Push = {
+								enabled = 0;
+							};
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
 					09A43ADD02F551B7539F3E1F = {
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -886,6 +980,28 @@
 							};
 						};
 					};
+					7D3EE32AF8F14346585BBCAD = {
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+							com.apple.HardenedRuntime = {
+								enabled = 0;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+							com.apple.InterAppAudio = {
+								enabled = 0;
+							};
+							com.apple.Push = {
+								enabled = 0;
+							};
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
 					C4F43F603D2D018379D050E2 = {
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -925,7 +1041,9 @@
 				679E63A0DBB4973EA371A5C4,
 				C4F43F603D2D018379D050E2,
 				11D0D6A2E0A1E452819E322D,
+				078BAB9D37E47F164427B0EE,
 				09A43ADD02F551B7539F3E1F,
+				7D3EE32AF8F14346585BBCAD,
 			);
 		};
 /* End PBXProject section */
@@ -947,6 +1065,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B8F3B008E1ED8044E83DBB70 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				716C496402DCACD07E16CEBB,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CEC5277F4E5372C70F5F2555 = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -957,12 +1083,34 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2FDE2597F5ADED852A446DA5 /* Generate manifest */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Generate manifest";
+			alwaysOutOfDate = 1;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nxcrun codesign --verify \"$CONFIGURATION_BUILD_DIR/$PRODUCT_NAME\" || xcrun codesign -s - \"$CONFIGURATION_BUILD_DIR/$PRODUCT_NAME\"\n\"$CONFIGURATION_BUILD_DIR/../juce_lv2_helper\" \"$CONFIGURATION_BUILD_DIR/$PRODUCT_NAME\"\nif [ \"$CONFIGURATION\" = \"Debug\" ]; then\nmkdir -p \"$HOME/Library/Audio/Plug-Ins/LV2/\"\n/bin/ln -sfh \"$CONFIGURATION_BUILD_DIR\" \"$HOME/Library/Audio/Plug-Ins/LV2/\"\nfi\nif [ \"$CONFIGURATION\" = \"Release\" ]; then\nmkdir -p \"$HOME/Library/Audio/Plug-Ins/LV2/\"\n/bin/ln -sfh \"$CONFIGURATION_BUILD_DIR\" \"$HOME/Library/Audio/Plug-Ins/LV2/\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		001B7CB73F6F636EF5494046 = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				23B80837A7B092D7993998CB,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1089E549559CB3E5F6BA0C80 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68039C1FF1268FE03C419C23,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1055,6 +1203,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4FE083A18B6BB065FDB768B9 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				587425CB4D4A31FE8CBE36F3,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		90E8B52CEFDF0B934C8E70DE = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1066,13 +1222,25 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		076974AAD623781464697134 = {
+			isa = PBXTargetDependency;
+			target = 09A43ADD02F551B7539F3E1F;
+		};
 		0DB2E4356B48A26602B4727E = {
 			isa = PBXTargetDependency;
 			target = C4F43F603D2D018379D050E2;
 		};
+		1FB2215AA69D07A4B162FBFF = {
+			isa = PBXTargetDependency;
+			target = 078BAB9D37E47F164427B0EE;
+		};
 		4253343030EE6E56E821C990 = {
 			isa = PBXTargetDependency;
 			target = 11D0D6A2E0A1E452819E322D;
+		};
+		6AA6DACF434738AD14384E83 = {
+			isa = PBXTargetDependency;
+			target = 7D3EE32AF8F14346585BBCAD;
 		};
 		71975E832F4FB5B07B30DB9E = {
 			isa = PBXTargetDependency;
@@ -1094,9 +1262,82 @@
 			isa = PBXTargetDependency;
 			target = 09A43ADD02F551B7539F3E1F;
 		};
+		FAF359B5681183661AFC5566 = {
+			isa = PBXTargetDependency;
+			target = 7D3EE32AF8F14346585BBCAD;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		0CE76E6FC47B2BCFB23FFE54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
+				DEAD_CODE_STRIPPING = YES;
+				EXCLUDED_ARCHS = "i386 arm64e";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_NDEBUG=1",
+					"NDEBUG=1",
+					"JUCE_MODAL_LOOPS_PERMITTED=1",
+					"JUCER_XCODE_MAC_F6D2F4CF=1",
+					"JUCE_APP_VERSION=1.0.3",
+					"JUCE_APP_VERSION_HEX=0x10003",
+					"JucePlugin_Build_VST=0",
+					"JucePlugin_Build_VST3=0",
+					"JucePlugin_Build_AU=0",
+					"JucePlugin_Build_AUv3=0",
+					"JucePlugin_Build_AAX=0",
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0",
+					"JucePlugin_Build_LV2=0",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../JuceLibraryCode",
+					"$(SRCROOT)/../../JuceLibraryCode/modules",
+					"$(SRCROOT)/../../ThirdParty/Loris/src",
+					"$(SRCROOT)/../../ThirdParty/Loris/",
+					"/opt/local/include/",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include",
+					"$(SRCROOT)/../../ThirdParty/sse2math/",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = Info-LV2_Manifest_Helper.plist;
+				INFOPLIST_PREPROCESS = NO;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/opt/local/lib\"",
+				);
+				LLVM_LTO = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				OTHER_LDFLAGS = "-weak_framework Metal -weak_framework MetalKit";
+				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
+				PRODUCT_NAME = "juce_lv2_helper";
+				USE_HEADERMAP = NO;
+				VALID_ARCHS = "arm64 x86_64";
+			};
+			name = Release;
+		};
 		116E2ABC1905EC5B7B76933A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1130,8 +1371,15 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
-					"/Volumes/IMAGELINE/vstsdk2.4",
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../JuceLibraryCode/modules",
 					"$(SRCROOT)/../../ThirdParty/Loris/src",
@@ -1155,7 +1403,7 @@
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK /Volumes/IMAGELINE/vstsdk2.4 $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
 				OTHER_LDFLAGS = "-bundle -lParaphrasis -weak_framework Metal -weak_framework MetalKit";
 				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
 				PRODUCT_NAME = "Paraphrasis";
@@ -1198,8 +1446,15 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
-					"/Volumes/IMAGELINE/vstsdk2.4",
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../JuceLibraryCode/modules",
 					"$(SRCROOT)/../../ThirdParty/Loris/src",
@@ -1223,7 +1478,7 @@
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK /Volumes/IMAGELINE/vstsdk2.4 $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
 				OTHER_LDFLAGS = "-bundle -lParaphrasis -weak_framework Metal -weak_framework MetalKit";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -d arm64_$arm64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
@@ -1239,6 +1494,82 @@
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		3D434C3F61A226B00DE6208D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)/Paraphrasis.lv2";
+				COPY_PHASE_STRIP = NO;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = /;
+				EXCLUDED_ARCHS = "i386 arm64e";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_DEBUG=1",
+					"DEBUG=1",
+					"JUCE_MODAL_LOOPS_PERMITTED=1",
+					"JUCER_XCODE_MAC_F6D2F4CF=1",
+					"JUCE_APP_VERSION=1.0.3",
+					"JUCE_APP_VERSION_HEX=0x10003",
+					"JucePlugin_Build_VST=0",
+					"JucePlugin_Build_VST3=0",
+					"JucePlugin_Build_AU=0",
+					"JucePlugin_Build_AUv3=0",
+					"JucePlugin_Build_AAX=0",
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0",
+					"JucePlugin_Build_LV2=1",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GENERATE_PKGINFO_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../JuceLibraryCode",
+					"$(SRCROOT)/../../JuceLibraryCode/modules",
+					"$(SRCROOT)/../../ThirdParty/Loris/src",
+					"$(SRCROOT)/../../ThirdParty/Loris/",
+					"/opt/local/include/",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include",
+					"$(SRCROOT)/../../ThirdParty/sse2math/",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = Info-LV2_Plugin.plist;
+				INFOPLIST_PREPROCESS = NO;
+				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/LV2/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/opt/local/lib\"",
+					"\"$(PROJECT_DIR)/build/$(CONFIGURATION)\"",
+				);
+				LIBRARY_STYLE = Bundle;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				OTHER_LDFLAGS = "-bundle -lParaphrasis -weak_framework Metal -weak_framework MetalKit";
+				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
+				PRODUCT_NAME = "Paraphrasis";
+				SKIP_INSTALL = YES;
+				USE_HEADERMAP = NO;
+				VALID_ARCHS = "arm64 x86_64";
+				WRAPPER_EXTENSION = so;
 			};
 			name = Debug;
 		};
@@ -1275,8 +1606,15 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
-					"/Volumes/IMAGELINE/vstsdk2.4",
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../JuceLibraryCode/modules",
 					"$(SRCROOT)/../../ThirdParty/Loris/src",
@@ -1299,7 +1637,7 @@
 				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK /Volumes/IMAGELINE/vstsdk2.4 $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
 				OTHER_LDFLAGS = "-bundle -lParaphrasis -weak_framework Metal -weak_framework MetalKit";
 				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
 				PRODUCT_NAME = "Paraphrasis";
@@ -1308,6 +1646,83 @@
 				WRAPPER_EXTENSION = vst3;
 			};
 			name = Debug;
+		};
+		5B6085D1C79A38F15A684173 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)/Paraphrasis.lv2";
+				DEAD_CODE_STRIPPING = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = /;
+				EXCLUDED_ARCHS = "i386 arm64e";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_NDEBUG=1",
+					"NDEBUG=1",
+					"JUCE_MODAL_LOOPS_PERMITTED=1",
+					"JUCER_XCODE_MAC_F6D2F4CF=1",
+					"JUCE_APP_VERSION=1.0.3",
+					"JUCE_APP_VERSION_HEX=0x10003",
+					"JucePlugin_Build_VST=0",
+					"JucePlugin_Build_VST3=0",
+					"JucePlugin_Build_AU=0",
+					"JucePlugin_Build_AUv3=0",
+					"JucePlugin_Build_AAX=0",
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0",
+					"JucePlugin_Build_LV2=1",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GENERATE_PKGINFO_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../JuceLibraryCode",
+					"$(SRCROOT)/../../JuceLibraryCode/modules",
+					"$(SRCROOT)/../../ThirdParty/Loris/src",
+					"$(SRCROOT)/../../ThirdParty/Loris/",
+					"/opt/local/include/",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include",
+					"$(SRCROOT)/../../ThirdParty/sse2math/",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = Info-LV2_Plugin.plist;
+				INFOPLIST_PREPROCESS = NO;
+				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/LV2/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/opt/local/lib\"",
+					"\"$(PROJECT_DIR)/build/$(CONFIGURATION)\"",
+				);
+				LIBRARY_STYLE = Bundle;
+				LLVM_LTO = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				OTHER_LDFLAGS = "-bundle -lParaphrasis -weak_framework Metal -weak_framework MetalKit";
+				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
+				PRODUCT_NAME = "Paraphrasis";
+				SKIP_INSTALL = YES;
+				USE_HEADERMAP = NO;
+				VALID_ARCHS = "arm64 x86_64";
+				WRAPPER_EXTENSION = so;
+			};
+			name = Release;
 		};
 		6E753CB7CAD77A06C1086FB0 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1342,8 +1757,15 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
-					"/Volumes/IMAGELINE/vstsdk2.4",
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../JuceLibraryCode/modules",
 					"$(SRCROOT)/../../ThirdParty/Loris/src",
@@ -1366,7 +1788,7 @@
 				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK /Volumes/IMAGELINE/vstsdk2.4 $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
 				OTHER_LDFLAGS = "-bundle -lParaphrasis -weak_framework Metal -weak_framework MetalKit";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -d arm64_$arm64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
@@ -1403,13 +1825,20 @@
 					"JucePlugin_Build_AAX=0",
 					"JucePlugin_Build_Standalone=0",
 					"JucePlugin_Build_Unity=0",
-					"JucePlugin_Build_LV2=0",
+					"JucePlugin_Build_LV2=1",
 					"JUCE_SHARED_CODE=1",
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
-					"/Volumes/IMAGELINE/vstsdk2.4",
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../JuceLibraryCode/modules",
 					"$(SRCROOT)/../../ThirdParty/Loris/src",
@@ -1430,7 +1859,7 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK /Volumes/IMAGELINE/vstsdk2.4 $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
 				OTHER_LDFLAGS = "-weak_framework Metal -weak_framework MetalKit";
 				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
 				PRODUCT_NAME = "Paraphrasis";
@@ -1473,8 +1902,15 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
-					"/Volumes/IMAGELINE/vstsdk2.4",
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../JuceLibraryCode/modules",
 					"$(SRCROOT)/../../ThirdParty/Loris/src",
@@ -1498,7 +1934,7 @@
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK /Volumes/IMAGELINE/vstsdk2.4 $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
 				OTHER_LDFLAGS = "-bundle -lParaphrasis -weak_framework Metal -weak_framework MetalKit";
 				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
 				PRODUCT_NAME = "Paraphrasis";
@@ -1541,8 +1977,15 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
-					"/Volumes/IMAGELINE/vstsdk2.4",
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../JuceLibraryCode/modules",
 					"$(SRCROOT)/../../ThirdParty/Loris/src",
@@ -1565,13 +2008,81 @@
 				);
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK /Volumes/IMAGELINE/vstsdk2.4 $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
 				OTHER_LDFLAGS = "-bundle -lParaphrasis -weak_framework Metal -weak_framework MetalKit";
 				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
 				PRODUCT_NAME = "Paraphrasis";
 				USE_HEADERMAP = NO;
 				VALID_ARCHS = "arm64 x86_64";
 				WRAPPER_EXTENSION = vst;
+			};
+			name = Debug;
+		};
+		AC9967C65975D2EB4F6F524D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
+				COPY_PHASE_STRIP = NO;
+				EXCLUDED_ARCHS = "i386 arm64e";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_DEBUG=1",
+					"DEBUG=1",
+					"JUCE_MODAL_LOOPS_PERMITTED=1",
+					"JUCER_XCODE_MAC_F6D2F4CF=1",
+					"JUCE_APP_VERSION=1.0.3",
+					"JUCE_APP_VERSION_HEX=0x10003",
+					"JucePlugin_Build_VST=0",
+					"JucePlugin_Build_VST3=0",
+					"JucePlugin_Build_AU=0",
+					"JucePlugin_Build_AUv3=0",
+					"JucePlugin_Build_AAX=0",
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0",
+					"JucePlugin_Build_LV2=0",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../JuceLibraryCode",
+					"$(SRCROOT)/../../JuceLibraryCode/modules",
+					"$(SRCROOT)/../../ThirdParty/Loris/src",
+					"$(SRCROOT)/../../ThirdParty/Loris/",
+					"/opt/local/include/",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source",
+					"$(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include",
+					"$(SRCROOT)/../../ThirdParty/sse2math/",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = Info-LV2_Manifest_Helper.plist;
+				INFOPLIST_PREPROCESS = NO;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"/opt/local/lib\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				OTHER_LDFLAGS = "-weak_framework Metal -weak_framework MetalKit";
+				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
+				PRODUCT_NAME = "juce_lv2_helper";
+				USE_HEADERMAP = NO;
+				VALID_ARCHS = "arm64 x86_64";
 			};
 			name = Debug;
 		};
@@ -1609,13 +2120,20 @@
 					"JucePlugin_Build_AAX=0",
 					"JucePlugin_Build_Standalone=0",
 					"JucePlugin_Build_Unity=0",
-					"JucePlugin_Build_LV2=0",
+					"JucePlugin_Build_LV2=1",
 					"JUCE_SHARED_CODE=1",
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2",
+					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK",
-					"/Volumes/IMAGELINE/vstsdk2.4",
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../JuceLibraryCode/modules",
 					"$(SRCROOT)/../../ThirdParty/Loris/src",
@@ -1635,7 +2153,7 @@
 					"\"/opt/local/lib\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK /Volumes/IMAGELINE/vstsdk2.4 $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JuceLibraryCode/modules $(SRCROOT)/../../ThirdParty/Loris/src $(SRCROOT)/../../ThirdParty/Loris/ /opt/local/include/ $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/Source $(SRCROOT)/../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include $(SRCROOT)/../../ThirdParty/sse2math/ $(SRCROOT)/../../JuceLibraryCode/modules/juce_audio_plugin_client/AU";
 				OTHER_LDFLAGS = "-weak_framework Metal -weak_framework MetalKit";
 				PRODUCT_BUNDLE_IDENTIFIER = com.VirtualAnalogy.Paraphrasis;
 				PRODUCT_NAME = "Paraphrasis";
@@ -1770,11 +2288,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		5681A4335CDF9748793C3958 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D434C3F61A226B00DE6208D,
+				5B6085D1C79A38F15A684173,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		6650108495DA96A6273933D0 = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3B7E4D3D6531F922234BB458,
 				D32B50732F6BBEFDE895B35E,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C23BF940B8DACC716EDBBBF4 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC9967C65975D2EB4F6F524D,
+				0CE76E6FC47B2BCFB23FFE54,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

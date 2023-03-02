@@ -8,7 +8,7 @@
               pluginWantsMidiIn="1" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
               pluginEditorRequiresKeys="0" pluginAUExportPrefix="ParaphrasisAU"
               pluginRTASCategory="" aaxIdentifier="com.VirtualAnalogy.Paraphrasis"
-              pluginAAXCategory="2" companyName="Virtual Analogy" companyWebsite="www.virtualanalogy.com"
+              pluginAAXCategory="2" companyName="Virtual Analogy" companyWebsite="http://www.virtualanalogy.com"
               companyEmail="virtualanalogy@virtualanalogy.com" defines="" userNotes="HAVE_FFTW3_H is for Loris to include and build with fftw-3 library (HAVE_FFTW_H for fftw-2 I supose). Debug_Loris can be usefull as well.&#10;&#10;Check for others platforms check type sizes: the defaults are in parenthesis ()&#10;&#10;#define SIZEOF_BOOL 1&#10;#define SIZEOF_CHAR 1&#10;#define SIZEOF_DOUBLE 8 // @ ImportLemur.C (8)&#10;#define SIZEOF_FLOAT 4  // @ ImportLemur.C (4)&#10;#define SIZEOF_INT 4 //@ AiffData.C(4), ImportLemur.C(4), SdifFile.C (4)&#10;#define SIZEOF_INT_P 8 //&#10;#define SIZEOF_LONG 8 // @ AiffData.C(4), ImportLemur.C(4), SdifFile.C (4)&#10;#define SIZEOF_SHORT 2 // @ AiffData.C(2), ImportLemur.C(2), SdifFile.C (2)&#10;#define SIZEOF_SIZE_T 8/Users/tomasmedek/Documents/VirtualAnalogy/Paraphrasis/Loris/config.h.in.txt"
               pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
               displaySplashScreen="1" jucerFormatVersion="1" pluginFormats="buildAU,buildLV2,buildVST,buildVST3"
@@ -266,9 +266,11 @@
         <MODULEPATH id="dRowAudio" path="../../../../Volumes/IMAGELINE/JUCE/drowaudio-master/module"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraDefs="JUCE_MODAL_LOOPS_PERMITTED=1">
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraDefs="JUCE_MODAL_LOOPS_PERMITTED=1"
+                enableGNUExtensions="1">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="/opt/local/include/&#10;/usr/include/freetype2&#10;/usr/include/gtk-2.0/&#10;/usr/include/glib-2.0/&#10;/usr/lib/i386-linux-gnu/glib-2.0/include/&#10;../../ThirdParty/Loris/src&#10;../../ThirdParty/Loris/&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64&#10;../../ThirdParty/TeragonGuiComponents/Components/Source&#10;../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include&#10;../../ThirdParty/sse2math/"/>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="/opt/local/include/&#10;/usr/include/freetype2&#10;/usr/include/gtk-2.0/&#10;/usr/include/glib-2.0/&#10;/usr/lib/i386-linux-gnu/glib-2.0/include/&#10;../../ThirdParty/Loris/src&#10;../../ThirdParty/Loris/&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64&#10;../../ThirdParty/TeragonGuiComponents/Components/Source&#10;../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include&#10;../../ThirdParty/sse2math/"
+                       recommendedWarnings="GCC"/>
         <CONFIGURATION isDebug="0" name="Release" headerPath="/opt/local/include/&#10;/usr/include/freetype2&#10;/usr/include/gtk-2.0/&#10;/usr/include/glib-2.0/&#10;/usr/lib/i386-linux-gnu/glib-2.0/include/&#10;../../ThirdParty/Loris/src&#10;../../ThirdParty/Loris/&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin&#10;../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64&#10;../../ThirdParty/TeragonGuiComponents/Components/Source&#10;../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include&#10;../../ThirdParty/sse2math/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

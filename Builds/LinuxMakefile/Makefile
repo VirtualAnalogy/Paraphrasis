@@ -39,7 +39,24 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := 
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DDEBUG=1" "-D_DEBUG=1" "-DJUCE_MODAL_LOOPS_PERMITTED=1" "-DJUCER_LINUX_MAKE_6D53C8B4=1" "-DJUCE_APP_VERSION=1.0.3" "-DJUCE_APP_VERSION_HEX=0x10003" $(shell $(PKG_CONFIG) --cflags alsa freetype2 libcurl webkit2gtk-4.0 gtk+-x11-3.0) -pthread -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK -I../../JuceLibraryCode -I../../JuceLibraryCode/modules -I/opt/local/include/ -I/usr/include/freetype2 -I/usr/include/gtk-2.0/ -I/usr/include/glib-2.0/ -I/usr/lib/i386-linux-gnu/glib-2.0/include/ -I../../ThirdParty/Loris/src -I../../ThirdParty/Loris/ -I../../ThirdParty/TeragonGuiComponents/Components/Plugin -I../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 -I../../ThirdParty/TeragonGuiComponents/Components/Source -I../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include -I../../ThirdParty/sse2math/ $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DDEBUG=1" "-D_DEBUG=1" "-DJUCE_MODAL_LOOPS_PERMITTED=1" "-DJUCER_LINUX_MAKE_6D53C8B4=1" "-DJUCE_APP_VERSION=1.0.3" "-DJUCE_APP_VERSION_HEX=0x10003" $(shell $(PKG_CONFIG) --cflags alsa freetype2 libcurl webkit2gtk-4.0 gtk+-x11-3.0) -pthread -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../JuceLibraryCode/modules -I/opt/local/include/ -I/usr/include/freetype2 -I/usr/include/gtk-2.0/ -I/usr/include/glib-2.0/ -I/usr/lib/i386-linux-gnu/glib-2.0/include/ -I../../ThirdParty/Loris/src -I../../ThirdParty/Loris/ -I../../ThirdParty/TeragonGuiComponents/Components/Plugin -I../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 -I../../ThirdParty/TeragonGuiComponents/Components/Source -I../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include -I../../ThirdParty/sse2math/ $(CPPFLAGS)
+
+  JUCE_CPPFLAGS_VST :=  "-DJucePlugin_Build_VST=1" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
+  JUCE_CFLAGS_VST := -fPIC -fvisibility=hidden
+  JUCE_LDFLAGS_VST := -shared -Wl,--no-undefined
+  JUCE_TARGET_VST := Paraphrasis.so
+  JUCE_VSTDESTDIR := $(HOME)/.vst
+  JUCE_COPYCMD_VST := $(JUCE_OUTDIR)/Paraphrasis.so $(JUCE_VSTDESTDIR)
+
+  JUCE_CPPFLAGS_VST3 :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=1" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
+  JUCE_CFLAGS_VST3 := -fPIC -fvisibility=hidden
+  JUCE_LDFLAGS_VST3 := -shared -Wl,--no-undefined
+  JUCE_VST3DIR := Paraphrasis.vst3
+  VST3_PLATFORM_ARCH := $(shell $(CXX) make_helpers/arch_detection.cpp 2>&1 | tr '\n' ' ' | sed "s/.*JUCE_ARCH \([a-zA-Z0-9_-]*\).*/\1/")
+  JUCE_VST3SUBDIR := Contents/$(VST3_PLATFORM_ARCH)-linux
+  JUCE_TARGET_VST3 := $(JUCE_VST3DIR)/$(JUCE_VST3SUBDIR)/Paraphrasis.so
+  JUCE_VST3DESTDIR := $(HOME)/.vst3
+  JUCE_COPYCMD_VST3 := $(JUCE_OUTDIR)/$(JUCE_VST3DIR) $(JUCE_VST3DESTDIR)
 
   JUCE_CPPFLAGS_LV2_PLUGIN :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=1"
   JUCE_CFLAGS_LV2_PLUGIN := -fPIC -fvisibility=hidden
@@ -50,14 +67,14 @@ ifeq ($(CONFIG),Debug)
   JUCE_LV2DESTDIR := $(HOME)/.lv2
   JUCE_COPYCMD_LV2_PLUGIN := $(JUCE_OUTDIR)/$(JUCE_LV2DIR) $(JUCE_LV2DESTDIR)
 
-  JUCE_CPPFLAGS_SHARED_CODE :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=1" "-DJUCE_SHARED_CODE=1"
+  JUCE_CPPFLAGS_SHARED_CODE :=  "-DJucePlugin_Build_VST=1" "-DJucePlugin_Build_VST3=1" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=1" "-DJUCE_SHARED_CODE=1"
   JUCE_TARGET_SHARED_CODE := Paraphrasis.a
 
   JUCE_CPPFLAGS_LV2_MANIFEST_HELPER :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
   JUCE_TARGET_LV2_MANIFEST_HELPER := juce_lv2_helper
 
-  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -fPIC -g -ggdb -O0 $(CFLAGS)
-  JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=c++17 $(CXXFLAGS)
+  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -fPIC -g -ggdb -O0 -Wall -Wstrict-aliasing -Wuninitialized -Wunused-parameter -Wswitch-enum -Wsign-conversion -Wsign-compare -Wunreachable-code -Wcast-align -Wno-ignored-qualifiers -Wextra -Wsign-compare -Wno-implicit-fallthrough -Wno-maybe-uninitialized -Wredundant-decls -Wno-strict-overflow -Wshadow $(CFLAGS)
+  JUCE_CXXFLAGS += $(JUCE_CFLAGS) -Woverloaded-virtual -Wreorder -Wzero-as-null-pointer-constant -std=gnu++17 $(CXXFLAGS)
   JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) $(shell $(PKG_CONFIG) --libs alsa freetype2 libcurl) -fvisibility=hidden -lrt -ldl -lpthread $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
@@ -73,7 +90,24 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := 
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DNDEBUG=1" "-DJUCE_MODAL_LOOPS_PERMITTED=1" "-DJUCER_LINUX_MAKE_6D53C8B4=1" "-DJUCE_APP_VERSION=1.0.3" "-DJUCE_APP_VERSION_HEX=0x10003" $(shell $(PKG_CONFIG) --cflags alsa freetype2 libcurl webkit2gtk-4.0 gtk+-x11-3.0) -pthread -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK -I../../JuceLibraryCode -I../../JuceLibraryCode/modules -I/opt/local/include/ -I/usr/include/freetype2 -I/usr/include/gtk-2.0/ -I/usr/include/glib-2.0/ -I/usr/lib/i386-linux-gnu/glib-2.0/include/ -I../../ThirdParty/Loris/src -I../../ThirdParty/Loris/ -I../../ThirdParty/TeragonGuiComponents/Components/Plugin -I../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 -I../../ThirdParty/TeragonGuiComponents/Components/Source -I../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include -I../../ThirdParty/sse2math/ $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DNDEBUG=1" "-DJUCE_MODAL_LOOPS_PERMITTED=1" "-DJUCER_LINUX_MAKE_6D53C8B4=1" "-DJUCE_APP_VERSION=1.0.3" "-DJUCE_APP_VERSION_HEX=0x10003" $(shell $(PKG_CONFIG) --cflags alsa freetype2 libcurl webkit2gtk-4.0 gtk+-x11-3.0) -pthread -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lilv -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sratom -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord/src -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/sord -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/serd -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK/lv2 -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/LV2_SDK -I../../JuceLibraryCode/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../JuceLibraryCode/modules -I/opt/local/include/ -I/usr/include/freetype2 -I/usr/include/gtk-2.0/ -I/usr/include/glib-2.0/ -I/usr/lib/i386-linux-gnu/glib-2.0/include/ -I../../ThirdParty/Loris/src -I../../ThirdParty/Loris/ -I../../ThirdParty/TeragonGuiComponents/Components/Plugin -I../../ThirdParty/TeragonGuiComponents/Components/Plugin/arduino-base64 -I../../ThirdParty/TeragonGuiComponents/Components/Source -I../../ThirdParty/TeragonGuiComponents/Components/PluginParameters/include -I../../ThirdParty/sse2math/ $(CPPFLAGS)
+
+  JUCE_CPPFLAGS_VST :=  "-DJucePlugin_Build_VST=1" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
+  JUCE_CFLAGS_VST := -fPIC -fvisibility=hidden
+  JUCE_LDFLAGS_VST := -shared -Wl,--no-undefined
+  JUCE_TARGET_VST := Paraphrasis.so
+  JUCE_VSTDESTDIR := $(HOME)/.vst
+  JUCE_COPYCMD_VST := $(JUCE_OUTDIR)/Paraphrasis.so $(JUCE_VSTDESTDIR)
+
+  JUCE_CPPFLAGS_VST3 :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=1" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
+  JUCE_CFLAGS_VST3 := -fPIC -fvisibility=hidden
+  JUCE_LDFLAGS_VST3 := -shared -Wl,--no-undefined
+  JUCE_VST3DIR := Paraphrasis.vst3
+  VST3_PLATFORM_ARCH := $(shell $(CXX) make_helpers/arch_detection.cpp 2>&1 | tr '\n' ' ' | sed "s/.*JUCE_ARCH \([a-zA-Z0-9_-]*\).*/\1/")
+  JUCE_VST3SUBDIR := Contents/$(VST3_PLATFORM_ARCH)-linux
+  JUCE_TARGET_VST3 := $(JUCE_VST3DIR)/$(JUCE_VST3SUBDIR)/Paraphrasis.so
+  JUCE_VST3DESTDIR := $(HOME)/.vst3
+  JUCE_COPYCMD_VST3 := $(JUCE_OUTDIR)/$(JUCE_VST3DIR) $(JUCE_VST3DESTDIR)
 
   JUCE_CPPFLAGS_LV2_PLUGIN :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=1"
   JUCE_CFLAGS_LV2_PLUGIN := -fPIC -fvisibility=hidden
@@ -84,20 +118,26 @@ ifeq ($(CONFIG),Release)
   JUCE_LV2DESTDIR := $(HOME)/.lv2
   JUCE_COPYCMD_LV2_PLUGIN := $(JUCE_OUTDIR)/$(JUCE_LV2DIR) $(JUCE_LV2DESTDIR)
 
-  JUCE_CPPFLAGS_SHARED_CODE :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=1" "-DJUCE_SHARED_CODE=1"
+  JUCE_CPPFLAGS_SHARED_CODE :=  "-DJucePlugin_Build_VST=1" "-DJucePlugin_Build_VST3=1" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=1" "-DJUCE_SHARED_CODE=1"
   JUCE_TARGET_SHARED_CODE := Paraphrasis.a
 
   JUCE_CPPFLAGS_LV2_MANIFEST_HELPER :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
   JUCE_TARGET_LV2_MANIFEST_HELPER := juce_lv2_helper
 
   JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -fPIC -O3 $(CFLAGS)
-  JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=c++17 $(CXXFLAGS)
+  JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=gnu++17 $(CXXFLAGS)
   JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) $(shell $(PKG_CONFIG) --libs alsa freetype2 libcurl) -fvisibility=hidden -lrt -ldl -lpthread $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
 endif
 
 OBJECTS_ALL := \
+
+OBJECTS_VST := \
+  $(JUCE_OBJDIR)/include_juce_audio_plugin_client_VST2_dd551e08.o \
+
+OBJECTS_VST3 := \
+  $(JUCE_OBJDIR)/include_juce_audio_plugin_client_VST3_dd633589.o \
 
 OBJECTS_LV2_PLUGIN := \
   $(JUCE_OBJDIR)/include_juce_audio_plugin_client_LV2_7d84e0a5.o \
@@ -179,13 +219,36 @@ OBJECTS_SHARED_CODE := \
 OBJECTS_LV2_MANIFEST_HELPER := \
   $(JUCE_OBJDIR)/juce_LV2TurtleDumpProgram_f9409b5.o \
 
-.PHONY: clean all strip LV2 LV2_MANIFEST_HELPER
+.PHONY: clean all strip VST VST3 LV2 LV2_MANIFEST_HELPER
 
-all : LV2 LV2_MANIFEST_HELPER
+all : VST VST3 LV2 LV2_MANIFEST_HELPER
 
+VST : $(JUCE_OUTDIR)/$(JUCE_TARGET_VST)
+VST3 : $(JUCE_OUTDIR)/$(JUCE_TARGET_VST3)
 LV2 : $(JUCE_OUTDIR)/$(JUCE_TARGET_LV2_PLUGIN)
 LV2_MANIFEST_HELPER : $(JUCE_OUTDIR)/$(JUCE_TARGET_LV2_MANIFEST_HELPER)
 
+
+$(JUCE_OUTDIR)/$(JUCE_TARGET_VST) : $(OBJECTS_VST) $(RESOURCES) $(JUCE_OUTDIR)/$(JUCE_TARGET_SHARED_CODE)
+	@command -v $(PKG_CONFIG) >/dev/null 2>&1 || { echo >&2 "pkg-config not installed. Please, install it."; exit 1; }
+	@$(PKG_CONFIG) --print-errors alsa freetype2 libcurl
+	@echo Linking "Paraphrasis - VST"
+	-$(V_AT)mkdir -p $(JUCE_BINDIR)
+	-$(V_AT)mkdir -p $(JUCE_LIBDIR)
+	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
+	$(V_AT)$(CXX) -o $(JUCE_OUTDIR)/$(JUCE_TARGET_VST) $(OBJECTS_VST) $(JUCE_OUTDIR)/$(JUCE_TARGET_SHARED_CODE) $(JUCE_LDFLAGS) $(JUCE_LDFLAGS_VST) $(RESOURCES) $(TARGET_ARCH)
+	-$(V_AT)[ ! "$(JUCE_VSTDESTDIR)" ]  || (mkdir -p $(JUCE_VSTDESTDIR)  && cp -R $(JUCE_COPYCMD_VST))
+
+$(JUCE_OUTDIR)/$(JUCE_TARGET_VST3) : $(OBJECTS_VST3) $(RESOURCES) $(JUCE_OUTDIR)/$(JUCE_TARGET_SHARED_CODE)
+	@command -v $(PKG_CONFIG) >/dev/null 2>&1 || { echo >&2 "pkg-config not installed. Please, install it."; exit 1; }
+	@$(PKG_CONFIG) --print-errors alsa freetype2 libcurl
+	@echo Linking "Paraphrasis - VST3"
+	-$(V_AT)mkdir -p $(JUCE_BINDIR)
+	-$(V_AT)mkdir -p $(JUCE_LIBDIR)
+	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
+	-$(V_AT)mkdir -p $(JUCE_OUTDIR)/$(JUCE_VST3DIR)/$(JUCE_VST3SUBDIR)
+	$(V_AT)$(CXX) -o $(JUCE_OUTDIR)/$(JUCE_TARGET_VST3) $(OBJECTS_VST3) $(JUCE_OUTDIR)/$(JUCE_TARGET_SHARED_CODE) $(JUCE_LDFLAGS) $(JUCE_LDFLAGS_VST3) $(RESOURCES) $(TARGET_ARCH)
+	-$(V_AT)[ ! "$(JUCE_VST3DESTDIR)" ] || (mkdir -p $(JUCE_VST3DESTDIR) && cp -R $(JUCE_COPYCMD_VST3))
 
 $(JUCE_OUTDIR)/$(JUCE_TARGET_LV2_PLUGIN) : $(OBJECTS_LV2_PLUGIN) $(RESOURCES) $(JUCE_OUTDIR)/$(JUCE_TARGET_SHARED_CODE) $(JUCE_OUTDIR)/$(JUCE_TARGET_LV2_MANIFEST_HELPER)
 	@command -v $(PKG_CONFIG) >/dev/null 2>&1 || { echo >&2 "pkg-config not installed. Please, install it."; exit 1; }
@@ -216,6 +279,16 @@ $(JUCE_OUTDIR)/$(JUCE_TARGET_LV2_MANIFEST_HELPER) : $(OBJECTS_LV2_MANIFEST_HELPE
 	-$(V_AT)mkdir -p $(JUCE_LIBDIR)
 	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
 	$(V_AT)$(CXX) -o $(JUCE_OUTDIR)/$(JUCE_TARGET_LV2_MANIFEST_HELPER) $(OBJECTS_LV2_MANIFEST_HELPER) $(JUCE_OUTDIR)/$(JUCE_TARGET_SHARED_CODE) $(JUCE_LDFLAGS) $(RESOURCES) $(TARGET_ARCH)
+
+$(JUCE_OBJDIR)/include_juce_audio_plugin_client_VST2_dd551e08.o: ../../JuceLibraryCode/include_juce_audio_plugin_client_VST2.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling include_juce_audio_plugin_client_VST2.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_VST) $(JUCE_CFLAGS_VST) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/include_juce_audio_plugin_client_VST3_dd633589.o: ../../JuceLibraryCode/include_juce_audio_plugin_client_VST3.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling include_juce_audio_plugin_client_VST3.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_VST3) $(JUCE_CFLAGS_VST3) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/include_juce_audio_plugin_client_LV2_7d84e0a5.o: ../../JuceLibraryCode/include_juce_audio_plugin_client_LV2.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
@@ -595,6 +668,8 @@ strip:
 	@echo Stripping Paraphrasis
 	-$(V_AT)$(STRIP) --strip-unneeded $(JUCE_OUTDIR)/$(TARGET)
 
+-include $(OBJECTS_VST:%.o=%.d)
+-include $(OBJECTS_VST3:%.o=%.d)
 -include $(OBJECTS_LV2_PLUGIN:%.o=%.d)
 -include $(OBJECTS_SHARED_CODE:%.o=%.d)
 -include $(OBJECTS_LV2_MANIFEST_HELPER:%.o=%.d)

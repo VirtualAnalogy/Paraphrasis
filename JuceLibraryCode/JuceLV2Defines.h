@@ -1,5 +1,5 @@
 #pragma once
 
 #ifndef JucePlugin_LV2URI
- #define JucePlugin_LV2URI "www.virtualanalogy.com/plugins/Paraphrasis"
+ #define JucePlugin_LV2URI "http://www.virtualanalogy.com/plugins/Paraphrasis"
 #endif
