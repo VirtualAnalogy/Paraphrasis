@@ -19,42 +19,43 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_MEMORYINPUTSOURCE_H__
-#define __DROWAUDIO_MEMORYINPUTSOURCE_H__
+#ifndef DROWAUDIO_MEMORYINPUTSOURCE_H
+#define DROWAUDIO_MEMORYINPUTSOURCE_H
 
-//==============================================================================
 /** A type of InputSource that represents a MemoryInputStream.
- 
+
     @see InputSource
  */
-class MemoryInputSource :   public InputSource
+class MemoryInputSource : public juce::InputSource
 {
 public:
+    MemoryInputSource (juce::MemoryInputStream* stream);
+    ~MemoryInputSource() override;
+
     //==============================================================================
-    MemoryInputSource (MemoryInputStream* stream, bool useFileTimeInHashGeneration = false);
-    ~MemoryInputSource();
-    
-    InputStream* createInputStream();
-    InputStream* createInputStreamFor (const String& relatedItemPath);
-    int64 hashCode() const;
-    
+    /** @internal */
+    juce::InputStream* createInputStream() override;
+    /** @internal */
+    juce::InputStream* createInputStreamFor (const juce::String& relatedItemPath) override;
+    /** @internal */
+    juce::int64 hashCode() const override;
+
 private:
     //==============================================================================
-    MemoryInputStream* memoryInputStream;
-    bool useFileTimeInHashGeneration;
-    
+    juce::MemoryInputStream* memoryInputStream;
+
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MemoryInputSource);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MemoryInputSource)
 };
 
-#endif  // __DROWAUDIO_MEMORYINPUTSOURCE_H__
+#endif  // DROWAUDIO_MEMORYINPUTSOURCE_H

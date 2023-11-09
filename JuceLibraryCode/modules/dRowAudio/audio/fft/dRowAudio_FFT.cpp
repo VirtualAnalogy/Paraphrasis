@@ -19,24 +19,104 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
 //==============================================================================
-#if DROWAUDIO_USE_FFTREAL
 
-FFT::FFT (int fftSizeLog2)
-    : properties (fftSizeLog2)
+#if DROWAUDIO_USE_VDSP
+
+FFT::FFT (int fftSizeLog2) :
+    properties (fftSizeLog2) 
 {
-    config = new ffft::FFTReal<float> (properties.fftSize);
-    
+    config = vDSP_create_fftsetup ((uint32) properties.fftSizeLog2, 0);
+
+    buffer.malloc (properties.fftSize);
+    bufferSplit.realp = buffer.getData();
+    bufferSplit.imagp = bufferSplit.realp + properties.fftSizeHalved;
+}
+
+FFT::~FFT()
+{
+    vDSP_destroy_fftsetup (config);
+}
+
+void FFT::setFFTSizeLog2 (int newFFTSizeLog2)
+{
+    if (newFFTSizeLog2 != properties.fftSizeLog2)
+    {
+        vDSP_destroy_fftsetup (config);
+
+        properties = Properties (newFFTSizeLog2);
+        buffer.malloc (properties.fftSize);
+        bufferSplit.realp = buffer.getData();
+        bufferSplit.imagp = bufferSplit.realp + properties.fftSizeHalved;
+
+        config = vDSP_create_fftsetup ((uint32) properties.fftSizeLog2, 0);
+    }
+}
+
+void FFT::performFFT (float* samples)
+{
+    vDSP_ctoz ((COMPLEX*) samples, 2, &bufferSplit, 1, (uint32) properties.fftSizeHalved);
+    vDSP_fft_zrip (config, &bufferSplit, 1, (uint32) properties.fftSizeLog2, FFT_FORWARD);
+}
+
+void FFT::getPhase (float* phaseBuffer)
+{
+    vDSP_zvphas (&bufferSplit, 1, phaseBuffer, 1, (uint32) properties.fftSizeHalved);
+    phaseBuffer[0] = 0.0f;
+}
+
+void FFT::performIFFT (float* fftBuffer)
+{
+    SplitComplex split;
+    split.realp = fftBuffer;
+    split.imagp = fftBuffer + properties.fftSizeHalved;
+
+    jassert (split.realp != bufferSplit.realp); // These can't point to the same data!
+
+    vDSP_fft_zrip (config, &split, 1, (uint32) properties.fftSizeLog2, FFT_INVERSE);
+    vDSP_ztoc (&split, 1, (COMPLEX*) buffer.getData(), 2, (uint32) properties.fftSizeHalved);
+}
+
+void FFT::getMagnitudes (float* magnitudes)
+{
+    const float oneOverFFTSize = (float) properties.oneOverFFTSize;
+    const int fftSizeHalved = properties.fftSizeHalved;
+    const float oneOverWindowFactor = 1.0f;
+
+    SplitComplex fftSplit;
+    fftSplit.realp = buffer.getData();
+    fftSplit.imagp = fftSplit.realp + fftSizeHalved;
+
+    magnitudes[0] = magnitude (fftSplit.realp[0], 0.0f, oneOverFFTSize, oneOverWindowFactor);
+
+    for (int i = 1; i < fftSizeHalved; ++i)
+        magnitudes[i] = magnitude (fftSplit.realp[i], fftSplit.imagp[i], oneOverFFTSize, oneOverWindowFactor);
+
+    magnitudes[fftSizeHalved] = magnitude (fftSplit.realp[0], 0.0f, oneOverFFTSize, oneOverWindowFactor);
+}
+
+#endif // DROWAUDIO_USE_VDSP
+
+
+
+
+#if DROWAUDIO_USE_FFTREAL && ! DROWAUDIO_USE_VDSP
+
+FFT::FFT (int fftSizeLog2) :
+    properties (fftSizeLog2)
+{
+    config = std::make_unique<ffft::FFTReal<float>> (properties.fftSize);
+
     buffer.malloc (properties.fftSize);
     bufferSplit.realp = buffer.getData();
     bufferSplit.imagp = bufferSplit.realp + properties.fftSizeHalved;
@@ -51,13 +131,13 @@ void FFT::setFFTSizeLog2 (int newFFTSizeLog2)
     if (newFFTSizeLog2 != properties.fftSizeLog2)
     {
         config = nullptr;
-        
+
         properties = Properties (newFFTSizeLog2);
         buffer.malloc (properties.fftSize);
         bufferSplit.realp = buffer.getData();
         bufferSplit.imagp = bufferSplit.realp + properties.fftSizeHalved;
-        
-        config = new ffft::FFTReal<float> (properties.fftSize);
+
+        config = std::make_unique<ffft::FFTReal<float>> (properties.fftSize);
     }
 }
 
@@ -71,7 +151,7 @@ void FFT::getPhase (float* phaseBuffer)
     const int numSamples = properties.fftSizeHalved;
     float* real = bufferSplit.realp;
     float* img = bufferSplit.imagp;
-    
+
     for (int i = 1; i < numSamples; ++i)
         phaseBuffer[i] = std::atan2 (img[i], real[i]);
 
@@ -83,88 +163,18 @@ void FFT::performIFFT (float* fftBuffer)
     config->do_ifft (fftBuffer, buffer.getData());
 }
 
-#elif JUCE_MAC || JUCE_IOS
-    
-FFT::FFT (int fftSizeLog2)
-    : properties (fftSizeLog2)
-{
-	config = vDSP_create_fftsetup (properties.fftSizeLog2, 0);
+#endif // DROWAUDIO_USE_FFTREAL && ! DROWAUDIO_USE_VDSP
 
-	buffer.malloc (properties.fftSize);
-	bufferSplit.realp = buffer.getData();
-	bufferSplit.imagp = bufferSplit.realp + properties.fftSizeHalved;
-}
 
-FFT::~FFT()
-{
-	vDSP_destroy_fftsetup (config);
-}
 
-void FFT::setFFTSizeLog2 (int newFFTSizeLog2)
-{
-	if (newFFTSizeLog2 != properties.fftSizeLog2)
-    {
-		vDSP_destroy_fftsetup (config);
-		
-		properties = Properties (newFFTSizeLog2);
-		buffer.malloc (properties.fftSize);
-		bufferSplit.realp = buffer.getData();
-		bufferSplit.imagp = bufferSplit.realp + properties.fftSizeHalved;
-		
-		config = vDSP_create_fftsetup (properties.fftSizeLog2, 0);
-	}
-}
 
-void FFT::performFFT (float* samples)
-{
-	vDSP_ctoz ((COMPLEX*) samples, 2, &bufferSplit, 1, properties.fftSizeHalved);
-	vDSP_fft_zrip (config, &bufferSplit, 1, properties.fftSizeLog2, FFT_FORWARD);
-}
+#if DROWAUDIO_USE_FFTREAL || DROWAUDIO_USE_VDSP
 
-void FFT::getPhase (float* phaseBuffer)
-{
-    vDSP_zvphas (&bufferSplit, 1, phaseBuffer, 1, properties.fftSizeHalved);
-    phaseBuffer[0] = 0.0f;
-}
-
-void FFT::performIFFT (float* fftBuffer)
-{
-    SplitComplex split;
-    split.realp = fftBuffer;
-	split.imagp = fftBuffer + properties.fftSizeHalved;
-
-    jassert (split.realp != bufferSplit.realp); // These can't point to the same data!
-
-	vDSP_fft_zrip (config, &split, 1, properties.fftSizeLog2, FFT_INVERSE);
-    vDSP_ztoc (&split, 1, (COMPLEX*) buffer.getData(), 2, properties.fftSizeHalved);
-}
-
-#endif
-
-void FFT::getMagnitudes (float* magnitudes)
-{
-    const float oneOverFFTSize = (float) properties.oneOverFFTSize;
-    const int fftSizeHalved = properties.fftSizeHalved;
-    const float oneOverWindowFactor = 1.0f;
-
-    SplitComplex fftSplit;
-    fftSplit.realp = buffer.getData();
-    fftSplit.imagp = fftSplit.realp + fftSizeHalved;
-    
-    magnitudes[0] = magnitude (fftSplit.realp[0], 0.0f, oneOverFFTSize, oneOverWindowFactor);
-    
-    for (int i = 1; i < fftSizeHalved; ++i)
-        magnitudes[i] = magnitude (fftSplit.realp[i], fftSplit.imagp[i], oneOverFFTSize, oneOverWindowFactor);
-    
-    magnitudes[fftSizeHalved] = magnitude (fftSplit.realp[0], 0.0f, oneOverFFTSize, oneOverWindowFactor);
-}
-
-//============================================================================
 void FFTEngine::performFFT (float* samples)
-{	
-	// First apply the current window
-	window.applyWindow (samples, getFFTProperties().fftSize);
-	fft.performFFT (samples);
+{
+    // First apply the current window
+    window.applyWindow (samples, getFFTProperties().fftSize);
+    fft.performFFT (samples);
 }
 
 void FFTEngine::findMagnitues (float* magBuf, bool onlyIfBigger)
@@ -173,19 +183,19 @@ void FFTEngine::findMagnitues (float* magBuf, bool onlyIfBigger)
     const float oneOverFFTSize = (float) getFFTProperties().oneOverFFTSize;
     const int fftSizeHalved = getFFTProperties().fftSizeHalved;
     const float oneOverWindowFactor = window.getOneOverWindowFactor();
-    
+
     // Find magnitudes
     {
         const float newMag = FFT::magnitude (fftSplit.realp[0], 0.0f, oneOverFFTSize, oneOverWindowFactor); // imag for DC is always zero
-        
+
         if (! onlyIfBigger || (newMag > magBuf[0]))
             magBuf[0] = newMag;
     }
-    
+
     for (int i = 1; i < fftSizeHalved; ++i)
     {
         const float newMag = FFT::magnitude (fftSplit.realp[i], fftSplit.imagp[i], oneOverFFTSize, oneOverWindowFactor);
-        
+
         if (! onlyIfBigger || (newMag > magBuf[i]))
             magBuf[i] = newMag;
     }
@@ -196,6 +206,8 @@ void FFTEngine::findMagnitues (float* magBuf, bool onlyIfBigger)
         if (! onlyIfBigger || (newMag > magBuf[fftSizeHalved]))
             magBuf[fftSizeHalved] = newMag;
     }
-    
+
     magnitutes.updateListeners();
 }
+
+#endif // DROWAUDIO_USE_FFTREAL || DROWAUDIO_USE_VDSP

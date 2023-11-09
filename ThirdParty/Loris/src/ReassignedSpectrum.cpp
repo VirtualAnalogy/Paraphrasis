@@ -1,6 +1,6 @@
 /*
- * This is the Loris C++ Class Library, implementing analysis, 
- * manipulation, and synthesis of digitized sounds using the Reassigned 
+ * This is the Loris C++ Class Library, implementing analysis,
+ * manipulation, and synthesis of digitized sounds using the Reassigned
  * Bandwidth-Enhanced Additive Sound Model.
  *
  * Loris is Copyright (c) 1999-2010 by Kelly Fitz and Lippold Haken
@@ -33,7 +33,7 @@
  */
 
 #if HAVE_CONFIG_H
-	#include "config.h"
+#include "config.h"
 #endif
 
 #include "ReassignedSpectrum.h"
@@ -46,9 +46,9 @@
 
 #include <cmath>	//	for M_PI (except when its not there), fmod, fabs
 #if defined(HAVE_M_PI) && (HAVE_M_PI)
-	const double Pi = M_PI;
+const double Pi = M_PI;
 #else
-	const double Pi = 3.14159265358979324;
+const double Pi = 3.14159265358979324;
 #endif
 
 // The old quadratic interpolation code is still around, in case
@@ -63,15 +63,16 @@
 //	there's a lot of std in here, 
 //	import the whole namespace, as ugly as that is.
 using namespace std;
+using namespace std::placeholders;
 
 //	begin namespace
 namespace Loris {
 
 static unsigned long nextPO2( unsigned long N )
 {
-    return (unsigned long)ceil( log( double(N) ) / log( 2. ) );
+	return (unsigned long)ceil( log( double(N) ) / log( 2. ) );
 }
-                          
+
 // ---------------------------------------------------------------------------
 //	ReassignedSpectrum constructor
 // ---------------------------------------------------------------------------
@@ -80,12 +81,12 @@ static unsigned long nextPO2( unsigned long N )
 //!	window length.
 //
 ReassignedSpectrum::ReassignedSpectrum( const std::vector< double > & window ) :
-	mMagnitudeTransform( 1 << ( 1 + nextPO2( window.size() ) ) ),
-	mCorrectionTransform( 1 << ( 1 + nextPO2( window.size() ) ) )
+mMagnitudeTransform( 1 << ( 1 + nextPO2( window.size() ) ) ),
+mCorrectionTransform( 1 << ( 1 + nextPO2( window.size() ) ) )
 {	
-    //  Build and store the window functions.
-	buildReassignmentWindows( window );                        
-
+	//  Build and store the window functions.
+	buildReassignmentWindows( window );
+	
 	debugger << "ReassignedSpectrum: length is " << mMagnitudeTransform.size() << endl;
 }
 
@@ -97,13 +98,13 @@ ReassignedSpectrum::ReassignedSpectrum( const std::vector< double > & window ) :
 //!	Transform lengths are the smallest power of two greater than twice the
 //!	window length.
 ReassignedSpectrum::ReassignedSpectrum( const std::vector< double > & window,
-                                        const std::vector< double > & windowDerivative ) :
-	mMagnitudeTransform( 1 << ( 1 + nextPO2( window.size() ) ) ),
-	mCorrectionTransform( 1 << ( 1 + nextPO2( window.size() ) ) )
+									   const std::vector< double > & windowDerivative ) :
+mMagnitudeTransform( 1 << ( 1 + nextPO2( window.size() ) ) ),
+mCorrectionTransform( 1 << ( 1 + nextPO2( window.size() ) ) )
 {
-    //  Build and store the window functions.
-	buildReassignmentWindows( window, windowDerivative );  
-
+	//  Build and store the window functions.
+	buildReassignmentWindows( window, windowDerivative );
+	
 	debugger << "ReassignedSpectrum: length is " << mMagnitudeTransform.size() << endl;
 }
 
@@ -130,52 +131,52 @@ ReassignedSpectrum::ReassignedSpectrum( const std::vector< double > & window,
 //
 void
 ReassignedSpectrum::transform( const double * sampsBegin, 
-                               const double * sampCenter, 
-                               const double * sampsEnd )
+							  const double * sampCenter,
+							  const double * sampsEnd )
 {
-    if ( sampCenter < sampsBegin ||  sampCenter >= sampsEnd )
-    {
-        Throw( InvalidArgument, "Invalid sample range boundaries." );
-    }
-
+	if ( sampCenter < sampsBegin ||  sampCenter >= sampsEnd )
+	{
+		Throw( InvalidArgument, "Invalid sample range boundaries." );
+	}
+	
 	const long firstHalfWinLength = window().size() / 2;
 	const long secondHalfWinLength = (window().size() - 1) / 2;
-	    
-    //  ensure that samples outside the window are not used:
-    sampsBegin = std::max( sampsBegin, sampCenter - firstHalfWinLength );
-    sampsEnd = std::min( sampsEnd, sampCenter + secondHalfWinLength + 1 );
-		
+	
+	//  ensure that samples outside the window are not used:
+	sampsBegin = std::max( sampsBegin, sampCenter - firstHalfWinLength );
+	sampsEnd = std::min( sampsEnd, sampCenter + secondHalfWinLength + 1 );
+	
 	//	we will skip the beginning of the window
-	//	only if pos is too close to the start of 
+	//	only if pos is too close to the start of
 	//	the buffer:
-	long winBeginOffset = 0; 
+	long winBeginOffset = 0;
 	if ( sampCenter - sampsBegin < (window().size() / 2) )
 	{
 		winBeginOffset = (window().size() / 2) - ( sampCenter - sampsBegin );
-	}			
-		
-	//	to get phase right, we will rotate the Fourier transform 
+	}
+	
+	//	to get phase right, we will rotate the Fourier transform
 	//	input by pos - sampsBegin samples:
 	long rotateBy = sampCenter - sampsBegin;
-		
+	
 	//	window and rotate input and compute normal transform:
 	//	window the samples into the FT buffer:
-	FourierTransform::iterator it = 
-		std::transform( sampsBegin, sampsEnd, mCplxWin_W_Wtd.begin() + winBeginOffset, 
-						mMagnitudeTransform.begin(), std::multiplies< std::complex< double > >() );
+	FourierTransform::iterator it =
+	std::transform( sampsBegin, sampsEnd, mCplxWin_W_Wtd.begin() + winBeginOffset,
+				   mMagnitudeTransform.begin(), std::multiplies< std::complex< double > >() );
 	//	fill the rest with zeros:
 	std::fill( it, mMagnitudeTransform.end(), 0. );
 	//	rotate to align phase:
 	std::rotate( mMagnitudeTransform.begin(), mMagnitudeTransform.begin() + rotateBy, mMagnitudeTransform.end() );
-
+	
 	//	compute transform:
 	mMagnitudeTransform.transform();
-
+	
 	//	compute the dual reassignment transform:
 	//	window the samples into the reassignment FT buffer,
 	//	using the complex-valued reassignment window:
-	it = std::transform( sampsBegin, sampsEnd, mCplxWin_Wd_Wt.begin() + winBeginOffset, 
-						 mCorrectionTransform.begin(), std::multiplies< std::complex<double> >() );
+	it = std::transform( sampsBegin, sampsEnd, mCplxWin_Wd_Wt.begin() + winBeginOffset,
+						mCorrectionTransform.begin(), std::multiplies< std::complex<double> >() );
 	//	fill the rest with zeros:
 	std::fill( it, mCorrectionTransform.end(), 0. );
 	//	rotate to align phase:
@@ -192,7 +193,7 @@ ReassignedSpectrum::transform( const double * sampsBegin,
 ReassignedSpectrum::size_type 
 ReassignedSpectrum::size( void ) const 
 { 
-    return mMagnitudeTransform.size(); 
+	return mMagnitudeTransform.size();
 }
 
 // ---------------------------------------------------------------------------
@@ -205,7 +206,7 @@ ReassignedSpectrum::size( void ) const
 const std::vector< double > &
 ReassignedSpectrum::window( void ) const 
 { 
-    return mWindow; 
+	return mWindow;
 }
 
 // ---------------------------------------------------------------------------
@@ -218,26 +219,26 @@ template< class TransformData >
 static std::complex<double>
 circEvenPartAt( const TransformData & td, long idx )
 {
-    const long N = td.size();
-    while( idx < 0 )
-    {
-        idx += N;
-    }
-    while( idx >= N )
-    {
-        idx -= N;
-    }
-
- 	long flip_idx;
+	const long N = td.size();
+	while( idx < 0 )
+	{
+		idx += N;
+	}
+	while( idx >= N )
+	{
+		idx -= N;
+	}
+	
+	long flip_idx;
 	if ( idx != 0 )
 	{
 		flip_idx = N - idx;
 	}
 	else
-    {
+	{
 		flip_idx = idx;
 	}
-		
+	
 	return 0.5*( td[idx] + std::conj( td[flip_idx] ) );
 }   
 
@@ -251,31 +252,31 @@ template< class TransformData >
 static std::complex<double>
 circOddPartAt( const TransformData & td, long idx )
 {
-    const long N = td.size();
-    while( idx < 0 )
-    {
-        idx += N;
-    }
-    while( idx >= N )
-    {
-        idx -= N;
-    }
-
- 	long flip_idx;
+	const long N = td.size();
+	while( idx < 0 )
+	{
+		idx += N;
+	}
+	while( idx >= N )
+	{
+		idx -= N;
+	}
+	
+	long flip_idx;
 	if ( idx != 0 )
 	{
 		flip_idx = N - idx;
 	}
 	else
-    {
+	{
 		flip_idx = idx;
 	}
-
+	
 	/*
-	const std::complex<double> minus_j(0,-1);
-	std::complex<double> tra_part = minus_j * 0.5 * 
-									( td[idx] - std::conj( td[flip_idx] ) );
-	*/
+	 const std::complex<double> minus_j(0,-1);
+	 std::complex<double> tra_part = minus_j * 0.5 *
+	 ( td[idx] - std::conj( td[flip_idx] ) );
+	 */
 	//	can compute this without complex multiplies:
 	std::complex<double> tmp = td[idx] - std::conj( td[flip_idx] );
 	return std::complex<double>( 0.5*tmp.imag(), -0.5*tmp.real() );
@@ -301,13 +302,13 @@ double
 ReassignedSpectrum::frequencyCorrection( long idx ) const
 {
 	std::complex<double> X_h = circEvenPartAt( mMagnitudeTransform, idx );
-    std::complex<double> X_Dh = circEvenPartAt( mCorrectionTransform, idx );
+	std::complex<double> X_Dh = circEvenPartAt( mCorrectionTransform, idx );
 	
 	double num = X_h.real() * X_Dh.imag() -
-				 X_h.imag() * X_Dh.real();
+	X_h.imag() * X_Dh.real();
 	
 	double magSquared = std::norm( X_h );
-
+	
 	//	need to scale by the oversampling factor
 	double oversampling = (double)mCorrectionTransform.size() / mCplxWin_W_Wtd.size();
 	return - oversampling * num / magSquared;
@@ -327,10 +328,10 @@ double
 ReassignedSpectrum::timeCorrection( long idx ) const
 {
 	std::complex<double> X_h = circEvenPartAt( mMagnitudeTransform, idx );
-	std::complex<double> X_Th = circOddPartAt( mCorrectionTransform, idx ); 
-
+	std::complex<double> X_Th = circOddPartAt( mCorrectionTransform, idx );
+	
 	double num = X_h.real() * X_Th.real() +
-		  		 X_h.imag() * X_Th.imag();
+	X_h.imag() * X_Th.imag();
 	double magSquared = norm( X_h );
 	
 	//	No need to scale by the oversampling factor.
@@ -353,18 +354,18 @@ double
 ReassignedSpectrum::reassignedFrequency( long idx ) const
 {
 #if ! defined(USE_PARABOLIC_INTERPOLATION)
-
+	
 	return double(idx) + frequencyCorrection( idx );
 	
 #else // defined(USE_PARABOLIC_INTERPOLATION)
-
+	
 	double dbLeft = 20. * log10( abs( circEvenPartAt( mMagnitudeTransform, idx-1 ) ) );
 	double dbCandidate = 20. * log10( abs( circEvenPartAt( mMagnitudeTransform, idx ) ) );
 	double dbRight = 20. * log10( abs( circEvenPartAt( mMagnitudeTransform, idx+1 ) ) );
 	
 	double peakXOffset = 0.5 * (dbLeft - dbRight) /
-						 (dbLeft - 2.0 * dbCandidate + dbRight);
-
+	(dbLeft - 2.0 * dbCandidate + dbRight);
+	
 	return idx + peakXOffset;
 	
 #endif	//	defined USE_PARABOLIC_INTERPOLATION
@@ -413,7 +414,7 @@ ReassignedSpectrum::reassignedMagnitude( long idx ) const
 	double dbRight = 20. * log10( abs( circEvenPartAt( mMagnitudeTransform, idx+1 ) ) );
 	
 	double peakXOffset = 0.5 * (dbLeft - dbRight) /
-						 (dbLeft - 2.0 * dbCandidate + dbRight);
+	(dbLeft - 2.0 * dbCandidate + dbRight);
 	double dbmag = dbCandidate - 0.25 * (dbLeft - dbRight) * peakXOffset;
 	double x = pow( 10., 0.05 * dbmag );
 	
@@ -445,41 +446,41 @@ ReassignedSpectrum::reassignedPhase( long idx ) const
 	//
 	//  this seems like it would be a good idea, but in practice,
 	//	it screws the phases up badly.
-	//  Am I just correcting in the wrong direction? No, its 
+	//  Am I just correcting in the wrong direction? No, its
 	//	something else.
 	//
-	//  Seems like I had the slope way too big. Changed to compute 
+	//  Seems like I had the slope way too big. Changed to compute
 	//	the slope from H(1) of a rotated window, and now the slope
 	//	is so small that it seems like there will never be any phase
 	//	correction.
 	//
 	//  Phase ought to be linear anyway, so I should just be
 	//  able to use dumb old linear interpolation.
-    //  offsetFreq is in fractional frequency samples
-    if ( offsetFreq > 0 )
-    {
-        double nextphase = arg( circEvenPartAt( mMagnitudeTransform, idx+1 ) );
-        double slope = nextphase - phase;
-        phase += offsetFreq * slope;
-    }
-    else
-    {   
-        double prevphase = arg( circEvenPartAt( mMagnitudeTransform, idx-1 ) );
-        double slope = phase - prevphase;
-        phase += offsetFreq * slope;
-    }
-    
-		
+	//  offsetFreq is in fractional frequency samples
+	if ( offsetFreq > 0 )
+	{
+		double nextphase = arg( circEvenPartAt( mMagnitudeTransform, idx+1 ) );
+		double slope = nextphase - phase;
+		phase += offsetFreq * slope;
+	}
+	else
+	{
+		double prevphase = arg( circEvenPartAt( mMagnitudeTransform, idx-1 ) );
+		double slope = phase - prevphase;
+		phase += offsetFreq * slope;
+	}
+	
+	
 	//	adjust phase according to the time correction:
-	const double fracFreqSample = idx + offsetFreq; 
+	const double fracFreqSample = idx + offsetFreq;
 	phase += offsetTime * fracFreqSample * 2. * Pi / mMagnitudeTransform.size();
-    
-    //  NOTICE
-    //  This could be pretty much anything -- a sample reassigned by a
-    //  millisecond at 1000 Hz in a 1024 FFT at 44k sample rate is 
-    //  adjusted by 2Pi.
-    //  
-    //  What if the frequency estimate is bad? Corrupts the phase estimate too!
+	
+	//  NOTICE
+	//  This could be pretty much anything -- a sample reassigned by a
+	//  millisecond at 1000 Hz in a 1024 FFT at 44k sample rate is
+	//  adjusted by 2Pi.
+	//
+	//  What if the frequency estimate is bad? Corrupts the phase estimate too!
 	
 	return fmod( phase, 2. * Pi );
 }
@@ -499,25 +500,25 @@ double
 ReassignedSpectrum::convergence( long idx ) const
 {
 #if defined(COMPUTE_MIXED_PHASE_DERIVATIVE)
-
-  	std::complex<double> X_h = circEvenPartAt( mMagnitudeTransform, idx );
-	std::complex<double> X_Th = circOddPartAt( mCorrectionTransform, idx ); 
-    std::complex<double> X_Dh = circEvenPartAt( mCorrectionTransform, idx );
-    std::complex<double> X_TDh = circOddPartAt( mMagnitudeTransform, idx );
-
+	
+	std::complex<double> X_h = circEvenPartAt( mMagnitudeTransform, idx );
+	std::complex<double> X_Th = circOddPartAt( mCorrectionTransform, idx );
+	std::complex<double> X_Dh = circEvenPartAt( mCorrectionTransform, idx );
+	std::complex<double> X_TDh = circOddPartAt( mMagnitudeTransform, idx );
+	
 	double term1 = (X_TDh * conj(X_h)).real() / norm( X_h );
 	double term2 = ((X_Th * X_Dh) / (X_h * X_h)).real();
-		  		  
+	
 	double scaleBy = 2. * Pi / mCplxWin_W_Wtd.size();
-
-    double bw = fabs( 1.0 + (scaleBy * (term1 - term2)) );
-    bw = min( 1.0, bw );
-
+	
+	double bw = fabs( 1.0 + (scaleBy * (term1 - term2)) );
+	bw = min( 1.0, bw );
+	
 #else
 	double bw = 0.;
 #endif
-
-    return bw;  
+	
+	return bw;
 }
 
 // ---------------------------------------------------------------------------
@@ -531,7 +532,7 @@ ReassignedSpectrum::convergence( long idx ) const
 std::complex< double >
 ReassignedSpectrum::operator[]( unsigned long idx ) const
 {
-    return circEvenPartAt( mMagnitudeTransform, idx );
+	return circEvenPartAt( mMagnitudeTransform, idx );
 }
 
 // ---------------------------------------------------------------------------
@@ -541,12 +542,12 @@ ReassignedSpectrum::operator[]( unsigned long idx ) const
 //
 template <class T>
 struct make_complex
-	: binary_function< T, T, std::complex<T> >
+: binary_function< T, T, std::complex<T> >
 {
 	std::complex<T> operator()(const T& re, const T& im) const
-    {
-    	return std::complex<T>( re, im );
-    }
+	{
+		return std::complex<T>( re, im );
+	}
 };
 
 // ---------------------------------------------------------------------------
@@ -560,9 +561,9 @@ struct make_complex
 //
 static inline void applyFreqRamp( vector< double > & w  )
 {
-	//	we're going to do the frequency-domain ramp 
+	//	we're going to do the frequency-domain ramp
 	//	by Fourier transforming the window, ramping,
-	//	then transforming again. 
+	//	then transforming again.
 	//	Use a transform exactly as long as the window.
 	//	load, w/out rotation, and transform.
 	FourierTransform temp( w.size() );
@@ -573,19 +574,19 @@ static inline void applyFreqRamp( vector< double > & w  )
 	//	extract complex transform and multiply by
 	//	a frequency (sample) ramp:
 	//	(the frequency ramp goes from 0 to N/2
-	//	over the first half, then -N/2 to 0 over 
+	//	over the first half, then -N/2 to 0 over
 	//	the second (aliased) half of the transform,
-	//	and has to be scaled by the ratio of the 
+	//	and has to be scaled by the ratio of the
 	//	transform lengths, so that k spans the length
 	//	of the padded transforms, N)
-	for ( int k = 0 ; k < temp.size(); ++k ) 
+	for ( int k = 0 ; k < temp.size(); ++k )
 	{
-	   double x = (double)k;   // to get type promotion right
-		if ( k < temp.size() / 2 ) 
+		double x = (double)k;   // to get type promotion right
+		if ( k < temp.size() / 2 )
 		{
 			temp[ k ] *= x;
 		}
-		else 
+		else
 		{
 			temp[ k ] *= ( x - temp.size() );
 		}
@@ -596,12 +597,12 @@ static inline void applyFreqRamp( vector< double > & w  )
 	
 	//	the DFT of a DFT gives the scaled and INDEX REVERSED
 	//	sequence. See p. 539 of O and S.
-	//	DFT( X[n] ) -- DFT --> Nx[ -k mod N ] 
+	//	DFT( X[n] ) -- DFT --> Nx[ -k mod N ]
 	//
 	//	seems that I want the imaginary part of the index-reversed
 	//	transform scaled by the size of the transform:
 	std::reverse( temp.begin() + 1, temp.end() );
-	for ( int i = 0; i < w.size(); ++i ) 
+	for ( int i = 0; i < w.size(); ++i )
 	{
 		w[i] = - imag( temp[i] ) / temp.size();
 	}
@@ -619,7 +620,7 @@ static inline void applyTimeRamp( vector< double > & w )
 	//	need a fractional value for even-length windows, a
 	//	whole number for odd-length windows:
 	double offset = 0.5 * ( w.size() - 1 );
-	for ( int k = 0 ; k < w.size(); ++k ) 
+	for ( int k = 0 ; k < w.size(); ++k )
 	{
 		w[ k ] *= ( k - offset );
 	}
@@ -639,44 +640,44 @@ static inline void applyTimeRamp( vector< double > & w )
 void 
 ReassignedSpectrum::buildReassignmentWindows( const std::vector< double > & window )
 {
-    mWindow.resize( window.size(), 0. );
+	mWindow.resize( window.size(), 0. );
 	
-    // Scale the window so that the reported magnitudes
+	// Scale the window so that the reported magnitudes
 	// are correct.
-	double winsum = std::accumulate( window.begin(), window.end(), 0. );    
-    std::transform( window.begin(), window.end(), mWindow.begin(), 
-			        std::bind1st( std::multiplies<double>(), 2/winsum ) );                    
-    
-
-    //  Construct the ramped windows from the scaled window.
+	double winsum = std::accumulate( window.begin(), window.end(), 0. );
+	std::transform( window.begin(), window.end(), mWindow.begin(),
+				   std::bind( std::multiplies<double>(), _1, 2/winsum ) );
+	
+	
+	//  Construct the ramped windows from the scaled window.
 	std::vector< double > tramp = mWindow;
 	applyTimeRamp( tramp );
 	
 	std::vector< double > framp = mWindow;
 	applyFreqRamp( framp );
-
+	
 	std::vector< double > tframp( mWindow.size(), 0. );
 	
 #if defined(COMPUTE_MIXED_PHASE_DERIVATIVE)
-
-    //  Do this only if we are computing the mixed 
-    //  partial derivative of phase, otherwise, leave
-    //  that vector empty.
+	
+	//  Do this only if we are computing the mixed
+	//  partial derivative of phase, otherwise, leave
+	//  that vector empty.
 	tframp = framp;
 	applyTimeRamp( tframp );
 	
 #endif
-
-    //  Copy the windows into real and imaginary parts of 
-    //  complex window vectors.
-    mCplxWin_W_Wtd.resize( mWindow.size(), 0. );
-    mCplxWin_Wd_Wt.resize( mWindow.size(), 0. );
-
+	
+	//  Copy the windows into real and imaginary parts of
+	//  complex window vectors.
+	mCplxWin_W_Wtd.resize( mWindow.size(), 0. );
+	mCplxWin_Wd_Wt.resize( mWindow.size(), 0. );
+	
 	std::transform( framp.begin(), framp.end(), tramp.begin(),
-					mCplxWin_Wd_Wt.begin(), make_complex< double >() );	
-    
+				   mCplxWin_Wd_Wt.begin(), make_complex< double >() );
+	
 	std::transform( mWindow.begin(), mWindow.end(), tframp.begin(),
-					mCplxWin_W_Wtd.begin(), make_complex< double >() );	
+				   mCplxWin_W_Wtd.begin(), make_complex< double >() );
 }
 
 // ---------------------------------------------------------------------------
@@ -694,53 +695,53 @@ ReassignedSpectrum::buildReassignmentWindows( const std::vector< double > & wind
 
 void 
 ReassignedSpectrum::buildReassignmentWindows( const std::vector< double > & window,
-                                              const std::vector< double > & windowDerivative )  
+											 const std::vector< double > & windowDerivative )
 {
-
-    mWindow.resize( window.size(), 0. );
 	
-    // Scale the windows so that the reported magnitudes
+	mWindow.resize( window.size(), 0. );
+	
+	// Scale the windows so that the reported magnitudes
 	// are correct.
-	double winsum = std::accumulate( window.begin(), window.end(), 0. );    
-    std::transform( window.begin(), window.end(), mWindow.begin(), 
-			        std::bind1st( std::multiplies<double>(), 2/winsum ) ); 
-                    
-                        
-    //  The fancy frequency reassignment window needs to scale the
-    //  time derivative window by N (its length) / 2pi, in addition
-    //  to scaling by 2/winsum to match the amplitude scaling above.
-    const double fancyScale = windowDerivative.size() / ( winsum * Pi );
+	double winsum = std::accumulate( window.begin(), window.end(), 0. );
+	std::transform( window.begin(), window.end(), mWindow.begin(),
+				   std::bind( std::multiplies<double>(), _1, 2/winsum ) );
+	
+	
+	//  The fancy frequency reassignment window needs to scale the
+	//  time derivative window by N (its length) / 2pi, in addition
+	//  to scaling by 2/winsum to match the amplitude scaling above.
+	const double fancyScale = windowDerivative.size() / ( winsum * Pi );
 	std::vector< double > framp( windowDerivative.size(), 0 );
-	std::transform( windowDerivative.begin(), windowDerivative.end(), framp.begin(), 
-			        std::bind1st( std::multiplies<double>(), fancyScale ) );
-                    
-
-    //  Construct the ramped windows from the scaled window.
+	std::transform( windowDerivative.begin(), windowDerivative.end(), framp.begin(),
+				   std::bind( std::multiplies<double>(), _1, fancyScale ) );
+	
+	
+	//  Construct the ramped windows from the scaled window.
 	std::vector< double > tramp = mWindow;
 	applyTimeRamp( tramp );
 	
-	std::vector< double > tframp( mWindow.size(), 0. );	
+	std::vector< double > tframp( mWindow.size(), 0. );
 	
 #if defined(COMPUTE_MIXED_PHASE_DERIVATIVE)
-
-    //  Do this only if we are computing the mixed 
-    //  partial derivative of phase, otherwise, leave
-    //  that vector empty.
+	
+	//  Do this only if we are computing the mixed
+	//  partial derivative of phase, otherwise, leave
+	//  that vector empty.
 	tframp = framp;
 	applyTimeRamp( tframp );
 	
 #endif
-
-    //  Copy the windows into real and imaginary parts of 
-    //  complex window vectors.
-    mCplxWin_W_Wtd.resize( mWindow.size(), 0. );
-    mCplxWin_Wd_Wt.resize( mWindow.size(), 0. );
-
+	
+	//  Copy the windows into real and imaginary parts of
+	//  complex window vectors.
+	mCplxWin_W_Wtd.resize( mWindow.size(), 0. );
+	mCplxWin_Wd_Wt.resize( mWindow.size(), 0. );
+	
 	std::transform( framp.begin(), framp.end(), tramp.begin(),
-					mCplxWin_Wd_Wt.begin(), make_complex< double >() );	
-    
+				   mCplxWin_Wd_Wt.begin(), make_complex< double >() );
+	
 	std::transform( mWindow.begin(), mWindow.end(), tframp.begin(),
-					mCplxWin_W_Wtd.begin(), make_complex< double >() );	
+				   mCplxWin_W_Wtd.begin(), make_complex< double >() );
 }
 
 

@@ -24,6 +24,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "ParameterDefitions.h"
+#include "../Resources/Resources.h"
 
 // Loris
 #include "Analyzer.h"
@@ -46,6 +47,8 @@ ParaphrasisAudioProcessor::ParaphrasisAudioProcessor()
                                                    kParameterFrequencyResolution_maxValue, kParameterFrequencyResolution_defaultValue));
     parameters.add(new teragon::StringParameter(kParameterLastSamplePath_name));
     parameters.add(new teragon::BooleanParameter(kParameterReverse_name, kParameterReverse_defaultValue));
+	
+	synth.setCurrentPlaybackSampleRate(44100);
 
     // setup synth
     for (int i = kDefaultSynthesiserVoiceNumbers; --i >= 0;)
@@ -73,7 +76,7 @@ void ParaphrasisAudioProcessor::analyzeSample()
     analyzer.setReverse(parameters[kParameterReverse_name]->getValue());
 
     // analyze
-    analyzer.runThread();
+    analyzer.launchThread();
     analyzerSync.wait();
     
     // setup synth
@@ -157,7 +160,7 @@ bool ParaphrasisAudioProcessor::hasEditor() const
 //==============================================================================
 AudioProcessorEditor* ParaphrasisAudioProcessor::createEditor()
 {
-    return new ParaphrasisAudioProcessorEditor(this, parameters, Resources::getCache(), formatManager);
+    return new ParaphrasisAudioProcessorEditor(this, parameters, GraphicsResources::getCache(), formatManager);
 }
 //==============================================================================
 // This creates new instances of the plugin..

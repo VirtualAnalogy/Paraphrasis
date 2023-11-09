@@ -19,23 +19,20 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_UNITYBUILDER_H__
-#define __DROWAUDIO_UNITYBUILDER_H__
+#ifndef DROWAUDIO_UNITYBUILDER_H
+#define DROWAUDIO_UNITYBUILDER_H
 
-
-//==============================================================================
-/**
-    UnityBuilder class.
+/** UnityBuilder class.
 
     This is a helper class used to generate "unity build" files for quick
     compilation of projects. This class will take a source directory, scan it
@@ -43,72 +40,69 @@
     their contents. This is very similar to how the JUCE modular system works
     and can be used to include source files in other projects and drastically
     speed up build times.
- 
+
     If you need to set custom defines or pragmas use the setPreAndPostString method.
- */
+*/
 class UnityBuilder
 {
 public:
-    //==============================================================================
     /** Creates a default UnityBuilder.
-     
+
         Use the processDirectory method to actually perform the file generation.
         If you need additional options call the other set-up methods before process
         processDirectory;
-     */
+    */
     UnityBuilder();
-    
-    /** Destructor. */
-    ~UnityBuilder();
 
+    //==============================================================================
     /** Processes a directory for all .h and .cpp files and generates a unity header
         and cpp file.
-        
+
         If the destination file has not been set this will generate files in the
         source directory named UnityBuild.h and UnityBuild.cpp.
         Note that this will not delete any exisiting files, if the target files
         already exist non-existent ones will be created with numbers in brackets.
-     
+
         @param sourceDirectory  The source directory to "unify".
-     */
-    bool processDirectory (const File& sourceDirectory);
-    
+    */
+    bool processDirectory (const juce::File& sourceDirectory);
+
     /** Sets the location and name of the output unity build files.
         Note that the extension of this file is not taken into account and will
         always generate a header and cpp file if needed.
-        
+
         @param newDestinationFile   The output location for the unity build files.
-     */
-    void setDestinationFile (const File& newDestinationFile);
-    
+    */
+    void setDestinationFile (const juce::File& newDestinationFile);
+
     /** Sets a number of files to ignore.
         This may be useful of you have some working files that you don't currently
         want included in the unity build.
         Note that these Files can be directories and if so none of their child
         files will be included.
-        
+
         @param filesToIgnore    An arry of files ot ignore.
-     */
-    void setFilesToIgnore (const Array<File>& filesToIgnore);
-    
-    /** This enables you to include a block of text before and after the source 
+    */
+    void setFilesToIgnore (const juce::Array<juce::File>& filesToIgnore);
+
+    /** This enables you to include a block of text before and after the source
         files. This can be handy if you need extra defines or pragmas.
-     
+
         @param preInclusionString   The text to include before the files.
         @param postInclusionString  The text to include after the files.
-     */
-    void setPreAndPostString (const String& preInclusionString,
-                              const String& postInclusionString);
-    
+    */
+    void setPreAndPostString (const juce::String& preInclusionString,
+                              const juce::String& postInclusionString);
+
 private:
     //==============================================================================
-    String preInclusionString, postInclusionString;
-    Array<File> filesToIgnore;
-    File destinationFile;
-    
+    juce::String preInclusionString, postInclusionString;
+    juce::Array<juce::File> filesToIgnore;
+    juce::File destinationFile;
+
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UnityBuilder);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UnityBuilder)
 };
 
 
-#endif  // __DROWAUDIO_UNITYBUILDER_H__
+#endif  // DROWAUDIO_UNITYBUILDER_H

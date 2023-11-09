@@ -2,33 +2,128 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-AudioProcessorPlayer::AudioProcessorPlayer()
-    : processor (nullptr),
-      sampleRate (0),
-      blockSize (0),
-      isPrepared (false),
-      numInputChans (0),
-      numOutputChans (0)
+namespace juce
+{
+
+template <typename Value>
+struct ChannelInfo
+{
+    ChannelInfo() = default;
+    ChannelInfo (Value* const* dataIn, int numChannelsIn)
+        : data (dataIn), numChannels (numChannelsIn)  {}
+
+    Value* const* data = nullptr;
+    int numChannels = 0;
+};
+
+/** Sets up `channels` so that it contains channel pointers suitable for passing to
+    an AudioProcessor's processBlock.
+
+    On return, `channels` will hold `max (processorIns, processorOuts)` entries.
+    The first `processorIns` entries will point to buffers holding input data.
+    Any entries after the first `processorIns` entries will point to zeroed buffers.
+
+    In the case that the system only provides a single input channel, but the processor
+    has been initialised with multiple input channels, the system input will be copied
+    to all processor inputs.
+
+    In the case that the system provides no input channels, but the processor has
+    been initialise with multiple input channels, the processor's input channels will
+    all be zeroed.
+
+    @param ins            the system inputs.
+    @param outs           the system outputs.
+    @param numSamples     the number of samples in the system buffers.
+    @param processorIns   the number of input channels requested by the processor.
+    @param processorOuts  the number of output channels requested by the processor.
+    @param tempBuffer     temporary storage for inputs that don't have a corresponding output.
+    @param channels       holds pointers to each of the processor's audio channels.
+*/
+static void initialiseIoBuffers (ChannelInfo<const float> ins,
+                                 ChannelInfo<float> outs,
+                                 const int numSamples,
+                                 int processorIns,
+                                 int processorOuts,
+                                 AudioBuffer<float>& tempBuffer,
+                                 std::vector<float*>& channels)
+{
+    jassert ((int) channels.size() >= jmax (processorIns, processorOuts));
+
+    size_t totalNumChans = 0;
+    const auto numBytes = (size_t) numSamples * sizeof (float);
+
+    const auto prepareInputChannel = [&] (int index)
+    {
+        if (ins.numChannels == 0)
+            zeromem (channels[totalNumChans], numBytes);
+        else
+            memcpy (channels[totalNumChans], ins.data[index % ins.numChannels], numBytes);
+    };
+
+    if (processorIns > processorOuts)
+    {
+        // If there aren't enough output channels for the number of
+        // inputs, we need to use some temporary extra ones (can't
+        // use the input data in case it gets written to).
+        jassert (tempBuffer.getNumChannels() >= processorIns - processorOuts);
+        jassert (tempBuffer.getNumSamples() >= numSamples);
+
+        for (int i = 0; i < processorOuts; ++i)
+        {
+            channels[totalNumChans] = outs.data[i];
+            prepareInputChannel (i);
+            ++totalNumChans;
+        }
+
+        for (auto i = processorOuts; i < processorIns; ++i)
+        {
+            channels[totalNumChans] = tempBuffer.getWritePointer (i - processorOuts);
+            prepareInputChannel (i);
+            ++totalNumChans;
+        }
+    }
+    else
+    {
+        for (int i = 0; i < processorIns; ++i)
+        {
+            channels[totalNumChans] = outs.data[i];
+            prepareInputChannel (i);
+            ++totalNumChans;
+        }
+
+        for (auto i = processorIns; i < processorOuts; ++i)
+        {
+            channels[totalNumChans] = outs.data[i];
+            zeromem (channels[totalNumChans], (size_t) numSamples * sizeof (float));
+            ++totalNumChans;
+        }
+    }
+}
+
+//==============================================================================
+AudioProcessorPlayer::AudioProcessorPlayer (bool doDoublePrecisionProcessing)
+    : isDoublePrecision (doDoublePrecisionProcessing)
 {
 }
 
@@ -38,97 +133,216 @@ AudioProcessorPlayer::~AudioProcessorPlayer()
 }
 
 //==============================================================================
-void AudioProcessorPlayer::setProcessor (AudioProcessor* const processorToPlay)
+AudioProcessorPlayer::NumChannels AudioProcessorPlayer::findMostSuitableLayout (const AudioProcessor& proc) const
 {
-    if (processor != processorToPlay)
+    if (proc.isMidiEffect())
+        return {};
+
+    std::vector<NumChannels> layouts { deviceChannels };
+
+    if (deviceChannels.ins == 0 || deviceChannels.ins == 1)
     {
-        if (processorToPlay != nullptr && sampleRate > 0 && blockSize > 0)
-        {
-            processorToPlay->setPlayConfigDetails (numInputChans, numOutputChans, sampleRate, blockSize);
-            processorToPlay->prepareToPlay (sampleRate, blockSize);
-        }
-
-        AudioProcessor* oldOne;
-
-        {
-            const ScopedLock sl (lock);
-            oldOne = isPrepared ? processor : nullptr;
-            processor = processorToPlay;
-            isPrepared = true;
-        }
-
-        if (oldOne != nullptr)
-            oldOne->releaseResources();
+        layouts.emplace_back (defaultProcessorChannels.ins, deviceChannels.outs);
+        layouts.emplace_back (deviceChannels.outs, deviceChannels.outs);
     }
+
+    const auto it = std::find_if (layouts.begin(), layouts.end(), [&] (const NumChannels& chans)
+    {
+        return proc.checkBusesLayoutSupported (chans.toLayout());
+    });
+
+    return it != std::end (layouts) ? *it : layouts[0];
 }
 
-//==============================================================================
-void AudioProcessorPlayer::audioDeviceIOCallback (const float** const inputChannelData,
-                                                  const int numInputChannels,
-                                                  float** const outputChannelData,
-                                                  const int numOutputChannels,
-                                                  const int numSamples)
+void AudioProcessorPlayer::resizeChannels()
 {
-    // these should have been prepared by audioDeviceAboutToStart()...
-    jassert (sampleRate > 0 && blockSize > 0);
+    const auto maxChannels = jmax (deviceChannels.ins,
+                                   deviceChannels.outs,
+                                   actualProcessorChannels.ins,
+                                   actualProcessorChannels.outs);
+    channels.resize ((size_t) maxChannels);
+    tempBuffer.setSize (maxChannels, blockSize);
+}
 
-    incomingMidi.clear();
-    messageCollector.removeNextBlockOfMessages (incomingMidi, numSamples);
-    int totalNumChans = 0;
+void AudioProcessorPlayer::setProcessor (AudioProcessor* const processorToPlay)
+{
+    const ScopedLock sl (lock);
 
-    if (numInputChannels > numOutputChannels)
+    if (processor == processorToPlay)
+        return;
+
+    sampleCount = 0;
+
+    if (processorToPlay != nullptr && sampleRate > 0 && blockSize > 0)
     {
-        // if there aren't enough output channels for the number of
-        // inputs, we need to create some temporary extra ones (can't
-        // use the input data in case it gets written to)
-        tempBuffer.setSize (numInputChannels - numOutputChannels, numSamples,
-                            false, false, true);
+        defaultProcessorChannels = NumChannels { processorToPlay->getBusesLayout() };
+        actualProcessorChannels  = findMostSuitableLayout (*processorToPlay);
 
-        for (int i = 0; i < numOutputChannels; ++i)
-        {
-            channels[totalNumChans] = outputChannelData[i];
-            memcpy (channels[totalNumChans], inputChannelData[i], sizeof (float) * (size_t) numSamples);
-            ++totalNumChans;
-        }
+        if (processorToPlay->isMidiEffect())
+            processorToPlay->setRateAndBufferSizeDetails (sampleRate, blockSize);
+        else
+            processorToPlay->setPlayConfigDetails (actualProcessorChannels.ins,
+                                                   actualProcessorChannels.outs,
+                                                   sampleRate,
+                                                   blockSize);
 
-        for (int i = numOutputChannels; i < numInputChannels; ++i)
-        {
-            channels[totalNumChans] = tempBuffer.getWritePointer (i - numOutputChannels);
-            memcpy (channels[totalNumChans], inputChannelData[i], sizeof (float) * (size_t) numSamples);
-            ++totalNumChans;
-        }
-    }
-    else
-    {
-        for (int i = 0; i < numInputChannels; ++i)
-        {
-            channels[totalNumChans] = outputChannelData[i];
-            memcpy (channels[totalNumChans], inputChannelData[i], sizeof (float) * (size_t) numSamples);
-            ++totalNumChans;
-        }
+        auto supportsDouble = processorToPlay->supportsDoublePrecisionProcessing() && isDoublePrecision;
 
-        for (int i = numInputChannels; i < numOutputChannels; ++i)
-        {
-            channels[totalNumChans] = outputChannelData[i];
-            zeromem (channels[totalNumChans], sizeof (float) * (size_t) numSamples);
-            ++totalNumChans;
-        }
+        processorToPlay->setProcessingPrecision (supportsDouble ? AudioProcessor::doublePrecision
+                                                                : AudioProcessor::singlePrecision);
+        processorToPlay->prepareToPlay (sampleRate, blockSize);
     }
 
-    AudioSampleBuffer buffer (channels, totalNumChans, numSamples);
+    AudioProcessor* oldOne = nullptr;
 
+    oldOne = isPrepared ? processor : nullptr;
+    processor = processorToPlay;
+    isPrepared = true;
+    resizeChannels();
+
+    if (oldOne != nullptr)
+        oldOne->releaseResources();
+}
+
+void AudioProcessorPlayer::setDoublePrecisionProcessing (bool doublePrecision)
+{
+    if (doublePrecision != isDoublePrecision)
     {
         const ScopedLock sl (lock);
 
         if (processor != nullptr)
         {
-            const ScopedLock sl2 (processor->getCallbackLock());
+            processor->releaseResources();
 
-            if (! processor->isSuspended())
+            auto supportsDouble = processor->supportsDoublePrecisionProcessing() && doublePrecision;
+
+            processor->setProcessingPrecision (supportsDouble ? AudioProcessor::doublePrecision
+                                                              : AudioProcessor::singlePrecision);
+            processor->prepareToPlay (sampleRate, blockSize);
+        }
+
+        isDoublePrecision = doublePrecision;
+    }
+}
+
+void AudioProcessorPlayer::setMidiOutput (MidiOutput* midiOutputToUse)
+{
+    if (midiOutput != midiOutputToUse)
+    {
+        const ScopedLock sl (lock);
+        midiOutput = midiOutputToUse;
+    }
+}
+
+//==============================================================================
+void AudioProcessorPlayer::audioDeviceIOCallbackWithContext (const float* const* const inputChannelData,
+                                                             const int numInputChannels,
+                                                             float* const* const outputChannelData,
+                                                             const int numOutputChannels,
+                                                             const int numSamples,
+                                                             const AudioIODeviceCallbackContext& context)
+{
+    const ScopedLock sl (lock);
+
+    // These should have been prepared by audioDeviceAboutToStart()...
+    jassert (sampleRate > 0 && blockSize > 0);
+
+    incomingMidi.clear();
+    messageCollector.removeNextBlockOfMessages (incomingMidi, numSamples);
+
+    initialiseIoBuffers ({ inputChannelData,  numInputChannels },
+                         { outputChannelData, numOutputChannels },
+                         numSamples,
+                         actualProcessorChannels.ins,
+                         actualProcessorChannels.outs,
+                         tempBuffer,
+                         channels);
+
+    const auto totalNumChannels = jmax (actualProcessorChannels.ins, actualProcessorChannels.outs);
+    AudioBuffer<float> buffer (channels.data(), (int) totalNumChannels, numSamples);
+
+    if (processor != nullptr)
+    {
+        // The processor should be prepared to deal with the same number of output channels
+        // as our output device.
+        jassert (processor->isMidiEffect() || numOutputChannels == actualProcessorChannels.outs);
+
+        const ScopedLock sl2 (processor->getCallbackLock());
+
+        class PlayHead : private AudioPlayHead
+        {
+        public:
+            PlayHead (AudioProcessor& proc,
+                      Optional<uint64_t> hostTimeIn,
+                      uint64_t sampleCountIn,
+                      double sampleRateIn)
+                : processor (proc),
+                  hostTimeNs (hostTimeIn),
+                  sampleCount (sampleCountIn),
+                  seconds ((double) sampleCountIn / sampleRateIn)
+            {
+                if (useThisPlayhead)
+                    processor.setPlayHead (this);
+            }
+
+            ~PlayHead() override
+            {
+                if (useThisPlayhead)
+                    processor.setPlayHead (nullptr);
+            }
+
+        private:
+            Optional<PositionInfo> getPosition() const override
+            {
+                PositionInfo info;
+                info.setHostTimeNs (hostTimeNs);
+                info.setTimeInSamples ((int64_t) sampleCount);
+                info.setTimeInSeconds (seconds);
+                return info;
+            }
+
+            AudioProcessor& processor;
+            Optional<uint64_t> hostTimeNs;
+            uint64_t sampleCount;
+            double seconds;
+            bool useThisPlayhead = processor.getPlayHead() == nullptr;
+        };
+
+        PlayHead playHead { *processor,
+                            context.hostTimeNs != nullptr ? makeOptional (*context.hostTimeNs) : nullopt,
+                            sampleCount,
+                            sampleRate };
+
+        sampleCount += (uint64_t) numSamples;
+
+        if (! processor->isSuspended())
+        {
+            if (processor->isUsingDoublePrecision())
+            {
+                conversionBuffer.makeCopyOf (buffer, true);
+                processor->processBlock (conversionBuffer, incomingMidi);
+                buffer.makeCopyOf (conversionBuffer, true);
+            }
+            else
             {
                 processor->processBlock (buffer, incomingMidi);
-                return;
             }
+
+            if (midiOutput != nullptr)
+            {
+                if (midiOutput->isBackgroundThreadRunning())
+                {
+                    midiOutput->sendBlockOfMessages (incomingMidi,
+                                                     Time::getMillisecondCounterHiRes(),
+                                                     sampleRate);
+                }
+                else
+                {
+                    midiOutput->sendBlockOfMessagesNow (incomingMidi);
+                }
+            }
+
+            return;
         }
     }
 
@@ -138,27 +352,27 @@ void AudioProcessorPlayer::audioDeviceIOCallback (const float** const inputChann
 
 void AudioProcessorPlayer::audioDeviceAboutToStart (AudioIODevice* const device)
 {
-    const double newSampleRate = device->getCurrentSampleRate();
-    const int newBlockSize     = device->getCurrentBufferSizeSamples();
-    const int numChansIn       = device->getActiveInputChannels().countNumberOfSetBits();
-    const int numChansOut      = device->getActiveOutputChannels().countNumberOfSetBits();
+    auto newSampleRate = device->getCurrentSampleRate();
+    auto newBlockSize  = device->getCurrentBufferSizeSamples();
+    auto numChansIn    = device->getActiveInputChannels().countNumberOfSetBits();
+    auto numChansOut   = device->getActiveOutputChannels().countNumberOfSetBits();
 
     const ScopedLock sl (lock);
 
     sampleRate = newSampleRate;
     blockSize  = newBlockSize;
-    numInputChans  = numChansIn;
-    numOutputChans = numChansOut;
+    deviceChannels = { numChansIn, numChansOut };
+
+    resizeChannels();
 
     messageCollector.reset (sampleRate);
-    channels.calloc ((size_t) jmax (numChansIn, numChansOut) + 2);
 
     if (processor != nullptr)
     {
         if (isPrepared)
             processor->releaseResources();
 
-        AudioProcessor* const oldProcessor = processor;
+        auto* oldProcessor = processor;
         setProcessor (nullptr);
         setProcessor (oldProcessor);
     }
@@ -181,3 +395,91 @@ void AudioProcessorPlayer::handleIncomingMidiMessage (MidiInput*, const MidiMess
 {
     messageCollector.addMessageToQueue (message);
 }
+
+//==============================================================================
+//==============================================================================
+#if JUCE_UNIT_TESTS
+
+struct AudioProcessorPlayerTests  : public UnitTest
+{
+    AudioProcessorPlayerTests()
+        : UnitTest ("AudioProcessorPlayer", UnitTestCategories::audio) {}
+
+    void runTest() override
+    {
+        struct Layout
+        {
+            int numIns, numOuts;
+        };
+
+        const Layout processorLayouts[] { Layout { 0, 0 },
+                                          Layout { 1, 1 },
+                                          Layout { 4, 4 },
+                                          Layout { 4, 8 },
+                                          Layout { 8, 4 } };
+
+        beginTest ("Buffers are prepared correctly for a variety of channel layouts");
+        {
+            for (const auto& layout : processorLayouts)
+            {
+                for (const auto numSystemInputs : { 0, 1, layout.numIns })
+                {
+                    const int numSamples = 256;
+                    const auto systemIns = getTestBuffer (numSystemInputs, numSamples);
+                    auto systemOuts = getTestBuffer (layout.numOuts, numSamples);
+                    AudioBuffer<float> tempBuffer (jmax (layout.numIns, layout.numOuts), numSamples);
+                    std::vector<float*> channels ((size_t) jmax (layout.numIns, layout.numOuts), nullptr);
+
+                    initialiseIoBuffers ({ systemIns.getArrayOfReadPointers(),   systemIns.getNumChannels() },
+                                         { systemOuts.getArrayOfWritePointers(), systemOuts.getNumChannels() },
+                                         numSamples,
+                                         layout.numIns,
+                                         layout.numOuts,
+                                         tempBuffer,
+                                         channels);
+
+                    int channelIndex = 0;
+
+                    for (const auto& channel : channels)
+                    {
+                        const auto value = [&]
+                        {
+                            // Any channels past the number of inputs should be silent.
+                            if (layout.numIns <= channelIndex)
+                                return 0.0f;
+
+                            // If there's no input, all input channels should be silent.
+                            if (numSystemInputs == 0)       return 0.0f;
+
+                            // If there's one input, all input channels should copy from that input.
+                            if (numSystemInputs == 1)       return 1.0f;
+
+                            // Otherwise, each processor input should match the corresponding system input.
+                            return (float) (channelIndex + 1);
+                        }();
+
+                        expect (FloatVectorOperations::findMinAndMax (channel, numSamples) == Range<float> (value, value));
+
+                        channelIndex += 1;
+                    }
+                }
+            }
+        }
+    }
+
+    static AudioBuffer<float> getTestBuffer (int numChannels, int numSamples)
+    {
+        AudioBuffer<float> result (numChannels, numSamples);
+
+        for (int i = 0; i < result.getNumChannels(); ++i)
+            FloatVectorOperations::fill (result.getWritePointer (i), (float) i + 1, result.getNumSamples());
+
+        return result;
+    }
+};
+
+static AudioProcessorPlayerTests audioProcessorPlayerTests;
+
+#endif
+
+} // namespace juce

@@ -237,10 +237,11 @@ Filter::Filter( const double * ffwdbegin, const double * ffwdend, //    feed-for
     if ( *fbackbegin != 1. )
     {
         //  scale all filter coefficients by a[0]:
+		using namespace std::placeholders;
         std::transform( m_ffwdcoefs.begin(), m_ffwdcoefs.end(), m_ffwdcoefs.begin(),
-                        std::bind2nd( std::divides<double>(), *fbackbegin ) );
+                        std::bind( std::divides<double>(), _1, *fbackbegin ) );
         std::transform( m_fbackcoefs.begin(), m_fbackcoefs.end(), m_fbackcoefs.begin(), 
-                        std::bind2nd( std::divides<double>(), *fbackbegin ) );
+                        std::bind( std::divides<double>(), _1, *fbackbegin ) );
         m_fbackcoefs[0] = 1.;
     }
 }

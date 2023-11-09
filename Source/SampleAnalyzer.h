@@ -41,7 +41,7 @@ public:
      */
     SampleAnalyzer(AudioFormatManager &formatManager, WaitableEvent &syncObj, const String &name = "Paraphrasis is loading...");
     virtual ~SampleAnalyzer();
-    
+	
     /** Start the analysis thread. When analysis is finished WitableEvent passed in constructor is signaled. */
     void run() noexcept override;
     

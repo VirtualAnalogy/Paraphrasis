@@ -2,48 +2,45 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-// Your project must contain an AppConfig.h file with your project-specific settings in it,
-// and your header search path must make it accessible to the module's files.
-#include "AppConfig.h"
+#include <juce_core/system/juce_TargetPlatform.h>
+
+#if JUCE_MAC
 
 #include "../utility/juce_CheckSettingMacros.h"
 
 #if JucePlugin_Build_VST || JucePlugin_Build_VST3
 
-#define JUCE_MAC_WINDOW_VISIBITY_BODGE 1
-
 #include "../utility/juce_IncludeSystemHeaders.h"
 #include "../utility/juce_IncludeModuleHeaders.h"
-#include "../utility/juce_FakeMouseMoveGenerator.h"
-#include "../utility/juce_CarbonVisibility.h"
 
 //==============================================================================
 namespace juce
 {
 
 #if ! JUCE_64BIT
-void updateEditorCompBounds (Component*);
-void updateEditorCompBounds (Component* comp)
+JUCE_API void updateEditorCompBoundsVST (Component*);
+void updateEditorCompBoundsVST (Component* comp)
 {
     HIViewRef dummyView = (HIViewRef) (void*) (pointer_sized_int)
                             comp->getProperties() ["dummyViewRef"].toString().getHexValue64();
@@ -63,22 +60,27 @@ void updateEditorCompBounds (Component* comp)
 
 static pascal OSStatus viewBoundsChangedEvent (EventHandlerCallRef, EventRef, void* user)
 {
-    updateEditorCompBounds ((Component*) user);
+    updateEditorCompBoundsVST ((Component*) user);
     return noErr;
+}
+
+static bool shouldManuallyCloseHostWindow()
+{
+    return getHostType().isCubase7orLater() || getHostType().isRenoise() || ((SystemStats::getOperatingSystemType() & 0xff) >= 12);
 }
 #endif
 
 //==============================================================================
-void initialiseMac();
-void initialiseMac()
+JUCE_API void initialiseMacVST();
+void initialiseMacVST()
 {
    #if ! JUCE_64BIT
     NSApplicationLoad();
    #endif
 }
 
-void* attachComponentToWindowRef (Component* comp, void* parentWindowOrView, bool isNSView);
-void* attachComponentToWindowRef (Component* comp, void* parentWindowOrView, bool isNSView)
+JUCE_API void* attachComponentToWindowRefVST (Component* comp, void* parentWindowOrView, bool isNSView);
+void* attachComponentToWindowRefVST (Component* comp, void* parentWindowOrView, [[maybe_unused]] bool isNSView)
 {
     JUCE_AUTORELEASEPOOL
     {
@@ -86,14 +88,24 @@ void* attachComponentToWindowRef (Component* comp, void* parentWindowOrView, boo
         if (! isNSView)
         {
             NSWindow* hostWindow = [[NSWindow alloc] initWithWindowRef: parentWindowOrView];
-            [hostWindow retain];
+
+            if (shouldManuallyCloseHostWindow())
+            {
+                [hostWindow setReleasedWhenClosed: NO];
+            }
+            else
+            {
+                [hostWindow retain];
+                [hostWindow setReleasedWhenClosed: YES];
+            }
+
             [hostWindow setCanHide: YES];
-            [hostWindow setReleasedWhenClosed: YES];
 
             HIViewRef parentView = 0;
 
             WindowAttributes attributes;
             GetWindowAttributes ((WindowRef) parentWindowOrView, &attributes);
+
             if ((attributes & kWindowCompositingAttribute) != 0)
             {
                 HIViewRef root = HIViewGetRoot ((WindowRef) parentWindowOrView);
@@ -124,7 +136,7 @@ void* attachComponentToWindowRef (Component* comp, void* parentWindowOrView, boo
             InstallEventHandler (GetControlEventTarget (dummyView), NewEventHandlerUPP (viewBoundsChangedEvent), 1, &kControlBoundsChangedEvent, (void*) comp, &ref);
             comp->getProperties().set ("boundsEventRef", String::toHexString ((pointer_sized_int) (void*) ref));
 
-            updateEditorCompBounds (comp);
+            updateEditorCompBoundsVST (comp);
 
            #if ! JucePlugin_EditorRequiresKeyboardFocus
             comp->addToDesktop (ComponentPeer::windowIsTemporary | ComponentPeer::windowIgnoresKeyPresses);
@@ -145,13 +157,10 @@ void* attachComponentToWindowRef (Component* comp, void* parentWindowOrView, boo
             [hostWindow orderFront: nil];
             [pluginWindow orderFront: nil];
 
-            attachWindowHidingHooks (comp, (WindowRef) parentWindowOrView, hostWindow);
-
             return hostWindow;
         }
        #endif
 
-        (void) isNSView;
         NSView* parentView = [(NSView*) parentWindowOrView retain];
 
        #if JucePlugin_EditorRequiresKeyboardFocus
@@ -172,8 +181,8 @@ void* attachComponentToWindowRef (Component* comp, void* parentWindowOrView, boo
     }
 }
 
-void detachComponentFromWindowRef (Component* comp, void* window, bool isNSView);
-void detachComponentFromWindowRef (Component* comp, void* window, bool isNSView)
+JUCE_API void detachComponentFromWindowRefVST (Component* comp, void* window, bool isNSView);
+void detachComponentFromWindowRefVST (Component* comp, void* window, [[maybe_unused]] bool isNSView)
 {
     JUCE_AUTORELEASEPOOL
     {
@@ -184,13 +193,11 @@ void detachComponentFromWindowRef (Component* comp, void* window, bool isNSView)
                                         comp->getProperties() ["boundsEventRef"].toString().getHexValue64();
             RemoveEventHandler (ref);
 
-            removeWindowHidingHooks (comp);
+            CFUniquePtr<HIViewRef> dummyView ((HIViewRef) (void*) (pointer_sized_int)
+                                                comp->getProperties() ["dummyViewRef"].toString().getHexValue64());
 
-            HIViewRef dummyView = (HIViewRef) (void*) (pointer_sized_int)
-                                    comp->getProperties() ["dummyViewRef"].toString().getHexValue64();
-
-            if (HIViewIsValid (dummyView))
-                CFRelease (dummyView);
+            if (HIViewIsValid (dummyView.get()))
+                dummyView = nullptr;
 
             NSWindow* hostWindow = (NSWindow*) window;
             NSView* pluginView = (NSView*) comp->getWindowHandle();
@@ -202,31 +209,35 @@ void detachComponentFromWindowRef (Component* comp, void* window, bool isNSView)
             comp->removeFromDesktop();
             [pluginView release];
 
-            [hostWindow release];
+            if (shouldManuallyCloseHostWindow())
+                [hostWindow close];
+            else
+                [hostWindow release];
 
+           #if JUCE_MODAL_LOOPS_PERMITTED
             static bool needToRunMessageLoop = ! getHostType().isReaper();
 
             // The event loop needs to be run between closing the window and deleting the plugin,
             // presumably to let the cocoa objects get tidied up. Leaving out this line causes crashes
             // in Live when you delete the plugin with its window open.
-            // (Doing it this way rather than using a single longer timout means that we can guarantee
+            // (Doing it this way rather than using a single longer timeout means that we can guarantee
             // how many messages will be dispatched, which seems to be vital in Reaper)
             if (needToRunMessageLoop)
                 for (int i = 20; --i >= 0;)
                     MessageManager::getInstance()->runDispatchLoopUntil (1);
+           #endif
 
             return;
         }
        #endif
 
-        (void) isNSView;
         comp->removeFromDesktop();
         [(id) window release];
     }
 }
 
-void setNativeHostWindowSize (void* window, Component* component, int newWidth, int newHeight, bool isNSView);
-void setNativeHostWindowSize (void* window, Component* component, int newWidth, int newHeight, bool isNSView)
+JUCE_API void setNativeHostWindowSizeVST (void* window, Component* component, int newWidth, int newHeight, bool isNSView);
+void setNativeHostWindowSizeVST (void* window, Component* component, int newWidth, int newHeight, [[maybe_unused]] bool isNSView)
 {
     JUCE_AUTORELEASEPOOL
     {
@@ -247,8 +258,6 @@ void setNativeHostWindowSize (void* window, Component* component, int newWidth, 
         }
        #endif
 
-        (void) isNSView;
-
         if (NSView* hostView = (NSView*) window)
         {
             const int dx = newWidth  - component->getWidth();
@@ -263,19 +272,19 @@ void setNativeHostWindowSize (void* window, Component* component, int newWidth, 
     }
 }
 
-void checkWindowVisibility (void* window, Component* comp, bool isNSView);
-void checkWindowVisibility (void* window, Component* comp, bool isNSView)
+JUCE_API void checkWindowVisibilityVST (void* window, Component* comp, bool isNSView);
+void checkWindowVisibilityVST ([[maybe_unused]] void* window,
+                               [[maybe_unused]] Component* comp,
+                               [[maybe_unused]] bool isNSView)
 {
-    (void) window; (void) comp; (void) isNSView;
-
    #if ! JUCE_64BIT
     if (! isNSView)
         comp->setVisible ([((NSWindow*) window) isVisible]);
    #endif
 }
 
-bool forwardCurrentKeyEventToHost (Component* comp, bool isNSView);
-bool forwardCurrentKeyEventToHost (Component* comp, bool isNSView)
+JUCE_API bool forwardCurrentKeyEventToHostVST (Component* comp, bool isNSView);
+bool forwardCurrentKeyEventToHostVST ([[maybe_unused]] Component* comp, [[maybe_unused]] bool isNSView)
 {
    #if ! JUCE_64BIT
     if (! isNSView)
@@ -287,10 +296,10 @@ bool forwardCurrentKeyEventToHost (Component* comp, bool isNSView)
     }
    #endif
 
-    (void) comp; (void) isNSView;
     return false;
 }
 
 } // (juce namespace)
 
+#endif
 #endif

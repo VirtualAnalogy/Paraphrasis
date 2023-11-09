@@ -19,11 +19,11 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
@@ -46,7 +46,7 @@ namespace
         findMinAndMax (channels[0], numSamples, bufMin, bufMax);
         lmax = jmax (lmax, bufMax);
         lmin = jmin (lmin, bufMin);
-        
+
         if (numChannels > 1)
         {
             findMinAndMax (channels[1], numSamples, bufMin, bufMax);
@@ -66,41 +66,41 @@ struct ColouredAudioThumbnail::MinMaxColourValue
 {
     char minValue;
     char maxValue;
-	Colour colour; //drow
+    Colour colour; //drow
 
     MinMaxColourValue() : minValue (0), maxValue (0), colour(Colour::fromHSV(0.0, 1.0f, 1.0f, 1.0f))
     {
     }
 
-    inline void set (const char newMin, const char newMax) throw()
+    inline void set (const char newMin, const char newMax) noexcept
     {
         minValue = newMin;
         maxValue = newMax;
     }
 
-    inline void setFloat (const float newMin, const float newMax) throw()
+    inline void setFloat (const float newMin, const float newMax) noexcept
     {
-        minValue = (char) jlimit (-128, 127, roundFloatToInt (newMin * 127.0f));
-        maxValue = (char) jlimit (-128, 127, roundFloatToInt (newMax * 127.0f));
+        minValue = (char) jlimit (-128, 127, roundToInt (newMin * 127.0f));
+        maxValue = (char) jlimit (-128, 127, roundToInt (newMax * 127.0f));
 
         if (maxValue == minValue)
             maxValue = (char) jmin (127, maxValue + 1);
     }
 
-	inline void setColour(const Colour& newColour) throw()
-	{
-		colour = newColour.withBrightness(1.0f);
-	}
-	
+    inline void setColour(const Colour& newColour) noexcept
+    {
+        colour = newColour.withBrightness(1.0f);
+    }
+
     inline char getMinValue() const noexcept        { return minValue; }
     inline char getMaxValue() const noexcept        { return maxValue; }
 
-    inline bool isNonZero() const throw()
+    inline bool isNonZero() const noexcept
     {
         return maxValue > minValue;
     }
 
-    inline int getPeak() const throw()
+    inline int getPeak() const noexcept
     {
         return jmax (::std::abs ((int) minValue),
                      ::std::abs ((int) maxValue));
@@ -108,23 +108,23 @@ struct ColouredAudioThumbnail::MinMaxColourValue
 
     inline void read (InputStream& input)
     {
-		//DBG("read from MinMaxColourValue");
+        //DBG("read from MinMaxColourValue");
         minValue = input.readByte();
         maxValue = input.readByte();
-		input.read ((void*)&colour, sizeof(Colour));
+        input.read ((void*)&colour, sizeof(Colour));
     }
 
     inline void write (OutputStream& output)
     {
         output.writeByte (minValue);
         output.writeByte (maxValue);
-		output.write ((void*)&colour, sizeof(Colour));
+        output.write ((void*)&colour, sizeof(Colour));
     }
 };
 
 //==============================================================================
-class ColouredAudioThumbnail::LevelDataSource   :	public TimeSliceClient,
-													public Timer
+class ColouredAudioThumbnail::LevelDataSource   :    public TimeSliceClient,
+                                                    public Timer
 {
 public:
     LevelDataSource (ColouredAudioThumbnail& owner_, AudioFormatReader* newReader, int64 hash)
@@ -156,24 +156,24 @@ public:
 
         createReader();
 
-        if (reader != 0)
+        if (reader != nullptr)
         {
             lengthInSamples = reader->lengthInSamples;
-            numChannels = reader->numChannels;
+            numChannels = int (reader->numChannels);
             sampleRate = reader->sampleRate;
 
-			filterLow.makeBandPass (reader->sampleRate, 130.0, 2);
-			filterLowMid.makeBandPass (reader->sampleRate, 650.0, 2.0);
-			filterHighMid.makeBandPass (reader->sampleRate, 1300.0, 2.0);
-			filterHigh.makeHighPass (reader->sampleRate, 2700.0, 0.5);
-			
+            filterLow.makeBandPass (reader->sampleRate, 130.0, 2);
+            filterLowMid.makeBandPass (reader->sampleRate, 650.0, 2.0);
+            filterHighMid.makeBandPass (reader->sampleRate, 1300.0, 2.0);
+            filterHigh.makeHighPass (reader->sampleRate, 2700.0, 0.5);
+
             filterLow.reset();
-			filterLowMid.reset();
-			filterHighMid.reset();
-			filterHigh.reset();
+            filterLowMid.reset();
+            filterHighMid.reset();
+            filterHigh.reset();
 
             if (lengthInSamples <= 0)
-                reader = 0;
+                reader = nullptr;
             else if (! isFullyLoaded())
                 owner.cache.getTimeSliceThread().addTimeSliceClient (this);
         }
@@ -183,14 +183,14 @@ public:
     {
         const ScopedLock sl (readerLock);
         createReader();
-        
-        if (reader != 0)
+
+        if (reader != nullptr)
         {
             float l[4] = { 0 };
-			Colour colourLeft, colourRight;
-            
+            Colour colourLeft, colourRight;
+
             readMaxLevelsFilteringWithColour (startSample, numSamples,
-											  l[0], l[1], l[2], l[3], colourLeft, colourRight);
+                                              l[0], l[1], l[2], l[3], colourLeft, colourRight);
             levels.clearQuick();
             levels.addArray ((const float*) l, 4);
 
@@ -200,18 +200,18 @@ public:
             colours.add (colourRight);
         }
     }
-	
+
     void releaseResources()
     {
         const ScopedLock sl (readerLock);
-        reader = 0;
+        reader = nullptr;
     }
 
     int useTimeSlice()
     {
         if (isFullyLoaded())
         {
-            if (reader != 0 && source != 0)
+            if (reader != nullptr && source != nullptr)
                 startTimer (timeBeforeDeletingReader);
 
             owner.cache.getTimeSliceThread().removeTimeSliceClient (this);
@@ -227,7 +227,7 @@ public:
 
             createReader();
 
-            if (reader != 0)
+            if (reader != nullptr)
             {
                 if (! readNextBlock())
                     return true;
@@ -248,12 +248,12 @@ public:
         releaseResources();
     }
 
-    bool isFullyLoaded() const throw()
+    bool isFullyLoaded() const noexcept
     {
         return numSamplesFinished >= lengthInSamples;
     }
 
-    inline int sampleToThumbSample (const int64 originalSample) const throw()
+    inline int sampleToThumbSample (const int64 originalSample) const noexcept
     {
         return (int) (originalSample / owner.samplesPerThumbSample);
     }
@@ -265,8 +265,8 @@ public:
 
 private:
     ColouredAudioThumbnail& owner;
-    ScopedPointer <InputSource> source;
-    ScopedPointer <AudioFormatReader> reader;
+    std::unique_ptr <InputSource> source;
+    std::unique_ptr <AudioFormatReader> reader;
     CriticalSection readerLock;
     BiquadFilter filterLow, filterLowMid, filterHighMid, filterHigh;
     HeapBlock<int> tempSampleBuffer, tempFilteredBuffer;
@@ -274,18 +274,18 @@ private:
 
     void createReader()
     {
-        if (reader == 0 && source != 0)
+        if (reader == nullptr && source != nullptr)
         {
             InputStream* audioFileStream = source->createInputStream();
 
-            if (audioFileStream != 0)
-                reader = owner.formatManagerToUse.createReaderFor (audioFileStream);
+            if (audioFileStream != nullptr)
+                reader.reset (owner.formatManagerToUse.createReaderFor (std::unique_ptr<InputStream> (audioFileStream)));
         }
     }
 
     bool readNextBlock()
     {
-        jassert (reader != 0);
+        jassert (reader != nullptr);
 
         if (! isFullyLoaded())
         {
@@ -305,17 +305,17 @@ private:
                 for (int i = 0; i < numThumbSamps; ++i)
                 {
                     float lowestLeft, highestLeft, lowestRight, highestRight;
-					Colour colourLeft, colourRight;
-					
+                    Colour colourLeft, colourRight;
+
                     readMaxLevelsFilteringWithColour ((firstThumbIndex + i) * owner.samplesPerThumbSample, owner.samplesPerThumbSample,
-													  lowestLeft, highestLeft, lowestRight, highestRight,
-													  colourLeft, colourRight);
-					
+                                                      lowestLeft, highestLeft, lowestRight, highestRight,
+                                                      colourLeft, colourRight);
+
                     levels[0][i].setFloat (lowestLeft, highestLeft);
                     levels[1][i].setFloat (lowestRight, highestRight);
-					
-					levels[0][i].setColour(colourLeft);
-					levels[1][i].setColour(colourRight);
+
+                    levels[0][i].setColour(colourLeft);
+                    levels[1][i].setColour(colourRight);
                 }
 
                 {
@@ -329,7 +329,7 @@ private:
 
         return isFullyLoaded();
     }
-    
+
     void readMaxLevelsFilteringWithColour (int64 startSampleInFile,
                                            int64 numSamples,
                                            float& lowestLeft, float& highestLeft,
@@ -342,13 +342,13 @@ private:
             lowestRight = 0;
             highestLeft = 0;
             highestRight = 0;
-            
+
             colourLeft = Colours::white;
             colourRight = Colours::white;
-            
+
             return;
         }
-        
+
         const int bufferSize = (int) jmin (numSamples, (int64) 4096);
         const int newTempSampleBufferSize = bufferSize * 2 + 64;
 
@@ -357,72 +357,72 @@ private:
             tempSampleBuffer.malloc (newTempSampleBufferSize);
             tempSampleBufferSize = newTempSampleBufferSize;
         }
-        
+
         int* tempSpace = tempSampleBuffer.getData();
         int* tempBuffer[3] = {&tempSpace[0],
                                 &tempSpace[bufferSize],
                                 nullptr};
-        
+
         const int filteredBlockSize = bufferSize * 4;
         if (tempFilteredBufferSize < filteredBlockSize)
         {
             tempFilteredBuffer.malloc (filteredBlockSize);
             tempFilteredBufferSize = filteredBlockSize;
         }
-        
+
         int* filteredBlock = tempFilteredBuffer.getData();
         int* filteredArray[4] = {&filteredBlock[0],
                                 &filteredBlock[bufferSize],
                                 &filteredBlock[bufferSize * 2],
                                 &filteredBlock[bufferSize * 3]};
-        
+
         float avgLow = 0.0f, avgMid = 0.0f, avgHigh = 0.0f;
-        
+
         if (reader->usesFloatingPointData)
         {
             float lmin = std::numeric_limits<float>::max();
             float lmax = -lmin;
             float rmin = lmin;
             float rmax = lmax;
-            
+
             while (numSamples > 0)
             {
                 const int numToDo = (int) jmin (numSamples, (int64) bufferSize);
                 if (! reader->read (tempBuffer, 2, startSampleInFile, numToDo, false))
                     break;
-                
+
                 // copy samples to buffers ready to be filtered
-                memcpy (filteredArray[0], tempBuffer[0], sizeof (int) * numToDo);
-                memcpy (filteredArray[1], tempBuffer[0], sizeof (int) * numToDo);
-                memcpy (filteredArray[2], tempBuffer[0], sizeof (int) * numToDo);
-                memcpy (filteredArray[3], tempBuffer[0], sizeof (int) * numToDo);
-                
+                memcpy (filteredArray[0], tempBuffer[0], sizeof (int) * size_t (numToDo));
+                memcpy (filteredArray[1], tempBuffer[0], sizeof (int) * size_t (numToDo));
+                memcpy (filteredArray[2], tempBuffer[0], sizeof (int) * size_t (numToDo));
+                memcpy (filteredArray[3], tempBuffer[0], sizeof (int) * size_t (numToDo));
+
                 // filter buffers
                 filterLow.processSamples (reinterpret_cast<float*> (filteredArray[0]), numToDo);
                 filterLowMid.processSamples (reinterpret_cast<float*> (filteredArray[1]), numToDo);
                 filterHighMid.processSamples (reinterpret_cast<float*> (filteredArray[2]), numToDo);
                 filterHigh.processSamples (reinterpret_cast<float*> (filteredArray[3]), numToDo);
-                
+
                 // calculate colour
-                for (int i = 0; i < numToDo; i++)
+                for (int i = 0; i < numToDo; ++i)
                 {
                     float low = fabsf ((reinterpret_cast<float*> (filteredArray[0]))[i]);
                     float mid = fabsf ((reinterpret_cast<float*> (filteredArray[1]))[i])
                                 + fabsf ((reinterpret_cast<float*> (filteredArray[2]))[i]);
                     float high = fabsf ((reinterpret_cast<float*> (filteredArray[3]))[i]);
-                    
+
                     if (low > avgLow)   avgLow = low;
                     if (mid > avgMid)   avgMid = mid;
                     if (high > avgHigh) avgHigh = high;
                 }
-                
+
                 numSamples -= numToDo;
                 startSampleInFile += numToDo;
 
-                getStereoMinAndMax (reinterpret_cast<float**> (&tempBuffer[0]), reader->numChannels, numToDo,
+                getStereoMinAndMax (reinterpret_cast<float**> (&tempBuffer[0]), int (reader->numChannels), numToDo,
                                     lmin, lmax, rmin, rmax);
             }
-            
+
             lowestLeft = lmin;
             highestLeft = lmax;
             lowestRight = rmin;
@@ -440,48 +440,48 @@ private:
                 const int numToDo = (int) jmin (numSamples, (int64) bufferSize);
                 if (! reader->read (tempBuffer, 2, startSampleInFile, numToDo, false))
                     break;
-                
+
                 // copy samples to buffers ready to be filtered
-                memcpy (filteredArray[0], tempBuffer[0], sizeof (int) * numToDo);
-                memcpy (filteredArray[1], tempBuffer[0], sizeof (int) * numToDo);
-                memcpy (filteredArray[2], tempBuffer[0], sizeof (int) * numToDo);
-                memcpy (filteredArray[3], tempBuffer[0], sizeof (int) * numToDo);
-                
+                memcpy (filteredArray[0], tempBuffer[0], sizeof (int) * size_t (numToDo));
+                memcpy (filteredArray[1], tempBuffer[0], sizeof (int) * size_t (numToDo));
+                memcpy (filteredArray[2], tempBuffer[0], sizeof (int) * size_t (numToDo));
+                memcpy (filteredArray[3], tempBuffer[0], sizeof (int) * size_t (numToDo));
+
                 // filter buffers
                 filterLow.processSamples ((filteredArray[0]), numToDo);
                 filterLowMid.processSamples ((filteredArray[1]), numToDo);
                 filterHighMid.processSamples ((filteredArray[2]), numToDo);
                 filterHigh.processSamples ((filteredArray[3]), numToDo);
-                
+
                 // calculate colour
-                for (int i = 0; i < numToDo; i++)
+                for (int i = 0; i < numToDo; ++i)
                 {
                     int low = abs (filteredArray[0][i]);
                     int mid = abs (filteredArray[1][i]) + abs (filteredArray[2][i]);
                     int high = abs (filteredArray[3][i]);
-                    
+
                     if (low > avgLow)   avgLow = (float) low;
                     if (mid > avgMid)   avgMid = (float) mid;
                     if (high > avgHigh) avgHigh = (float) high;
                 }
-                
+
                 numSamples -= numToDo;
                 startSampleInFile += numToDo;
 
-                getStereoMinAndMax (reinterpret_cast<int**> (&tempBuffer[0]), reader->numChannels, numToDo,
+                getStereoMinAndMax (reinterpret_cast<int**> (&tempBuffer[0]), int (reader->numChannels), numToDo,
                                     lmin, lmax, rmin, rmax);
             }
-            
+
             lowestLeft = lmin / (float) std::numeric_limits<int>::max();
             highestLeft = lmax / (float) std::numeric_limits<int>::max();
             lowestRight = rmin / (float) std::numeric_limits<int>::max();
             highestRight = rmax / (float) std::numeric_limits<int>::max();
-            
+
             avgLow = avgLow / (float) ::std::numeric_limits<int>::max();
             avgMid = avgMid / (float) ::std::numeric_limits<int>::max();
             avgHigh = avgHigh / (float) ::std::numeric_limits<int>::max();
         }
-        
+
         uint8 maxSize = ::std::numeric_limits<uint8>::max();
         colourLeft = Colour::fromRGB ((uint8) (avgLow * maxSize),
                                       (uint8) (avgMid * maxSize * 0.66f),
@@ -491,7 +491,7 @@ private:
 };
 
 //==============================================================================
-/*	Holds the data for 1 cache sample and the methods required to rescale those.
+/*    Holds the data for 1 cache sample and the methods required to rescale those.
  */
 class ColouredAudioThumbnail::ThumbData
 {
@@ -502,13 +502,13 @@ public:
         ensureSize (numThumbSamples);
     }
 
-    inline MinMaxColourValue* getData (const int thumbSampleIndex) throw()
+    inline MinMaxColourValue* getData (const int thumbSampleIndex) noexcept
     {
         jassert (thumbSampleIndex < data.size());
         return data.getRawDataPointer() + thumbSampleIndex;
     }
 
-    int getSize() const throw()
+    int getSize() const noexcept
     {
         return data.size();
     }
@@ -542,44 +542,44 @@ public:
         result.set (1, 0);
     }
 
-	void getColour (int startSample, int endSample,  MinMaxColourValue& result) throw()
-	{
-		const int numSamples = endSample - startSample;
+    void getColour (int startSample, int endSample,  MinMaxColourValue& result) noexcept
+    {
+        const int numSamples = endSample - startSample;
 
-		uint8 red = 0, green = 0, blue = 0;
+        uint8 red = 0, green = 0, blue = 0;
 
-		if (startSample >= 0)
-		{
-			endSample = jmin (endSample, data.size() - 1);
+        if (startSample >= 0)
+        {
+            endSample = jmin (endSample, data.size() - 1);
 
-			while (startSample <= endSample)
-			{
-				const MinMaxColourValue& v = data.getReference (startSample);
+            while (startSample <= endSample)
+            {
+                const MinMaxColourValue& v = data.getReference (startSample);
 
-				if (numSamples == 1)
-				{
-					result.colour = v.colour;
-					return;
-				}
+                if (numSamples == 1)
+                {
+                    result.colour = v.colour;
+                    return;
+                }
 
-				if (v.colour.getRed() > red) {
-					red = v.colour.getRed();
-				}
-				if (v.colour.getGreen() > green) {
-					green = v.colour.getGreen();
-				}
-				if (v.colour.getBlue() > blue) {
-					blue = v.colour.getBlue();
-				}
-				
-				++startSample;
-			}
-		}
+                if (v.colour.getRed() > red) {
+                    red = v.colour.getRed();
+                }
+                if (v.colour.getGreen() > green) {
+                    green = v.colour.getGreen();
+                }
+                if (v.colour.getBlue() > blue) {
+                    blue = v.colour.getBlue();
+                }
 
-		result.colour = Colour(red, green, blue);
-	}
+                ++startSample;
+            }
+        }
 
-    void write (const MinMaxColourValue* const source, const int startIndex, const int numValues)
+        result.colour = Colour(red, green, blue);
+    }
+
+    void write (const MinMaxColourValue* const sourceIn, const int startIndex, const int numValues)
     {
         resetPeak();
 
@@ -589,7 +589,7 @@ public:
         MinMaxColourValue* const dest = getData (startIndex);
 
         for (int i = 0; i < numValues; ++i)
-            dest[i] = source[i];
+            dest[i] = sourceIn[i];
     }
 
     void resetPeak()
@@ -611,7 +611,7 @@ public:
 
         return peakLevel;
     }
-	
+
 private:
     Array <MinMaxColourValue> data;
     int peakLevel;
@@ -643,11 +643,11 @@ public:
     void drawChannel (Graphics& g, const Rectangle<int>& area,
                       const double startTime, const double endTime,
                       const int channelNum, const float verticalZoomFactor,
-                      const double sampleRate, const int numChannels, const int samplesPerThumbSample,
-                      LevelDataSource* levelData, const OwnedArray<ThumbData>& channels)
+                      const double sampleRateIn, const int numChannelsIn, const int samplesPerThumbSampleIn,
+                      LevelDataSource* levelData, const OwnedArray<ThumbData>& channelsIn)
     {
-        refillCache (area.getWidth(), startTime, endTime, sampleRate,
-                     numChannels, samplesPerThumbSample, levelData, channels);
+        refillCache (area.getWidth(), startTime, endTime, sampleRateIn,
+                     numChannelsIn, samplesPerThumbSampleIn, levelData, channelsIn);
 
         if (isPositiveAndBelow (channelNum, numChannelsCached))
         {
@@ -676,46 +676,46 @@ public:
         }
     }
 
-	void drawColouredChannel (Graphics& g, const Rectangle<int>& area,
-							  const double startTime, const double endTime,
-							  const int channelNum, const float verticalZoomFactor,
-							  const double sampleRate, const int numChannels, const int samplesPerThumbSample,
-							  LevelDataSource* levelData, const OwnedArray<ThumbData>& channels)
+    void drawColouredChannel (Graphics& g, const Rectangle<int>& area,
+                              const double startTime, const double endTime,
+                              const int channelNum, const float verticalZoomFactor,
+                              const double sampleRateIn, const int numChannelsIn, const int samplesPerThumbSampleIn,
+                              LevelDataSource* levelData, const OwnedArray<ThumbData>& channelsIn)
     {
-        refillCache (area.getWidth(), startTime, endTime, sampleRate,
-                     numChannels, samplesPerThumbSample, levelData, channels);
-		
+        refillCache (area.getWidth(), startTime, endTime, sampleRateIn,
+                     numChannelsIn, samplesPerThumbSampleIn, levelData, channelsIn);
+
         if (isPositiveAndBelow (channelNum, numChannelsCached))
         {
             const Rectangle<int> clip (g.getClipBounds().getIntersection (area.withWidth (jmin (numSamplesCached, area.getWidth()))));
-			
+
             if (! clip.isEmpty())
             {
                 const float topY = (float) area.getY();
                 const float bottomY = (float) area.getBottom();
                 const float midY = (topY + bottomY) * 0.5f;
                 const float vscale = verticalZoomFactor * (bottomY - topY) / 256.0f;
-				
+
                 const MinMaxColourValue* cacheData = getData (channelNum, clip.getX() - area.getX());
-				
+
                 int x = clip.getX();
                 for (int w = clip.getWidth(); --w >= 0;)
                 {
                     if (cacheData->isNonZero())
-					{
-						// set colour of line //drow
-						g.setColour (cacheData->colour);
+                    {
+                        // set colour of line //drow
+                        g.setColour (cacheData->colour);
                         g.drawVerticalLine (x, jmax (midY - cacheData->maxValue * vscale - 0.3f, topY),
-											jmin (midY - cacheData->minValue * vscale + 0.3f, bottomY));
-					}
-					
+                                            jmin (midY - cacheData->minValue * vscale + 0.3f, bottomY));
+                    }
+
                     ++x;
                     ++cacheData;
                 }
             }
         }
     }
-	
+
 private:
     Array <MinMaxColourValue> data;
     double cachedStart, cachedTimePerPixel;
@@ -723,19 +723,19 @@ private:
     bool cacheNeedsRefilling;
 
     void refillCache (const int numSamples, double startTime, const double endTime,
-                      const double sampleRate, const int numChannels, const int samplesPerThumbSample,
-                      LevelDataSource* levelData, const OwnedArray<ThumbData>& channels)
+                      const double sampleRateIn, const int numChannelsIn, const int samplesPerThumbSampleIn,
+                      LevelDataSource* levelData, const OwnedArray<ThumbData>& channelsIn)
     {
         const double timePerPixel = (endTime - startTime) / numSamples;
 
-        if (numSamples <= 0 || timePerPixel <= 0.0 || sampleRate <= 0)
+        if (numSamples <= 0 || timePerPixel <= 0.0 || sampleRateIn <= 0)
         {
             invalidate();
             return;
         }
 
         if (numSamples == numSamplesCached
-             && numChannelsCached == numChannels
+             && numChannelsCached == numChannelsIn
              && startTime == cachedStart
              && timePerPixel == cachedTimePerPixel
              && ! cacheNeedsRefilling)
@@ -744,23 +744,23 @@ private:
         }
 
         numSamplesCached = numSamples;
-        numChannelsCached = numChannels;
+        numChannelsCached = numChannelsIn;
         cachedStart = startTime;
         cachedTimePerPixel = timePerPixel;
         cacheNeedsRefilling = false;
 
         ensureSize (numSamples);
 
-        if (timePerPixel * sampleRate <= samplesPerThumbSample && levelData != 0)
+        if (timePerPixel * sampleRateIn <= samplesPerThumbSampleIn && levelData != nullptr)
         {
-            int sample = roundToInt (startTime * sampleRate);
+            int sample = roundToInt (startTime * sampleRateIn);
             Array<float> levels;
-			Array<Colour> colours;
+            Array<Colour> colours;
 
             int i;
             for (i = 0; i < numSamples; ++i)
             {
-                const int nextSample = roundToInt ((startTime + timePerPixel) * sampleRate);
+                const int nextSample = roundToInt ((startTime + timePerPixel) * sampleRateIn);
 
                 if (sample >= 0)
                 {
@@ -771,12 +771,12 @@ private:
 
                     const int numChans = jmin (levels.size() / 2, numChannelsCached);
 
-                    for (int chan = 0; chan < numChans; ++chan) 
-					{
+                    for (int chan = 0; chan < numChans; ++chan)
+                    {
                         getData (chan, i)->setFloat (levels.getUnchecked (chan * 2),
                                                      levels.getUnchecked (chan * 2 + 1));
-						getData (chan, i)->setColour(colours.getUnchecked(chan));
-					}
+                        getData (chan, i)->setColour(colours.getUnchecked(chan));
+                    }
                 }
 
                 startTime += timePerPixel;
@@ -787,14 +787,14 @@ private:
         }
         else
         {
-            jassert (channels.size() == numChannelsCached);
-			
+            jassert (channelsIn.size() == numChannelsCached);
+
             for (int channelNum = 0; channelNum < numChannelsCached; ++channelNum)
             {
-                ThumbData* channelData = channels.getUnchecked (channelNum);
+                ThumbData* channelData = channelsIn.getUnchecked (channelNum);
                 MinMaxColourValue* cacheData = getData (channelNum, 0);
 
-                const double timeToThumbSampleFactor = sampleRate / (double) samplesPerThumbSample;
+                const double timeToThumbSampleFactor = sampleRateIn / (double) samplesPerThumbSampleIn;
 
                 startTime = cachedStart;
                 int sample = roundToInt (startTime * timeToThumbSampleFactor);
@@ -804,7 +804,7 @@ private:
                     const int nextSample = roundToInt ((startTime + timePerPixel) * timeToThumbSampleFactor);
 
                     channelData->getMinMax (sample, nextSample, *cacheData);
-					channelData->getColour(sample, nextSample, *cacheData);
+                    channelData->getColour(sample, nextSample, *cacheData);
 
                     ++cacheData;
                     startTime += timePerPixel;
@@ -814,14 +814,14 @@ private:
         }
     }
 
-    MinMaxColourValue* getData (const int channelNum, const int cacheIndex) throw()
+    MinMaxColourValue* getData (const int channelNum, const int cacheIndex) noexcept
     {
         jassert (isPositiveAndBelow (channelNum, numChannelsCached) && isPositiveAndBelow (cacheIndex, data.size()));
 
         return data.getRawDataPointer() + channelNum * numSamplesCached
                                         + cacheIndex;
     }
-	
+
     void ensureSize (const int numSamples)
     {
         const int itemsRequired = numSamples * numChannelsCached;
@@ -833,9 +833,9 @@ private:
 
 //==============================================================================
 ColouredAudioThumbnail::ColouredAudioThumbnail (const int originalSamplesPerThumbnailSample,
-												AudioFormatManager& formatManagerToUse_,
-												AudioThumbnailCache& cacheToUse)
-:	formatManagerToUse (formatManagerToUse_),
+                                                AudioFormatManager& formatManagerToUse_,
+                                                AudioThumbnailCache& cacheToUse)
+:    formatManagerToUse (formatManagerToUse_),
     cache (cacheToUse),
     window (new CachedWindow()),
     samplesPerThumbSample (originalSamplesPerThumbnailSample),
@@ -852,7 +852,7 @@ ColouredAudioThumbnail::~ColouredAudioThumbnail()
 
 void ColouredAudioThumbnail::clear()
 {
-    source = 0;
+    source = nullptr;
 
     const ScopedLock sl (lock);
     window->invalidate();
@@ -902,7 +902,7 @@ bool ColouredAudioThumbnail::loadFrom (InputStream& input)
     for (int i = 0; i < numThumbnailSamples; ++i)
         for (int chan = 0; chan < numChannels; ++chan)
             channels.getUnchecked(chan)->getData(i)->read (input);
-    
+
     return true;
 }
 
@@ -936,7 +936,7 @@ bool ColouredAudioThumbnail::setDataSource (LevelDataSource* newSource)
 
     if (cache.loadThumb (*this, newSource->hashCode) && isFullyLoaded())
     {
-        source = newSource; // (make sure this isn't done before loadThumb is called)
+        source.reset (newSource); // (make sure this isn't done before loadThumb is called)
 
         source->lengthInSamples = totalSamples;
         source->sampleRate = sampleRate;
@@ -945,7 +945,7 @@ bool ColouredAudioThumbnail::setDataSource (LevelDataSource* newSource)
     }
     else
     {
-        source = newSource; // (make sure this isn't done before loadThumb is called)
+        source.reset (newSource); // (make sure this isn't done before loadThumb is called)
 
         const ScopedLock sl (lock);
         source->initialise (numSamplesFinished);
@@ -963,25 +963,24 @@ bool ColouredAudioThumbnail::setDataSource (LevelDataSource* newSource)
 bool ColouredAudioThumbnail::setSource (InputSource* const newSource)
 {
     clear();
-
-    return newSource != 0 && setDataSource (new LevelDataSource (*this, newSource));
+    return newSource != nullptr && setDataSource (new LevelDataSource (*this, newSource));
 }
 
 void ColouredAudioThumbnail::setReader (AudioFormatReader* newReader, int64 hash)
 {
     clear();
 
-    if (newReader != 0)
+    if (newReader != nullptr)
         setDataSource (new LevelDataSource (*this, newReader, hash));
 }
 
 int64 ColouredAudioThumbnail::getHashCode() const
 {
-    return source == 0 ? 0 : source->hashCode;
+    return source == nullptr ? 0 : source->hashCode;
 }
 
 void ColouredAudioThumbnail::addBlock (const int64 startSample, const AudioSampleBuffer& incoming,
-									   int startOffsetInBuffer, int numSamples)
+                                       int startOffsetInBuffer, int numSamples)
 {
     jassert (startSample >= 0);
 
@@ -1029,22 +1028,22 @@ void ColouredAudioThumbnail::setLevels (const MinMaxColourValue* const* values, 
 }
 
 //==============================================================================
-int ColouredAudioThumbnail::getNumChannels() const throw()
+int ColouredAudioThumbnail::getNumChannels() const noexcept
 {
     return numChannels;
 }
 
-double ColouredAudioThumbnail::getTotalLength() const throw()
+double ColouredAudioThumbnail::getTotalLength() const noexcept
 {
     return totalSamples / sampleRate;
 }
 
-bool ColouredAudioThumbnail::isFullyLoaded() const throw()
+bool ColouredAudioThumbnail::isFullyLoaded() const noexcept
 {
     return numSamplesFinished >= totalSamples - samplesPerThumbSample;
 }
 
-int64 ColouredAudioThumbnail::getNumSamplesFinished() const throw()
+int64 ColouredAudioThumbnail::getNumSamplesFinished() const noexcept
 {
     return numSamplesFinished;
 }
@@ -1054,7 +1053,7 @@ float ColouredAudioThumbnail::getApproximatePeak() const
     int peak = 0;
 
     for (int i = channels.size(); --i >= 0;)
-        peak = jmax (peak, channels.getUnchecked(i)->getPeak());
+        peak = jmax (peak, channels.getUnchecked (i)->getPeak());
 
     return jlimit (0, 127, peak) / 127.0f;
 }
@@ -1065,21 +1064,21 @@ void ColouredAudioThumbnail::getApproximateMinMax (const double startTime, const
     const ScopedLock sl (lock);
     MinMaxColourValue result;
     const ThumbData* const data = channels [channelIndex];
-    
+
     if (data != nullptr && sampleRate > 0)
     {
         const int firstThumbIndex = (int) ((startTime * sampleRate) / samplesPerThumbSample);
         const int lastThumbIndex  = (int) (((endTime * sampleRate) + samplesPerThumbSample - 1) / samplesPerThumbSample);
-        
+
         data->getMinMax (jmax (0, firstThumbIndex), lastThumbIndex, result);
     }
-    
+
     minValue = result.getMinValue() / 128.0f;
     maxValue = result.getMaxValue() / 128.0f;
 }
 
 void ColouredAudioThumbnail::drawChannel (Graphics& g, const Rectangle<int>& area, double startTime,
-                                  double endTime, int channelNum, float verticalZoomFactor)
+                                          double endTime, int channelNum, float verticalZoomFactor)
 {
     const ScopedLock sl (lock);
 
@@ -1087,12 +1086,12 @@ void ColouredAudioThumbnail::drawChannel (Graphics& g, const Rectangle<int>& are
 }
 
 void ColouredAudioThumbnail::drawColouredChannel (Graphics& g, const Rectangle<int>& area, double startTime,
-												  double endTime, int channelNum, float verticalZoomFactor)
+                                                  double endTime, int channelNum, float verticalZoomFactor)
 {
     const ScopedLock sl (lock);
 
     window->drawColouredChannel (g, area, startTime, endTime, channelNum, verticalZoomFactor,
-								 sampleRate, numChannels, samplesPerThumbSample, source, channels);
+                                 sampleRate, numChannels, samplesPerThumbSample, source.get(), channels);
 }
 
 void ColouredAudioThumbnail::drawChannels (Graphics& g, const Rectangle<int>& area, double startTimeSeconds,

@@ -19,102 +19,101 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_AUDIOOSCILLOSCOPE_H__
-#define __DROWAUDIO_AUDIOOSCILLOSCOPE_H__
+#ifndef DROWAUDIO_AUDIOOSCILLOSCOPE_H
+#define DROWAUDIO_AUDIOOSCILLOSCOPE_H
 
-//==============================================================================
-/** An oscilliscope class for displaying audio waveforms.
- 
-	This is a high-res version of the SimpleAudioScope class and as such is
+/** An oscilloscope class for displaying audio waveforms.
+
+    This is a high-res version of the SimpleAudioScope class and as such is
     slightly more CPU intensive.
-	Use this when you need detailed images of a waveform instead of a general
+    Use this when you need detailed images of a waveform instead of a general
     idea of what is passing through it.
  */
-class AudioOscilloscope  :	public Component,
-							public Timer
+class AudioOscilloscope : public juce::Component,
+                          public juce::Timer
 {
 public:
-	//==============================================================================
     /** Creates an AudioOscilloscope.
-     
+
         Once created simply push data to display by repeatedly calling the
         processBlock method.
-     */
+    */
     AudioOscilloscope();
-	
-	/** Destructor. */
-    ~AudioOscilloscope();
-	
+
     //==============================================================================
-    /**	Processes a number of samples displaying them on the scope.
-        The resolution will depend on how zoomed in you are @see setHorizontalZoom.
-	 */
+    /** Processes a number of samples displaying them on the scope.
+
+        The resolution will depend on how zoomed in you are.
+
+        @see setHorizontalZoom.
+    */
     void processBlock (const float* inputChannelData,
                        int numSamples);
-	
-	/**	Clears the internal buffers.
+
+    /** Clears the internal buffers.
+
         It is a good idea to call this when an audio device is started or stopped
         to avoid clicks on the scope.
-	 */
-	void clear();
-	
-	/** Adjusts the vertical zoom of the scope.
+    */
+    void clear();
+
+    /** Adjusts the vertical zoom of the scope.
+
         0 = nothing, 1 = normal, > 1 = zoomed.
-	 */
-	void setVerticalZoom (float newVerticalZoomFactor)      {   verticalZoomFactor = newVerticalZoomFactor;     }
-    
-	/**	Adjusts the horizontal zoom of the scope.
+    */
+    void setVerticalZoom (float newVerticalZoomFactor) { verticalZoomFactor = newVerticalZoomFactor; }
+
+    /**    Adjusts the horizontal zoom of the scope.
         The lower this value is the more zoomed in and detailed the image will be.
         However, as more information is passing the scope will move quicker and be
         difficult to see. Consider using Component::createComponentSnapshot() to
         capture an image of the scope.
-	 */
-	void setHorizontalZoom (float newHorizontalZoomFactor)  {	horizontalZoomFactor = newHorizontalZoomFactor; }
-    
-	/** Sets the background colour of the scope. */
-	void setBackgroundColour (Colour newBackgroundColour)	{	backgroundColour = newBackgroundColour;         }
-	
-	/** Sets the trace colour of the scope. */
-	void setTraceColour (Colour newTraceColour)             {	traceColour = newTraceColour;                   }
-    
-    //==============================================================================
-    /** @internal. */
-    void resized();
-    
-	/** @internal */
-    void paint (Graphics& g);
+     */
+    void setHorizontalZoom (float newHorizontalZoomFactor) { horizontalZoomFactor = newHorizontalZoomFactor; }
 
-	/** @internal */
-    void timerCallback();
-	
-	/** @internal. Used to add a sample to the internal buffer. */
+    /** Sets the background colour of the scope. */
+    void setBackgroundColour (juce::Colour newBackgroundColour) { backgroundColour = newBackgroundColour; }
+
+    /** Sets the trace colour of the scope. */
+    void setTraceColour (juce::Colour newTraceColour) { traceColour = newTraceColour; }
+
+    //==============================================================================
+    /** @internal Used to add a sample to the internal buffer. */
     void addSample (const float sample);
-	
+
+    //==============================================================================
+    /** @internal */
+    void resized() override;
+    /** @internal */
+    void paint (juce::Graphics& g) override;
+    /** @internal */
+    void timerCallback() override;
+
 private:
     //==============================================================================
-    HeapBlock<float> circularBufferMax, circularBufferMin;
-	int bufferSizeMask;
+    juce::HeapBlock<float> circularBufferMax, circularBufferMin;
+    int bufferSizeMask;
     float currentMax, currentMin;
-    int volatile bufferPos, lastBufferPos, bufferSize, numSamplesIn;
-	float bufferLastMax, bufferLastMin;
-	
-    Image waveformImage;
-    
-	float verticalZoomFactor, horizontalZoomFactor;
-	Colour backgroundColour, traceColour;
-	
+    std::atomic<int> bufferPos, lastBufferPos, bufferSize, numSamplesIn;
+    float bufferLastMax, bufferLastMin;
+
+    juce::Image waveformImage;
+
+    float verticalZoomFactor, horizontalZoomFactor;
+    juce::Colour backgroundColour, traceColour;
+
     //==============================================================================
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioOscilloscope);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioOscilloscope)
 };
 
-#endif //__DROWAUDIO_AUDIOOSCILLOSCOPE_H__
+#endif //DROWAUDIO_AUDIOOSCILLOSCOPE_H

@@ -29,12 +29,12 @@ void ResourceCache::add(String name, const char* normalImage, const int normalIm
                         const char* backgroundImage, const int backgroundImageSize) {
     Image normalImageCached = ImageCache::getFromMemory(normalImage, normalImageSize);
 
-    Image alternateImageCached = Image::null;
+    Image alternateImageCached = Image();
     if(alternateImage != nullptr && alternateImageSize > 0) {
         alternateImageCached = ImageCache::getFromMemory(alternateImage, alternateImageSize);
     }
 
-    Image backgroundImageCached = Image::null;
+    Image backgroundImageCached = Image();
     if(backgroundImage != nullptr && backgroundImageSize != 0) {
         backgroundImageCached = ImageCache::getFromMemory(backgroundImage, backgroundImageSize);
     }

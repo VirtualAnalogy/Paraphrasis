@@ -19,37 +19,34 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_PITCH_H__
-#define __DROWAUDIO_PITCH_H__
+#ifndef DROWAUDIO_PITCH_H
+#define DROWAUDIO_PITCH_H
 
 #include "dRowAudio_AudioUtility.h"
 
-//==============================================================================
-/**
-    This class contains some useful methods for storing and converting different
+/** This class contains some useful methods for storing and converting different
     representations of a pitch.
  */
 class Pitch
 {
 public:
-    //==============================================================================
     /** Create a default pitch object with a frequency of 0 Hertz.
      */
     Pitch()
         : frequency (0.0)
     {
     }
-    
+
     /** Create a pitch object with a given frequency in Hertz.
      */
     Pitch (double frequencyHz)
@@ -64,6 +61,7 @@ public:
         frequency = other.frequency;
     }
 
+    //==============================================================================
     /** Assign the frequency of anther pitch object to this one.
      */
     Pitch& operator= (const Pitch& other) noexcept
@@ -75,16 +73,16 @@ public:
     //==============================================================================
     /** Returns a unicode sharp symbol.
      */
-    static const juce_wchar getSharpSymbol() noexcept   {   return *CharPointer_UTF8 ("\xe2\x99\xaf");  }
-    
+    static const juce::juce_wchar getSharpSymbol() noexcept   { return *juce::CharPointer_UTF8 ("\xe2\x99\xaf"); }
+
     /** Returns a unicode flat symbol.
      */
-    static const juce_wchar getFlatSymbol() noexcept    {   return *CharPointer_UTF8 ("\xe2\x99\xad");  }
-    
+    static const juce::juce_wchar getFlatSymbol() noexcept    { return *juce::CharPointer_UTF8 ("\xe2\x99\xad"); }
+
     /** Returns a unicode natural symbol.
      */
-    static const juce_wchar getNaturalSymbol() noexcept {   return *CharPointer_UTF8 ("\xe2\x99\xae");  }
-    
+    static const juce::juce_wchar getNaturalSymbol() noexcept { return *juce::CharPointer_UTF8 ("\xe2\x99\xae"); }
+
     //==============================================================================
     /** Creates a Pitch object from a given frequency in Hertz e.g 440.
      */
@@ -93,7 +91,7 @@ public:
     {
         Pitch pitch;
         pitch.frequency = (double) frequencyHz;
-        
+
         return pitch;
     }
 
@@ -104,33 +102,33 @@ public:
     {
         Pitch pitch;
         pitch.frequency = midiToFrequency ((double) midiNote);
-        
+
         return pitch;
     }
-    
+
     /** Creates a Pitch object from a given note name e.g. A#3.
         This should be the pitch class followed by the octave. The pitch class can
         contain sharps and flats in the form of either #, b or the unicode character
         equivalents.
-     
+
         If the String can not be parsed properly this will return a Pitch with a
         frequency of 0.
-     
+
         @see getSharpSymbol, getFlatSymbol
      */
-    static Pitch fromNoteName (const String& noteName) noexcept
+    static Pitch fromNoteName (const juce::String& noteName) noexcept
     {
-        const String octaveName (noteName.retainCharacters ("0123456789"));
-        const String pitchClassName (noteName.toLowerCase().retainCharacters (getValidPitchClassLetters()));
-        
+        const juce::String octaveName (noteName.retainCharacters ("0123456789"));
+        const juce::String pitchClassName (noteName.toLowerCase().retainCharacters (getValidPitchClassLetters()));
+
         const int octave = octaveName.getIntValue();
         const int pitchClass = getPitchClass (pitchClassName);
         const int midiNote = (octave * 12) + pitchClass;
-        
+
         if (pitchClass > 0)
             return fromMidiNote (midiNote);
-        else
-            return Pitch (0.0);
+
+        return Pitch();
     }
 
     //==============================================================================
@@ -140,7 +138,7 @@ public:
     {
         return frequency;
     }
-    
+
     /** Returns the midi note of the pitch e.g. 440 = 69.
      */
     inline double getMidiNote() const noexcept
@@ -150,13 +148,13 @@ public:
 
     /** Returns the note name of the pitch e.g. 440 = A4.
      */
-    inline String getMidiNoteName() const noexcept
+    inline juce::String getMidiNoteName() const noexcept
     {
         const int midiNote = (int) getMidiNote();
         const int pitchClass = midiNote % 12;
         const int octave = midiNote / 12 - 1;
-        
-        String noteName;
+
+        juce::String noteName;
         noteName << getNoteName (pitchClass, true) << octave;
 
         return noteName;
@@ -165,33 +163,33 @@ public:
 private:
     //==============================================================================
     double frequency;
-    
+
     //==============================================================================
     /*  Converts a pitch class number in the range of 0-12 to a letter.
      */
-    static String getNoteName (int pitchClass, bool asSharps) noexcept
+    static juce::String getNoteName (int pitchClass, bool asSharps) noexcept
     {
         static const char* const sharpNoteNames[] = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
         static const char* const flatNoteNames[]  = { "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B" };
 
-        if (isPositiveAndBelow (pitchClass, 12))
+        if (juce::isPositiveAndBelow (pitchClass, 12))
             return asSharps ? sharpNoteNames[pitchClass] : flatNoteNames[pitchClass];
         else
-            return String::empty;
+            return {};
     }
-        
+
     /*  Returns the pitch class number for a given string.
         If the string is not in the required format i.e. A#4 etc. this
         will return -1.
      */
-    static int getPitchClass (const String& pitchClassName) noexcept
+    static int getPitchClass (const juce::String& pitchClassName) noexcept
     {
         int pitchClass = -1;
         const int numChars = pitchClassName.length();
-        
+
         if (numChars > 0)
         {
-            const juce_wchar base = pitchClassName.toLowerCase()[0];
+            const juce::juce_wchar base = pitchClassName.toLowerCase()[0];
 
             switch (base)
             {
@@ -205,11 +203,11 @@ private:
                 default:    pitchClass = -1;    break;
             }
         }
-        
+
         if (numChars > 1)
         {
-            const juce_wchar sharpOrFlat = pitchClassName[1];
-            
+            const juce::juce_wchar sharpOrFlat = pitchClassName[1];
+
             switch (sharpOrFlat)
             {
                 case '#':   ++pitchClass;       break;
@@ -221,25 +219,25 @@ private:
                 ++pitchClass;
             else if (sharpOrFlat == getFlatSymbol())
                 --pitchClass;
-            
+
             pitchClass %= 12;
         }
-        
+
         return pitchClass;
     }
-    
+
     /*  Returns the letters valid for a pitch class.
      */
-    static const String getValidPitchClassLetters()
+    static const juce::String getValidPitchClassLetters()
     {
-        String chars ("abcdefg#b");
+        juce::String chars ("abcdefg#b");
         chars << getSharpSymbol() << getFlatSymbol();
         return chars;
     }
-    
+
     //==============================================================================
-    JUCE_LEAK_DETECTOR (Pitch);
+    JUCE_LEAK_DETECTOR (Pitch)
 };
 
 
-#endif  // __DROWAUDIO_PITCH_H__
+#endif  // DROWAUDIO_PITCH_H

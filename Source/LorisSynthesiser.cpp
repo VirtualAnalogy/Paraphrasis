@@ -32,7 +32,7 @@ LorisVoice::LorisVoice(double tailTimeSec) :  tailTimeSec(tailTimeSec), synth(bu
 {
     synthesise = false;
     tailOff = false;
-    
+	
     tailSamples = tailTimeSec * getSampleRate();
     
     buffer.reserve(kDefaultSynthesiserBufferSize);

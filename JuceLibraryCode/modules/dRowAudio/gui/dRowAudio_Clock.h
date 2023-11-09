@@ -19,78 +19,70 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_CLOCK_H__
-#define __DROWAUDIO_CLOCK_H__
+#ifndef DROWAUDIO_CLOCK_H
+#define DROWAUDIO_CLOCK_H
 
-//==============================================================================
-/**	A handy digital graphical clock.
-	
-	Just add one of these to your component and it will display the time,
-	continually updating itself. Set the look and feel of it as you would
-	a normal label.
+/** A handy digital graphical clock.
+
+    Just add one of these to your component and it will display the time,
+    continually updating itself. Set the look and feel of it as you would
+    a normal label.
  */
-class Clock : public Label,
-			  public Timer
+class Clock : public juce::Label,
+              public juce::Timer
 {
 public:
-    //==============================================================================
-	/**	A number of flags to set what sort of clock is displayed
-	 */
-	enum TimeDisplayFormat
-	{
-		showDate = 1,
-		showTime = 2,
-		showSeconds = 4,
-		show24Hr = 8,
-		showDayShort = 16,
-		showDayLong = 32,
-	};
-	
-    //==============================================================================
-	/**	Constructor.
-		Just add and make visible one of these to your component and it
-		will display the current time and continually update itself.
-	 */
-	Clock();
-	
-	/**	Destructor.
-	 */
-	~Clock();
+    /** A number of flags to set what sort of clock is displayed */
+    enum TimeDisplayFormat
+    {
+        showDate = 1,
+        showTime = 2,
+        showSeconds = 4,
+        show24Hr = 8,
+        showDayShort = 16,
+        showDayLong = 32,
+    };
 
-	/**	Sets the display format of the clock.
-     
-		To specify what sort of clock to display pass in a number of the
-		TimeDisplayFormat flags. This is semi-inteligent so may choose to
-		ignore certain flags such as the short day name if you have also
-		specified the long day name.
-	 */
-	void setTimeDisplayFormat (const int newFormat);
-	
-	/**	Returns the width required to display all of the clock's information.
-	 */
-	int getRequiredWidth();
-	
+    /** Constructor.
+
+        Just add and make visible one of these to your component and it
+        will display the current time and continually update itself.
+    */
+    Clock();
+
+    /** Sets the display format of the clock.
+
+        To specify what sort of clock to display pass in a number of the
+        TimeDisplayFormat flags. This is semi-inteligent so may choose to
+        ignore certain flags such as the short day name if you have also
+        specified the long day name.
+    */
+    void setTimeDisplayFormat (const int newFormat);
+
+    /**  Returns the width required to display all of the clock's information. */
+    int getRequiredWidth() const;
+
     //==============================================================================
-	/** @internal */
-	void timerCallback();
-	
+    /** @internal */
+    void timerCallback() override;
+
 private:
     //==============================================================================
-	int displayFormat;
-	String timeAsString;
-	
+    int displayFormat;
+    juce::String timeAsString;
+
     //==============================================================================
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Clock);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Clock)
 };
 
-#endif  // __DROWAUDIO_CLOCK_H__
+#endif  // DROWAUDIO_CLOCK_H

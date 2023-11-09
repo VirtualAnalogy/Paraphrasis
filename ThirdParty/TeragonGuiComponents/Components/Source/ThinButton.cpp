@@ -25,12 +25,12 @@ namespace teragon {
 
 ThinButton::ThinButton(ConcurrentParameterSet &parameters, const ParameterString &name,
                        const ResourceCache *resources, const String &imageName) :
-ImageButton(String::empty),
+ImageButton(String()),
 PluginParameterComponent(parameters, name, resources, imageName),
 gravity(kGravityDefault) {
     juce::ImageButton::setImages(false, false, true,
                                  imageStates->normal, 1.0f, Colour(0x0),
-                                 Image::null, 1.0f, Colour(0x0),
+                                 Image(), 1.0f, Colour(0x0),
                                  imageStates->alternate, 1.0, Colour(0x0));
 }
 

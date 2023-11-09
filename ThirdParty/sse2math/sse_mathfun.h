@@ -27,8 +27,7 @@
  
  (this is the zlib license)
  */
-#ifndef Paraphrasis_sse_mathfun_h
-#define Paraphrasis_sse_mathfun_h
+#pragma once
 #include <xmmintrin.h>
 /* yes I know, the top of this file is quite ugly */
 #ifdef _MSC_VER /* visual c++ */
@@ -690,4 +689,3 @@ void sincos_ps(v4sf x, v4sf *s, v4sf *c) {
     *s = _mm_xor_ps(xmm1, sign_bit_sin);
     *c = _mm_xor_ps(xmm2, sign_bit_cos);
 }
-#endif

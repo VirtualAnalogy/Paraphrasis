@@ -2,25 +2,29 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 7 End-User License
+   Agreement and JUCE Privacy Policy.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-7-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
+
+namespace juce
+{
 
 #if JUCE_USE_DIRECTWRITE
 namespace
@@ -31,7 +35,8 @@ namespace
 
         uint32 index = 0;
         BOOL exists = false;
-        HRESULT hr = names->FindLocaleName (L"en-us", &index, &exists);
+        [[maybe_unused]] auto hr = names->FindLocaleName (L"en-us", &index, &exists);
+
         if (! exists)
             index = 0;
 
@@ -41,15 +46,15 @@ namespace
         HeapBlock<wchar_t> name (length + 1);
         hr = names->GetString (index, name, length + 1);
 
-        return static_cast <const wchar_t*> (name);
+        return static_cast<const wchar_t*> (name);
     }
 
     static String getFontFamilyName (IDWriteFontFamily* family)
     {
         jassert (family != nullptr);
         ComSmartPtr<IDWriteLocalizedStrings> familyNames;
-        HRESULT hr = family->GetFamilyNames (familyNames.resetAndGetPointerAddress());
-        jassert (SUCCEEDED (hr)); (void) hr;
+        auto hr = family->GetFamilyNames (familyNames.resetAndGetPointerAddress());
+        jassertquiet (SUCCEEDED (hr));
         return getLocalisedName (familyNames);
     }
 
@@ -57,11 +62,12 @@ namespace
     {
         jassert (font != nullptr);
         ComSmartPtr<IDWriteLocalizedStrings> faceNames;
-        HRESULT hr = font->GetFaceNames (faceNames.resetAndGetPointerAddress());
-        jassert (SUCCEEDED (hr)); (void) hr;
-
+        auto hr = font->GetFaceNames (faceNames.resetAndGetPointerAddress());
+        jassertquiet (SUCCEEDED (hr));
         return getLocalisedName (faceNames);
     }
+
+    inline Point<float> convertPoint (D2D1_POINT_2F p) noexcept   { return Point<float> ((float) p.x, (float) p.y); }
 }
 
 class Direct2DFactories
@@ -69,6 +75,8 @@ class Direct2DFactories
 public:
     Direct2DFactories()
     {
+        JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wlanguage-extension-token")
+
         if (direct2dDll.open ("d2d1.dll"))
         {
             JUCE_LOAD_WINAPI_FUNCTION (direct2dDll, D2D1CreateFactory, d2d1CreateFactory,
@@ -97,7 +105,21 @@ public:
                 if (directWriteFactory != nullptr)
                     directWriteFactory->GetSystemFontCollection (systemFonts.resetAndGetPointerAddress());
             }
+
+            if (d2dFactory != nullptr)
+            {
+                auto d2dRTProp = D2D1::RenderTargetProperties (D2D1_RENDER_TARGET_TYPE_SOFTWARE,
+                                                               D2D1::PixelFormat (DXGI_FORMAT_B8G8R8A8_UNORM,
+                                                                                  D2D1_ALPHA_MODE_IGNORE),
+                                                               0, 0,
+                                                               D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE,
+                                                               D2D1_FEATURE_LEVEL_DEFAULT);
+
+                d2dFactory->CreateDCRenderTarget (&d2dRTProp, directWriteRenderTarget.resetAndGetPointerAddress());
+            }
         }
+
+        JUCE_END_IGNORE_WARNINGS_GCC_LIKE
     }
 
     ~Direct2DFactories()
@@ -105,11 +127,13 @@ public:
         d2dFactory = nullptr;  // (need to make sure these are released before deleting the DynamicLibrary objects)
         directWriteFactory = nullptr;
         systemFonts = nullptr;
+        directWriteRenderTarget = nullptr;
     }
 
     ComSmartPtr<ID2D1Factory> d2dFactory;
     ComSmartPtr<IDWriteFactory> directWriteFactory;
     ComSmartPtr<IDWriteFontCollection> systemFonts;
+    ComSmartPtr<ID2D1DCRenderTarget> directWriteRenderTarget;
 
 private:
     DynamicLibrary direct2dDll, directWriteDll;
@@ -117,19 +141,18 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Direct2DFactories)
 };
 
-//==================================================================================================
+//==============================================================================
 class WindowsDirectWriteTypeface  : public Typeface
 {
 public:
     WindowsDirectWriteTypeface (const Font& font, IDWriteFontCollection* fontCollection)
-        : Typeface (font.getTypefaceName(), font.getTypefaceStyle()),
-          unitsToHeightScaleFactor (1.0f), heightToPointsFactor (1.0f), ascent (0.0f)
+        : Typeface (font.getTypefaceName(), font.getTypefaceStyle())
     {
         jassert (fontCollection != nullptr);
 
-        BOOL fontFound = false;
         uint32 fontIndex = 0;
-        HRESULT hr = fontCollection->FindFamilyName (font.getTypefaceName().toWideCharPointer(), &fontIndex, &fontFound);
+        [[maybe_unused]] auto hr = fontCollection->FindFamilyName (font.getTypefaceName().toWideCharPointer(), &fontIndex, &fontFound);
+
         if (! fontFound)
             fontIndex = 0;
 
@@ -144,7 +167,7 @@ public:
 
             for (int i = (int) dwFontFamily->GetFontCount(); --i >= 0;)
             {
-                hr = dwFontFamily->GetFont (i, dwFont.resetAndGetPointerAddress());
+                hr = dwFontFamily->GetFont ((UINT32) i, dwFont.resetAndGetPointerAddress());
 
                 if (i == 0)
                     break;
@@ -170,23 +193,24 @@ public:
             designUnitsPerEm = dwFontMetrics.designUnitsPerEm;
 
             ascent = std::abs ((float) dwFontMetrics.ascent);
-            const float totalSize = ascent + std::abs ((float) dwFontMetrics.descent);
+            auto totalSize = ascent + std::abs ((float) dwFontMetrics.descent);
             ascent /= totalSize;
-            unitsToHeightScaleFactor = designUnitsPerEm / totalSize;
+            unitsToHeightScaleFactor = (float) designUnitsPerEm / totalSize;
 
-            HDC tempDC = GetDC (0);
-            float dpi = (GetDeviceCaps (tempDC, LOGPIXELSX) + GetDeviceCaps (tempDC, LOGPIXELSY)) / 2.0f;
-            heightToPointsFactor = (dpi / GetDeviceCaps (tempDC, LOGPIXELSY)) * unitsToHeightScaleFactor;
-            ReleaseDC (0, tempDC);
+            auto tempDC = GetDC (nullptr);
+            auto dpi = (float) (GetDeviceCaps (tempDC, LOGPIXELSX) + GetDeviceCaps (tempDC, LOGPIXELSY)) / 2.0f;
+            heightToPointsFactor = (dpi / (float) GetDeviceCaps (tempDC, LOGPIXELSY)) * unitsToHeightScaleFactor;
+            ReleaseDC (nullptr, tempDC);
 
-            const float pathAscent  = (1024.0f * dwFontMetrics.ascent)  / designUnitsPerEm;
-            const float pathDescent = (1024.0f * dwFontMetrics.descent) / designUnitsPerEm;
-            const float pathScale   = 1.0f / (std::abs (pathAscent) + std::abs (pathDescent));
+            auto pathAscent  = (1024.0f * dwFontMetrics.ascent)  / (float) designUnitsPerEm;
+            auto pathDescent = (1024.0f * dwFontMetrics.descent) / (float) designUnitsPerEm;
+            auto pathScale   = 1.0f / (std::abs (pathAscent) + std::abs (pathDescent));
             pathTransform = AffineTransform::scale (pathScale);
         }
     }
 
     bool loadedOk() const noexcept          { return dwFontFace != nullptr; }
+    BOOL isFontFound() const noexcept       { return fontFound; }
 
     float getAscent() const                 { return ascent; }
     float getDescent() const                { return 1.0f - ascent; }
@@ -194,38 +218,40 @@ public:
 
     float getStringWidth (const String& text)
     {
-        const CharPointer_UTF32 textUTF32 (text.toUTF32());
-        const size_t len = textUTF32.length();
+        auto textUTF32 = text.toUTF32();
+        auto len = textUTF32.length();
 
-        HeapBlock <UINT16> glyphIndices (len);
+        HeapBlock<UINT16> glyphIndices (len);
         dwFontFace->GetGlyphIndices (textUTF32, (UINT32) len, glyphIndices);
 
-        HeapBlock <DWRITE_GLYPH_METRICS> dwGlyphMetrics (len);
+        HeapBlock<DWRITE_GLYPH_METRICS> dwGlyphMetrics (len);
         dwFontFace->GetDesignGlyphMetrics (glyphIndices, (UINT32) len, dwGlyphMetrics, false);
 
         float x = 0;
+
         for (size_t i = 0; i < len; ++i)
-            x += (float) dwGlyphMetrics[i].advanceWidth / designUnitsPerEm;
+            x += (float) dwGlyphMetrics[i].advanceWidth / (float) designUnitsPerEm;
 
         return x * unitsToHeightScaleFactor;
     }
 
-    void getGlyphPositions (const String& text, Array <int>& resultGlyphs, Array <float>& xOffsets)
+    void getGlyphPositions (const String& text, Array<int>& resultGlyphs, Array<float>& xOffsets)
     {
         xOffsets.add (0);
 
-        const CharPointer_UTF32 textUTF32 (text.toUTF32());
-        const size_t len = textUTF32.length();
+        auto textUTF32 = text.toUTF32();
+        auto len = textUTF32.length();
 
-        HeapBlock <UINT16> glyphIndices (len);
+        HeapBlock<UINT16> glyphIndices (len);
         dwFontFace->GetGlyphIndices (textUTF32, (UINT32) len, glyphIndices);
-        HeapBlock <DWRITE_GLYPH_METRICS> dwGlyphMetrics (len);
+        HeapBlock<DWRITE_GLYPH_METRICS> dwGlyphMetrics (len);
         dwFontFace->GetDesignGlyphMetrics (glyphIndices, (UINT32) len, dwGlyphMetrics, false);
 
         float x = 0;
+
         for (size_t i = 0; i < len; ++i)
         {
-            x += (float) dwGlyphMetrics[i].advanceWidth / designUnitsPerEm;
+            x += (float) dwGlyphMetrics[i].advanceWidth / (float) designUnitsPerEm;
             xOffsets.add (x * unitsToHeightScaleFactor);
             resultGlyphs.add (glyphIndices[i]);
         }
@@ -234,10 +260,11 @@ public:
     bool getOutlineForGlyph (int glyphNumber, Path& path)
     {
         jassert (path.isEmpty());  // we might need to apply a transform to the path, so this must be empty
-        UINT16 glyphIndex = (UINT16) glyphNumber;
+        auto glyphIndex = (UINT16) glyphNumber;
         ComSmartPtr<PathGeometrySink> pathGeometrySink (new PathGeometrySink());
 
-        dwFontFace->GetGlyphRunOutline (1024.0f, &glyphIndex, nullptr, nullptr, 1, false, false, pathGeometrySink);
+        dwFontFace->GetGlyphRunOutline (1024.0f, &glyphIndex, nullptr, nullptr,
+                                        1, false, false, pathGeometrySink);
         path = pathGeometrySink->path;
 
         if (! pathTransform.isIdentity())
@@ -248,56 +275,55 @@ public:
 
     IDWriteFontFace* getIDWriteFontFace() const noexcept    { return dwFontFace; }
 
+    float getUnitsToHeightScaleFactor() const noexcept      { return unitsToHeightScaleFactor; }
+
 private:
     SharedResourcePointer<Direct2DFactories> factories;
     ComSmartPtr<IDWriteFontFace> dwFontFace;
-    float unitsToHeightScaleFactor, heightToPointsFactor, ascent;
-    int designUnitsPerEm;
+    float unitsToHeightScaleFactor = 1.0f, heightToPointsFactor = 1.0f, ascent = 0;
+    int designUnitsPerEm = 0;
     AffineTransform pathTransform;
+    BOOL fontFound = false;
 
-    class PathGeometrySink  : public ComBaseClassHelper<IDWriteGeometrySink>
+    struct PathGeometrySink  : public ComBaseClassHelper<IDWriteGeometrySink>
     {
-    public:
-        PathGeometrySink() : ComBaseClassHelper<IDWriteGeometrySink> (0) {}
+        PathGeometrySink() : ComBaseClassHelper (0) {}
 
-        void __stdcall AddBeziers (const D2D1_BEZIER_SEGMENT *beziers, UINT beziersCount)
+        void STDMETHODCALLTYPE AddBeziers (const D2D1_BEZIER_SEGMENT* beziers, UINT beziersCount) noexcept override
         {
             for (UINT i = 0; i < beziersCount; ++i)
-                path.cubicTo ((float) beziers[i].point1.x, (float) beziers[i].point1.y,
-                              (float) beziers[i].point2.x, (float) beziers[i].point2.y,
-                              (float) beziers[i].point3.x, (float) beziers[i].point3.y);
+                path.cubicTo (convertPoint (beziers[i].point1),
+                              convertPoint (beziers[i].point2),
+                              convertPoint (beziers[i].point3));
         }
 
-        void __stdcall AddLines (const D2D1_POINT_2F* points, UINT pointsCount)
+        void STDMETHODCALLTYPE AddLines (const D2D1_POINT_2F* points, UINT pointsCount) noexcept override
         {
             for (UINT i = 0; i < pointsCount; ++i)
-                path.lineTo ((float) points[i].x,
-                             (float) points[i].y);
+                path.lineTo (convertPoint (points[i]));
         }
 
-        void __stdcall BeginFigure (D2D1_POINT_2F startPoint, D2D1_FIGURE_BEGIN)
+        void STDMETHODCALLTYPE BeginFigure (D2D1_POINT_2F startPoint, D2D1_FIGURE_BEGIN) noexcept override
         {
-            path.startNewSubPath ((float) startPoint.x,
-                                  (float) startPoint.y);
+            path.startNewSubPath (convertPoint (startPoint));
         }
 
-        void __stdcall EndFigure (D2D1_FIGURE_END figureEnd)
+        void STDMETHODCALLTYPE EndFigure (D2D1_FIGURE_END figureEnd) noexcept override
         {
             if (figureEnd == D2D1_FIGURE_END_CLOSED)
                 path.closeSubPath();
         }
 
-        void __stdcall SetFillMode (D2D1_FILL_MODE fillMode)
+        void STDMETHODCALLTYPE SetFillMode (D2D1_FILL_MODE fillMode) noexcept override
         {
             path.setUsingNonZeroWinding (fillMode == D2D1_FILL_MODE_WINDING);
         }
 
-        void __stdcall SetSegmentFlags (D2D1_PATH_SEGMENT) {}
-        JUCE_COMRESULT Close()  { return S_OK; }
+        void STDMETHODCALLTYPE SetSegmentFlags (D2D1_PATH_SEGMENT) noexcept override {}
+        JUCE_COMRESULT Close() noexcept override  { return S_OK; }
 
         Path path;
 
-    private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PathGeometrySink)
     };
 
@@ -305,3 +331,5 @@ private:
 };
 
 #endif
+
+} // namespace juce

@@ -19,60 +19,52 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_AUDIOSAMPLEBUFFERAUDIOFORMAT_H__
-#define __DROWAUDIO_AUDIOSAMPLEBUFFERAUDIOFORMAT_H__
+#ifndef DROWAUDIO_AUDIOSAMPLEBUFFERAUDIOFORMAT_H
+#define DROWAUDIO_AUDIOSAMPLEBUFFERAUDIOFORMAT_H
 
-//==============================================================================
-/**
-    Streams data from an AudioSampleBuffer.
- 
+/** Streams data from an AudioSampleBuffer.
+
     This reads from a stream that has been initialised from the AudioSampleBuffer
     method getArrayOfChannels(). The AudioSampleBuffer needs to stay in exisistance
     for the duration of this object and not be changed as the stream is unique to
     the memory layout of the buffer.
- 
+
     @see AudioFormat
  */
-class AudioSampleBufferAudioFormat :    public AudioFormat
+class AudioSampleBufferAudioFormat : public juce::AudioFormat
 {
 public:
-    //==============================================================================
     /** Creates a format object. */
     AudioSampleBufferAudioFormat();
-    
-    /** Destructor. */
-    ~AudioSampleBufferAudioFormat();
-    
+
     //==============================================================================
-    Array<int> getPossibleSampleRates();
-    Array<int> getPossibleBitDepths();
-    bool canDoStereo();
-    bool canDoMono();
-    
-    //==============================================================================
-    AudioFormatReader* createReaderFor (InputStream* sourceStream,
-                                        bool deleteStreamIfOpeningFails);
-    
-    AudioFormatWriter* createWriterFor (OutputStream* streamToWriteTo,
+    juce::Array<int> getPossibleSampleRates() override;
+    juce::Array<int> getPossibleBitDepths() override;
+    bool canDoStereo() override;
+    bool canDoMono() override;
+    juce::AudioFormatReader* createReaderFor (juce::InputStream* sourceStream,
+                                        bool deleteStreamIfOpeningFails) override;
+
+    juce::AudioFormatWriter* createWriterFor (juce::OutputStream* streamToWriteTo,
                                         double sampleRateToUse,
                                         unsigned int numberOfChannels,
                                         int bitsPerSample,
-                                        const StringPairArray& metadataValues,
-                                        int qualityOptionIndex);
-    
+                                        const juce::StringPairArray& metadataValues,
+                                        int qualityOptionIndex) override;
+
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioSampleBufferAudioFormat);
+    //==============================================================================
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioSampleBufferAudioFormat)
 };
 
-
-#endif // __DROWAUDIO_AUDIOSAMPLEBUFFERAUDIOFORMAT_H__
+#endif // DROWAUDIO_AUDIOSAMPLEBUFFERAUDIOFORMAT_H

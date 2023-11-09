@@ -19,30 +19,29 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-
-
 CpuMeter::CpuMeter (AudioDeviceManager* deviceManagerToUse, int updateIntervalMs)
-	: Label ("CpuMeter", "00.00%"),
-	  deviceManager (deviceManagerToUse),
-	  updateInterval (updateIntervalMs),
-	  currentCpuUsage (0.0)
+    : Label ("CpuMeter", "00.00%"),
+      deviceManager (deviceManagerToUse),
+      updateInterval (updateIntervalMs),
+      currentCpuUsage (0.0)
 {
-	if (deviceManagerToUse != nullptr)
-		startTimer (updateInterval);
+    if (deviceManagerToUse != nullptr)
+        startTimer (updateInterval);
 }
 
-CpuMeter::~CpuMeter()
+void CpuMeter::setTextColour (const Colour newTextColour)
 {
+    setColour (Label::textColourId, newTextColour);
 }
 
 void CpuMeter::resized()
@@ -50,15 +49,11 @@ void CpuMeter::resized()
     const int w = getWidth();
     const int h = getHeight();
 
-	setFont ((h < (w * 0.24f) ? h : w * 0.24f));
+    setFont ((h < (w * 0.24f) ? h : w * 0.24f));
 }
 
 void CpuMeter::timerCallback()
 {
-	currentCpuUsage = (deviceManager->getCpuUsage() * 100.0);
-	String displayString (currentCpuUsage, 2);
-	displayString << "%";
-    
-	setText (displayString, dontSendNotification);
+    currentCpuUsage = (deviceManager->getCpuUsage() * 100.0);
+    setText (String (currentCpuUsage, 2) + "%", dontSendNotification);
 }
-

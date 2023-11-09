@@ -19,67 +19,53 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_CPUMETER_H__
-#define __DROWAUDIO_CPUMETER_H__
+#ifndef DROWAUDIO_CPUMETER_H
+#define DROWAUDIO_CPUMETER_H
 
-//==============================================================================
 /** Handy class that will display the cpu usage of a given AudioDeviceManager
     as a percentage.
- */
-class CpuMeter : public Label,
-				 public Timer
+*/
+class CpuMeter : public juce::Label,
+                 public juce::Timer
 {
 public:
-    //==============================================================================
-	/**	Creates a CpuMeter.
-		You need to provide the device manager to monitor and optionally the refresh
+    /** Creates a CpuMeter.
+
+        You need to provide the device manager to monitor and optionally the refresh
         rate of the display.
-	 */
-	CpuMeter (AudioDeviceManager* deviceManagerToUse, int updateIntervalMs = 50);
-	
-	/**	Descructor.
-     */
-	~CpuMeter();
-	
-	/** Returns the current cpu usage as a percentage.
-     */
-	double getCurrentCpuUsage() const
-    {
-        return currentCpuUsage;
-    }
-	
-	/** Changes the colour of the text.
-     */
-	void setTextColour (const Colour& newTextColour)
-    {
-        setColour (Label::textColourId, newTextColour);
-    }
+    */
+    CpuMeter (juce::AudioDeviceManager* deviceManagerToUse, int updateIntervalMs = 50);
 
-	//==============================================================================
+    /** Returns the current cpu usage as a percentage. */
+    double getCurrentCpuUsage() const { return currentCpuUsage; }
+
+    /** Changes the colour of the text. */
+    void setTextColour (juce::Colour newTextColour);
+
+    //==============================================================================
     /** @internal */
-	void resized();
+    void resized() override;
+    /** @internal */
+    void timerCallback() override;
 
-	/** @internal */
-	void timerCallback();
-	
 private:
     //==============================================================================
-	AudioDeviceManager* deviceManager;
-	int updateInterval;
-	double currentCpuUsage;
-	
+    juce::AudioDeviceManager* deviceManager;
+    int updateInterval;
+    double currentCpuUsage;
+
     //==============================================================================
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CpuMeter);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CpuMeter)
 };
 
-#endif	//__DROWAUDIO_CPUMETER_H__
+#endif //DROWAUDIO_CPUMETER_H

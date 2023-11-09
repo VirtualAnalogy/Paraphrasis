@@ -19,11 +19,11 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
@@ -31,50 +31,50 @@
 
 DraggableWaveDisplay::DraggableWaveDisplay (AudioThumbnailImage& sourceToBeUsed)
     : audioThumbnailImage           (sourceToBeUsed),
-	  filePlayer                    (sourceToBeUsed.getAudioFilePlayer()),
-	  currentSampleRate             (44100.0),
+      filePlayer                    (sourceToBeUsed.getAudioFilePlayer()),
+      currentSampleRate             (44100.0),
       oneOverSampleRate             (1.0 / currentSampleRate),
-	  timePerPixel                  (1.0),
-	  zoomRatio                     (1.0f),
+      timePerPixel                  (1.0),
+      zoomRatio                     (1.0f),
       oneOverZoomRatio              (1.0f / zoomRatio),
       playheadPos                   (0.5f),
-	  isDraggable                   (true),
-	  mouseShouldTogglePlay         (true)
+      isDraggable                   (true),
+      mouseShouldTogglePlay         (true)
 {
     setOpaque (true);
 
     audioThumbnailImage.addListener (this);
-    
-	timePerPixel = audioThumbnailImage.getNumSourceSamplesPerThumbnailSamples() * oneOverSampleRate;
+
+    timePerPixel = audioThumbnailImage.getNumSourceSamplesPerThumbnailSamples() * oneOverSampleRate;
 }
 
 DraggableWaveDisplay::~DraggableWaveDisplay()
 {
     audioThumbnailImage.removeListener (this);
-	stopTimer (waveformUpdated);
+    stopTimer (waveformUpdated);
 }
 
 //====================================================================================
 void DraggableWaveDisplay::setHorizontalZoom (float newZoomFactor)
 {
-	jassert (newZoomFactor > 0.0f);
-	
-	zoomRatio = newZoomFactor;
+    jassert (newZoomFactor > 0.0f);
+
+    zoomRatio = newZoomFactor;
     oneOverZoomRatio = 1.0f / zoomRatio;
-    
+
     repaint();
 }
 
 void DraggableWaveDisplay::setPlayheadPosition (float newPlayheadPosition)
 {
-	playheadPos = jlimit (0.0f, 1.0f, newPlayheadPosition);
-    
+    playheadPos = jlimit (0.0f, 1.0f, newPlayheadPosition);
+
     repaint();
 }
 
 void DraggableWaveDisplay::setDraggable (bool isWaveformDraggable)
 {
-	isDraggable = isWaveformDraggable;
+    isDraggable = isWaveformDraggable;
 }
 
 //====================================================================================
@@ -91,11 +91,11 @@ void DraggableWaveDisplay::resized()
 
 void DraggableWaveDisplay::paint (Graphics &g)
 {
-	const int w = getWidth();
-	const int h = getHeight();
-	
-	g.fillAll (Colours::darkgrey);
-	    
+    const int w = getWidth();
+    const int h = getHeight();
+
+    g.fillAll (Colours::darkgrey);
+
     const int playHeadXPos = roundToInt (playheadPos * w);
     const double timeToPlayHead = pixelsToTime (playHeadXPos);
     const double startTime = filePlayer.getAudioTransportSource()->getCurrentPosition() - timeToPlayHead;
@@ -106,90 +106,90 @@ void DraggableWaveDisplay::paint (Graphics &g)
 
     int padLeft = 0, padRight = 0;
     if (startTime < 0.0)
-        padLeft = roundToInt (timeToPixels (fabs (startTime)));
+        padLeft = roundToInt (timeToPixels (std::abs (startTime)));
     if ((startTime + timeToDisplay) > duration)
-        padRight = roundToInt (timeToPixels (fabs (duration - (startTime + timeToDisplay))));
+        padRight = roundToInt (timeToPixels (std::abs (duration - (startTime + timeToDisplay))));
 
     g.drawImage (clippedImage,
                  padLeft, 0, w - padLeft - padRight, h,
                  0, 0, clippedImage.getWidth(), clippedImage.getHeight(),
                  false);
-    
+
     g.drawImageAt (playheadImage, playHeadXPos - 1, 0);
 }
 
 void DraggableWaveDisplay::mouseDown (const MouseEvent &e)
 {
-	mouseX.setBoth (e.x);
-	isMouseDown = true;
-	
-	if (isDraggable)
-	{
-		if (mouseShouldTogglePlay)
-		{
-			if (filePlayer.getAudioTransportSource()->isPlaying())
-			{
-				shouldBePlaying = true;
-				filePlayer.getAudioTransportSource()->stop();
-			}
-			else
+    mouseX.setBoth (e.x);
+    isMouseDown = true;
+
+    if (isDraggable)
+    {
+        if (mouseShouldTogglePlay)
+        {
+            if (filePlayer.getAudioTransportSource()->isPlaying())
             {
-				shouldBePlaying = false;
+                shouldBePlaying = true;
+                filePlayer.getAudioTransportSource()->stop();
             }
-		}
-        
-		setMouseCursor (MouseCursor::DraggingHandCursor);
-		
-		startTimer (waveformMoved, 40);
-	}
+            else
+            {
+                shouldBePlaying = false;
+            }
+        }
+
+        setMouseCursor (MouseCursor::DraggingHandCursor);
+
+        startTimer (waveformMoved, 40);
+    }
 }
 
 void DraggableWaveDisplay::mouseUp (const MouseEvent& /*e*/)
 {
-	isMouseDown = false;
-	
-	if (isDraggable)
-	{
-		if (mouseShouldTogglePlay)
-		{
-			if (shouldBePlaying && ! filePlayer.getAudioTransportSource()->isPlaying())
-				filePlayer.getAudioTransportSource()->start();
-			else if (! shouldBePlaying && filePlayer.getAudioTransportSource()->isPlaying())
-				filePlayer.getAudioTransportSource()->stop();
-		}
-		
-		setMouseCursor (MouseCursor::NormalCursor);
-		
-		stopTimer (waveformMoved);
-	}
+    isMouseDown = false;
+
+    if (isDraggable)
+    {
+        if (mouseShouldTogglePlay)
+        {
+            if (shouldBePlaying && ! filePlayer.getAudioTransportSource()->isPlaying())
+                filePlayer.getAudioTransportSource()->start();
+            else if (! shouldBePlaying && filePlayer.getAudioTransportSource()->isPlaying())
+                filePlayer.getAudioTransportSource()->stop();
+        }
+
+        setMouseCursor (MouseCursor::NormalCursor);
+
+        stopTimer (waveformMoved);
+    }
 }
 
 //====================================================================================
 void DraggableWaveDisplay::timerCallback (const int timerId)
 {
-	if (timerId == waveformUpdated) //moved due to file position changing
-	{
-		movedX = roundToInt (timeToPixels (filePlayer.getAudioTransportSource()->getCurrentPosition()));
+    if (timerId == waveformUpdated) //moved due to file position changing
+    {
+        movedX = roundToInt (timeToPixels (filePlayer.getAudioTransportSource()->getCurrentPosition()));
 
-		if (! movedX.areEqual())
-			repaint();
-	}
-	else if (timerId == waveformMoved) // being dragged
-	{
-		if (isMouseDown)
-		{
-			mouseX = getMouseXYRelative().getX();
-			const int currentXDrag = mouseX.getDifference();
-			
-			if (currentXDrag != 0)
-			{
-				const double position = filePlayer.getAudioTransportSource()->getCurrentPosition() - pixelsToTime (currentXDrag);
-				filePlayer.getAudioTransportSource()->setPosition (position);
+        if (! movedX.areEqual())
+            repaint();
+    }
+    else if (timerId == waveformMoved) // being dragged
+    {
+        if (isMouseDown)
+        {
+            mouseX = getMouseXYRelative().getX();
+            const int currentXDrag = mouseX.getDifference();
 
-				repaint();
-			}
-		}
-	}
+            if (currentXDrag != 0)
+            {
+                const double position = filePlayer.getAudioTransportSource()->getCurrentPosition() - pixelsToTime (currentXDrag);
+                filePlayer.getAudioTransportSource()->setPosition (position);
+
+                repaint();
+            }
+        }
+    }
     else if (timerId == waveformLoading)
     {
         const int w = getWidth();
@@ -197,12 +197,12 @@ void DraggableWaveDisplay::timerCallback (const int timerId)
         const double timeToPlayHead = pixelsToTime (playHeadXPos);
         const double startTime = filePlayer.getAudioTransportSource()->getCurrentPosition() - timeToPlayHead;
         const double timeToDisplay = pixelsToTime (w);
-        
+
         const double timeAtEnd = startTime + timeToDisplay;
-        
+
         if (audioThumbnailImage.getTimeRendered() <= timeAtEnd)
             repaint();
-        
+
         if (audioThumbnailImage.hasFinishedLoading())
         {
             repaint();
@@ -213,19 +213,19 @@ void DraggableWaveDisplay::timerCallback (const int timerId)
 
 void DraggableWaveDisplay::imageChanged (AudioThumbnailImage* changedAudioThumbnailImage)
 {
-	if (changedAudioThumbnailImage == &audioThumbnailImage)
-	{
+    if (changedAudioThumbnailImage == &audioThumbnailImage)
+    {
         bool sourceLoaded = false;
-        
+
         if (filePlayer.getAudioFormatReaderSource() != nullptr
             && filePlayer.getAudioFormatReaderSource()->getAudioFormatReader() != nullptr)
         {
             currentSampleRate = filePlayer.getAudioFormatReaderSource()->getAudioFormatReader()->sampleRate;
-        
+
             if (currentSampleRate > 0.0)
             {
                 const double fileLength = filePlayer.getAudioTransportSource()->getLengthInSeconds();
-                
+
                 if (fileLength > 0.0)
                 {
                     sourceLoaded = true;
@@ -239,22 +239,22 @@ void DraggableWaveDisplay::imageChanged (AudioThumbnailImage* changedAudioThumbn
                 }
             }
         }
-        
+
         if (! sourceLoaded)
         {
             stopTimer (waveformUpdated);
             stopTimer (waveformLoading);
         }
-	}
+    }
 }
 
-//==============================================================================	
+//==============================================================================
 double DraggableWaveDisplay::pixelsToTime (double numPixels)
 {
-	return numPixels * timePerPixel * oneOverZoomRatio;
+    return numPixels * timePerPixel * oneOverZoomRatio;
 }
 
 double DraggableWaveDisplay::timeToPixels (double timeInSecs)
 {
-	return timeInSecs / (timePerPixel * oneOverZoomRatio);
+    return timeInSecs / (timePerPixel * oneOverZoomRatio);
 }

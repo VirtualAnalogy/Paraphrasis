@@ -19,56 +19,51 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_ENVELOPEFOLLOWER_H__
-#define __DROWAUDIO_ENVELOPEFOLLOWER_H__
+#ifndef DROWAUDIO_ENVELOPEFOLLOWER_H
+#define DROWAUDIO_ENVELOPEFOLLOWER_H
 
 #include "filters/dRowAudio_OnePoleFilter.h"
 
-//==============================================================================
-/**
-    EnvelopeFollower.
-    
+/** EnvelopeFollower.
+
     Envelope follower class that gives an overall amplitude response of a set of
     samples.
- */
+*/
 class EnvelopeFollower
 {
 public:
-    //==============================================================================
-	/** Constructor. */
-	EnvelopeFollower();
+    /** Constructor. */
+    EnvelopeFollower();
 
-	/** Destructor. */
-	~EnvelopeFollower();
-	
     //==============================================================================
-	/** Uses different exponential attack and release coefficients.
-		Call setTimes to setup this method, ignoring the hold time.
-	 */
-	void processEnvelope (const float* inputBuffer, float* outputBuffer, int numSamples) noexcept;
+    /** Uses different exponential attack and release coefficients.
 
-	/** Sets the times for the vaious stages of the envelope.
-        1 is an instant attack/release, 0 ill never change the value.
-     */
-	void setCoefficients (float attack, float release) noexcept;
-	
+        Call setTimes to setup this method, ignoring the hold time.
+    */
+    void processEnvelope (const float* inputBuffer, float* outputBuffer, int numSamples) noexcept;
+
+    /** Sets the times for the vaious stages of the envelope.
+
+        1 is an instant attack/release, 0 will never change the value.
+    */
+    void setCoefficients (float attack, float release) noexcept;
+
 private:
     //==============================================================================
-	float envelope;
-	float envAttack, envRelease;
+    float envelope, envAttack, envRelease;
 
     //==============================================================================
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnvelopeFollower);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnvelopeFollower)
 };
 
-#endif // __DROWAUDIO_ENVELOPEFOLLOWER_H__
+#endif // DROWAUDIO_ENVELOPEFOLLOWER_H

@@ -19,27 +19,24 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_FILTERINGAUDIOSOURCE_H__
-#define __DROWAUDIO_FILTERINGAUDIOSOURCE_H__
+#ifndef DROWAUDIO_FILTERINGAUDIOSOURCE_H
+#define DROWAUDIO_FILTERINGAUDIOSOURCE_H
 
-//==============================================================================
-/**	An AudioSource that contains three settable filters to EQ the audio stream.
- */
-class FilteringAudioSource : public AudioSource
+/** An AudioSource that contains three settable filters to EQ the audio stream. */
+class FilteringAudioSource : public juce::AudioSource
 {
-
 public:
-	//==============================================================================
+    //==============================================================================
     enum FilterType
     {
         Low = 0,
@@ -47,60 +44,54 @@ public:
         High,
         numFilters
     };
-    
+
     enum FilterSetting
     {
         CF = 0,
         Q,
         numFilterSettings
     };
-    
-	//==============================================================================
-    /** Creates an FilteringAudioTransportSource.
-	 */
+
+    //==============================================================================
+    /** Creates an FilteringAudioTransportSource. */
     FilteringAudioSource (AudioSource* inputSource,
                           bool deleteInputWhenDeleted);
-	
+
     /** Destructor. */
-    ~FilteringAudioSource();
-    
+    ~FilteringAudioSource() override;
+
     //==============================================================================
-    /** Changes one of the filter gains.
-     */
+    /** Changes one of the filter gains. */
     void setGain (FilterType setting, float newGain);
 
-	/** Toggles the filtering of the transport source.
-	 */
-	void setFilterSource (bool shouldFilter);
+    /** Toggles the filtering of the transport source. */
+    void setFilterSource (bool shouldFilter);
 
-	/** Returns whether the source is being filtered or not.
-	 */
-	bool getFilterSource()				{ return filterSource; }
+    /** Returns whether the source is being filtered or not. */
+    bool getFilterSource() const { return filterSource; }
 
     //==============================================================================
-    /** Implementation of the AudioSource method. */
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate);
-	
-    /** Implementation of the AudioSource method. */
-    void releaseResources();
-	
-    /** Implementation of the AudioSource method. */
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill);
-		
+    /** @internal */
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    /** @internal */
+    void releaseResources() override;
+    /** @internal */
+    void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
+
 private:
     //==============================================================================
-    OptionalScopedPointer<AudioSource> input;
+    juce::OptionalScopedPointer<AudioSource> input;
     float gains[numFilters];
-	IIRFilter filter[2][numFilters];
-	
+    juce::IIRFilter filter[2][numFilters];
+
     double sampleRate;
-	bool filterSource;
+    bool filterSource;
 
     //==============================================================================
     void resetFilters();
 
     //==============================================================================
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilteringAudioSource);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilteringAudioSource)
 };
 
-#endif //__DROWAUDIO_FILTERINGAUDIOSOURCE_H__
+#endif //DROWAUDIO_FILTERINGAUDIOSOURCE_H

@@ -1,36 +1,120 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-HighResolutionTimer::HighResolutionTimer()                    { pimpl = new Pimpl (*this); }
-HighResolutionTimer::~HighResolutionTimer()                   { stopTimer(); }
+namespace juce
+{
 
-void HighResolutionTimer::startTimer (int periodMs)           { pimpl->start (jmax (1, periodMs)); }
-void HighResolutionTimer::stopTimer()                         { pimpl->stop(); }
+class HighResolutionTimer::Pimpl : public Thread
+{
+    using steady_clock = std::chrono::steady_clock;
+    using milliseconds = std::chrono::milliseconds;
 
-bool HighResolutionTimer::isTimerRunning() const noexcept     { return pimpl->periodMs != 0; }
-int HighResolutionTimer::getTimerInterval() const noexcept    { return pimpl->periodMs; }
+public:
+    explicit Pimpl (HighResolutionTimer& ownerRef)
+        : Thread ("HighResolutionTimerThread"),
+          owner (ownerRef)
+    {
+    }
+
+    using Thread::isThreadRunning;
+
+    void start (int periodMs)
+    {
+        {
+            const std::scoped_lock lk { mutex };
+            periodMillis = periodMs;
+            nextTickTime = steady_clock::now() + milliseconds (periodMillis);
+        }
+
+        waitEvent.notify_one();
+
+        if (! isThreadRunning())
+            startThread (Thread::Priority::high);
+    }
+
+    void stop()
+    {
+        {
+            const std::scoped_lock lk { mutex };
+            periodMillis = 0;
+        }
+
+        waitEvent.notify_one();
+
+        if (Thread::getCurrentThreadId() != getThreadId())
+            stopThread (-1);
+    }
+
+    int getPeriod() const
+    {
+        return periodMillis;
+    }
+
+private:
+    void run() override
+    {
+        for (;;)
+        {
+            {
+                std::unique_lock lk { mutex };
+
+                if (waitEvent.wait_until (lk, nextTickTime, [this] { return periodMillis == 0; }))
+                    break;
+
+                nextTickTime = steady_clock::now() + milliseconds (periodMillis);
+            }
+
+            owner.hiResTimerCallback();
+        }
+    }
+
+    HighResolutionTimer& owner;
+    std::atomic<int> periodMillis { 0 };
+    steady_clock::time_point nextTickTime;
+    std::mutex mutex;
+    std::condition_variable waitEvent;
+};
+
+HighResolutionTimer::HighResolutionTimer()
+    : pimpl (new Pimpl (*this))
+{
+}
+
+HighResolutionTimer::~HighResolutionTimer()
+{
+    stopTimer();
+}
+
+void HighResolutionTimer::startTimer (int periodMs)
+{
+    pimpl->start (jmax (1, periodMs));
+}
+
+void HighResolutionTimer::stopTimer()
+{
+    pimpl->stop();
+}
+
+bool HighResolutionTimer::isTimerRunning() const noexcept     { return getTimerInterval() != 0; }
+int HighResolutionTimer::getTimerInterval() const noexcept    { return pimpl->getPeriod(); }
+
+} // namespace juce

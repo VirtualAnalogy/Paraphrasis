@@ -19,26 +19,26 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_LTAS_H__
-#define __DROWAUDIO_LTAS_H__
+#ifndef DROWAUDIO_LTAS_H
+#define DROWAUDIO_LTAS_H
 
-#if JUCE_MAC || JUCE_IOS || DROWAUDIO_USE_FFTREAL || defined (DOXYGEN)
+#if DROWAUDIO_USE_FFTREAL || DROWAUDIO_USE_VDSP || defined (DOXYGEN)
 
-class CumulativeMovingAverage;
+#include "../../maths/dRowAudio_CumulativeMovingAverage.h"
 
 //==============================================================================
 /** Calculates the Long Term Average Spectrum of a set of samples.
-    
+
     This is a simple LTAS calculator that uses finds the spectrum of a block of
     audio samples and then computes the average weights across the number of
     FFTs performed.
@@ -46,45 +46,42 @@ class CumulativeMovingAverage;
 class LTAS
 {
 public:
-    //==============================================================================
     /** Creates an LTAS.
-        
+
         This will use a given FFT size, remember this is the log2 of the FFT size
         so 11 will be a 2048 point FFT.
-     
+
         @see FFTEngine
      */
     LTAS (int fftSizeLog2);
-    
-    /** Destructor. */
-    ~LTAS();
-    
+
+    //==============================================================================
     /** Calculates the LTAS based on a set of samples.
-        
+
         For this to work the number of samples must be at least as many as the size
         of the FFT.
      */
     void updateLTAS (float* input, int numSamples);
-    
+
     /** Returns the computed LTAS buffer.
-     
+
         This can be used to find pitch, tone information etc.
-        
+
         @see Buffer
      */
-    Buffer& getLTASBuffer()                    {   return ltasBuffer;  }
-        
+    Buffer& getLTASBuffer() { return ltasBuffer; }
+
 private:
     //==============================================================================
     FFTEngine fftEngine;
     Buffer ltasBuffer;
     const int fftSize, numBins;
-    HeapBlock<float> tempBuffer;
-    Array<CumulativeMovingAverage> ltasAvg;
-    
+    juce::HeapBlock<float> tempBuffer;
+    juce::Array<CumulativeMovingAverage> ltasAvg;
+
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LTAS);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LTAS)
 };
 
 #endif
-#endif  // __DROWAUDIO_LTAS_H__
+#endif  // DROWAUDIO_LTAS_H

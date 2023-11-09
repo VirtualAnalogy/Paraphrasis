@@ -2,181 +2,91 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2022 - Raw Material Software Limited
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-   ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#if JUCE_DEBUG && ! defined (JUCE_DEBUG_XERRORS)
- #define JUCE_DEBUG_XERRORS 1
-#endif
-
-Display* display = nullptr;
-Window juce_messageWindowHandle = None;
-XContext windowHandleXContext;   // This is referenced from Windowing.cpp
-
-typedef bool (*WindowMessageReceiveCallback) (XEvent&);
-WindowMessageReceiveCallback dispatchWindowMessage = nullptr;
-
-typedef void (*SelectionRequestCallback) (XSelectionRequestEvent&);
-SelectionRequestCallback handleSelectionRequest = nullptr;
-
-//==============================================================================
-ScopedXLock::ScopedXLock()       { XLockDisplay (display); }
-ScopedXLock::~ScopedXLock()      { XUnlockDisplay (display); }
+namespace juce
+{
 
 //==============================================================================
 class InternalMessageQueue
 {
 public:
     InternalMessageQueue()
-        : bytesInSocket (0),
-          totalEventCount (0)
     {
-        int ret = ::socketpair (AF_LOCAL, SOCK_STREAM, 0, fd);
-        (void) ret; jassert (ret == 0);
+        auto err = ::socketpair (AF_LOCAL, SOCK_STREAM, 0, msgpipe);
+        jassertquiet (err == 0);
+
+        LinuxEventLoop::registerFdCallback (getReadHandle(),
+                                            [this] (int fd)
+                                            {
+                                                while (auto msg = popNextMessage (fd))
+                                                {
+                                                    JUCE_TRY
+                                                    {
+                                                        msg->messageCallback();
+                                                    }
+                                                    JUCE_CATCH_EXCEPTION
+                                                }
+                                            });
     }
 
     ~InternalMessageQueue()
     {
-        close (fd[0]);
-        close (fd[1]);
+        LinuxEventLoop::unregisterFdCallback (getReadHandle());
+
+        close (getReadHandle());
+        close (getWriteHandle());
 
         clearSingletonInstance();
     }
 
     //==============================================================================
-    void postMessage (MessageManager::MessageBase* const msg)
+    void postMessage (MessageManager::MessageBase* const msg) noexcept
     {
-        const int maxBytesInSocketQueue = 128;
-
         ScopedLock sl (lock);
         queue.add (msg);
 
         if (bytesInSocket < maxBytesInSocketQueue)
         {
-            ++bytesInSocket;
+            bytesInSocket++;
 
             ScopedUnlock ul (lock);
-            const unsigned char x = 0xff;
-            size_t bytesWritten = write (fd[0], &x, 1);
-            (void) bytesWritten;
+            unsigned char x = 0xff;
+            [[maybe_unused]] auto numBytes = write (getWriteHandle(), &x, 1);
         }
-    }
-
-    bool isEmpty() const
-    {
-        ScopedLock sl (lock);
-        return queue.size() == 0;
-    }
-
-    bool dispatchNextEvent()
-    {
-        // This alternates between giving priority to XEvents or internal messages,
-        // to keep everything running smoothly..
-        if ((++totalEventCount & 1) != 0)
-            return dispatchNextXEvent() || dispatchNextInternalMessage();
-
-        return dispatchNextInternalMessage() || dispatchNextXEvent();
-    }
-
-    // Wait for an event (either XEvent, or an internal Message)
-    bool sleepUntilEvent (const int timeoutMs)
-    {
-        if (! isEmpty())
-            return true;
-
-        if (display != 0)
-        {
-            ScopedXLock xlock;
-            if (XPending (display))
-                return true;
-        }
-
-        struct timeval tv;
-        tv.tv_sec = 0;
-        tv.tv_usec = timeoutMs * 1000;
-        int fd0 = getWaitHandle();
-        int fdmax = fd0;
-
-        fd_set readset;
-        FD_ZERO (&readset);
-        FD_SET (fd0, &readset);
-
-        if (display != 0)
-        {
-            ScopedXLock xlock;
-            int fd1 = XConnectionNumber (display);
-            FD_SET (fd1, &readset);
-            fdmax = jmax (fd0, fd1);
-        }
-
-        const int ret = select (fdmax + 1, &readset, 0, 0, &tv);
-        return (ret > 0); // ret <= 0 if error or timeout
     }
 
     //==============================================================================
-    juce_DeclareSingleton_SingleThreaded_Minimal (InternalMessageQueue);
+    JUCE_DECLARE_SINGLETON (InternalMessageQueue, false)
 
 private:
     CriticalSection lock;
     ReferenceCountedArray <MessageManager::MessageBase> queue;
-    int fd[2];
-    int bytesInSocket;
-    int totalEventCount;
 
-    int getWaitHandle() const noexcept      { return fd[1]; }
+    int msgpipe[2];
+    int bytesInSocket = 0;
+    static constexpr int maxBytesInSocketQueue = 128;
 
-    static bool setNonBlocking (int handle)
-    {
-        int socketFlags = fcntl (handle, F_GETFL, 0);
-        if (socketFlags == -1)
-            return false;
+    int getWriteHandle() const noexcept  { return msgpipe[0]; }
+    int getReadHandle() const noexcept   { return msgpipe[1]; }
 
-        socketFlags |= O_NONBLOCK;
-        return fcntl (handle, F_SETFL, socketFlags) == 0;
-    }
-
-    static bool dispatchNextXEvent()
-    {
-        if (display == 0)
-            return false;
-
-        XEvent evt;
-
-        {
-            ScopedXLock xlock;
-            if (! XPending (display))
-                return false;
-
-            XNextEvent (display, &evt);
-        }
-
-        if (evt.type == SelectionRequest && evt.xany.window == juce_messageWindowHandle
-              && handleSelectionRequest != nullptr)
-            handleSelectionRequest (evt.xselectionrequest);
-        else if (evt.xany.window != juce_messageWindowHandle && dispatchWindowMessage != nullptr)
-            dispatchWindowMessage (evt);
-
-        return true;
-    }
-
-    MessageManager::MessageBase::Ptr popNextMessage()
+    MessageManager::MessageBase::Ptr popNextMessage (int fd) noexcept
     {
         const ScopedLock sl (lock);
 
@@ -184,95 +94,196 @@ private:
         {
             --bytesInSocket;
 
-            const ScopedUnlock ul (lock);
+            ScopedUnlock ul (lock);
             unsigned char x;
-            size_t numBytes = read (fd[1], &x, 1);
-            (void) numBytes;
+            [[maybe_unused]] auto numBytes = read (fd, &x, 1);
         }
 
         return queue.removeAndReturn (0);
     }
-
-    bool dispatchNextInternalMessage()
-    {
-        if (const MessageManager::MessageBase::Ptr msg = popNextMessage())
-        {
-            JUCE_TRY
-            {
-                msg->messageCallback();
-                return true;
-            }
-            JUCE_CATCH_EXCEPTION
-        }
-
-        return false;
-    }
 };
 
-juce_ImplementSingleton_SingleThreaded (InternalMessageQueue);
+JUCE_IMPLEMENT_SINGLETON (InternalMessageQueue)
 
+//==============================================================================
+/*
+    Stores callbacks associated with file descriptors (FD).
+
+    The callback for a particular FD should be called whenever that file has data to read.
+
+    For standalone apps, the main thread will call poll to wait for new data on any FD, and then
+    call the associated callbacks for any FDs that changed.
+
+    For plugins, the host (generally) provides some kind of run loop mechanism instead.
+    - In VST2 plugins, the host should call effEditIdle at regular intervals, and plugins can
+      dispatch all pending events inside this callback. The host doesn't know about any of the
+      plugin's FDs, so it's possible there will be a bit of latency between an FD becoming ready,
+      and its associated callback being called.
+    - In VST3 plugins, it's possible to register each FD individually with the host. In this case,
+      the facilities in LinuxEventLoopInternal can be used to observe added/removed FD callbacks,
+      and the host can be notified whenever the set of FDs changes. The host will call onFDIsSet
+      whenever a particular FD has data ready. This call should be forwarded through to
+      InternalRunLoop::dispatchEvent.
+*/
+struct InternalRunLoop
+{
+public:
+    InternalRunLoop() = default;
+
+    void registerFdCallback (int fd, std::function<void()>&& cb, short eventMask)
+    {
+        {
+            const ScopedLock sl (lock);
+
+            callbacks.emplace (fd, std::make_shared<std::function<void()>> (std::move (cb)));
+
+            const auto iter = getPollfd (fd);
+
+            if (iter == pfds.end() || iter->fd != fd)
+                pfds.insert (iter, { fd, eventMask, 0 });
+            else
+                jassertfalse;
+
+            jassert (pfdsAreSorted());
+        }
+
+        listeners.call ([] (auto& l) { l.fdCallbacksChanged(); });
+    }
+
+    void unregisterFdCallback (int fd)
+    {
+        {
+            const ScopedLock sl (lock);
+
+            callbacks.erase (fd);
+
+            const auto iter = getPollfd (fd);
+
+            if (iter != pfds.end() && iter->fd == fd)
+                pfds.erase (iter);
+            else
+                jassertfalse;
+
+            jassert (pfdsAreSorted());
+        }
+
+        listeners.call ([] (auto& l) { l.fdCallbacksChanged(); });
+    }
+
+    bool dispatchPendingEvents()
+    {
+        callbackStorage.clear();
+        getFunctionsToCallThisTime (callbackStorage);
+
+        // CriticalSection should be available during the callback
+        for (auto& fn : callbackStorage)
+            (*fn)();
+
+        return ! callbackStorage.empty();
+    }
+
+    void dispatchEvent (int fd) const
+    {
+        const auto fn = [&]
+        {
+            const ScopedLock sl (lock);
+            const auto iter = callbacks.find (fd);
+            return iter != callbacks.end() ? iter->second : nullptr;
+        }();
+
+        // CriticalSection should be available during the callback
+        if (auto* callback = fn.get())
+            (*callback)();
+    }
+
+    bool sleepUntilNextEvent (int timeoutMs)
+    {
+        const ScopedLock sl (lock);
+        return poll (pfds.data(), static_cast<nfds_t> (pfds.size()), timeoutMs) != 0;
+    }
+
+    std::vector<int> getRegisteredFds()
+    {
+        const ScopedLock sl (lock);
+        std::vector<int> result;
+        result.reserve (callbacks.size());
+        std::transform (callbacks.begin(),
+                        callbacks.end(),
+                        std::back_inserter (result),
+                        [] (const auto& pair) { return pair.first; });
+        return result;
+    }
+
+    void addListener    (LinuxEventLoopInternal::Listener& listener)         { listeners.add    (&listener); }
+    void removeListener (LinuxEventLoopInternal::Listener& listener)         { listeners.remove (&listener); }
+
+    //==============================================================================
+    JUCE_DECLARE_SINGLETON (InternalRunLoop, false)
+
+private:
+    using SharedCallback = std::shared_ptr<std::function<void()>>;
+
+    /*  Appends any functions that need to be called to the passed-in vector.
+
+        We take a copy of each shared function so that the functions can be called without
+        locking or racing in the event that the function attempts to register/deregister a
+        new FD callback.
+    */
+    void getFunctionsToCallThisTime (std::vector<SharedCallback>& functions)
+    {
+        const ScopedLock sl (lock);
+
+        if (! sleepUntilNextEvent (0))
+            return;
+
+        for (auto& pfd : pfds)
+        {
+            if (std::exchange (pfd.revents, 0) != 0)
+            {
+                const auto iter = callbacks.find (pfd.fd);
+
+                if (iter != callbacks.end())
+                    functions.emplace_back (iter->second);
+            }
+        }
+    }
+
+    std::vector<pollfd>::iterator getPollfd (int fd)
+    {
+        return std::lower_bound (pfds.begin(), pfds.end(), fd, [] (auto descriptor, auto toFind)
+        {
+            return descriptor.fd < toFind;
+        });
+    }
+
+    bool pfdsAreSorted() const
+    {
+        return std::is_sorted (pfds.begin(), pfds.end(), [] (auto a, auto b) { return a.fd < b.fd; });
+    }
+
+    CriticalSection lock;
+
+    std::map<int, SharedCallback> callbacks;
+    std::vector<SharedCallback> callbackStorage;
+    std::vector<pollfd> pfds;
+
+    ListenerList<LinuxEventLoopInternal::Listener> listeners;
+};
+
+JUCE_IMPLEMENT_SINGLETON (InternalRunLoop)
 
 //==============================================================================
 namespace LinuxErrorHandling
 {
-    static bool errorOccurred = false;
     static bool keyboardBreakOccurred = false;
-    static XErrorHandler oldErrorHandler = (XErrorHandler) 0;
-    static XIOErrorHandler oldIOErrorHandler = (XIOErrorHandler) 0;
 
-    //==============================================================================
-    // Usually happens when client-server connection is broken
-    int ioErrorHandler (Display*)
-    {
-        DBG ("ERROR: connection to X server broken.. terminating.");
-
-        if (JUCEApplicationBase::isStandaloneApp())
-            MessageManager::getInstance()->stopDispatchLoop();
-
-        errorOccurred = true;
-        return 0;
-    }
-
-    int errorHandler (Display* display, XErrorEvent* event)
-    {
-       #if JUCE_DEBUG_XERRORS
-        char errorStr[64] = { 0 };
-        char requestStr[64] = { 0 };
-
-        XGetErrorText (display, event->error_code, errorStr, 64);
-        XGetErrorDatabaseText (display, "XRequest", String (event->request_code).toUTF8(), "Unknown", requestStr, 64);
-        DBG ("ERROR: X returned " << errorStr << " for operation " << requestStr);
-       #endif
-
-        return 0;
-    }
-
-    void installXErrorHandlers()
-    {
-        oldIOErrorHandler = XSetIOErrorHandler (ioErrorHandler);
-        oldErrorHandler = XSetErrorHandler (errorHandler);
-    }
-
-    void removeXErrorHandlers()
-    {
-        if (JUCEApplicationBase::isStandaloneApp())
-        {
-            XSetIOErrorHandler (oldIOErrorHandler);
-            oldIOErrorHandler = 0;
-
-            XSetErrorHandler (oldErrorHandler);
-            oldErrorHandler = 0;
-        }
-    }
-
-    //==============================================================================
-    void keyboardBreakSignalHandler (int sig)
+    static void keyboardBreakSignalHandler (int sig)
     {
         if (sig == SIGINT)
             keyboardBreakOccurred = true;
     }
 
-    void installKeyboardBreakHandler()
+    static void installKeyboardBreakHandler()
     {
         struct sigaction saction;
         sigset_t maskSet;
@@ -280,7 +291,7 @@ namespace LinuxErrorHandling
         saction.sa_handler = keyboardBreakSignalHandler;
         saction.sa_mask = maskSet;
         saction.sa_flags = 0;
-        sigaction (SIGINT, &saction, 0);
+        sigaction (SIGINT, &saction, nullptr);
     }
 }
 
@@ -288,111 +299,95 @@ namespace LinuxErrorHandling
 void MessageManager::doPlatformSpecificInitialisation()
 {
     if (JUCEApplicationBase::isStandaloneApp())
-    {
-        // Initialise xlib for multiple thread support
-        static bool initThreadCalled = false;
-
-        if (! initThreadCalled)
-        {
-            if (! XInitThreads())
-            {
-                // This is fatal!  Print error and closedown
-                Logger::outputDebugString ("Failed to initialise xlib thread support.");
-                Process::terminate();
-                return;
-            }
-
-            initThreadCalled = true;
-        }
-
-        LinuxErrorHandling::installXErrorHandlers();
         LinuxErrorHandling::installKeyboardBreakHandler();
-    }
 
-    // Create the internal message queue
+    InternalRunLoop::getInstance();
     InternalMessageQueue::getInstance();
-
-    // Try to connect to a display
-    String displayName (getenv ("DISPLAY"));
-    if (displayName.isEmpty())
-        displayName = ":0.0";
-
-    display = XOpenDisplay (displayName.toUTF8());
-
-    if (display != 0)  // This is not fatal! we can run headless.
-    {
-        // Create a context to store user data associated with Windows we create
-        windowHandleXContext = XUniqueContext();
-
-        // We're only interested in client messages for this window, which are always sent
-        XSetWindowAttributes swa;
-        swa.event_mask = NoEventMask;
-
-        // Create our message window (this will never be mapped)
-        const int screen = DefaultScreen (display);
-        juce_messageWindowHandle = XCreateWindow (display, RootWindow (display, screen),
-                                                  0, 0, 1, 1, 0, 0, InputOnly,
-                                                  DefaultVisual (display, screen),
-                                                  CWEventMask, &swa);
-    }
 }
 
 void MessageManager::doPlatformSpecificShutdown()
 {
     InternalMessageQueue::deleteInstance();
-
-    if (display != 0 && ! LinuxErrorHandling::errorOccurred)
-    {
-        XDestroyWindow (display, juce_messageWindowHandle);
-        XCloseDisplay (display);
-
-        juce_messageWindowHandle = 0;
-        display = nullptr;
-
-        LinuxErrorHandling::removeXErrorHandlers();
-    }
+    InternalRunLoop::deleteInstance();
 }
 
 bool MessageManager::postMessageToSystemQueue (MessageManager::MessageBase* const message)
 {
-    if (LinuxErrorHandling::errorOccurred)
-        return false;
-
-    InternalMessageQueue::getInstanceWithoutCreating()->postMessage (message);
-    return true;
-}
-
-void MessageManager::broadcastMessage (const String& /* value */)
-{
-    /* TODO */
-}
-
-// this function expects that it will NEVER be called simultaneously for two concurrent threads
-bool MessageManager::dispatchNextMessageOnSystemQueue (bool returnIfNoPendingMessages)
-{
-    while (! LinuxErrorHandling::errorOccurred)
+    if (auto* queue = InternalMessageQueue::getInstanceWithoutCreating())
     {
-        if (LinuxErrorHandling::keyboardBreakOccurred)
-        {
-            LinuxErrorHandling::errorOccurred = true;
-
-            if (JUCEApplicationBase::isStandaloneApp())
-                Process::terminate();
-
-            break;
-        }
-
-        InternalMessageQueue* const queue = InternalMessageQueue::getInstanceWithoutCreating();
-        jassert (queue != nullptr);
-
-        if (queue->dispatchNextEvent())
-            return true;
-
-        if (returnIfNoPendingMessages)
-            break;
-
-        queue->sleepUntilEvent (2000);
+        queue->postMessage (message);
+        return true;
     }
 
     return false;
 }
+
+void MessageManager::broadcastMessage (const String&)
+{
+    // TODO
+}
+
+// this function expects that it will NEVER be called simultaneously for two concurrent threads
+bool dispatchNextMessageOnSystemQueue (bool returnIfNoPendingMessages)
+{
+    for (;;)
+    {
+        if (LinuxErrorHandling::keyboardBreakOccurred)
+            JUCEApplicationBase::quit();
+
+        if (auto* runLoop = InternalRunLoop::getInstanceWithoutCreating())
+        {
+            if (runLoop->dispatchPendingEvents())
+                break;
+
+            if (returnIfNoPendingMessages)
+                return false;
+
+            runLoop->sleepUntilNextEvent (2000);
+        }
+    }
+
+    return true;
+}
+
+//==============================================================================
+void LinuxEventLoop::registerFdCallback (int fd, std::function<void (int)> readCallback, short eventMask)
+{
+    if (auto* runLoop = InternalRunLoop::getInstanceWithoutCreating())
+        runLoop->registerFdCallback (fd, [cb = std::move (readCallback), fd] { cb (fd); }, eventMask);
+}
+
+void LinuxEventLoop::unregisterFdCallback (int fd)
+{
+    if (auto* runLoop = InternalRunLoop::getInstanceWithoutCreating())
+        runLoop->unregisterFdCallback (fd);
+}
+
+//==============================================================================
+void LinuxEventLoopInternal::registerLinuxEventLoopListener (LinuxEventLoopInternal::Listener& listener)
+{
+    if (auto* runLoop = InternalRunLoop::getInstanceWithoutCreating())
+        runLoop->addListener (listener);
+}
+
+void LinuxEventLoopInternal::deregisterLinuxEventLoopListener (LinuxEventLoopInternal::Listener& listener)
+{
+    if (auto* runLoop = InternalRunLoop::getInstanceWithoutCreating())
+        runLoop->removeListener (listener);
+}
+
+void LinuxEventLoopInternal::invokeEventLoopCallbackForFd (int fd)
+{
+    if (auto* runLoop = InternalRunLoop::getInstanceWithoutCreating())
+        runLoop->dispatchEvent (fd);
+}
+
+std::vector<int> LinuxEventLoopInternal::getRegisteredFds()
+{
+    if (auto* runLoop = InternalRunLoop::getInstanceWithoutCreating())
+        return runLoop->getRegisteredFds();
+
+    return {};
+}
+
+} // namespace juce

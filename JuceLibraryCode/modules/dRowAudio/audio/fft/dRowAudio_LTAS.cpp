@@ -19,33 +19,28 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#if JUCE_MAC || JUCE_IOS || DROWAUDIO_USE_FFTREAL
+#if DROWAUDIO_USE_FFTREAL || DROWAUDIO_USE_VDSP
 
 LTAS::LTAS (int fftSizeLog2)
     : fftEngine     (fftSizeLog2),
       ltasBuffer    (fftEngine.getMagnitudesBuffer().getSize()),
       fftSize       (fftEngine.getFFTSize()),
-      numBins       (ltasBuffer.getSize()),
+      numBins       (int (ltasBuffer.getSize())),
       tempBuffer    (fftSize)
 {
     ltasBuffer.reset();
 
     ltasAvg.insertMultiple (0, CumulativeMovingAverage(), numBins);
-}
-
-LTAS::~LTAS()
-{
-    
 }
 
 void LTAS::updateLTAS (float* input, int numSamples)
@@ -58,22 +53,22 @@ void LTAS::updateLTAS (float* input, int numSamples)
 
         while (numSamples >= fftSize)
         {
-            memcpy (tempBuffer, input, fftSize * sizeof (float));
+            memcpy (tempBuffer, input, size_t (fftSize) * sizeof (float));
             fftEngine.performFFT (tempBuffer);
             fftEngine.findMagnitudes();
-            
+
             for (int i = 0; i < numBins; ++i)
                 ltasAvg.getReference (i).add (fftBuffer[i]);
-            
+
             input += fftSize;
             numSamples -= fftSize;
         }
-        
+
         for (int i = 0; i < numBins; ++i)
             ltasBuffer.getReference (i) = (float) ltasAvg.getReference (i).getAverage();
-        
+
         ltasBuffer.updateListeners();
     }
 }
 
-#endif // JUCE_MAC || JUCE_IOS || DROWAUDIO_USE_FFTREAL
+#endif //DROWAUDIO_USE_FFTREAL

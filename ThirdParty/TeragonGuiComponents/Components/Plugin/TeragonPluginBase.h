@@ -65,7 +65,7 @@ public:
     virtual int getNumPrograms() { return 0; }
     virtual int getCurrentProgram() { return 0; }
     virtual void setCurrentProgram(int index) {}
-    virtual const String getProgramName(int index) { return String::empty; }
+    virtual const String getProgramName(int index) { return String(); }
     virtual void changeProgramName(int index, const String &newName) {}
 
     // State save/restore //////////////////////////////////////////////////////////

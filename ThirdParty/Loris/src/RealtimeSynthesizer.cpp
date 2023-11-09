@@ -47,6 +47,7 @@
 #include <algorithm>
 #include <cmath>
 #include <assert.h>
+#include <string.h>
 
 //  begin namespace
 namespace Loris {

@@ -19,31 +19,29 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_LOOPINGAUDIOSOURCE_H__
-#define __DROWAUDIO_LOOPINGAUDIOSOURCE_H__
+#ifndef DROWAUDIO_LOOPINGAUDIOSOURCE_H
+#define DROWAUDIO_LOOPINGAUDIOSOURCE_H
 
 #include "../utility/dRowAudio_Utility.h"
 
-//==============================================================================
 /** A type of PositionalAudioSource that will read from a PositionableAudioSource
     and can loop between to set times.
 
     @see PositionableAudioSource, AudioTransportSource, BufferingAudioSource
 */
-class LoopingAudioSource  : public PositionableAudioSource
+class LoopingAudioSource : public juce::PositionableAudioSource
 {
 public:
-    //==============================================================================
     /** Creates an LoopingAudioFormatReaderSource for a given reader.
 
         @param sourceReader                     the reader to use as the data source
@@ -51,71 +49,60 @@ public:
                                                 when this object is deleted; if false it will be
                                                 left up to the caller to manage its lifetime
     */
-    LoopingAudioSource (PositionableAudioSource* const inputSource,
-                        const bool deleteInputWhenDeleted);
-
-    /** Destructor. */
-    ~LoopingAudioSource();
+    LoopingAudioSource (juce::PositionableAudioSource* const inputSource,
+                        bool deleteInputWhenDeleted);
 
     //==============================================================================
     /** Sets the start and end times of the loop.
+
         This doesn't actually activate the loop, use setLoopBetweenTimes() to toggle this.
-     */
+    */
     void setLoopTimes (double startTime, double endTime);
-    
-    /** Sets the arguments to the currently set start and end times.
-     */
+
+    /** Sets the arguments to the currently set start and end times. */
     void getLoopTimes (double& startTime, double& endTime);
-    
-    /** Enables the loop point set.
-     */
+
+    /** Enables the loop point set. */
     void setLoopBetweenTimes (bool shouldLoop);
 
-    /** Returns true if the loop is activated.
-     */
-    bool getLoopBetweenTimes();
-    
-    //==============================================================================
-    /** Implementation of the AudioSource method. */
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate);
-
-    /** Implementation of the AudioSource method. */
-    void releaseResources();
-
-    /** Implementation of the AudioSource method. */
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill);
+    /** Returns true if the loop is activated. */
+    bool isBetweenLoopTimes() const { return isLoopingBetweenTimes; }
 
     //==============================================================================
-    /** Implements the PositionableAudioSource method. */
-    void setNextReadPosition (int64 newPosition);
-
     /** Sets the next read position ignoring the loop bounds. */
-    void setNextReadPositionIgnoringLoop (int64 newPosition);
+    void setNextReadPositionIgnoringLoop (juce::int64 newPosition);
 
-    /** Implements the PositionableAudioSource method. */
-    int64 getNextReadPosition() const;
-    
-    /** Implements the PositionableAudioSource method. */
-    int64 getTotalLength() const;
-    
-    /** Implements the PositionableAudioSource method. */
-    bool isLooping() const;
-    
+    //==============================================================================
+    /** @internal */
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    /** @internal */
+    void releaseResources() override;
+    /** @internal */
+    void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
+    /** @internal */
+    void setNextReadPosition (juce::int64 newPosition) override;
+    /** @internal */
+    juce::int64 getNextReadPosition() const override;
+    /** @internal */
+    juce::int64 getTotalLength() const override;
+    /** @internal */
+    bool isLooping() const override;
+
 private:
     //==============================================================================
-    OptionalScopedPointer<PositionableAudioSource> input;
-    CriticalSection loopPosLock;
+    juce::OptionalScopedPointer<PositionableAudioSource> input;
+    juce::CriticalSection loopPosLock;
 
-    bool volatile isLoopingBetweenTimes;
+    volatile bool isLoopingBetweenTimes;
     double loopStartTime, loopEndTime;
-    int64 loopStartSample, loopEndSample;
+    juce::int64 loopStartSample, loopEndSample;
     double currentSampleRate;
 
-    AudioSourceChannelInfo tempInfo;
-    AudioSampleBuffer tempBuffer;
-        
+    juce::AudioSourceChannelInfo tempInfo;
+    juce::AudioSampleBuffer tempBuffer;
+
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LoopingAudioSource);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LoopingAudioSource)
 };
 
-#endif   // __DROWAUDIO_LOOPINGAUDIOSOURCE_H__
+#endif   // DROWAUDIO_LOOPINGAUDIOSOURCE_H

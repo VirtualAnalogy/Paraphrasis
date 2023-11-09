@@ -19,31 +19,29 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_REVERSIBLEAUDIOSOURCE_H__
-#define __DROWAUDIO_REVERSIBLEAUDIOSOURCE_H__
+#ifndef DROWAUDIO_REVERSIBLEAUDIOSOURCE_H
+#define DROWAUDIO_REVERSIBLEAUDIOSOURCE_H
 
 #include "../utility/dRowAudio_Utility.h"
 
-//==============================================================================
 /** A type of AudioSource that can reverse the stream of samples that
     flows through it.
 
     @see PositionableAudioSource, AudioTransportSource, BufferingAudioSource
 */
-class ReversibleAudioSource :   public AudioSource
+class ReversibleAudioSource : public juce::AudioSource
 {
 public:
-    //==============================================================================
     /** Creates an ReversableAudioFormatReaderSource for a given reader.
 
         @param sourceReader                     the reader to use as the data source
@@ -51,39 +49,32 @@ public:
                                                 when this object is deleted; if false it will be
                                                 left up to the caller to manage its lifetime
     */
-    ReversibleAudioSource (PositionableAudioSource* const inputSource,
-						   const bool deleteInputWhenDeleted);
-
-    /** Destructor. */
-    ~ReversibleAudioSource();
+    ReversibleAudioSource (juce::PositionableAudioSource* const inputSource,
+                           const bool deleteInputWhenDeleted);
 
     //==============================================================================
-    /** Sets whether the source should play forwards or backwards.
-     */
-	void setPlayDirection (bool shouldPlayForwards)	{	isForwards = shouldPlayForwards;    }
-    
-    /** Returns true if the source is playing forwards.
-     */
-	bool getPlayDirection ()						{	return isForwards;                  }
-    
+    /** Sets whether the source should play forwards or backwards.  */
+    void setPlayDirection (bool shouldPlayForwards) { isForwards = shouldPlayForwards; }
+
+    /** @returns True if the source is playing forwards. */
+    bool isPlayingForwards() const { return isForwards; }
+
     //==============================================================================
-    /** Implementation of the AudioSource method. */
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate);
+    /** @internal */
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    /** @internal */
+    void releaseResources() override;
+    /** @internal */
+    void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
 
-    /** Implementation of the AudioSource method. */
-    void releaseResources();
-
-    /** Implementation of the AudioSource method. */
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill);
-    
 private:
     //==============================================================================
-    OptionalScopedPointer<PositionableAudioSource> input;
-    int64 previousReadPosition;
-	bool volatile isForwards;
-	
+    juce::OptionalScopedPointer<juce::PositionableAudioSource> input;
+    juce::int64 previousReadPosition;
+    bool volatile isForwards;
+
     //==============================================================================
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReversibleAudioSource);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReversibleAudioSource)
 };
 
-#endif   // __DROWAUDIO_REVERSIBLEAUDIOSOURCE_H__
+#endif   // DROWAUDIO_REVERSIBLEAUDIOSOURCE_H

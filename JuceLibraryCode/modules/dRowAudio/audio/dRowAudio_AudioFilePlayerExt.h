@@ -19,18 +19,18 @@
   copies or substantial portions of the Software.
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
   ==============================================================================
 */
 
-#ifndef __DROWAUDIO_AUDIOFILEPLAYEREXT_H__
-#define __DROWAUDIO_AUDIOFILEPLAYEREXT_H__
+#ifndef DROWAUDIO_AUDIOFILEPLAYEREXT_H
+#define DROWAUDIO_AUDIOFILEPLAYEREXT_H
 
 #if DROWAUDIO_USE_SOUNDTOUCH
 
@@ -39,117 +39,106 @@
 #include "dRowAudio_LoopingAudioSource.h"
 #include "dRowAudio_FilteringAudioSource.h"
 
-//==============================================================================
-/**
-    This class can be used to load and play an audio file from disk.
+/** This class can be used to load and play an audio file from disk.
 
     This combines the functionality of an AudioTransportSource,
     AudioFormatReader and AudioFormatReaderSource.
- 
+
     @see AudioTransportSource
     @see AudioFormatReader
     @see AudioFormatReaderSource
- */
-class AudioFilePlayerExt :  public AudioFilePlayer
+*/
+class AudioFilePlayerExt : public AudioFilePlayer
 {
 public:
     //==============================================================================
     enum PlayerSettingCode
     {
-        SoundTouchSetting           = 0x0001,
-        LoopBeetweenTimesSetting    = 0x0002,
-        PlayDirectionSetting        = 0x0003,
-        FilterGainSetting           = 0x0004
+        SoundTouchSetting = 1,
+        LoopBetweenTimesSetting,
+        PlayDirectionSetting,
+        FilterGainSetting
     };
-    
+
     //==============================================================================
-	/** Creates an empty AudioFilePlayerExt.
-     */
-	AudioFilePlayerExt();
-    
-	/** Destructor.
-     */
-	~AudioFilePlayerExt();
-	
+    /** Creates an empty AudioFilePlayerExt. */
+    AudioFilePlayerExt();
+
+    /** Destructor. */
+    ~AudioFilePlayerExt();
+
     //==============================================================================
     /** Sets the current library entry.
      */
-    void setLibraryEntry (ValueTree newEntry)               {   libraryEntry = newEntry;    }
+    void setLibraryEntry (const juce::ValueTree& newEntry) { libraryEntry = newEntry; }
 
     /** Returns the currents library entry.
      */
-    ValueTree getLibraryEntry()                             {   return  libraryEntry;       }
-    
+    juce::ValueTree getLibraryEntry() const { return libraryEntry; }
+
     //==============================================================================
     /** Sets SoundTouchProcessor settings.
      */
-    void setPlaybackSettings (SoundTouchProcessor::PlaybackSettings newSettings);
-    
+    void setPlaybackSettings (const SoundTouchProcessor::PlaybackSettings& newSettings);
+
     /** Returns the current SoundTouchProcessor settings.
      */
-    SoundTouchProcessor::PlaybackSettings getPlaybackSettings();
-    
+    const SoundTouchProcessor::PlaybackSettings& getPlaybackSettings() const;
+
     /** Sets whether the source should play forwards or backwards.
      */
-	void setPlayDirection (bool shouldPlayForwards);
-    
-    /** Returns true if the source is playing forwards.
-     */
-	bool getPlayDirection();
+    void setPlayDirection (bool shouldPlayForwards);
 
-    /** Sets the gain of one of the FilteringAudioSource filters.
-     */
+    /** Returns true if the source is playing forwards. */
+    bool isPlayingForwards() const;
+
+    /** Sets the gain of one of the FilteringAudioSource filters. */
     void setFilterGain (FilteringAudioSource::FilterType type, float newGain);
-    
+
     //==============================================================================
     /** Sets the start and end times of the loop.
-        This doesn't actually activate the loop, use setLoopBetweenTimes() to toggle this.
-     */
-	void setLoopTimes (double startTime, double endTime);
-	
-    /** Enables the loop point set.
-     */
-    void setLoopBetweenTimes (bool shouldLoop);
-    
-    /** Returns true if the loop is activated.
-     */
-    bool getLoopBetweenTimes();
-    
-    /** Sets the next play position in seconds disregarding the loop boundries.
-     */
-    void setPosition (double newPosition, bool ignoreAnyLoopBounds = false);
-    
-    //==============================================================================
-    /** Returns the SoundTouchAudioSource being used.
-     */
-    inline SoundTouchAudioSource* getSoundTouchAudioSource()       {   return soundTouchAudioSource;   }
 
-	/** Returns the FilteringAudioSource being used.
-     */
-    inline FilteringAudioSource* getFilteringAudioSource()         {   return filteringAudioSource;    }
-    
-private:	
+        This doesn't actually activate the loop, use setLoopBetweenTimes() to toggle this.
+    */
+    void setLoopTimes (double startTime, double endTime);
+
+    /** Enables the loop point set.  */
+    void setLoopBetweenTimes (bool shouldLoop);
+
+    /** Returns true if the loop is activated. */
+    bool isBetweenLoopTimes();
+
+    /** Sets the next play position in seconds disregarding the loop boundries. */
+    void setPosition (double newPosition, bool ignoreAnyLoopBounds = false);
+
     //==============================================================================
-    ScopedPointer<BufferingAudioSource> bufferingAudioSource;
-    ScopedPointer<LoopingAudioSource> loopingAudioSource;
-    ScopedPointer<SoundTouchAudioSource> soundTouchAudioSource;
-    ScopedPointer<ReversibleAudioSource> reversibleAudioSource;
-    ScopedPointer<FilteringAudioSource> filteringAudioSource;
+    /** Returns the SoundTouchAudioSource being used. */
+    SoundTouchAudioSource* getSoundTouchAudioSource() const { return soundTouchAudioSource.get(); }
+
+    /** Returns the FilteringAudioSource being used. */
+    FilteringAudioSource* getFilteringAudioSource() const { return filteringAudioSource.get(); }
+
+private:
+    //==============================================================================
+    std::unique_ptr<juce::BufferingAudioSource> bufferingAudioSource;
+    std::unique_ptr<LoopingAudioSource> loopingAudioSource;
+    std::unique_ptr<SoundTouchAudioSource> soundTouchAudioSource;
+    std::unique_ptr<ReversibleAudioSource> reversibleAudioSource;
+    std::unique_ptr<FilteringAudioSource> filteringAudioSource;
 
     SoundTouchProcessor::PlaybackSettings currentSoundtouchSettings;
-    bool shouldBeLooping;
+    bool shouldBeLooping = false;
     double currentLoopStartTime, currentLoopEndTime;
-    
-    ValueTree libraryEntry;
+
+    juce::ValueTree libraryEntry;
 
     //==============================================================================
-	bool setSourceWithReader (AudioFormatReader* reader);
+    bool setSourceWithReader (juce::AudioFormatReader* reader);
     void updateLoopTimes();
-    
+
     //==============================================================================
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioFilePlayerExt);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioFilePlayerExt)
 };
 
-
-#endif
-#endif // __DROWAUDIO_AUDIOFILEPLAYEREXT_H__
+#endif // DROWAUDIO_USE_SOUNDTOUCH
+#endif // DROWAUDIO_AUDIOFILEPLAYEREXT_H

@@ -1,18 +1,18 @@
 /*
   ==============================================================================
 
-  This is an automatically generated GUI class created by the Introjucer!
+  This is an automatically generated GUI class created by the Projucer!
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Introjucer version: 3.1.0
+  Created with Projucer version: 7.0.5
 
   ------------------------------------------------------------------------------
 
-  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright 2004-13 by Raw Material Software Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
@@ -40,7 +40,7 @@
  tom@virtualanalogy.com
  */
 
-#include "Resources.h"
+#include "../Resources/Resources.h"
 #include "SampleAnalyzer.h"
 #include "ParameterDefitions.h"
 //[/Headers]
@@ -59,85 +59,118 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
       resources(r),
       formatManager(formatManager)
 {
-    addAndMakeVisible (knob = new teragon::ImageKnobLarge (parameters, "Sample Pitch", r));
+    //[Constructor_pre] You can add your own custom stuff here..
+    //[/Constructor_pre]
+
+    knob.reset (new teragon::ImageKnobLarge (parameters, "Sample Pitch", r));
+    addAndMakeVisible (knob.get());
     knob->setName ("knob");
 
-    addAndMakeVisible (knob2 = new teragon::ImageKnobLarge (parameters, "Frequency Resolution", r));
+    knob->setBounds (60, 129, 64, 64);
+
+    knob2.reset (new teragon::ImageKnobLarge (parameters, "Frequency Resolution", r));
+    addAndMakeVisible (knob2.get());
     knob2->setName ("knob");
 
-    addAndMakeVisible (sampleLbl = new Label ("sampleLbl",
-                                              String::empty));
-    sampleLbl->setFont (Font (Font::getDefaultMonospacedFontName(), 13.50f, Font::plain));
-    sampleLbl->setJustificationType (Justification::centredLeft);
-    sampleLbl->setEditable (false, false, false);
-    sampleLbl->setColour (Label::backgroundColourId, Colour (0x009f9d9d));
-    sampleLbl->setColour (TextEditor::textColourId, Colours::black);
-    sampleLbl->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    knob2->setBounds (176, 129, 64, 64);
 
-    addAndMakeVisible (selectBtn = new ImageButton ("selectBtn"));
+    sampleLbl.reset (new juce::Label ("sampleLbl",
+                                      juce::String()));
+    addAndMakeVisible (sampleLbl.get());
+    sampleLbl->setFont (juce::Font (juce::Font::getDefaultMonospacedFontName(), 13.50f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    sampleLbl->setJustificationType (juce::Justification::centredLeft);
+    sampleLbl->setEditable (false, false, false);
+    sampleLbl->setColour (juce::Label::backgroundColourId, juce::Colour (0x009f9d9d));
+    sampleLbl->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    sampleLbl->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    sampleLbl->setBounds (24, 45, 176, 20);
+
+    selectBtn.reset (new juce::ImageButton ("selectBtn"));
+    addAndMakeVisible (selectBtn.get());
     selectBtn->setButtonText (TRANS("new button"));
     selectBtn->addListener (this);
 
     selectBtn->setImages (false, true, true,
-                          Image(), 1.000f, Colour (0x00000000),
-                          Image(), 1.000f, Colour (0x00000000),
-                          Image(), 1.000f, Colour (0x00000000));
-    addAndMakeVisible (analyzeBtn = new ImageButton ("analyzeBtn"));
+                          juce::Image(), 1.000f, juce::Colour (0x00000000),
+                          juce::Image(), 1.000f, juce::Colour (0x00000000),
+                          juce::Image(), 1.000f, juce::Colour (0x00000000));
+    selectBtn->setBounds (194, 41, 88, 30);
+
+    analyzeBtn.reset (new juce::ImageButton ("analyzeBtn"));
+    addAndMakeVisible (analyzeBtn.get());
     analyzeBtn->setButtonText (TRANS("new button"));
     analyzeBtn->addListener (this);
 
     analyzeBtn->setImages (false, true, true,
-                           Image(), 1.000f, Colour (0x00000000),
-                           Image(), 1.000f, Colour (0x00000000),
-                           Image(), 1.000f, Colour (0x00000000));
-    addAndMakeVisible (pitchLbl = new Label ("pitchLbl",
-                                             TRANS("20k")));
-    pitchLbl->setFont (Font (12.00f, Font::plain));
-    pitchLbl->setJustificationType (Justification::centred);
+                           juce::Image(), 1.000f, juce::Colour (0x00000000),
+                           juce::Image(), 1.000f, juce::Colour (0x00000000),
+                           juce::Image(), 1.000f, juce::Colour (0x00000000));
+    analyzeBtn->setBounds (105, 230, 92, 48);
+
+    pitchLbl.reset (new juce::Label ("pitchLbl",
+                                     TRANS("20k")));
+    addAndMakeVisible (pitchLbl.get());
+    pitchLbl->setFont (juce::Font (12.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    pitchLbl->setJustificationType (juce::Justification::centred);
     pitchLbl->setEditable (true, true, false);
-    pitchLbl->setColour (Label::textColourId, Colour (0xf2c3c3c3));
-    pitchLbl->setColour (TextEditor::textColourId, Colours::black);
-    pitchLbl->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-    pitchLbl->setColour (TextEditor::highlightColourId, Colour (0x40ffffff));
+    pitchLbl->setColour (juce::Label::textColourId, juce::Colour (0xf2c3c3c3));
+    pitchLbl->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    pitchLbl->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    pitchLbl->setColour (juce::TextEditor::highlightColourId, juce::Colour (0x40ffffff));
     pitchLbl->addListener (this);
 
-    addAndMakeVisible (resolutionLbl = new Label ("resolutionLbl",
-                                                  TRANS("20k")));
-    resolutionLbl->setFont (Font (12.00f, Font::plain));
-    resolutionLbl->setJustificationType (Justification::centred);
+    pitchLbl->setBounds (57, 192, 70, 24);
+
+    resolutionLbl.reset (new juce::Label ("resolutionLbl",
+                                          TRANS("20k")));
+    addAndMakeVisible (resolutionLbl.get());
+    resolutionLbl->setFont (juce::Font (12.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    resolutionLbl->setJustificationType (juce::Justification::centred);
     resolutionLbl->setEditable (true, true, false);
-    resolutionLbl->setColour (Label::textColourId, Colour (0xffc3c3c3));
-    resolutionLbl->setColour (Label::outlineColourId, Colour (0x00ffffff));
-    resolutionLbl->setColour (TextEditor::textColourId, Colours::black);
-    resolutionLbl->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-    resolutionLbl->setColour (TextEditor::highlightColourId, Colour (0x40ffffff));
+    resolutionLbl->setColour (juce::Label::textColourId, juce::Colour (0xffc3c3c3));
+    resolutionLbl->setColour (juce::Label::outlineColourId, juce::Colour (0x00ffffff));
+    resolutionLbl->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    resolutionLbl->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    resolutionLbl->setColour (juce::TextEditor::highlightColourId, juce::Colour (0x40ffffff));
     resolutionLbl->addListener (this);
 
-    addAndMakeVisible (resolutionBtn = new ImageButton ("analyzeBtn"));
+    resolutionLbl->setBounds (173, 192, 70, 24);
+
+    resolutionBtn.reset (new juce::ImageButton ("analyzeBtn"));
+    addAndMakeVisible (resolutionBtn.get());
     resolutionBtn->setButtonText (TRANS("new button"));
     resolutionBtn->addListener (this);
 
     resolutionBtn->setImages (false, true, true,
-                              Image(), 1.000f, Colour (0x00000000),
-                              Image(), 1.000f, Colour (0x00000000),
-                              Image(), 1.000f, Colour (0x00000000));
-    addAndMakeVisible (ledBtn = new ImageButton ("ledBtn"));
+                              juce::Image(), 1.000f, juce::Colour (0x00000000),
+                              juce::Image(), 1.000f, juce::Colour (0x00000000),
+                              juce::Image(), 1.000f, juce::Colour (0x00000000));
+    resolutionBtn->setBounds (128, 155, 44, 32);
+
+    ledBtn.reset (new juce::ImageButton ("ledBtn"));
+    addAndMakeVisible (ledBtn.get());
     ledBtn->setButtonText (TRANS("new button"));
     ledBtn->addListener (this);
 
     ledBtn->setImages (false, true, true,
-                       ImageCache::getFromMemory (led_off_png, led_off_pngSize), 1.000f, Colour (0x00000000),
-                       Image(), 1.000f, Colour (0x00000000),
-                       ImageCache::getFromMemory (led_on_png, led_on_pngSize), 1.000f, Colour (0x00000000));
-    addAndMakeVisible (reverseBtn = new ImageButton ("reverseBtn"));
+                       juce::ImageCache::getFromMemory (led_off_png, led_off_pngSize), 1.000f, juce::Colour (0x00000000),
+                       juce::Image(), 1.000f, juce::Colour (0x00000000),
+                       juce::ImageCache::getFromMemory (led_on_png, led_on_pngSize), 1.000f, juce::Colour (0x00000000));
+    ledBtn->setBounds (240, 240, 24, 24);
+
+    reverseBtn.reset (new juce::ImageButton ("reverseBtn"));
+    addAndMakeVisible (reverseBtn.get());
     reverseBtn->setButtonText (TRANS("new button"));
     reverseBtn->addListener (this);
 
     reverseBtn->setImages (false, true, true,
-                           Image(), 1.000f, Colour (0x00000000),
-                           Image(), 1.000f, Colour (0x00000000),
-                           Image(), 1.000f, Colour (0x00000000));
-    cachedImage_background2_png = ImageCache::getFromMemory (background2_png, background2_pngSize);
+                           juce::Image(), 1.000f, juce::Colour (0x00000000),
+                           juce::Image(), 1.000f, juce::Colour (0x00000000),
+                           juce::Image(), 1.000f, juce::Colour (0x00000000));
+    reverseBtn->setBounds (23, 238, 88, 30);
+
+    cachedImage_background2_png_1 = juce::ImageCache::getFromMemory (background2_png, background2_pngSize);
 
     //[UserPreSize]
 
@@ -149,24 +182,24 @@ ParaphrasisAudioProcessorEditor::ParaphrasisAudioProcessorEditor (ParaphrasisAud
     LookAndFeel::setDefaultLookAndFeel(&laf);
 
     // load images for the image buttons
-    selectBtn->setImages (false, true, true,
-                          ImageCache::getFromMemory (Resources::button_select_normal_png, Resources::button_select_normal_pngSize), 1.000f, Colour (0x00000000),
+	selectBtn->setImages (false, true, true,
+                          ImageCache::getFromMemory (GraphicsResources::button_select_normal_png, GraphicsResources::button_select_normal_pngSize), 1.000f, Colour (0x00000000),
                           Image(), 1.000f, Colour (0x00000000),
-                          ImageCache::getFromMemory (Resources::button_select_down_png, Resources::button_select_down_pngSize), 1.000f, Colour (0x00000000));
+                          ImageCache::getFromMemory (GraphicsResources::button_select_down_png, GraphicsResources::button_select_down_pngSize), 1.000f, Colour (0x00000000));
     analyzeBtn->setImages (false, true, true,
-                          ImageCache::getFromMemory (Resources::button_analyze_normal_png, Resources::button_analyze_normal_pngSize), 1.000f, Colour (0x00000000),
+                          ImageCache::getFromMemory (GraphicsResources::button_analyze_normal_png, GraphicsResources::button_analyze_normal_pngSize), 1.000f, Colour (0x00000000),
                           Image(), 1.000f, Colour (0x00000000),
-                          ImageCache::getFromMemory (Resources::button_analyze_down_png, Resources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
+                          ImageCache::getFromMemory (GraphicsResources::button_analyze_down_png, GraphicsResources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
     resolutionBtn->setImages (false, true, true,
-                           ImageCache::getFromMemory (Resources::button_analyze_normal_png, Resources::button_analyze_normal_pngSize), 1.000f, Colour (0x00000000),
+                           ImageCache::getFromMemory (GraphicsResources::button_analyze_normal_png, GraphicsResources::button_analyze_normal_pngSize), 1.000f, Colour (0x00000000),
                            Image(), 1.000f, Colour (0x00000000),
-                           ImageCache::getFromMemory (Resources::button_analyze_down_png, Resources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
+                           ImageCache::getFromMemory (GraphicsResources::button_analyze_down_png, GraphicsResources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
 
     reverseBtn->setImages (false, true, true,
-                              ImageCache::getFromMemory (Resources::button_analyze_normal_png, Resources::button_analyze_normal_pngSize), 1.000f, Colour (0x00000000),
+                              ImageCache::getFromMemory (GraphicsResources::button_analyze_normal_png, GraphicsResources::button_analyze_normal_pngSize), 1.000f, Colour (0x00000000),
                               Image(), 1.000f, Colour (0x00000000),
-                              ImageCache::getFromMemory (Resources::button_analyze_down_png, Resources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
-    reverseBtn->setClickingTogglesState(true);
+                              ImageCache::getFromMemory (GraphicsResources::button_analyze_down_png, GraphicsResources::button_analyze_down_pngSize), 1.000f, Colour (0x00000000));
+	reverseBtn->setClickingTogglesState(true);
     reverseBtn->setToggleState(parameters[kParameterReverse_name]->getValue(), juce::dontSendNotification);
 
     // register this as parameter observer
@@ -219,17 +252,22 @@ ParaphrasisAudioProcessorEditor::~ParaphrasisAudioProcessorEditor()
 }
 
 //==============================================================================
-void ParaphrasisAudioProcessorEditor::paint (Graphics& g)
+void ParaphrasisAudioProcessorEditor::paint (juce::Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colour (0xffbdbdbd));
+    g.fillAll (juce::Colour (0xffbdbdbd));
 
-    g.setColour (Colours::black);
-    g.drawImage (cachedImage_background2_png,
-                 0, 0, 300, 300,
-                 0, 0, cachedImage_background2_png.getWidth(), cachedImage_background2_png.getHeight());
+    {
+        int x = 0, y = 0, width = 300, height = 300;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (juce::Colours::black);
+        g.drawImage (cachedImage_background2_png_1,
+                     x, y, width, height,
+                     0, 0, cachedImage_background2_png_1.getWidth(), cachedImage_background2_png_1.getHeight());
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -237,26 +275,29 @@ void ParaphrasisAudioProcessorEditor::paint (Graphics& g)
 
 void ParaphrasisAudioProcessorEditor::resized()
 {
-    knob->setBounds (60, 129, 64, 64);
-    knob2->setBounds (176, 129, 64, 64);
-    sampleLbl->setBounds (24, 45, 176, 20);
-    selectBtn->setBounds (194, 41, 88, 30);
-    analyzeBtn->setBounds (105, 230, 92, 48);
-    pitchLbl->setBounds (57, 192, 70, 24);
-    resolutionLbl->setBounds (173, 192, 70, 24);
-    resolutionBtn->setBounds (128, 155, 44, 32);
-    ledBtn->setBounds (240, 240, 24, 24);
-    reverseBtn->setBounds (23, 238, 88, 30);
+    //[UserPreResize] Add your own custom resize code here..
+	knob->setBounds (60, 129, 64, 64);
+	knob2->setBounds (176, 129, 64, 64);
+	sampleLbl->setBounds (24, 45, 176, 20);
+	selectBtn->setBounds (194, 41, 88, 30);
+	analyzeBtn->setBounds (105, 230, 92, 48);
+	pitchLbl->setBounds (57, 192, 70, 24);
+	resolutionLbl->setBounds (173, 192, 70, 24);
+	resolutionBtn->setBounds (128, 155, 44, 32);
+	ledBtn->setBounds (240, 240, 24, 24);
+	reverseBtn->setBounds (23, 238, 88, 30);
+    //[/UserPreResize]
+
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicked)
+void ParaphrasisAudioProcessorEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == selectBtn)
+    if (buttonThatWasClicked == selectBtn.get())
     {
         //[UserButtonCode_selectBtn] -- add your button handler code here..
         // select sample file
@@ -304,25 +345,25 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
         }
         //[/UserButtonCode_selectBtn]
     }
-    else if (buttonThatWasClicked == analyzeBtn)
+    else if (buttonThatWasClicked == analyzeBtn.get())
     {
         //[UserButtonCode_analyzeBtn] -- add your button handler code here..
         getProcessor()->analyzeSample();
         //[/UserButtonCode_analyzeBtn]
     }
-    else if (buttonThatWasClicked == resolutionBtn)
+    else if (buttonThatWasClicked == resolutionBtn.get())
     {
         //[UserButtonCode_resolutionBtn] -- add your button handler code here..
         // set default resolution freq defined by actual pitch frequency
         parameters.set(kParameterFrequencyResolution_name, kDefaultPitchResolutionRation * parameters.get(kParameterSamplePitch_name)->getValue());
         //[/UserButtonCode_resolutionBtn]
     }
-    else if (buttonThatWasClicked == ledBtn)
+    else if (buttonThatWasClicked == ledBtn.get())
     {
         //[UserButtonCode_ledBtn] -- add your button handler code here..
         //[/UserButtonCode_ledBtn]
     }
-    else if (buttonThatWasClicked == reverseBtn)
+    else if (buttonThatWasClicked == reverseBtn.get())
     {
         //[UserButtonCode_reverseBtn] -- add your button handler code here..
         // change reverse name.
@@ -334,12 +375,12 @@ void ParaphrasisAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicke
     //[/UserbuttonClicked_Post]
 }
 
-void ParaphrasisAudioProcessorEditor::labelTextChanged (Label* labelThatHasChanged)
+void ParaphrasisAudioProcessorEditor::labelTextChanged (juce::Label* labelThatHasChanged)
 {
     //[UserlabelTextChanged_Pre]
     //[/UserlabelTextChanged_Pre]
 
-    if (labelThatHasChanged == pitchLbl)
+    if (labelThatHasChanged == pitchLbl.get())
     {
         //[UserLabelCode_pitchLbl] -- add your label text handling code here..
         if ( ! pitchLbl->isBeingEdited() )
@@ -350,7 +391,7 @@ void ParaphrasisAudioProcessorEditor::labelTextChanged (Label* labelThatHasChang
         }
         //[/UserLabelCode_pitchLbl]
     }
-    else if (labelThatHasChanged == resolutionLbl)
+    else if (labelThatHasChanged == resolutionLbl.get())
     {
         //[UserLabelCode_resolutionLbl] -- add your label text handling code here..
         if ( ! resolutionLbl->isBeingEdited() )
@@ -408,9 +449,9 @@ double ParaphrasisAudioProcessorEditor::checkParameterBoundaries(const Parameter
 
 //==============================================================================
 #if 0
-/*  -- Introjucer information section --
+/*  -- Projucer information section --
 
-    This is where the Introjucer stores the metadata that describe this GUI layout, so
+    This is where the Projucer stores the metadata that describe this GUI layout, so
     make changes in here at your peril!
 
 BEGIN_JUCER_METADATA
@@ -422,7 +463,7 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="300" initialHeight="300">
   <BACKGROUND backgroundColour="ffbdbdbd">
-    <IMAGE pos="0 0 300 300" resource="background2_png" opacity="1" mode="0"/>
+    <IMAGE pos="0 0 300 300" resource="background2_png" opacity="1.0" mode="0"/>
   </BACKGROUND>
   <GENERICCOMPONENT name="knob" id="52cfbedef63fe00b" memberName="knob" virtualName="teragon::ImageKnobLarge"
                     explicitFocusOrder="0" pos="60 129 64 64" class="Component" params="parameters, &quot;Sample Pitch&quot;, r"/>
@@ -433,47 +474,48 @@ BEGIN_JUCER_METADATA
          virtualName="" explicitFocusOrder="0" pos="24 45 176 20" bkgCol="9f9d9d"
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default monospaced font"
-         fontsize="13.5" bold="0" italic="0" justification="33"/>
+         fontsize="13.5" kerning="0.0" bold="0" italic="0" justification="33"/>
   <IMAGEBUTTON name="selectBtn" id="63e2e3bfd7cbefd5" memberName="selectBtn"
                virtualName="" explicitFocusOrder="0" pos="194 41 88 30" buttonText="new button"
                connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
-               resourceNormal="" opacityNormal="1" colourNormal="0" resourceOver=""
-               opacityOver="1" colourOver="0" resourceDown="" opacityDown="1"
+               resourceNormal="" opacityNormal="1.0" colourNormal="0" resourceOver=""
+               opacityOver="1.0" colourOver="0" resourceDown="" opacityDown="1.0"
                colourDown="0"/>
   <IMAGEBUTTON name="analyzeBtn" id="56836504f0a08694" memberName="analyzeBtn"
                virtualName="" explicitFocusOrder="0" pos="105 230 92 48" buttonText="new button"
                connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
-               resourceNormal="" opacityNormal="1" colourNormal="0" resourceOver=""
-               opacityOver="1" colourOver="0" resourceDown="" opacityDown="1"
+               resourceNormal="" opacityNormal="1.0" colourNormal="0" resourceOver=""
+               opacityOver="1.0" colourOver="0" resourceDown="" opacityDown="1.0"
                colourDown="0"/>
   <LABEL name="pitchLbl" id="400eaffd0e2f9582" memberName="pitchLbl" virtualName=""
          explicitFocusOrder="0" pos="57 192 70 24" textCol="f2c3c3c3"
          edTextCol="ff000000" edBkgCol="0" hiliteCol="40ffffff" labelText="20k"
          editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="12" bold="0" italic="0" justification="36"/>
+         fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+         italic="0" justification="36"/>
   <LABEL name="resolutionLbl" id="c17f4e0142be49bf" memberName="resolutionLbl"
          virtualName="" explicitFocusOrder="0" pos="173 192 70 24" textCol="ffc3c3c3"
          outlineCol="ffffff" edTextCol="ff000000" edBkgCol="0" hiliteCol="40ffffff"
          labelText="20k" editableSingleClick="1" editableDoubleClick="1"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="12"
-         bold="0" italic="0" justification="36"/>
+         focusDiscardsChanges="0" fontname="Default font" fontsize="12.0"
+         kerning="0.0" bold="0" italic="0" justification="36"/>
   <IMAGEBUTTON name="analyzeBtn" id="5822ed37b120e159" memberName="resolutionBtn"
                virtualName="" explicitFocusOrder="0" pos="128 155 44 32" buttonText="new button"
                connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
-               resourceNormal="" opacityNormal="1" colourNormal="0" resourceOver=""
-               opacityOver="1" colourOver="0" resourceDown="" opacityDown="1"
+               resourceNormal="" opacityNormal="1.0" colourNormal="0" resourceOver=""
+               opacityOver="1.0" colourOver="0" resourceDown="" opacityDown="1.0"
                colourDown="0"/>
   <IMAGEBUTTON name="ledBtn" id="53d3b450ed60b4e0" memberName="ledBtn" virtualName=""
                explicitFocusOrder="0" pos="240 240 24 24" buttonText="new button"
                connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
-               resourceNormal="led_off_png" opacityNormal="1" colourNormal="0"
-               resourceOver="" opacityOver="1" colourOver="0" resourceDown="led_on_png"
-               opacityDown="1" colourDown="0"/>
+               resourceNormal="led_off_png" opacityNormal="1.0" colourNormal="0"
+               resourceOver="" opacityOver="1.0" colourOver="0" resourceDown="led_on_png"
+               opacityDown="1.0" colourDown="0"/>
   <IMAGEBUTTON name="reverseBtn" id="22e0e6c1d2a68619" memberName="reverseBtn"
                virtualName="" explicitFocusOrder="0" pos="23 238 88 30" buttonText="new button"
                connectedEdges="0" needsCallback="1" radioGroupId="0" keepProportions="1"
-               resourceNormal="" opacityNormal="1" colourNormal="0" resourceOver=""
-               opacityOver="1" colourOver="0" resourceDown="" opacityDown="1"
+               resourceNormal="" opacityNormal="1.0" colourNormal="0" resourceOver=""
+               opacityOver="1.0" colourOver="0" resourceDown="" opacityDown="1.0"
                colourDown="0"/>
 </JUCER_COMPONENT>
 
@@ -1451,3 +1493,4 @@ const int ParaphrasisAudioProcessorEditor::led_on_pngSize = 1195;
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
+

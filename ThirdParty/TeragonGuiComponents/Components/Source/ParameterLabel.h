@@ -36,7 +36,7 @@ namespace teragon {
 class ParameterLabel : public EllipsizedLabel, public PluginParameterComponent {
 public:
     ParameterLabel(ConcurrentParameterSet &parameters, const ParameterString &name) :
-    EllipsizedLabel(), PluginParameterComponent(parameters, name, nullptr, String::empty) {
+    EllipsizedLabel(), PluginParameterComponent(parameters, name, nullptr, String()) {
         setText(parameter->getDisplayText());
     }
 
